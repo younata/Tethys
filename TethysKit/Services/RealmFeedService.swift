@@ -28,7 +28,7 @@ struct RealmFeedService: FeedService {
                 guard lhsUnread == rhsUnread else {
                     return lhsUnread > rhsUnread
                 }
-                return (lhs.title ?? "") < (rhs.title ?? "")
+                return lhs.title < rhs.title
             })
             let feeds = realmFeeds.map { Feed(realmFeed: $0) }
             let updatePromises: [Future<Result<Feed, TethysError>>] = feeds.map {
@@ -58,7 +58,7 @@ struct RealmFeedService: FeedService {
                 ])
             return self.resolve(
                 promise: promise,
-                with: AnyCollection(articles.map { Article(realmArticle: $0, feed: nil)} )
+                with: AnyCollection(Array(articles.map { Article(realmArticle: $0, feed: nil)} ))
             )
         }
         return promise.future

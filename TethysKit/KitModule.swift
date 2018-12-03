@@ -26,7 +26,6 @@ public func configure(container: Container) {
         return realmQueue
     }.inObjectScope(.container)
 
-    container.register(URLSession.self) { _ in URLSession.shared }
     container.register(FileManager.self) { _ in FileManager.default }
     container.register(UserDefaults.self) { _ in UserDefaults.standard }
     container.register(Bundle.self) { _ in Bundle(for: WebPageParser.classForCoder() )}
@@ -41,19 +40,7 @@ public func configure(container: Container) {
     container.register(SearchIndex.self) { _ in CSSearchableIndex.default() }
     #endif
 
-    container.register(TethysKitURLSessionDelegate.self) { _ in
-        return TethysKitURLSessionDelegate()
-    }.inObjectScope(.container)
-
     RealmMigrator.beginMigration()
-
-    container.register(URLSession.self) { r in
-        return URLSession(
-            configuration: .default,
-            delegate: r.resolve(TethysKitURLSessionDelegate.self)!,
-            delegateQueue: OperationQueue()
-        )
-    }
 
     container.register(BackgroundStateMonitor.self) { _ in BackgroundStateMonitor(notificationCenter: .default) }
 

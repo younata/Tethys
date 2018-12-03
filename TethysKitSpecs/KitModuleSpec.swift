@@ -40,7 +40,6 @@ class KitModuleSpec: QuickSpec {
 
             isA(UpdateService.self, kindOf: RealmRSSUpdateService.self)
 
-            exists(URLSession.self)
             #if os(iOS)
                 exists(SearchIndex.self)
             #endif

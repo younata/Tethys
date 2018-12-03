@@ -74,7 +74,6 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationController?.setToolbarHidden(false, animated: true)
         self.themeRepository.addSubscriber(self)
     }
 

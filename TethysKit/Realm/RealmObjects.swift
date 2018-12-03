@@ -7,10 +7,14 @@ import Foundation
 #endif
 
 final class RealmString: Object {
-    dynamic var string = ""
+    dynamic var string: String = ""
 
-    override static func indexedProperties() -> [String] {
-        return ["string"]
+    convenience init(string: String) {
+        self.init(value: ["string": string])
+    }
+
+    override static func primaryKey() -> String? {
+        return "string"
     }
 }
 

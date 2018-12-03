@@ -55,7 +55,7 @@ struct RealmFeedService: FeedService {
 
             let articles = realmFeed.articles.sorted(by: [
                 SortDescriptor(keyPath: "published", ascending: false)
-                ])
+            ])
             return self.resolve(
                 promise: promise,
                 with: AnyCollection(Array(articles.map { Article(realmArticle: $0, feed: nil)} ))
@@ -90,33 +90,57 @@ struct RealmFeedService: FeedService {
         return promise.future
     }
 
-    func readAll(of feed: Feed) -> Future<Result<Void, TethysError>> {
-        let promise = Promise<Result<Void, TethysError>>()
-        self.workQueue.addOperation {
-            guard let realmFeed = self.realmFeed(for: feed) else {
-                return self.resolve(promise: promise, error: .database(.entryNotFound))
+    func set(tags: [String], of feed: Feed) -> Future<Result<Feed, TethysError>> {
+        return self.write(feed: feed) { realmFeed in
+            let realmTags: [RealmString] = tags.map { tag in
+                if let item = self.realmProvider.realm().object(ofType: RealmString.self, forPrimaryKey: tag) {
+                    return item
+                } else {
+                    let item = RealmString(string: tag)
+                    self.realmProvider.realm().add(item)
+                    return item
+                }
             }
 
-            let realm = self.realmProvider.realm()
-            realm.beginWrite()
-
-            realmFeed.articles.filter("read == false").forEach { $0.read = true }
-
-            do {
-                try realm.commitWrite()
-            } catch let exception {
-                dump(exception)
-                return self.resolve(promise: promise, error: .database(.unknown))
+            for (index, tag) in realmFeed.tags.enumerated() {
+                if !realmTags.contains(tag) {
+                    realmFeed.tags.remove(at: index)
+                }
+            }
+            for tag in realmTags {
+                if !realmFeed.tags.contains(tag) {
+                    realmFeed.tags.append(tag)
+                }
             }
 
-            return self.resolve(promise: promise, with: Void())
+            return Feed(realmFeed: realmFeed)
         }
-        return promise.future
+    }
+
+    func set(url: URL, on feed: Feed) -> Future<Result<Feed, TethysError>> {
+        return self.write(feed: feed) { realmFeed in
+            realmFeed.url = url.absoluteString
+            return Feed(realmFeed: realmFeed)
+        }
+    }
+
+    func readAll(of feed: Feed) -> Future<Result<Void, TethysError>> {
+        return self.write(feed: feed) { realmFeed in
+            realmFeed.articles.filter("read == false").forEach { $0.read = true }
+            return Void()
+        }
     }
 
     func remove(feed: Feed) -> Future<Result<Void, TethysError>> {
-        let promise = Promise<Result<Void, TethysError>>()
+        return self.write(feed: feed) { realmFeed in
+            self.realmProvider.realm().delete(realmFeed)
+            return Void()
+        }
+    }
 
+    private func write<T>(feed: Feed,
+                          transaction: @escaping (RealmFeed) -> T) -> Future<Result<T, TethysError>> {
+        let promise = Promise<Result<T, TethysError>>()
         self.workQueue.addOperation {
             guard let realmFeed = self.realmFeed(for: feed) else {
                 return self.resolve(promise: promise, error: .database(.entryNotFound))
@@ -125,7 +149,7 @@ struct RealmFeedService: FeedService {
             let realm = self.realmProvider.realm()
             realm.beginWrite()
 
-            realm.delete(realmFeed)
+            let value: T = transaction(realmFeed)
 
             do {
                 try realm.commitWrite()
@@ -134,7 +158,7 @@ struct RealmFeedService: FeedService {
                 return self.resolve(promise: promise, error: .database(.unknown))
             }
 
-            return self.resolve(promise: promise, with: Void())
+            return self.resolve(promise: promise, with: value)
         }
         return promise.future
     }

@@ -21,13 +21,13 @@ func findFeedViewControllerFactory(
 
 func feedViewControllerFactory(
     feed: Feed = feedFactory(),
-    feedRepository: DatabaseUseCase = FakeDatabaseUseCase(),
+    feedService: FeedService = FakeFeedService(),
     themeRepository: ThemeRepository = themeRepositoryFactory(),
     tagEditorViewController: @escaping () -> TagEditorViewController = { tagEditorViewControllerFactory() }
     ) -> FeedViewController {
     return FeedViewController(
         feed: feed,
-        feedRepository: feedRepository,
+        feedService: feedService,
         themeRepository: themeRepository,
         tagEditorViewController: tagEditorViewController
     )

@@ -1,5 +1,7 @@
 import UIKit
+import Result
 import TethysKit
+import CBGPromise
 
 public final class FeedViewController: UIViewController {
 
@@ -8,16 +10,16 @@ public final class FeedViewController: UIViewController {
     fileprivate var feedTags: [String]?
 
     public let feed: Feed
-    private let databaseUseCase: DatabaseUseCase
+    private let feedService: FeedService
     private let themeRepository: ThemeRepository
     fileprivate let tagEditorViewController: () -> TagEditorViewController
 
     public init(feed: Feed,
-                feedRepository: DatabaseUseCase,
+                feedService: FeedService,
                 themeRepository: ThemeRepository,
                 tagEditorViewController: @escaping () -> TagEditorViewController) {
         self.feed = feed
-        self.databaseUseCase = feedRepository
+        self.feedService = feedService
         self.themeRepository = themeRepository
         self.tagEditorViewController = tagEditorViewController
 
@@ -67,16 +69,20 @@ public final class FeedViewController: UIViewController {
     }
 
     @objc fileprivate func save() {
+        var futures: [Future<Result<Feed, TethysError>>] = []
         if let theFeedURL = self.feedURL, theFeedURL != self.feed.url {
-            self.feed.url = theFeedURL
+            futures.append(self.feedService.set(url: theFeedURL, on: self.feed))
         }
         if let tags = self.feedTags, tags != self.feed.tags {
-            let existingTags = self.feed.tags
-            existingTags.forEach { self.feed.removeTag($0) }
-            tags.forEach { self.feed.addTag($0) }
+            futures.append(self.feedService.set(tags: tags, of: self.feed))
         }
-        _ = self.databaseUseCase.saveFeed(self.feed)
-        self.dismissFromNavigation()
+        guard !futures.isEmpty else {
+            self.dismissFromNavigation()
+            return
+        }
+        Promise<Result<Feed, TethysError>>.when(futures).then { _ in
+            self.dismissFromNavigation()
+        }
     }
 }
 

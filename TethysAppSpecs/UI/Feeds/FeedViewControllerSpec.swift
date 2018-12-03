@@ -9,7 +9,7 @@ class FeedViewControllerSpec: QuickSpec {
 
         var navigationController: UINavigationController!
         var subject: FeedViewController!
-        var dataRepository: FakeDatabaseUseCase!
+        var feedService: FakeFeedService!
 
         var presentingController: UIViewController!
         var themeRepository: ThemeRepository!
@@ -19,13 +19,13 @@ class FeedViewControllerSpec: QuickSpec {
 
             themeRepository = ThemeRepository(userDefaults: nil)
 
-            dataRepository = FakeDatabaseUseCase()
+            feedService = FakeFeedService()
             subject = FeedViewController(
                 feed: feed,
-                feedRepository: dataRepository,
+                feedService: feedService,
                 themeRepository: themeRepository,
                 tagEditorViewController: {
-                    return TagEditorViewController(feedRepository: dataRepository, themeRepository: themeRepository)
+                    return tagEditorViewControllerFactory()
                 }
             )
 
@@ -41,14 +41,10 @@ class FeedViewControllerSpec: QuickSpec {
             expect(subject.navigationItem.rightBarButtonItem?.title) == "Save"
         }
 
-        describe("tapping 'save'") {
+        describe("tapping 'save' without making any changes") {
             beforeEach {
                 let saveButton = subject.navigationItem.rightBarButtonItem
                 saveButton?.tap()
-            }
-
-            it("saves the changes to the dataManager") {
-                expect(dataRepository.lastSavedFeed) == feed
             }
 
             it("dismisses itself") {
@@ -105,20 +101,36 @@ class FeedViewControllerSpec: QuickSpec {
 
                 describe("tapping 'save'") {
                     beforeEach {
-                        let saveButton = subject.navigationItem.rightBarButtonItem
-                        saveButton?.tap()
+                        subject.navigationItem.rightBarButtonItem?.tap()
                     }
 
-                    it("sets the feed url to the new feed") {
-                        expect(feed.url) == url
+                    it("asks the feedService to update the feed's url") {
+                        expect(feedService.setURLCalls).to(haveCount(1))
+
+                        guard let call = feedService.setURLCalls.last else { return }
+
+                        expect(call.feed).to(equal(feed))
+                        expect(call.url).to(equal(url))
                     }
 
-                    it("saves the changes to the dataManager") {
-                        expect(dataRepository.lastSavedFeed) == feed
+                    describe("when the call succeeds") {
+                        beforeEach {
+                            feedService.setURLPromises.last?.resolve(.success(feed))
+                        }
+
+                        it("dismisses itself") {
+                            expect(presentingController.presentedViewController).to(beNil())
+                        }
                     }
 
-                    it("dismisses itself") {
-                        expect(presentingController.presentedViewController).to(beNil())
+                    describe("when the call fails") {
+                        beforeEach {
+                            feedService.setURLPromises.last?.resolve(.failure(.unknown))
+                        }
+
+                        it("dismisses itself") {
+                            expect(presentingController.presentedViewController).to(beNil())
+                        }
                     }
                 }
             }
@@ -136,20 +148,74 @@ class FeedViewControllerSpec: QuickSpec {
 
                 describe("tapping 'save'") {
                     beforeEach {
-                        let saveButton = subject.navigationItem.rightBarButtonItem
-                        saveButton?.tap()
+                        subject.navigationItem.rightBarButtonItem?.tap()
                     }
 
-                    it("sets the feed url to the new feed") {
-                        expect(feed.tags) == tags
+                    it("asks the feedService to update the feed's tags") {
+                        expect(feedService.setTagsCalls).to(haveCount(1))
+
+                        guard let call = feedService.setTagsCalls.last else { return }
+
+                        expect(call.feed).to(equal(feed))
+                        expect(call.tags).to(haveCount(3))
+                        expect(call.tags).to(contain("d", "e", "f"))
                     }
 
-                    it("saves the changes to the dataManager") {
-                        expect(dataRepository.lastSavedFeed) == feed
+                    describe("when the call succeeds") {
+                        beforeEach {
+                            feedService.setTagsPromises.last?.resolve(.success(feed))
+                        }
+
+                        it("dismisses itself") {
+                            expect(presentingController.presentedViewController).to(beNil())
+                        }
                     }
 
-                    it("dismisses itself") {
-                        expect(presentingController.presentedViewController).to(beNil())
+                    describe("when the call fails") {
+                        beforeEach {
+                            feedService.setTagsPromises.last?.resolve(.failure(.unknown))
+                        }
+
+                        it("dismisses itself") {
+                            expect(presentingController.presentedViewController).to(beNil())
+                        }
+                    }
+                }
+            }
+
+            describe("editing both tags and url then saving") {
+                let tags = ["d", "e", "f"]
+                let url = URL(string: "https://example.com/new_feed")!
+
+                beforeEach {
+                    subject.feedDetailView.delegate?.feedDetailView(subject.feedDetailView, tagsDidChange: tags)
+                    subject.feedDetailView.delegate?.feedDetailView(subject.feedDetailView, urlDidChange: url)
+
+                    subject.navigationItem.rightBarButtonItem?.tap()
+                }
+
+                it("calls both the setTags and setURL methods on the Feed Service") {
+                    expect(feedService.setTagsCalls).to(haveCount(1))
+                    expect(feedService.setURLCalls).to(haveCount(1))
+                }
+
+                describe("when one of them finishes first") {
+                    beforeEach {
+                        feedService.setURLPromises.last?.resolve(.success(feed))
+                    }
+
+                    it("does not yet dismiss itself") {
+                        expect(presentingController.presentedViewController).toNot(beNil())
+                    }
+
+                    describe("when the other finishes") {
+                        beforeEach {
+                            feedService.setTagsPromises.last?.resolve(.failure(.unknown))
+                        }
+
+                        it("dismisses itself") {
+                            expect(presentingController.presentedViewController).to(beNil())
+                        }
                     }
                 }
             }

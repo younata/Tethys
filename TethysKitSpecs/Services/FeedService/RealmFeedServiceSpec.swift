@@ -281,6 +281,84 @@ final class RealmFeedServiceSpec: QuickSpec {
             }
         }
 
+        describe("set(tags:of:)") {
+            var future: Future<Result<Feed, TethysError>>!
+
+            context("when the feed doesn't exist in the database") {
+                beforeEach {
+                    future = subject.set(tags: [], of: feedFactory())
+                }
+
+                it("resolves saying it couldn't find the feed in the database") {
+                    expect(future.value?.error).to(equal(.database(.entryNotFound)))
+                }
+            }
+
+            context("when the feed exists in the database") {
+                beforeEach {
+                    write {
+                        realmFeed1.tags.append(RealmString(string: "qux"))
+                    }
+
+                    future = subject.set(tags: ["foo", "bar", "baz"], of: Feed(realmFeed: realmFeed1))
+                }
+
+                it("adds the listed tags to the set of tags on the feed") {
+                    expect(realmFeed1.tags.map { $0.string }).to(contain(
+                        "foo",
+                        "bar",
+                        "baz"
+                    ))
+                }
+
+                it("removes tags that aren't listed in the set value") {
+                    expect(realmFeed1.tags.map { $0.string }).toNot(contain("qux"))
+                }
+
+                it("resolves with a new feed object that has the set tags value") {
+                    expect(future.value?.value).to(equal(Feed(
+                        title: realmFeed1.title,
+                        url: URL(string: realmFeed1.url)!,
+                        summary: realmFeed1.summary,
+                        tags: ["foo", "bar", "baz"]
+                    )))
+                }
+            }
+        }
+
+        describe("set(url:on:)") {
+            var future: Future<Result<Feed, TethysError>>!
+
+            context("when the feed doesn't exist in the database") {
+                beforeEach {
+                    future = subject.set(url: URL(string: "https://example.com")!, on: feedFactory())
+                }
+
+                it("resolves saying it couldn't find the feed in the database") {
+                    expect(future.value?.error).to(equal(.database(.entryNotFound)))
+                }
+            }
+
+            context("when the feed exists in the database") {
+                beforeEach {
+                    future = subject.set(url: URL(string: "https://example.com/my_feed")!, on: Feed(realmFeed: realmFeed1))
+                }
+
+                it("sets the url on the feed object to the given url") {
+                    expect(realmFeed1.url).to(equal("https://example.com/my_feed"))
+                }
+
+                it("resolves with a new feed object that has the updated url") {
+                    expect(future.value?.value).to(equal(Feed(
+                        title: realmFeed1.title,
+                        url: URL(string: "https://example.com/my_feed")!,
+                        summary: realmFeed1.summary,
+                        tags: []
+                    )))
+                }
+            }
+        }
+
         describe("readAll(of:)") {
             var future: Future<Result<Void, TethysError>>!
 

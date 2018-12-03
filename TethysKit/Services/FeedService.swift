@@ -7,6 +7,9 @@ public protocol FeedService {
 
     func subscribe(to url: URL) -> Future<Result<Feed, TethysError>>
 
+    func set(tags: [String], of feed: Feed) -> Future<Result<Feed, TethysError>>
+    func set(url: URL, on feed: Feed) -> Future<Result<Feed, TethysError>>
+
     func readAll(of feed: Feed) -> Future<Result<Void, TethysError>>
     func remove(feed: Feed) -> Future<Result<Void, TethysError>>
 }

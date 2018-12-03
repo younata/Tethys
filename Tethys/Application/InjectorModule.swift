@@ -101,7 +101,7 @@ private func registerViewControllers(container: Container) {
     container.register(FeedViewController.self) { r, feed in
         return FeedViewController(
             feed: feed,
-            feedRepository: r.resolve(DatabaseUseCase.self)!,
+            feedService: r.resolve(FeedService.self)!,
             themeRepository: r.resolve(ThemeRepository.self)!,
             tagEditorViewController: { r.resolve(TagEditorViewController.self)! }
         )

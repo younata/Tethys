@@ -255,8 +255,7 @@ final class RealmService: DataService {
     }
 
     private func realmStringForString(_ string: String) -> RealmString? {
-        let predicate = NSPredicate(format: "string = %@", string)
-        return self.realmProvider.realm().objects(RealmString.self).filter(predicate).first
+        return self.realmProvider.realm().object(ofType: RealmString.self, forPrimaryKey: string)
     }
 
     private func realmArticleForArticle(_ article: Article) -> RealmArticle? {
@@ -295,9 +294,7 @@ final class RealmService: DataService {
             rfeed.url = feed.url.absoluteString
             rfeed.summary = feed.summary
             let tags: [RealmString] = feed.tags.map { str in
-                let realmString = self.realmStringForString(str) ?? RealmString()
-                realmString.string = str
-                return realmString
+                return self.realmStringForString(str) ?? RealmString(string: str)
             }
             rfeed.tags.replaceSubrange(0..<rfeed.tags.count, with: tags)
             #if os(iOS)

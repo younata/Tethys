@@ -43,12 +43,7 @@ final class FeedListControllerSpec: QuickSpec {
                     )
                 },
                 feedViewController: { feed in
-                    return FeedViewController(
-                        feed: feed,
-                        feedRepository: FakeDatabaseUseCase(),
-                        themeRepository: themeRepository,
-                        tagEditorViewController: { fatalError() }
-                    )
+                    return feedViewControllerFactory(feed: feed)
                 },
                 settingsViewController: { settingsViewControllerFactory() },
                 articleListController: { feed in articleListControllerFactory(feed: feed) }

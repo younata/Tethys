@@ -107,11 +107,8 @@ extension DataService {
         article.updatedAt = item.updated
         article.summary = item.summary
         article.content = item.content
-        if article.read && !item.read {
-            article.synced = false
-        } else {
+        if !(article.read && !item.read) {
             article.read = item.read
-            article.synced = true
         }
         article.authors = authors
     }

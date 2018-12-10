@@ -54,7 +54,7 @@ func fakeArticle(feed: Feed, isUpdated: Bool = false, read: Bool = false) -> Art
         publishDate = Date(timeIntervalSinceReferenceDate: TimeInterval(publishedOffset))
         updatedDate = nil
     }
-    return Article(title: "article \(publishedOffset)", link: URL(string: "http://example.com")!, summary: "", authors: [Author(name: "Rachel", email: nil)], published: publishDate, updatedAt: updatedDate, identifier: "\(publishedOffset)", content: "", read: read, synced: false, feed: feed, flags: [])
+    return Article(title: "article \(publishedOffset)", link: URL(string: "http://example.com")!, summary: "", authors: [Author(name: "Rachel", email: nil)], published: publishDate, updatedAt: updatedDate, identifier: "\(publishedOffset)", content: "", read: read, feed: feed)
 }
 
 class ArticleListControllerSpec: QuickSpec {

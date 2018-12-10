@@ -35,11 +35,11 @@ class DefaultDatabaseUseCaseSpec: QuickSpec {
 
             article1 = TethysKit.Article(title: "b", link: URL(string: "https://example.com/article1.html")!,
                 summary: "<p>Hello world!</p>", authors: [], published: Date(), updatedAt: nil, identifier: "article1",
-                content: "", read: false, synced: true, feed: feed1, flags: [])
+                content: "", read: false, feed: feed1)
 
             article2 = TethysKit.Article(title: "c", link: URL(string: "https://example.com/article2.html")!,
                 summary: "<p>Hello world!</p>", authors: [], published: Date(), updatedAt: nil, identifier: "article2",
-                content: "", read: true, synced: true, feed: feed1, flags: [])
+                content: "", read: true, feed: feed1)
 
             feed1.addArticle(article1)
             feed1.addArticle(article2)

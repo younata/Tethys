@@ -84,7 +84,7 @@ class InMemoryDataServiceSpec: QuickSpec {
         describe("findOrCreateArticle") {
             let feed1 = Feed(title: "feed1", url: URL(string: "https://example.com/feed/feed1")!, summary: "", tags: [], articles: [], image: nil)
             let article1 = Article(title: "article", link: URL(string: "https://example.com/article/article1")!, summary: "", authors: [],
-                                   published: Date(), updatedAt: nil, identifier: "", content: "", read: false, synced: false, feed: feed1, flags: [])
+                                   published: Date(), updatedAt: nil, identifier: "", content: "", read: false, feed: feed1)
             feed1.addArticle(article1)
             beforeEach {
                 subject.feeds = [feed1]
@@ -135,17 +135,17 @@ class InMemoryDataServiceSpec: QuickSpec {
 
                 article1 = Article(title: "article1", link: URL(string: "https://example.com/article1")!, summary: "",
                     authors: [], published: Date(timeIntervalSince1970: 15), updatedAt: nil, identifier: "",
-                    content: "", read: false, synced: false, feed: feed1, flags: [])
+                    content: "", read: false, feed: feed1)
                 feed1.addArticle(article1)
 
                 article2 = Article(title: "article2", link: URL(string: "https://example.com/article2")!, summary: "", authors: [],
                     published: Date(timeIntervalSince1970: 10), updatedAt: nil, identifier: "", content: "",
-                    read: false, synced: false, feed: feed1, flags: [])
+                    read: false, feed: feed1)
                 feed1.addArticle(article2)
 
                 article3 = Article(title: "article3", link: URL(string: "https://example.com/article3")!, summary: "", authors: [],
                     published: Date(timeIntervalSince1970: 5), updatedAt: nil, identifier: "", content: "",
-                    read: false, synced: false, feed: feed2, flags: [])
+                    read: false, feed: feed2)
                 feed2.addArticle(article3)
 
                 subject.feeds = [feed1, feed2]

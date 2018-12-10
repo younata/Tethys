@@ -5,19 +5,23 @@ import TethysKit
 
 class TagEditorViewControllerSpec: QuickSpec {
     override func spec() {
-        var dataRepository: FakeDatabaseUseCase! = nil
-        var subject: TagEditorViewController! = nil
-        var navigationController: UINavigationController! = nil
-        var themeRepository: ThemeRepository! = nil
+        var subject: TagEditorViewController!
+        var feedService: FakeFeedService!
+        var themeRepository: ThemeRepository!
+
+        var navigationController: UINavigationController!
         let rootViewController = UIViewController()
+
 
         var callbackCallCount = 0
         var callbackTag: String?
 
         beforeEach {
-            dataRepository = FakeDatabaseUseCase()
+            feedService = FakeFeedService()
             themeRepository = ThemeRepository(userDefaults: nil)
-            subject = TagEditorViewController(feedRepository: dataRepository, themeRepository: themeRepository)
+
+            subject = TagEditorViewController(feedService: feedService, themeRepository: themeRepository)
+
             navigationController = UINavigationController(rootViewController: rootViewController)
             navigationController.pushViewController(subject, animated: false)
 
@@ -60,12 +64,12 @@ class TagEditorViewControllerSpec: QuickSpec {
         }
 
         it("asks for the list of all tags") {
-            expect(dataRepository.allTagsPromises.count) == 1
+            expect(feedService.tagsPromises).to(haveCount(1))
         }
 
         describe("when the tags promise successfully resolves with tags") {
             beforeEach {
-                dataRepository.allTagsPromises.last?.resolve(.success(["a"]))
+                feedService.tagsPromises.last?.resolve(.success(AnyCollection(["a"])))
             }
 
             context("when there is data to save") {
@@ -93,7 +97,7 @@ class TagEditorViewControllerSpec: QuickSpec {
 
         describe("when the tags promise successfully resolves without tags") {
             beforeEach {
-                dataRepository.allTagsPromises.last?.resolve(.success([]))
+                feedService.tagsPromises.last?.resolve(.success(AnyCollection([])))
             }
 
             it("disables the done button") {
@@ -103,10 +107,10 @@ class TagEditorViewControllerSpec: QuickSpec {
 
         describe("when tha tags promise errors out") {
             beforeEach {
-                dataRepository.allTagsPromises.last?.resolve(.failure(.unknown))
+                feedService.tagsPromises.last?.resolve(.failure(.unknown))
             }
 
-            it("disables the done button") {
+            it("disables the save button") {
                 expect(subject.navigationItem.rightBarButtonItem?.isEnabled) == false
             }
         }

@@ -34,11 +34,11 @@ func feedViewControllerFactory(
 }
 
 func tagEditorViewControllerFactory(
-    feedRepository: DatabaseUseCase = FakeDatabaseUseCase(),
+    feedService: FeedService = FakeFeedService(),
     themeRepository: ThemeRepository = themeRepositoryFactory()
     ) -> TagEditorViewController {
     return TagEditorViewController(
-        feedRepository: feedRepository,
+        feedService: feedService,
         themeRepository: themeRepository
     )
 }

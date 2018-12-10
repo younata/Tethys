@@ -90,6 +90,18 @@ struct RealmFeedService: FeedService {
         return promise.future
     }
 
+    func tags() -> Future<Result<AnyCollection<String>, TethysError>> {
+        let promise =  Promise<Result<AnyCollection<String>, TethysError>>()
+        self.workQueue.addOperation {
+            let tags = self.realmProvider.realm().objects(RealmFeed.self)
+                .flatMap { feed in
+                    return feed.tags.map { $0.string }
+                }
+            return self.resolve(promise: promise, with: AnyCollection(Set(tags)))
+        }
+        return promise.future
+    }
+
     func set(tags: [String], of feed: Feed) -> Future<Result<Feed, TethysError>> {
         return self.write(feed: feed) { realmFeed in
             let realmTags: [RealmString] = tags.map { tag in

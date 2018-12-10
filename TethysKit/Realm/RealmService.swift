@@ -340,14 +340,6 @@ final class RealmService: DataService {
             rarticle.updatedAt = article.updatedAt
             rarticle.content = article.content
             rarticle.read = article.read
-            rarticle.synced = article.synced
-            let flags: [RealmString] = article.flags.map { str in
-                let realmString = self.realmStringForString(str) ?? RealmString()
-                realmString.string = str
-                return realmString
-            }
-            rarticle.flags.removeAll()
-            rarticle.flags.append(objectsIn: flags)
 
             if let feed = article.feed, let rfeed = self.realmFeedForFeed(feed) {
                 rarticle.feed = rfeed

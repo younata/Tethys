@@ -137,7 +137,7 @@ private func registerViewControllers(container: Container) {
 
     container.register(TagEditorViewController.self) { r in
         return TagEditorViewController(
-            feedRepository: r.resolve(DatabaseUseCase.self)!,
+            feedService: r.resolve(FeedService.self)!,
             themeRepository: r.resolve(ThemeRepository.self)!
         )
     }

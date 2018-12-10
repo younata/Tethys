@@ -29,6 +29,13 @@ final class FakeFeedService: FeedService {
         return promise.future
     }
 
+    private(set) var tagsPromises: [Promise<Result<AnyCollection<String>, TethysError>>] = []
+    func tags() -> Future<Result<AnyCollection<String>, TethysError>> {
+        let promise = Promise<Result<AnyCollection<String>, TethysError>>()
+        self.tagsPromises.append(promise)
+        return promise.future
+    }
+
     private(set) var setTagsCalls: [(tags: [String], feed: Feed)] = []
     private(set) var setTagsPromises: [Promise<Result<Feed, TethysError>>] = []
     func set(tags: [String], of feed: Feed) -> Future<Result<Feed, TethysError>> {

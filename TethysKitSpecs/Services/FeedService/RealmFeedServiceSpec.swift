@@ -281,6 +281,36 @@ final class RealmFeedServiceSpec: QuickSpec {
             }
         }
 
+        describe("tags()") {
+            var future: Future<Result<AnyCollection<String>, TethysError>>!
+
+            func realmString(for text: String) -> RealmString {
+                return realm.object(ofType: RealmString.self, forPrimaryKey: text) ?? RealmString(string: text)
+            }
+
+            beforeEach {
+                write {
+                    for tag in ["a", "b", "c", "d"] {
+                        realmFeed1.tags.append(realmString(for: tag))
+                    }
+
+                    realmFeed2.tags.append(realmString(for: "c"))
+
+                    for tag in ["d", "e", "f"] {
+                        realmFeed3.tags.append(realmString(for: tag))
+                    }
+                }
+
+                future = subject.tags()
+            }
+
+            it("returns the set of all tags from all feeds, without any duplicates") {
+                expect(future.value?.value?.sorted()) == [
+                    "a", "b", "c", "d", "e", "f"
+                ]
+            }
+        }
+
         describe("set(tags:of:)") {
             var future: Future<Result<Feed, TethysError>>!
 

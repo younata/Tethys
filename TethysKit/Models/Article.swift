@@ -67,13 +67,6 @@ public final class Article: NSObject {
             }
         }
     }
-    public var synced: Bool {
-        willSet {
-            if newValue != synced {
-                self.updated = true
-            }
-        }
-    }
 
     @available(*, deprecated, message: "Query an ArticleService for the feed")
     weak public internal(set) var feed: Feed? {
@@ -89,7 +82,6 @@ public final class Article: NSObject {
             }
         }
     }
-    public private(set) var flags: [String] = []
 
     internal private(set) var updated: Bool = false
 
@@ -103,11 +95,9 @@ public final class Article: NSObject {
             return id.hash
         }
         let authorsHashValue = authors.reduce(0) { $0 ^ $1.hashValue }
-        let nonNilHashValues = title.hashValue ^ summary.hashValue ^ authorsHashValue ^
+        return title.hashValue ^ summary.hashValue ^ authorsHashValue ^
             published.hashValue ^ identifier.hashValue ^ content.hashValue ^ read.hashValue ^
             link.hashValue
-        let flagsHashValues = flags.reduce(0) { $0 ^ $1.hashValue }
-        return nonNilHashValues ^ flagsHashValues
     }
 
     public override func isEqual(_ object: Any?) -> Bool {
@@ -119,7 +109,7 @@ public final class Article: NSObject {
         }
         return self.title == b.title && self.link == b.link && self.summary == b.summary &&
             self.authors == b.authors && self.published == b.published && self.updatedAt == b.updatedAt &&
-            self.identifier == b.identifier && self.content == b.content && self.read == b.read && self.flags == b.flags
+            self.identifier == b.identifier && self.content == b.content && self.read == b.read
     }
 
     public override var description: String {
@@ -129,8 +119,7 @@ public final class Article: NSObject {
     }
 
     public init(title: String, link: URL, summary: String, authors: [Author], published: Date,
-                updatedAt: Date?, identifier: String, content: String, read: Bool, synced: Bool,
-                feed: Feed?, flags: [String]) {
+                updatedAt: Date?, identifier: String, content: String, read: Bool, feed: Feed?) {
         self.title = title
         self.link = link
         self.summary = summary
@@ -140,9 +129,7 @@ public final class Article: NSObject {
         self.identifier = identifier
         self.content = content
         self.read = read
-        self.synced = synced
         self.feed = feed
-        self.flags = flags
         super.init()
         self.updated = false
     }
@@ -160,26 +147,10 @@ public final class Article: NSObject {
         identifier = article.id
         content = article.content ?? ""
         read = article.read
-        synced = article.synced
         self.feed = feed
-        self.flags = article.flags.map { $0.string }
         super.init()
         self.articleID = article.id as AnyObject?
         self.updated = false
-    }
-
-    public func addFlag(_ flag: String) {
-        if !self.flags.contains(flag) {
-            self.flags.append(flag)
-            self.updated = true
-        }
-    }
-
-    public func removeFlag(_ flag: String) {
-        if self.flags.contains(flag) {
-            self.flags = self.flags.filter { $0 != flag }
-            self.updated = true
-        }
     }
 }
 

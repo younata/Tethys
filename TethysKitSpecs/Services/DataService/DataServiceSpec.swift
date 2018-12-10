@@ -180,7 +180,6 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             let createExpectation = spec.expectation(description: "Create Article")
             dataService.createArticle(url: URL(string: "https://example.com/article")!, feed: nil) {
                 article = $0
-                article?.synced = false
                 createExpectation.fulfill()
             }
             spec.waitForExpectations(timeout: 1, handler: nil)
@@ -212,7 +211,6 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             expect(article.content) == content
             expect(article.authors) == [Author(name: "Rachel Brindle", email: URL(string: "mailto:rachel@example.com"))]
             expect(article.read) == false
-            expect(article.synced) == true
         }
 
         it("doesn't mark an already read article as unread again") {
@@ -228,7 +226,6 @@ func dataServiceSharedSpec(_ dataService: DataService, spec: QuickSpec) {
             }
             dataService.updateArticle(article, item: item, feedURL: URL(string: "https://example.com/foo/bar/baz")!)
             expect(article.read) == true
-            expect(article.synced) == false
         }
     }
 }

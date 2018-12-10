@@ -27,10 +27,8 @@ func articleFactory(
     identifier: String = "",
     content: String = "",
     read: Bool = false,
-    synced: Bool = false,
     estimatedReadingTime: TimeInterval = 0,
-    feed: Feed? = nil,
-    flags: [String] = []
+    feed: Feed? = nil
     ) -> Article {
     return Article(
         title: title,
@@ -42,8 +40,6 @@ func articleFactory(
         identifier: identifier,
         content: content,
         read: read,
-        synced: synced,
-        feed: feed,
-        flags: flags
+        feed: feed
     )
 }

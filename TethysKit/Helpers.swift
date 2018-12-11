@@ -53,7 +53,7 @@ extension Promise {
     }
 }
 
-extension Result where Result.Error : Swift.Error {
+extension Result where Result.Error: Swift.Error {
     func mapFuture<U>(_ transform: (Value) -> Future<Result<U, Error>>) -> Future<Result<U, Error>> {
         switch self {
         case .success(let value):

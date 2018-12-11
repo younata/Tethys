@@ -45,18 +45,9 @@ class FakeUIViewControllerPreviewing: NSObject, UIViewControllerPreviewing {
 private var publishedOffset = -1
 func fakeArticle(feed: Feed, isUpdated: Bool = false, read: Bool = false) -> Article {
     publishedOffset += 1
-    let publishDate: Date
-    let updatedDate: Date?
-    if isUpdated {
-        updatedDate = Date(timeIntervalSinceReferenceDate: TimeInterval(publishedOffset))
-        publishDate = Date(timeIntervalSinceReferenceDate: 0)
-    } else {
-        publishDate = Date(timeIntervalSinceReferenceDate: TimeInterval(publishedOffset))
-        updatedDate = nil
-    }
     return Article(title: "article \(publishedOffset)", link: URL(string: "http://example.com")!, summary: "",
-                   authors: [Author(name: "Rachel", email: nil)], published: publishDate, updatedAt: updatedDate,
-                   identifier: "\(publishedOffset)", content: "", read: read)
+                   authors: [Author(name: "Rachel", email: nil)], identifier: "\(publishedOffset)", content: "",
+                   read: read)
 }
 
 class ArticleListControllerSpec: QuickSpec {

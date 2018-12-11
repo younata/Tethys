@@ -24,8 +24,8 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     fileprivate let themeRepository: ThemeRepository
     fileprivate let analytics: Analytics
 
-    private let placeholderAttributes: [String: AnyObject] = [
-        convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): UIColor.black
+    private let placeholderAttributes: [NSAttributedString.Key: AnyObject] = [
+        NSAttributedString.Key.foregroundColor: UIColor.black
     ]
 
     private var observer: NSKeyValueObservation?
@@ -95,7 +95,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.navField.delegate = self
         let urlPlaceholder = NSLocalizedString("FindFeedViewController_URLBar_Placeholder", comment: "")
         self.navField.attributedPlaceholder = NSAttributedString(string: urlPlaceholder,
-                                                                 attributes: convertToOptionalNSAttributedStringKeyDictionary(self.placeholderAttributes))
+                                                                 attributes: self.placeholderAttributes)
         self.navField.backgroundColor = UIColor(white: 0.8, alpha: 0.75)
         self.navField.layer.cornerRadius = 5
         self.navField.autocorrectionType = .no
@@ -183,7 +183,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         }
         let urlLoading = NSLocalizedString("FindFeedViewController_URLBar_Loading", comment: "")
         textField.attributedPlaceholder = NSAttributedString(string: urlLoading,
-                                                             attributes: convertToOptionalNSAttributedStringKeyDictionary(self.placeholderAttributes))
+                                                             attributes: self.placeholderAttributes)
         textField.resignFirstResponder()
 
         return true
@@ -194,7 +194,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     public func webView(_ webView: WKWebView, didFinish _: WKNavigation!) {
         self.loadingBar.isHidden = true
         self.navField.attributedPlaceholder = NSAttributedString(string: webView.title ?? "",
-                                                                 attributes: convertToOptionalNSAttributedStringKeyDictionary(self.placeholderAttributes))
+                                                                 attributes: self.placeholderAttributes)
         self.forward.isEnabled = webView.canGoForward
         self.back.isEnabled = webView.canGoBack
         self.navigationItem.rightBarButtonItem = self.reload
@@ -231,7 +231,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.navField.text = ""
         let urlLoading = NSLocalizedString("FindFeedViewController_URLBar_Loading", comment: "")
         self.navField.attributedPlaceholder = NSAttributedString(string: urlLoading,
-                                                                 attributes: convertToOptionalNSAttributedStringKeyDictionary(self.placeholderAttributes))
+                                                                 attributes: self.placeholderAttributes)
         self.addFeedButton.isEnabled = false
         if let url = webView.url, lookForFeeds {
             _ = self.importUseCase.scanForImportable(url).then { item in
@@ -376,22 +376,11 @@ extension FindFeedViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
         self.navigationController?.toolbar.barStyle = themeRepository.barStyle
-        self.navigationController?.navigationBar.titleTextAttributes = convertToOptionalNSAttributedStringKeyDictionary([
-            NSAttributedString.Key.foregroundColor.rawValue: themeRepository.textColor
-        ])
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            NSAttributedString.Key.foregroundColor: themeRepository.textColor
+        ]
 
         self.webContent.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
         self.webContent.backgroundColor = themeRepository.backgroundColor
     }
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
-	return input.rawValue
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
-	guard let input = input else { return nil }
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
 }

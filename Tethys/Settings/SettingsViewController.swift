@@ -142,9 +142,9 @@ public final class SettingsViewController: UIViewController {
 extension SettingsViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.navigationController?.navigationBar.barStyle = self.themeRepository.barStyle
-        self.navigationController?.navigationBar.titleTextAttributes = convertToOptionalNSAttributedStringKeyDictionary([
-            NSAttributedString.Key.foregroundColor.rawValue: self.themeRepository.textColor
-        ])
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            NSAttributedString.Key.foregroundColor: self.themeRepository.textColor
+        ]
         self.view.backgroundColor = self.themeRepository.backgroundColor
 
         func colorWithDefault(_ color: UIColor) -> UIColor? {
@@ -394,10 +394,4 @@ extension SettingsViewController: UITableViewDelegate {
             self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
-	guard let input = input else { return nil }
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
 }

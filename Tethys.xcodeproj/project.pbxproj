@@ -192,6 +192,7 @@
 		89CB98941B12DFBA00C87160 /* TOBrowserActivityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB98911B12DFB100C87160 /* TOBrowserActivityKit.framework */; };
 		89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */; };
 		89CBD5DD21BF2EF300D3FB31 /* Reachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBD5DC21BF2EF300D3FB31 /* Reachable.swift */; };
+		89CBD5DF21BF780C00D3FB31 /* RealmArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBD5DE21BF780C00D3FB31 /* RealmArticleService.swift */; };
 		89CBDC171C7D8501006B70F5 /* BootstrapWorkFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC161C7D8501006B70F5 /* BootstrapWorkFlow.swift */; };
 		89CBDC2C1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBDC2B1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift */; };
 		89CC82001B46198200648367 /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C61B40D2AC0097045A /* SearchIndex.swift */; };
@@ -480,6 +481,7 @@
 		89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MAKDropDownMenu.framework; path = Carthage/Build/iOS/MAKDropDownMenu.framework; sourceTree = SOURCE_ROOT; };
 		89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCellSpec.swift; sourceTree = "<group>"; };
 		89CBD5DC21BF2EF300D3FB31 /* Reachable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachable.swift; sourceTree = "<group>"; };
+		89CBD5DE21BF780C00D3FB31 /* RealmArticleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmArticleService.swift; sourceTree = "<group>"; };
 		89CBDC161C7D8501006B70F5 /* BootstrapWorkFlow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BootstrapWorkFlow.swift; sourceTree = "<group>"; };
 		89CBDC2B1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BootstrapWorkFlowSpec.swift; sourceTree = "<group>"; };
 		89CC82031B461A2B00648367 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
@@ -1123,6 +1125,7 @@
 				89CBD5DC21BF2EF300D3FB31 /* Reachable.swift */,
 				89A3417E1B150D1B0000C60B /* OPMLService.swift */,
 				8978C530219A7FDC00D702BB /* ArticleService.swift */,
+				89CBD5DE21BF780C00D3FB31 /* RealmArticleService.swift */,
 				895B9A1521AA2585003FFE46 /* FeedService.swift */,
 				894644D821AB8FEB00153308 /* RealmFeedService.swift */,
 			);
@@ -1562,6 +1565,7 @@
 				8924FE2E1D6D51DC0060D26D /* Array+TethysKit.swift in Sources */,
 				8943044B1B450A5E000078DC /* Article.swift in Sources */,
 				8984FE891CB984A40096F4B3 /* Author.swift in Sources */,
+				89CBD5DF21BF780C00D3FB31 /* RealmArticleService.swift in Sources */,
 				892E76F11E07956E00866336 /* BackgroundStateMonitor.swift in Sources */,
 				894644D921AB8FEB00153308 /* RealmFeedService.swift in Sources */,
 				8943044A1B450A5E000078DC /* Feed.swift in Sources */,

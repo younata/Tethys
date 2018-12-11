@@ -5,7 +5,6 @@ import RealmSwift
 
 class ArticleSpec: QuickSpec {
     override func spec() {
-        var subject: Article! = nil
         var realm: Realm!
 
         beforeEach {
@@ -14,9 +13,6 @@ class ArticleSpec: QuickSpec {
             try! realm.write {
                 realm.deleteAll()
             }
-
-            subject = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [],
-                              published: Date(), updatedAt: nil, identifier: "", content: "", read: false)
         }
 
         describe("Equatable") {
@@ -35,14 +31,12 @@ class ArticleSpec: QuickSpec {
             }
 
             it("should report two articles not created with datastore objects with the same property equality as equal") {
-                let date = Date()
                 let a = Article(title: "", link: URL(string: "https://example.com/articlea")!, summary: "", authors: [],
-                                published: date, updatedAt: nil, identifier: "", content: "", read: false)
+                                identifier: "", content: "", read: false)
                 let b = Article(title: "blah", link: URL(string: "https://example.com")!, summary: "hello",
-                                authors: [Author("anAuthor")], published: Date(timeIntervalSince1970: 0),
-                                updatedAt: nil, identifier: "hi", content: "hello there", read: true)
+                                authors: [Author("anAuthor")], identifier: "hi", content: "hello there", read: true)
                 let c = Article(title: "", link: URL(string: "https://example.com/articlea")!, summary: "", authors: [],
-                                published: date, updatedAt: nil, identifier: "", content: "", read: false)
+                                identifier: "", content: "", read: false)
 
                 expect(a).toNot(equal(b))
                 expect(a).to(equal(c))
@@ -65,14 +59,12 @@ class ArticleSpec: QuickSpec {
             }
 
             it("should report two articles not created from datastores with the same property equality as having the same hashValue") {
-                let date = Date()
                 let a = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [],
-                                published: date, updatedAt: nil, identifier: "", content: "", read: false)
+                                identifier: "", content: "", read: false)
                 let b = Article(title: "blah", link: URL(string: "https://example.com")!, summary: "hello",
-                                authors: [Author("anAuthor")], published: Date(timeIntervalSince1970: 0),
-                                updatedAt: nil, identifier: "hi", content: "hello there", read: true)
+                                authors: [Author("anAuthor")], identifier: "hi", content: "hello there", read: true)
                 let c = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [],
-                                published: date, updatedAt: nil, identifier: "", content: "", read: false)
+                                identifier: "", content: "", read: false)
 
                 expect(a.hashValue).toNot(equal(b.hashValue))
                 expect(a.hashValue).to(equal(c.hashValue))

@@ -63,7 +63,8 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         self.createControllerHierarchy()
 
         if launchOptions == nil || launchOptions?.isEmpty == true ||
-            (launchOptions?.count == 1 && launchOptions?[UIApplication.LaunchOptionsKey(rawValue: "test")] as? Bool == true) {
+            (launchOptions?.count == 1 &&
+                launchOptions?[UIApplication.LaunchOptionsKey(rawValue: "test")] as? Bool == true) {
             self.analytics.logEvent("SessionBegan", data: nil)
         }
 

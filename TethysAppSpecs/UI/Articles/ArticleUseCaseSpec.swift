@@ -23,7 +23,8 @@ class ArticleUseCaseSpec: QuickSpec {
 
         describe("-readArticle:") {
             it("marks the article as read") {
-                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: false)
+                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [],
+                                      identifier: "", content: "", read: false)
 
                 _ = subject.readArticle(article)
 
@@ -41,7 +42,9 @@ class ArticleUseCaseSpec: QuickSpec {
                 var html: String!
 
                 beforeEach {
-                    let article = Article(title: "articleTitle", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "Example Content", read: true)
+                    let article = Article(title: "articleTitle", link: URL(string: "https://exapmle.com/1")!,
+                                          summary: "", authors: [], identifier: "", content: "Example Content",
+                                          read: true)
 
                     html = subject.readArticle(article)
                 }
@@ -95,7 +98,8 @@ class ArticleUseCaseSpec: QuickSpec {
 
         describe("-toggleArticleRead:") {
             it("marks the article as read if it wasn't already") {
-                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: false)
+                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [],
+                                      identifier: "", content: "", read: false)
 
                 subject.toggleArticleRead(article)
 
@@ -110,7 +114,8 @@ class ArticleUseCaseSpec: QuickSpec {
             }
 
             it("marks the article as unread if it already was") {
-                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: Date(), identifier: "", content: "", read: true)
+                let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [],
+                                      identifier: "", content: "", read: true)
 
                 subject.toggleArticleRead(article)
 

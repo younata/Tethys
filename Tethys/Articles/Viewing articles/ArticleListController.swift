@@ -236,7 +236,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         }
         let article = self.articleForIndexPath(indexPath)
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-        let delete = UITableViewRowAction(style: .default, title: deleteTitle, handler: { _,_  in
+        let delete = UITableViewRowAction(style: .default, title: deleteTitle, handler: { _, _  in
             _ = self.attemptDelete(article: article).then {
                 if $0 {
                     tableView.deleteRows(at: [indexPath], with: .automatic)
@@ -248,7 +248,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         let unread = NSLocalizedString("ArticleListController_Cell_EditAction_MarkUnread", comment: "")
         let read = NSLocalizedString("ArticleListController_Cell_EditAction_MarkRead", comment: "")
         let toggleText = article.read ? unread : read
-        let toggle = UITableViewRowAction(style: .normal, title: toggleText, handler: { _,_  in
+        let toggle = UITableViewRowAction(style: .normal, title: toggleText, handler: { _, _  in
             self.toggleRead(article: article)
         })
 
@@ -347,11 +347,11 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
         } else {
             toggleReadTitle = NSLocalizedString("ArticleListController_Action_MarkRead", comment: "")
         }
-        let toggleRead = UIPreviewAction(title: toggleReadTitle, style: .default) { _,_  in
+        let toggleRead = UIPreviewAction(title: toggleReadTitle, style: .default) { _, _  in
             self.toggleRead(article: article)
         }
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-        let delete = UIPreviewAction(title: deleteTitle, style: .destructive) { _,_  in
+        let delete = UIPreviewAction(title: deleteTitle, style: .destructive) { _, _  in
             _ = self.attemptDelete(article: article)
         }
         return [toggleRead, delete]
@@ -377,14 +377,8 @@ extension ArticleListController: ThemeRepositorySubscriber {
         self.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
 
         self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
-        self.navigationController?.navigationBar.titleTextAttributes = convertToOptionalNSAttributedStringKeyDictionary([
-            NSAttributedString.Key.foregroundColor.rawValue: themeRepository.textColor
-        ])
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            NSAttributedString.Key.foregroundColor: themeRepository.textColor
+        ]
     }
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
-	guard let input = input else { return nil }
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
 }

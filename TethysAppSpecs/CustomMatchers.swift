@@ -24,19 +24,19 @@ public func equalColor(expectedColor: UIColor?) -> Predicate<UIColor> {
 
         var failingMessage = ExpectationMessage.fail("\(subject) not equal to \(expectedColor)")
         var shouldPass = true
-        if fabs(colors.red - expectedColors.red) > 1e-6 {
+        if abs(colors.red - expectedColors.red) > 1e-6 {
             shouldPass = false
             failingMessage = ExpectationMessage.details(failingMessage, "Red is off: Got \(colors.red), wanted \(expectedColors.red)")
         }
-        if fabs(colors.green - expectedColors.green) > 1e-6 {
+        if abs(colors.green - expectedColors.green) > 1e-6 {
             shouldPass = false
             failingMessage = ExpectationMessage.appends(failingMessage, "Green is off: Got \(colors.green), wanted \(expectedColors.green)")
         }
-        if fabs(colors.blue - expectedColors.blue) > 1e-6 {
+        if abs(colors.blue - expectedColors.blue) > 1e-6 {
             shouldPass = false
             failingMessage = ExpectationMessage.appends(failingMessage, "Blue is off: Got \(colors.blue), wanted \(expectedColors.blue)")
         }
-        if fabs(colors.alpha - expectedColors.alpha) > 1e-6 {
+        if abs(colors.alpha - expectedColors.alpha) > 1e-6 {
             shouldPass = false
             failingMessage = ExpectationMessage.appends(failingMessage, "Alpha is off: Got \(colors.alpha), wanted \(expectedColors.alpha)")
         }

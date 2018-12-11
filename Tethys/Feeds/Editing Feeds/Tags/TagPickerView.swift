@@ -6,7 +6,7 @@ public final class TagPickerView: UIView {
         let textField = UITextField(forAutoLayout: ())
         textField.delegate = self
         let placeholder = NSAttributedString(string: NSLocalizedString("TagPickerView_Placeholder", comment: ""),
-                                             attributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): UIColor.gray]))
+                                             attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
         textField.attributedPlaceholder = placeholder
 
         self.addSubview(textField)
@@ -78,7 +78,7 @@ extension TagPickerView: UIPickerViewDataSource, UIPickerViewDelegate {
                            forComponent component: Int) -> NSAttributedString? {
         let textColor = self.themeRepository?.textColor ?? UIColor.black
         return NSAttributedString(string: self.existingSolutions[row],
-                                  attributes: convertToOptionalNSAttributedStringKeyDictionary([convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): textColor]))
+                                  attributes: [NSAttributedString.Key.foregroundColor: textColor])
     }
 
     public func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
@@ -105,15 +105,4 @@ extension TagPickerView: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.picker.reloadComponent(0)
     }
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
-	guard let input = input else { return nil }
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
-	return input.rawValue
 }

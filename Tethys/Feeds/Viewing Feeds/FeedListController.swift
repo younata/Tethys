@@ -332,19 +332,19 @@ extension FeedListController: UIViewControllerPreviewingDelegate {
 
     private func articleListPreviewItems(feed: Feed) -> [UIPreviewAction] {
         let readTitle = NSLocalizedString("FeedsTableViewController_PreviewItem_MarkRead", comment: "")
-        let markRead = UIPreviewAction(title: readTitle, style: .default) { _,_  in
+        let markRead = UIPreviewAction(title: readTitle, style: .default) { _, _  in
             self.markRead(feed: feed, indexPath: nil)
         }
         let editTitle = NSLocalizedString("Generic_Edit", comment: "")
-        let edit = UIPreviewAction(title: editTitle, style: .default) { _,_  in
+        let edit = UIPreviewAction(title: editTitle, style: .default) { _, _  in
             self.editFeed(feed: feed)
         }
         let shareTitle = NSLocalizedString("Generic_Share", comment: "")
-        let share = UIPreviewAction(title: shareTitle, style: .default) { _,_  in
+        let share = UIPreviewAction(title: shareTitle, style: .default) { _, _  in
             self.shareFeed(feed: feed)
         }
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-        let delete = UIPreviewAction(title: deleteTitle, style: .destructive) { _,_  in
+        let delete = UIPreviewAction(title: deleteTitle, style: .destructive) { _, _  in
             self.deleteFeed(feed: feed, indexPath: nil)
         }
         return [markRead, edit, share, delete]
@@ -367,9 +367,9 @@ extension FeedListController: Refresher {
 extension FeedListController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.navigationController?.navigationBar.barStyle = self.themeRepository.barStyle
-        self.navigationController?.navigationBar.titleTextAttributes = convertToOptionalNSAttributedStringKeyDictionary([
-            NSAttributedString.Key.foregroundColor.rawValue: themeRepository.textColor
-        ])
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            NSAttributedString.Key.foregroundColor: themeRepository.textColor
+        ]
 
         self.tableView.backgroundColor = self.themeRepository.backgroundColor
         self.tableView.separatorColor = self.themeRepository.textColor
@@ -431,7 +431,7 @@ extension FeedListController: UITableViewDelegate, UITableViewDataSource {
         }
         edit.backgroundColor = UIColor.blue
         let shareTitle = NSLocalizedString("Generic_Share", comment: "")
-        let share = UITableViewRowAction(style: .normal, title: shareTitle) {_,_  in
+        let share = UITableViewRowAction(style: .normal, title: shareTitle) {_, _  in
             self.shareFeed(feed: self.feed(indexPath: indexPath))
         }
         share.backgroundColor = UIColor.darkGreen
@@ -451,10 +451,4 @@ extension FeedListController: UITableViewDelegate, UITableViewDataSource {
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) { self.refreshControl.scrollViewDidScroll(scrollView) }
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
-	guard let input = input else { return nil }
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
 }

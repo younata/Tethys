@@ -34,21 +34,21 @@ class BackgroundStateMonitorSpec: QuickSpec {
         it("removes itself as an observer when it's dealloc'd") {
             subject = nil
 
-            expect(notificationCenter.post(name: .UIApplicationWillResignActive, object: nil, userInfo: nil)).toNot(raiseException())
-            expect(notificationCenter.post(name: .UIApplicationDidBecomeActive, object: nil, userInfo: nil)).toNot(raiseException())
+            expect(notificationCenter.post(name: UIApplication.willResignActiveNotification, object: nil, userInfo: nil)).toNot(raiseException())
+            expect(notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil, userInfo: nil)).toNot(raiseException())
 
             expect(receiver.willEnterBackgroundCalled) == false
             expect(receiver.didEnterForegroundCalled) == false
         }
 
         it("forwards will resign active to it's receivers") {
-            notificationCenter.post(name: .UIApplicationWillResignActive, object: nil, userInfo: nil)
+            notificationCenter.post(name: UIApplication.willResignActiveNotification, object: nil, userInfo: nil)
 
             expect(receiver.willEnterBackgroundCalled) == true
         }
 
         it("forwards did become active to it's receivers") {
-            notificationCenter.post(name: .UIApplicationDidBecomeActive, object: nil, userInfo: nil)
+            notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil, userInfo: nil)
 
             expect(receiver.didEnterForegroundCalled) == true
         }

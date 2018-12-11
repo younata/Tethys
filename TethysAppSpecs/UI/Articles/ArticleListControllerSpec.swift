@@ -115,7 +115,7 @@ class ArticleListControllerSpec: QuickSpec {
         }
 
         it("dismisses the keyboard upon drag") {
-            expect(subject.tableView.keyboardDismissMode).to(equal(UIScrollViewKeyboardDismissMode.onDrag))
+            expect(subject.tableView.keyboardDismissMode).to(equal(UIScrollView.KeyboardDismissMode.onDrag))
         }
 
         it("hides the toolbar") {
@@ -139,7 +139,7 @@ class ArticleListControllerSpec: QuickSpec {
 
             it("should update the navigation bar") {
                 expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
-                expect(subject.navigationController?.navigationBar.titleTextAttributes as? [String: UIColor]) == [NSForegroundColorAttributeName: themeRepository.textColor]
+                expect(convertFromOptionalNSAttributedStringKeyDictionary(subject.navigationController?.navigationBar.titleTextAttributes) as? [String: UIColor]) == [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): themeRepository.textColor]
             }
         }
 
@@ -222,7 +222,7 @@ class ArticleListControllerSpec: QuickSpec {
 
                         describe("when the mark read promise succeeds") {
                             beforeEach {
-                                feedService.readAllOfFeedPromises.last?.resolve(.success())
+                                feedService.readAllOfFeedPromises.last?.resolve(.success(()))
                             }
 
                             it("removes the indicator") {
@@ -454,7 +454,7 @@ class ArticleListControllerSpec: QuickSpec {
                             it("presents an alert asking for confirmation that the user wants to do this") {
                                 expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                                 guard let alert = subject.presentedViewController as? UIAlertController else { return }
-                                expect(alert.preferredStyle) == UIAlertControllerStyle.alert
+                                expect(alert.preferredStyle) == UIAlertController.Style.alert
                                 expect(alert.title) == "Delete \(articles.first!.title)?"
 
                                 expect(alert.actions.count) == 2
@@ -484,7 +484,7 @@ class ArticleListControllerSpec: QuickSpec {
 
                                 context("when the delete operation succeeds") {
                                     beforeEach {
-                                        articleService.removeArticlePromises.last?.resolve(.success())
+                                        articleService.removeArticlePromises.last?.resolve(.success(()))
                                     }
 
                                     it("removes the article from the list") {
@@ -735,7 +735,7 @@ class ArticleListControllerSpec: QuickSpec {
                                     it("presents an alert asking for confirmation that the user wants to do this") {
                                         expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                                         guard let alert = subject.presentedViewController as? UIAlertController else { return }
-                                        expect(alert.preferredStyle) == UIAlertControllerStyle.alert
+                                        expect(alert.preferredStyle) == UIAlertController.Style.alert
                                         expect(alert.title) == "Delete \(articles.first!.title)?"
 
                                         expect(alert.actions.count) == 2
@@ -765,7 +765,7 @@ class ArticleListControllerSpec: QuickSpec {
 
                                         context("when the delete operation succeeds") {
                                             beforeEach {
-                                                articleService.removeArticlePromises.last?.resolve(.success())
+                                                articleService.removeArticlePromises.last?.resolve(.success(()))
                                             }
 
                                             it("removes the article from the list") {
@@ -996,4 +996,15 @@ class ArticleListControllerSpec: QuickSpec {
             }
         }
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromOptionalNSAttributedStringKeyDictionary(_ input: [NSAttributedString.Key: Any]?) -> [String: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+	return input.rawValue
 }

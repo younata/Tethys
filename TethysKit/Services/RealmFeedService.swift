@@ -35,7 +35,7 @@ struct RealmFeedService: FeedService {
                 return self.updateService.updateFeed($0)
             }
             Promise<Result<Feed, TethysError>>.when(updatePromises).map { results in
-                let errors = results.flatMap { $0.error }
+                let errors = results.compactMap { $0.error }
                 guard errors.count != results.count else {
                     self.resolve(promise: promise, error: .multiple(errors))
                     return

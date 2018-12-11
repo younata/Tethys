@@ -42,7 +42,11 @@ class SettingsViewControllerSpec: QuickSpec {
 
             it("should restyle the navigation bar") {
                 expect(subject.navigationController?.navigationBar.barStyle) == themeRepository.barStyle
-                expect(subject.navigationController?.navigationBar.titleTextAttributes as? [String: UIColor]) == [NSForegroundColorAttributeName: themeRepository.textColor]
+                expect(
+                    convertFromOptionalNSAttributedStringKeyDictionary(subject.navigationController?.navigationBar.titleTextAttributes) as? [String: UIColor]
+                ).to(equal([
+                    convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): themeRepository.textColor
+                ]))
             }
 
             it("by changing the background color of the tableView") {
@@ -127,7 +131,7 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         let expectedCommands = [
-                            UIKeyCommand(input: "2", modifierFlags: .command, action: #selector(BlankTarget.blank)),
+                            (input: "2", modifierFlags: UIKeyModifierFlags.command)
                         ]
                         let expectedDiscoverabilityTitles = [
                             "Change Theme to 'Dark'",
@@ -157,7 +161,7 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         let expectedCommands = [
-                            UIKeyCommand(input: "1", modifierFlags: .command, action: #selector(BlankTarget.blank)),
+                            (input: "1", modifierFlags: UIKeyModifierFlags.command),
                         ]
                         let expectedDiscoverabilityTitles = [
                             "Change Theme to 'Light'",
@@ -186,8 +190,8 @@ class SettingsViewControllerSpec: QuickSpec {
                     let commands = allCommands[allCommands.count - 2..<allCommands.count]
 
                     let expectedCommands = [
-                        UIKeyCommand(input: "s", modifierFlags: .command, action: #selector(BlankTarget.blank)),
-                        UIKeyCommand(input: "w", modifierFlags: .command, action: #selector(BlankTarget.blank)),
+                        (input: "s", modifierFlags: UIKeyModifierFlags.command),
+                        (input: "w", modifierFlags: UIKeyModifierFlags.command),
                     ]
                     let expectedDiscoverabilityTitles = [
                         "Save and dismiss",
@@ -533,7 +537,7 @@ class SettingsViewControllerSpec: QuickSpec {
                                     expect(alert.actions.count) == 1
                                     if let action = alert.actions.first {
                                         expect(action.title) == "Ok"
-                                        expect(action.style) == UIAlertActionStyle.default
+                                        expect(action.style) == UIAlertAction.Style.default
 
                                         action.handler?(action)
                                         expect(navigationController.visibleViewController) == subject
@@ -785,4 +789,15 @@ class SettingsViewControllerSpec: QuickSpec {
             }
         }
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromOptionalNSAttributedStringKeyDictionary(_ input: [NSAttributedString.Key: Any]?) -> [String: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+	return input.rawValue
 }

@@ -55,7 +55,7 @@ public final class TagEditorViewController: UIViewController {
         self.tagLabel.autoPinEdge(toSuperviewEdge: .left, withInset: 8)
         self.tagLabel.autoPinEdge(toSuperviewEdge: .right, withInset: 8)
         self.tagLabel.autoPinEdge(.top, to: .bottom, of: tagPicker, withOffset: 8)
-        self.tagLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
+        self.tagLabel.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)
         self.tagLabel.numberOfLines = 0
         self.tagLabel.text = NSLocalizedString("TagEditorViewController_Explanation", comment: "")
 

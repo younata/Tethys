@@ -35,7 +35,7 @@ public final class ArticleViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         self.htmlViewController.delegate = self
-        self.addChildViewController(self.htmlViewController)
+        self.addChild(self.htmlViewController)
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -182,8 +182,14 @@ extension ArticleViewController: ThemeRepositorySubscriber {
         self.view.backgroundColor = themeRepository.backgroundColor
         self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
         self.navigationController?.toolbar.barStyle = themeRepository.barStyle
-        self.navigationController?.navigationBar.titleTextAttributes = [
-            NSForegroundColorAttributeName: themeRepository.textColor
-        ]
+        self.navigationController?.navigationBar.titleTextAttributes = convertToOptionalNSAttributedStringKeyDictionary([
+            NSAttributedString.Key.foregroundColor.rawValue: themeRepository.textColor
+        ])
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
 }

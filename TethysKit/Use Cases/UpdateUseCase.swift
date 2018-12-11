@@ -42,7 +42,7 @@ final class DefaultUpdateUseCase: UpdateUseCase {
 
                 feedsLeft -= 1
                 if feedsLeft == 0 {
-                    promise.resolve(.success())
+                    promise.resolve(.success(()))
                 }
             }
         }

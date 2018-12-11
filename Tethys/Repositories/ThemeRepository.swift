@@ -11,8 +11,8 @@ public final class ThemeRepository: NSObject {
     public var barStyle: UIBarStyle { return self.theme.barStyle }
     public var statusBarStyle: UIStatusBarStyle { return self.theme.statusBarStyle }
     public var tintColor: UIColor { return self.theme.tintColor }
-    public var scrollIndicatorStyle: UIScrollViewIndicatorStyle { return self.theme.scrollIndicatorStyle }
-    public var spinnerStyle: UIActivityIndicatorViewStyle { return self.theme.spinnerStyle }
+    public var scrollIndicatorStyle: UIScrollView.IndicatorStyle { return self.theme.scrollIndicatorStyle }
+    public var spinnerStyle: UIActivityIndicatorView.Style { return self.theme.spinnerStyle }
     public var errorColor: UIColor { return self.theme.errorColor }
 
     public enum Theme: Int, CustomStringConvertible {
@@ -86,7 +86,7 @@ public final class ThemeRepository: NSObject {
             }
         }
 
-        public var scrollIndicatorStyle: UIScrollViewIndicatorStyle {
+        public var scrollIndicatorStyle: UIScrollView.IndicatorStyle {
             switch self {
             case .light:
                 return .black
@@ -95,7 +95,7 @@ public final class ThemeRepository: NSObject {
             }
         }
 
-        public var spinnerStyle: UIActivityIndicatorViewStyle {
+        public var spinnerStyle: UIActivityIndicatorView.Style {
             switch self {
             case .light:
                 return .gray

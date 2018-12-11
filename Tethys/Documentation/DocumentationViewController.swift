@@ -22,7 +22,7 @@ public final class DocumentationViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         htmlViewController.delegate = self
-        self.addChildViewController(htmlViewController)
+        self.addChild(htmlViewController)
     }
 
     public required init?(coder aDecoder: NSCoder) {
@@ -76,9 +76,9 @@ public final class DocumentationViewController: UIViewController {
 extension DocumentationViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
-        self.navigationController?.navigationBar.titleTextAttributes = [
-            NSForegroundColorAttributeName: themeRepository.textColor
-        ]
+        self.navigationController?.navigationBar.titleTextAttributes = convertToOptionalNSAttributedStringKeyDictionary([
+            NSAttributedString.Key.foregroundColor.rawValue: themeRepository.textColor
+        ])
         self.loadHTML()
     }
 }
@@ -96,4 +96,10 @@ extension DocumentationViewController: HTMLViewControllerDelegate {
     public func commitViewController(viewController: UIViewController) {
         self.navigationController?.pushViewController(viewController, animated: true)
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToOptionalNSAttributedStringKeyDictionary(_ input: [String: Any]?) -> [NSAttributedString.Key: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (NSAttributedString.Key(rawValue: key), value)})
 }

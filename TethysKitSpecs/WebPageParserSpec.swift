@@ -49,7 +49,7 @@ class WebPageParserSpec: QuickSpec {
                     "/feed.xml",
                     "https://github.com/younata",
                     "https://twitter.com/younata"
-                ].flatMap(URL.init)
+                ].compactMap(URL.init)
 
                 expect(receivedUrls) == urls
             }

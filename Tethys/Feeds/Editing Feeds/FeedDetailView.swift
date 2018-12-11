@@ -157,7 +157,7 @@ extension FeedDetailView: UITableViewDataSource {
 
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { return true }
 
-    public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle,
+    public func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle,
                           forRowAt indexPath: IndexPath) {}
 }
 

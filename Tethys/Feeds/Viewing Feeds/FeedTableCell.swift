@@ -43,7 +43,7 @@ public final class FeedTableCell: UITableViewCell {
     public private(set) var iconWidth: NSLayoutConstraint!
     public private(set) var iconHeight: NSLayoutConstraint!
 
-    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         self.nameLabel.numberOfLines = 0

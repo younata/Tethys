@@ -18,7 +18,7 @@ public final class ArticleCell: UITableViewCell {
 
     fileprivate let backgroundColorView = UIView()
 
-    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         self.contentView.addSubview(self.title)
@@ -28,19 +28,19 @@ public final class ArticleCell: UITableViewCell {
         self.contentView.addSubview(self.readingTime)
 
         self.title.numberOfLines = 0
-        self.title.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
+        self.title.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.headline)
 
         self.title.autoPinEdge(toSuperviewEdge: .left, withInset: 8)
         self.title.autoPinEdge(toSuperviewEdge: .top, withInset: 4)
 
         self.author.numberOfLines = 0
-        self.author.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
+        self.author.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.subheadline)
 
         self.author.autoPinEdge(toSuperviewEdge: .left, withInset: 8)
         self.author.autoPinEdge(.top, to: .bottom, of: self.title, withOffset: 8)
 
         self.readingTime.numberOfLines = 0
-        self.readingTime.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
+        self.readingTime.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.subheadline)
 
         self.readingTime.autoPinEdge(toSuperviewEdge: .leading, withInset: 8)
         self.readingTime.autoPinEdge(toSuperviewEdge: .bottom, withInset: 4)
@@ -55,7 +55,7 @@ public final class ArticleCell: UITableViewCell {
 
         self.published.textAlignment = .right
         self.published.numberOfLines = 0
-        self.published.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
+        self.published.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.subheadline)
 
         self.published.autoPinEdge(.right, to: .left, of: unread, withOffset: -8)
         self.published.autoPinEdge(toSuperviewEdge: .top, withInset: 4)

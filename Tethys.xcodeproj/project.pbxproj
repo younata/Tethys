@@ -92,7 +92,6 @@
 		894E755821B3176000B4A0A1 /* RealmRSSUpdateServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894E755721B3176000B4A0A1 /* RealmRSSUpdateServiceSpec.swift */; };
 		8958EC3A1DCABDA60000159B /* DocumentationViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8958EC391DCABDA60000159B /* DocumentationViewControllerSpec.swift */; };
 		8958EC3F1DCBB2B20000159B /* SettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8958EC3E1DCBB2B20000159B /* SettingsSection.swift */; };
-		8958EC411DCBF58D0000159B /* BlankTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8958EC401DCBF58D0000159B /* BlankTarget.swift */; };
 		895901B31A32B61A002E2C62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 895901AF1A32B61A002E2C62 /* Localizable.strings */; };
 		895901B41A32B61A002E2C62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 895901AF1A32B61A002E2C62 /* Localizable.strings */; };
 		895AC51B1C7FF27300A5F6A1 /* RealmMigrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895AC51A1C7FF27300A5F6A1 /* RealmMigrator.swift */; };
@@ -382,7 +381,6 @@
 		8957799D19E62C7100548418 /* TethysAppSpecs-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TethysAppSpecs-Bridging-Header.h"; sourceTree = "<group>"; };
 		8958EC391DCABDA60000159B /* DocumentationViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationViewControllerSpec.swift; sourceTree = "<group>"; };
 		8958EC3E1DCBB2B20000159B /* SettingsSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsSection.swift; sourceTree = "<group>"; };
-		8958EC401DCBF58D0000159B /* BlankTarget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlankTarget.swift; sourceTree = "<group>"; };
 		895901B01A32B61A002E2C62 /* en */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		895AC51A1C7FF27300A5F6A1 /* RealmMigrator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmMigrator.swift; sourceTree = "<group>"; };
 		895B9A1521AA2585003FFE46 /* FeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedService.swift; sourceTree = "<group>"; };
@@ -1218,7 +1216,6 @@
 		AE4356071A7ABAD500A961B9 /* Fakes */ = {
 			isa = PBXGroup;
 			children = (
-				8958EC401DCBF58D0000159B /* BlankTarget.swift */,
 				89E186911D136C38005C5880 /* FakeAnalytics.swift */,
 				892CBDE91C7A27FE0062E578 /* FakeArticleUseCase.swift */,
 				89FA3BDC21A7AF990026BC88 /* FakeArticleCellController.swift */,
@@ -1368,12 +1365,12 @@
 					894304201B45089A000078DC = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = 9D456YCUH2;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 1000;
 					};
 					894304291B45089A000078DC = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = 9D456YCUH2;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 1000;
 					};
 					8992D4381C37C9B0004A5A35 = {
 						CreatedOnToolsVersion = 7.2;
@@ -1385,7 +1382,7 @@
 					89C8307219D730E9009924DA = {
 						CreatedOnToolsVersion = 6.0.1;
 						DevelopmentTeam = 9D456YCUH2;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 1000;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -1401,7 +1398,7 @@
 					89C8308A19D730E9009924DA = {
 						CreatedOnToolsVersion = 6.0.1;
 						DevelopmentTeam = 9D456YCUH2;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 1000;
 						TestTargetID = 89C8307219D730E9009924DA;
 					};
 				};
@@ -1692,7 +1689,6 @@
 				89831FEC1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift in Sources */,
 				890B78CA1C78E8650066E201 /* ArticleUseCaseSpec.swift in Sources */,
 				899823AE1B30B64000818755 /* ArticleViewControllerSpec.swift in Sources */,
-				8958EC411DCBF58D0000159B /* BlankTarget.swift in Sources */,
 				89CBDC2C1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift in Sources */,
 				89BFAC101C4C66AE007B3415 /* CustomMatchers.swift in Sources */,
 				895B9A1F21AA66AB003FFE46 /* FakeFeedService.swift in Sources */,
@@ -1813,7 +1809,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.TethysKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1841,7 +1837,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.TethysKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1862,7 +1858,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.TethysKitSpecs;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -1882,7 +1878,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.TethysKitSpecs;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "102ff7ac-9378-49de-8e9e-fa6cf25e9870";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -2067,7 +2063,7 @@
 				PROVISIONING_PROFILE = "184da801-b6b9-47e3-a560-e3d9c54e5ac0";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development com.rachelbrindle.RSSClient";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.2;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
@@ -2097,7 +2093,7 @@
 				PRODUCT_NAME = Tethys;
 				PROVISIONING_PROFILE = "102ff7ac-9378-49de-8e9e-fa6cf25e9870";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.rachelbrindle.RSSClient";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.2;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;
@@ -2128,7 +2124,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "TethysAppSpecs/TethysAppSpecs-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Tethys-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tethys.app/Tethys";
 			};
 			name = Debug;
@@ -2155,7 +2151,7 @@
 				PROVISIONING_PROFILE = "102ff7ac-9378-49de-8e9e-fa6cf25e9870";
 				SWIFT_OBJC_BRIDGING_HEADER = "TethysAppSpecs/TethysAppSpecs-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Tethys-Swift.h";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tethys.app/Tethys";
 			};
 			name = Release;

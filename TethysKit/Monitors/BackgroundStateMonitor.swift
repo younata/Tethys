@@ -11,7 +11,7 @@ public final class BackgroundStateMonitor: NSObject {
 
     private let receivers = NSHashTable<AnyObject>.weakObjects()
     private var allReceivers: [BackgroundStateReceiver] {
-        return self.receivers.allObjects.flatMap { $0 as? BackgroundStateReceiver }
+        return self.receivers.allObjects.compactMap { $0 as? BackgroundStateReceiver }
     }
 
     public func addReceiver(receiver: BackgroundStateReceiver) {
@@ -22,9 +22,9 @@ public final class BackgroundStateMonitor: NSObject {
         self.notificationCenter = notificationCenter
         super.init()
         notificationCenter.addObserver(self, selector: #selector(BackgroundStateMonitor.willEnterBackground),
-                                       name: .UIApplicationWillResignActive, object: nil)
+                                       name: UIApplication.willResignActiveNotification, object: nil)
         notificationCenter.addObserver(self, selector: #selector(BackgroundStateMonitor.didEnterForeground),
-                                       name: .UIApplicationDidBecomeActive, object: nil)
+                                       name: UIApplication.didBecomeActiveNotification, object: nil)
     }
 
     deinit {

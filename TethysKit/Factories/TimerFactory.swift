@@ -8,6 +8,6 @@ struct DefaultTimerFactory: TimerFactory {
     func nonrepeatingTimer(fireDate: Date, tolerance: TimeInterval, block: @escaping (Timer) -> Void) {
         let timer = Timer(fire: fireDate, interval: 0, repeats: false, block: block)
         timer.tolerance = tolerance
-        RunLoop.main.add(timer, forMode: .defaultRunLoopMode)
+        RunLoop.main.add(timer, forMode: RunLoop.Mode.default)
     }
 }

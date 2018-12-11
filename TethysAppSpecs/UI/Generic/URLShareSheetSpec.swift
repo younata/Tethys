@@ -31,7 +31,7 @@ class URLShareSheetSpec: QuickSpec {
                 }))
                 guard let labelWrapper = subject.view.subviews.filter({ $0.subviews.contains(where: { $0 is UILabel }) }).first else { return }
 
-                guard let label = labelWrapper.subviews.flatMap({ return $0 as? UILabel }).first else { return }
+                guard let label = labelWrapper.subviews.compactMap({ return $0 as? UILabel }).first else { return }
 
                 expect(label.text) == "https://example.com/"
 

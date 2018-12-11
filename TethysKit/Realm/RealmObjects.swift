@@ -7,7 +7,7 @@ import Foundation
 #endif
 
 final class RealmString: Object {
-    dynamic var string: String = ""
+    @objc dynamic var string: String = ""
 
     convenience init(string: String) {
         self.init(value: ["string": string])
@@ -19,15 +19,15 @@ final class RealmString: Object {
 }
 
 final class RealmFeed: Object {
-    dynamic var title = ""
-    dynamic var url = ""
-    dynamic var summary = ""
+    @objc dynamic var title = ""
+    @objc dynamic var url = ""
+    @objc dynamic var summary = ""
     let tags = List<RealmString>()
     var articles = LinkingObjects(fromType: RealmArticle.self, property: "feed")
-    dynamic var imageData: Data?
-    dynamic var settings: RealmSettings?
+    @objc dynamic var imageData: Data?
+    @objc dynamic var settings: RealmSettings?
 
-    dynamic var id: String = UUID().uuidString
+    @objc dynamic var id: String = UUID().uuidString
     override static func primaryKey() -> String? {
         return "id"
     }
@@ -38,10 +38,10 @@ final class RealmFeed: Object {
 }
 
 final class RealmAuthor: Object {
-    dynamic var name = ""
-    dynamic var email: String?
+    @objc dynamic var name = ""
+    @objc dynamic var email: String?
 
-    dynamic var id: String = UUID().uuidString
+    @objc dynamic var id: String = UUID().uuidString
     override static func primaryKey() -> String? {
         return "id"
     }
@@ -52,22 +52,22 @@ final class RealmAuthor: Object {
 }
 
 final class RealmArticle: Object {
-    dynamic var title: String?
-    dynamic var link = ""
-    dynamic var summary: String?
-    dynamic var published = Date(timeIntervalSinceNow: 0)
-    dynamic var updatedAt: Date?
+    @objc dynamic var title: String?
+    @objc dynamic var link = ""
+    @objc dynamic var summary: String?
+    @objc dynamic var published = Date(timeIntervalSinceNow: 0)
+    @objc dynamic var updatedAt: Date?
 
-    dynamic var date: Date { return updatedAt ?? published }
+    @objc dynamic var date: Date { return updatedAt ?? published }
 
-    dynamic var identifier: String?
-    dynamic var content: String?
-    dynamic var read = false
-    dynamic var estimatedReadingTime: Double = 0
-    dynamic var feed: RealmFeed?
+    @objc dynamic var identifier: String?
+    @objc dynamic var content: String?
+    @objc dynamic var read = false
+    @objc dynamic var estimatedReadingTime: Double = 0
+    @objc dynamic var feed: RealmFeed?
     let authors = List<RealmAuthor>()
 
-    dynamic var id: String = UUID().uuidString
+    @objc dynamic var id: String = UUID().uuidString
     override static func primaryKey() -> String? {
         return "id"
     }
@@ -78,5 +78,5 @@ final class RealmArticle: Object {
 }
 
 final class RealmSettings: Object {
-    dynamic var maxNumberOfArticles = 0
+    @objc dynamic var maxNumberOfArticles = 0
 }

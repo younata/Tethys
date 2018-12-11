@@ -81,7 +81,7 @@ public final class UnreadCounter: UIView {
 
         self.countLabel.isHidden = true
         self.countLabel.textAlignment = .right
-        self.countLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
+        self.countLabel.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)
         self.countLabel.textColor = self.countColor
 
         self.addSubview(self.countLabel)

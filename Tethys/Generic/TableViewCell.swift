@@ -30,7 +30,7 @@ public final class TableViewCell: UITableViewCell, ThemeRepositorySubscriber {
         self.backgroundColor = selected ? UIColor.darkGreen : self.themeRepository?.backgroundColor
     }
 
-    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: .value1, reuseIdentifier: reuseIdentifier)
         self.selectionStyle = .none
     }

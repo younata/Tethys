@@ -28,7 +28,7 @@ class FakeWebView: WKWebView {
     }
 
     var lastJavascriptEvaluated: String? = nil
-    var lastJavascriptHandler: (AnyObject?, NSError?) -> Void = {_ in }
+    var lastJavascriptHandler: (AnyObject?, NSError?) -> Void = {_,_  in }
     override func evaluateJavaScript(_ javaScriptString: String, completionHandler: ((Any?, Error?) -> Swift.Void)? = nil) {
         lastJavascriptEvaluated = javaScriptString
         if let handler = completionHandler {

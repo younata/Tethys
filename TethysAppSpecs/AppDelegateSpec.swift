@@ -48,7 +48,7 @@ class AppDelegateSpec: QuickSpec {
 
         describe("-application:didFinishLaunchingWithOptions:") {
             it("tells analytics that the app was launched") {
-                _ = subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
+                _ = subject.application(application, didFinishLaunchingWithOptions: [UIApplication.LaunchOptionsKey(rawValue: "test"): true])
                 expect(analytics.logEventCallCount) == 1
                 if (analytics.logEventCallCount > 0) {
                     expect(analytics.logEventArgsForCall(0).0) == "SessionBegan"
@@ -60,7 +60,7 @@ class AppDelegateSpec: QuickSpec {
                 var splitViewController: UISplitViewController! = nil
 
                 beforeEach {
-                    _ = subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true])
+                    _ = subject.application(application, didFinishLaunchingWithOptions: [UIApplication.LaunchOptionsKey(rawValue: "test"): true])
 
                     splitViewController = subject.window!.rootViewController as? UISplitViewController
                 }
@@ -132,7 +132,7 @@ class AppDelegateSpec: QuickSpec {
         describe("Quick actions") {
             var completedAction: Bool? = nil
             beforeEach {
-                _ = subject.application(application, didFinishLaunchingWithOptions: [UIApplicationLaunchOptionsKey(rawValue: "test"): true, UIApplicationLaunchOptionsKey.shortcutItem: ""])
+                _ = subject.application(application, didFinishLaunchingWithOptions: [UIApplication.LaunchOptionsKey(rawValue: "test"): true, UIApplication.LaunchOptionsKey.shortcutItem: ""])
 
                 completedAction = nil
             }

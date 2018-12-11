@@ -59,7 +59,7 @@ class ArticleViewControllerSpec: QuickSpec {
 
             it("should update the navigation bar") {
                 expect(subject.navigationController?.navigationBar.barStyle) == themeRepository.barStyle
-                expect(subject.navigationController?.navigationBar.titleTextAttributes as? [String: UIColor]) == [NSForegroundColorAttributeName: themeRepository.textColor]
+                expect(convertFromOptionalNSAttributedStringKeyDictionary(subject.navigationController?.navigationBar.titleTextAttributes) as? [String: UIColor]) == [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): themeRepository.textColor]
             }
             it("should update the toolbar") {
                 expect(subject.navigationController?.toolbar.barStyle) == themeRepository.barStyle
@@ -71,7 +71,7 @@ class ArticleViewControllerSpec: QuickSpec {
                 expect(subject.canBecomeFirstResponder) == true
             }
 
-            func hasKindsOfKeyCommands(expectedCommands: [UIKeyCommand], discoveryTitles: [String]) {
+            func hasKindsOfKeyCommands(expectedCommands: [(input: String, modifierFlags: UIKeyModifierFlags)], discoveryTitles: [String]) {
                 let keyCommands = subject.keyCommands
                 expect(keyCommands).toNot(beNil())
                 guard let commands = keyCommands else {
@@ -91,15 +91,15 @@ class ArticleViewControllerSpec: QuickSpec {
 
             it("should not list the next/previous article commands") {
                 let expectedCommands = [
-                    UIKeyCommand(input: "r", modifierFlags: .shift, action: #selector(BlankTarget.blank)),
-                    UIKeyCommand(input: "l", modifierFlags: .command, action: #selector(BlankTarget.blank)),
-                    UIKeyCommand(input: "s", modifierFlags: .command, action: #selector(BlankTarget.blank)),
-                    ]
+                    (input: "r", modifierFlags: UIKeyModifierFlags.shift),
+                    (input: "l", modifierFlags: UIKeyModifierFlags.command),
+                    (input: "s", modifierFlags: UIKeyModifierFlags.command),
+                ]
                 let expectedDiscoverabilityTitles = [
                     "Toggle Read",
                     "Open Article in WebView",
                     "Open Share Sheet",
-                    ]
+                ]
 
                 hasKindsOfKeyCommands(expectedCommands: expectedCommands, discoveryTitles: expectedDiscoverabilityTitles)
             }
@@ -179,4 +179,15 @@ class ArticleViewControllerSpec: QuickSpec {
             }
         }
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromOptionalNSAttributedStringKeyDictionary(_ input: [NSAttributedString.Key: Any]?) -> [String: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+	return input.rawValue
 }

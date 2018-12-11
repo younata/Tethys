@@ -27,11 +27,11 @@ public final class ExplanationView: UIView {
 
         self.titleLabel.textAlignment = .center
         self.titleLabel.numberOfLines = 0
-        self.titleLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
+        self.titleLabel.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.headline)
 
         self.detailLabel.textAlignment = .center
         self.detailLabel.numberOfLines = 0
-        self.detailLabel.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)
+        self.detailLabel.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.body)
         self.addSubview(self.titleLabel)
         self.addSubview(self.detailLabel)
 

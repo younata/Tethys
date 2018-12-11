@@ -29,7 +29,7 @@ public final class ActionableTableView: UIView {
         self.tableHeight = self.tableView.autoSetDimension(.height, toSize: 0)
 
         self.tableView.tableFooterView = UIView()
-        self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.rowHeight = UITableView.automaticDimension
 
         self.actionsStackView.axis = .horizontal
         self.actionsStackView.distribution = .equalSpacing

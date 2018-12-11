@@ -48,14 +48,14 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     public func application(
         _ application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
         ) -> Bool {
         UINavigationBar.appearance().tintColor = UIColor.darkGreen
         UIBarButtonItem.appearance().tintColor = UIColor.darkGreen
         UITabBar.appearance().tintColor = UIColor.darkGreen
 
         if NSClassFromString("XCTestCase") != nil &&
-            launchOptions?[UIApplicationLaunchOptionsKey("test")] as? Bool != true {
+            launchOptions?[UIApplication.LaunchOptionsKey(rawValue: "test")] as? Bool != true {
             self.getWindow().rootViewController = UIViewController()
             return true
         }
@@ -63,18 +63,18 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         self.createControllerHierarchy()
 
         if launchOptions == nil || launchOptions?.isEmpty == true ||
-            (launchOptions?.count == 1 && launchOptions?[UIApplicationLaunchOptionsKey("test")] as? Bool == true) {
+            (launchOptions?.count == 1 && launchOptions?[UIApplication.LaunchOptionsKey(rawValue: "test")] as? Bool == true) {
             self.analytics.logEvent("SessionBegan", data: nil)
         }
 
-        application.setMinimumBackgroundFetchInterval(UIApplicationBackgroundFetchIntervalNever)
+        application.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalNever)
 
         return true
     }
 
     public func application(_ app: UIApplication,
                             open url: URL,
-                            options: [UIApplicationOpenURLOptionsKey: Any] = [:]) -> Bool {
+                            options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
         _ = self.importUseCase.scanForImportable(url).then { item in
             if case let .opml(url, _) = item {
                 _ = self.importUseCase.importItem(url)

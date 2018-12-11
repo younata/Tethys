@@ -19,7 +19,7 @@ public final class SwitchTableViewCell: UITableViewCell {
         self.onTapSwitch?(self.theSwitch)
     }
 
-    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         self.contentView.addSubview(self._textLabel)

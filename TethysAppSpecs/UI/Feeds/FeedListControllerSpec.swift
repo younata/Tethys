@@ -58,7 +58,7 @@ final class FeedListControllerSpec: QuickSpec {
 
             it("dismisses the keyboard upon drag") {
                 expect(subject.view).toNot(beNil())
-                expect(subject.tableView.keyboardDismissMode).to(equal(UIScrollViewKeyboardDismissMode.onDrag))
+                expect(subject.tableView.keyboardDismissMode).to(equal(UIScrollView.KeyboardDismissMode.onDrag))
             }
 
             describe("listening to theme repository updates") {
@@ -77,7 +77,7 @@ final class FeedListControllerSpec: QuickSpec {
 
                 it("updates the navigation bar") {
                     expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
-                    expect(subject.navigationController?.navigationBar.titleTextAttributes as? [String: UIColor]) == [NSForegroundColorAttributeName: themeRepository.textColor]
+                    expect(convertFromOptionalNSAttributedStringKeyDictionary(subject.navigationController?.navigationBar.titleTextAttributes) as? [String: UIColor]) == [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): themeRepository.textColor]
                 }
             }
 
@@ -95,8 +95,8 @@ final class FeedListControllerSpec: QuickSpec {
 
                     // cmd+i, cmd+shift+i, cmd+opt+i
                     let expectedCommands = [
-                        UIKeyCommand(input: "i", modifierFlags: .command, action: #selector(BlankTarget.blank)),
-                        UIKeyCommand(input: ",", modifierFlags: .command, action: #selector(BlankTarget.blank)),
+                        (input: "i", modifierFlags: UIKeyModifierFlags.command),
+                        (input: ",", modifierFlags: UIKeyModifierFlags.command),
                         ]
                     let expectedDiscoverabilityTitles = [
                         "Add from Web",
@@ -310,7 +310,7 @@ final class FeedListControllerSpec: QuickSpec {
 
                                             describe("when the feed service succeeds") {
                                                 beforeEach {
-                                                    feedService.readAllOfFeedPromises.last?.resolve(.success())
+                                                    feedService.readAllOfFeedPromises.last?.resolve(.success(()))
                                                 }
 
                                                 xit("reloads the feed cell, indicating that it's unread count has changed") {
@@ -413,7 +413,7 @@ final class FeedListControllerSpec: QuickSpec {
                                             it("presents an alert asking for confirmation that the user wants to do this") {
                                                 expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                                                 guard let alert = subject.presentedViewController as? UIAlertController else { return }
-                                                expect(alert.preferredStyle) == UIAlertControllerStyle.alert
+                                                expect(alert.preferredStyle) == UIAlertController.Style.alert
                                                 expect(alert.title) == "Delete \(feeds[0].displayTitle)?"
 
                                                 expect(alert.actions.count) == 2
@@ -439,7 +439,7 @@ final class FeedListControllerSpec: QuickSpec {
 
                                                 describe("if the feedService successfully removes the feed") {
                                                     beforeEach {
-                                                        feedService.removeFeedPromises.last?.resolve(.success())
+                                                        feedService.removeFeedPromises.last?.resolve(.success(()))
                                                     }
 
                                                     it("removes the feed from the list of cells") {
@@ -533,4 +533,15 @@ final class FeedListControllerSpec: QuickSpec {
             }
         }
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromOptionalNSAttributedStringKeyDictionary(_ input: [NSAttributedString.Key: Any]?) -> [String: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
+	return input.rawValue
 }

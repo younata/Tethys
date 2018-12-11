@@ -12,7 +12,7 @@ extension Promise {
                 values[idx] = $0
                 currentCount += 1
                 if currentCount == futures.count {
-                    promise.resolve(values.flatMap { $0 })
+                    promise.resolve(values.compactMap { $0 })
                 }
             }
         }

@@ -37,7 +37,7 @@ public final class HTMLViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         self.content.isOpaque = false
-        self.observer = self.content.observe(\.estimatedProgress, options: [.new]) { _ in
+        self.observer = self.content.observe(\.estimatedProgress, options: [.new]) { _, _ in
             self.progressIndicator.progress = Float(self.content.estimatedProgress)
         }
     }

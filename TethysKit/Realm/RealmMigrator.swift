@@ -22,7 +22,7 @@ struct RealmMigrator {
             migration.enumerateObjects(ofType: RealmArticle.className()) { oldObject, newObject in
                 if let oldAuthor = oldObject?["author"] as? String {
                     let oldAuthors = oldAuthor.components(separatedBy: ", ")
-                    let newAuthors: [MigrationObject] = oldAuthors.flatMap { oldAuthor in
+                    let newAuthors: [MigrationObject] = oldAuthors.compactMap { oldAuthor in
                         let newAuthor = migration.create(RealmAuthor.className())
                         let (name, email) = self.nameAndEmailFromAuthorString(oldAuthor)
                         newAuthor["name"] = name

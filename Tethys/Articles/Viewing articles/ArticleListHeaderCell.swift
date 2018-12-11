@@ -29,7 +29,7 @@ public final class ArticleListHeaderCell: UITableViewCell {
         }
     }
 
-    public override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         self.contentView.addSubview(self.summary)
@@ -37,7 +37,7 @@ public final class ArticleListHeaderCell: UITableViewCell {
         self.contentView.addSubview(self.footer)
 
         self.summary.numberOfLines = 0
-        self.summary.font = UIFont.preferredFont(forTextStyle: UIFontTextStyle.subheadline)
+        self.summary.font = UIFont.preferredFont(forTextStyle: UIFont.TextStyle.subheadline)
 
         self.iconView.contentMode = .scaleAspectFit
 

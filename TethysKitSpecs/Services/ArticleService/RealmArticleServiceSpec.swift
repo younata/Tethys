@@ -58,7 +58,7 @@ final class RealmArticleServiceSpec: QuickSpec {
                     fail("Error writing to realm: \(exception)")
                 }
 
-                let article = Article(realmArticle: realmArticle, feed: nil)
+                let article = Article(realmArticle: realmArticle)
 
                 expect(subject.feed(of: article).value?.value).to(equal(Feed(realmFeed: realmFeed)))
             }
@@ -78,7 +78,7 @@ final class RealmArticleServiceSpec: QuickSpec {
                     fail("Error writing to realm: \(exception)")
                 }
 
-                let article = Article(realmArticle: realmArticle, feed: nil)
+                let article = Article(realmArticle: realmArticle)
 
                 expect(subject.feed(of: article).value?.error).to(equal(TethysError.database(.entryNotFound)))
             }
@@ -118,7 +118,7 @@ final class RealmArticleServiceSpec: QuickSpec {
                         fail("Error writing to realm: \(exception)")
                     }
 
-                    future = subject.mark(article: Article(realmArticle: realmArticle, feed: nil), asRead: true)
+                    future = subject.mark(article: Article(realmArticle: realmArticle), asRead: true)
                 }
 
                 it("marks the realm representation of the article as read") {
@@ -126,7 +126,7 @@ final class RealmArticleServiceSpec: QuickSpec {
                 }
 
                 it("resolves the future with a read version of the article") {
-                    expect(future.value?.value).to(equal(Article(realmArticle: realmArticle, feed: nil)))
+                    expect(future.value?.value).to(equal(Article(realmArticle: realmArticle)))
                 }
             }
         }
@@ -174,7 +174,7 @@ final class RealmArticleServiceSpec: QuickSpec {
                         fail("Error writing to realm: \(exception)")
                     }
 
-                    future = subject.remove(article: Article(realmArticle: realmArticle, feed: nil))
+                    future = subject.remove(article: Article(realmArticle: realmArticle))
                 }
 
                 it("removes the article from the realmFeed's list of articles") {
@@ -192,7 +192,7 @@ final class RealmArticleServiceSpec: QuickSpec {
 
             context("and the article is not associated with a feed") {
                 beforeEach {
-                    future = subject.remove(article: Article(realmArticle: realmArticle, feed: nil))
+                    future = subject.remove(article: Article(realmArticle: realmArticle))
                 }
 
                 it("removes the article from the database") {
@@ -272,7 +272,7 @@ final class RealmArticleServiceSpec: QuickSpec {
             }
 
             it("returns the date the article was last updated, if available") {
-                let article = Article(realmArticle: realmArticle, feed: nil)
+                let article = Article(realmArticle: realmArticle)
 
                 realm.beginWrite()
                 realmArticle.updatedAt = updatedDate
@@ -288,7 +288,7 @@ final class RealmArticleServiceSpec: QuickSpec {
             }
 
             it("returns the date the article was published, if last updated is unavailable") {
-                let article = Article(realmArticle: realmArticle, feed: nil)
+                let article = Article(realmArticle: realmArticle)
 
                 expect(subject.date(for: article)).to(equal(publishedDate))
             }
@@ -327,7 +327,7 @@ final class RealmArticleServiceSpec: QuickSpec {
                 }
 
                 it("returns the estimated reading time in seconds") {
-                    let article = Article(realmArticle: realmArticle, feed: nil)
+                    let article = Article(realmArticle: realmArticle)
                     expect(subject.estimatedReadingTime(of: article)).to(beCloseTo(300))
                 }
             }
@@ -348,12 +348,12 @@ final class RealmArticleServiceSpec: QuickSpec {
                     }
 
                     it("returns the estimated reading time, calculated assuming 200 wpm reading speeds") {
-                        let article = Article(realmArticle: realmArticle, feed: nil)
+                        let article = Article(realmArticle: realmArticle)
                         expect(subject.estimatedReadingTime(of: article)).to(beCloseTo(135))
                     }
 
                     it("stores the data so that we don't have to calculate it again later") {
-                        _ = subject.estimatedReadingTime(of: Article(realmArticle: realmArticle, feed: nil))
+                        _ = subject.estimatedReadingTime(of: Article(realmArticle: realmArticle))
 
                         expect(realmArticle.estimatedReadingTime).to(beCloseTo(135))
                     }
@@ -375,12 +375,12 @@ final class RealmArticleServiceSpec: QuickSpec {
                     }
 
                     it("returns the estimated reading time, calculated assuming 200 wpm reading speeds") {
-                        let article = Article(realmArticle: realmArticle, feed: nil)
+                        let article = Article(realmArticle: realmArticle)
                         expect(subject.estimatedReadingTime(of: article)).to(beCloseTo(75))
                     }
 
                     it("stores the data for later use") {
-                        _ = subject.estimatedReadingTime(of: Article(realmArticle: realmArticle, feed: nil))
+                        _ = subject.estimatedReadingTime(of: Article(realmArticle: realmArticle))
                         expect(realmArticle.estimatedReadingTime).to(beCloseTo(75))
                     }
                 }

@@ -12,7 +12,7 @@ func feedFactory(
         url: url,
         summary: summary,
         tags: tags,
-        articles: [],
+        unreadCount: 0,
         image: image
     )
 }
@@ -27,8 +27,7 @@ func articleFactory(
     identifier: String = "",
     content: String = "",
     read: Bool = false,
-    estimatedReadingTime: TimeInterval = 0,
-    feed: Feed? = nil
+    estimatedReadingTime: TimeInterval = 0
     ) -> Article {
     return Article(
         title: title,
@@ -39,7 +38,6 @@ func articleFactory(
         updatedAt: updatedAt,
         identifier: identifier,
         content: content,
-        read: read,
-        feed: feed
+        read: read
     )
 }

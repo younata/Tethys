@@ -43,7 +43,6 @@ class KitModuleSpec: QuickSpec {
             #if os(iOS)
                 exists(SearchIndex.self)
             #endif
-            isA(DatabaseUseCase.self, kindOf: DefaultDatabaseUseCase.self, singleton: true)
             singleton(OPMLService.self)
             exists(BackgroundStateMonitor.self)
         }

@@ -115,8 +115,8 @@ class BootstrapWorkFlowSpec: QuickSpec {
         }
 
         describe("when provided with an article and a feed") {
-            let feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
-            let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil)
+            let feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], unreadCount: 0, image: nil)
+            let article = Article(title: "", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [], published: Date(), updatedAt: nil, identifier: "", content: "", read: false)
 
             beforeEach {
                 subject.begin((feed, article))

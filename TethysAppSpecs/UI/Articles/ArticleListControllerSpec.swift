@@ -54,7 +54,9 @@ func fakeArticle(feed: Feed, isUpdated: Bool = false, read: Bool = false) -> Art
         publishDate = Date(timeIntervalSinceReferenceDate: TimeInterval(publishedOffset))
         updatedDate = nil
     }
-    return Article(title: "article \(publishedOffset)", link: URL(string: "http://example.com")!, summary: "", authors: [Author(name: "Rachel", email: nil)], published: publishDate, updatedAt: updatedDate, identifier: "\(publishedOffset)", content: "", read: read, feed: feed)
+    return Article(title: "article \(publishedOffset)", link: URL(string: "http://example.com")!, summary: "",
+                   authors: [Author(name: "Rachel", email: nil)], published: publishDate, updatedAt: updatedDate,
+                   identifier: "\(publishedOffset)", content: "", read: read)
 }
 
 class ArticleListControllerSpec: QuickSpec {
@@ -82,7 +84,7 @@ class ArticleListControllerSpec: QuickSpec {
 
             publishedOffset = 0
 
-            feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "hello world", tags: [], articles: [], image: nil)
+            feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "hello world", tags: [], unreadCount: 0, image: nil)
 
             let d = fakeArticle(feed: feed)
             let c = fakeArticle(feed: feed, read: true)

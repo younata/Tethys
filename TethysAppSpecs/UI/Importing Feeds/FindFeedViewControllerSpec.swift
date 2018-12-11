@@ -10,7 +10,6 @@ class FindFeedViewControllerSpec: QuickSpec {
         var subject: FindFeedViewController!
 
         var navController: UINavigationController! = nil
-        var databaseUseCase: FakeDatabaseUseCase! = nil
         var rootViewController: UIViewController! = nil
 
         var webView: FakeWebView!
@@ -19,8 +18,6 @@ class FindFeedViewControllerSpec: QuickSpec {
         var analytics: FakeAnalytics!
 
         beforeEach {
-            databaseUseCase = FakeDatabaseUseCase()
-
             importUseCase = FakeImportUseCase()
 
             analytics = FakeAnalytics()
@@ -172,7 +169,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 subject.webView(subject.webContent, didStartProvisionalNavigation: nil)
             }
 
-            let showRootController: (Void) -> (Void) = {
+            let showRootController: () -> Void = {
                 rootViewController = UIViewController()
 
                 rootViewController.present(navController, animated: false, completion: nil)

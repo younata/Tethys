@@ -63,7 +63,7 @@ struct RealmArticleService: ArticleService {
             } else {
                 feed = nil
             }
-            self.resolve(promise: promise, with: Article(realmArticle: realmArticle, feed: feed))
+            self.resolve(promise: promise, with: Article(realmArticle: realmArticle))
         }
         return promise.future
     }

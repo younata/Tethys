@@ -10,13 +10,7 @@ import RealmSwift
 #endif
 
 public final class Feed: Hashable, CustomStringConvertible {
-    public var title: String {
-        willSet {
-            if newValue != title {
-                self.updated = true
-            }
-        }
-    }
+    public internal(set) var title: String
 
     public var displayTitle: String {
         if self.title.isEmpty {
@@ -25,45 +19,19 @@ public final class Feed: Hashable, CustomStringConvertible {
         return self.title
     }
 
-    public var url: URL {
-        willSet {
-            if newValue != url {
-                self.updated = true
-            }
-        }
-    }
-    public var summary: String {
-        willSet {
-            if newValue != summary {
-                self.updated = true
-            }
-        }
-    }
+    public internal(set) var url: URL
+    public internal(set) var summary: String
 
     public var displaySummary: String { return self.summary }
 
-    public fileprivate(set) var tags: [String]
+    public internal(set) var tags: [String]
 
-    public var settings: Settings? {
-        willSet {
-            if newValue != settings {
-                self.updated = true
-            }
-        }
-    }
+    public internal(set) var settings: Settings?
+    public internal(set) var image: Image?
 
-    @available(*, deprecated, message: "Query a FeedService for the articles")
-    public internal(set) var articlesArray: DataStoreBackedArray<Article>
+    public internal(set) var identifier: String
 
-    public internal(set) var image: Image? {
-        willSet {
-            if newValue != image {
-                self.updated = true
-            }
-        }
-    }
-
-    public private(set) var identifier: String
+    public internal(set) var unreadCount: Int
 
     public var hashValue: Int {
         if let id = feedID as? String {
@@ -84,103 +52,24 @@ public final class Feed: Hashable, CustomStringConvertible {
         return "Feed: title: \(title), url: \(url), summary: \(summary), tags: \(tags)\n"
     }
 
-    public func isEqual(_ object: AnyObject?) -> Bool {
-        guard let b = object as? Feed else {
-            return false
-        }
-        if let aID = self.feedID as? URL, let bID = b.feedID as? URL {
-            return aID == bID
-        }
-        return self.title == b.title && self.url == b.url && self.summary == b.summary && self.tags == b.tags
-    }
-
-    public private(set) var updated = false
-
-    @available(*, deprecated, message: "Query a service for the unread articles, for unread count, use the unreadCount property")
-    public private(set) lazy var unreadArticles: DataStoreBackedArray<Article> = {
-        return self.articlesArray.filterWithPredicate(NSPredicate(format: "read == false"))
-    }()
-    public var unreadCount: Int {
-        return self.articlesArray.filterWithPredicate(NSPredicate(format: "read == false")).count
-    }
-
-    @available(*, deprecated, message: "Don't use the feed object to add articles")
-    public func addArticle(_ article: Article) {
-        if !self.articlesArray.contains(article) {
-            self.articlesArray.append(article)
-            self.updated = true
-            if let otherFeed = article.feed, otherFeed != self {
-                otherFeed.removeArticle(article)
-            }
-            article.feed = self
-        }
-    }
-
-    @available(*, deprecated, message: "Don't use the feed object to remove articles")
-    public func removeArticle(_ article: Article) {
-        if self.articlesArray.contains(article) {
-            _ = self.articlesArray.remove(article)
-            self.updated = true
-            if article.feed == self {
-                article.feed = nil
-            }
-        }
-    }
-
-    public func addTag(_ tag: String) {
-        if !tags.contains(tag) {
-            updated = true
-            tags.append(tag)
-        }
-    }
-
-    public func removeTag(_ tag: String) {
-        if tags.contains(tag) {
-            updated = true
-            tags = tags.filter { $0 != tag }
-        }
-    }
-
-    internal func resetUnreadArticles() {
-        self.unreadArticles = self.articlesArray.filterWithPredicate(NSPredicate(format: "read == %@",
-                                                                                 false as CVarArg))
-    }
-
-    internal func resetArticles(realm: Realm) {
-        let sortByUpdated = NSSortDescriptor(key: "updatedAt", ascending: false)
-        let sortByPublished = NSSortDescriptor(key: "published", ascending: false)
-
-        self.articlesArray = DataStoreBackedArray<Article>(
-            realmDataType: RealmArticle.self,
-            predicate: NSPredicate(format: "feed.id == %@", self.identifier),
-            realmConfiguration: realm.configuration,
-            conversionFunction: { return Article(realmArticle: $0 as! RealmArticle, feed: self) },
-            sortDescriptors: [sortByUpdated, sortByPublished]
-        )
-    }
-
-    public init(title: String, url: URL, summary: String, tags: [String], articles: [Article] = [], image: Image? = nil,
-                identifier: String = "") {
+    public init(title: String, url: URL, summary: String, tags: [String], unreadCount: Int = 0, image: Image? = nil,
+                identifier: String = "", settings: Settings? = nil) {
         self.title = title
         self.url = url
         self.summary = summary
         self.tags = tags
         self.image = image
-        self.articlesArray = DataStoreBackedArray(articles)
+        self.unreadCount = unreadCount
         self.identifier = identifier
-
-        for article in articles {
-            article.feed = self
-        }
-        self.updated = false
+        self.settings = settings
     }
 
     public private(set) var feedID: AnyObject?
 
     internal init(realmFeed feed: RealmFeed) {
-        self.title = feed.title ?? ""
+        self.title = feed.title
         self.url = URL(string: feed.url)!
-        self.summary = feed.summary ?? ""
+        self.summary = feed.summary
         self.tags = feed.tags.map { $0.string }
 
         if let data = feed.imageData {
@@ -190,31 +79,20 @@ public final class Feed: Hashable, CustomStringConvertible {
         }
         self.feedID = feed.id as AnyObject
         self.identifier = feed.id
-        self.articlesArray = DataStoreBackedArray<Article>()
-        if let realm = feed.realm {
-            let sortByUpdated = NSSortDescriptor(key: "updatedAt", ascending: false)
-            let sortByPublished = NSSortDescriptor(key: "published", ascending: false)
-
-            self.articlesArray = DataStoreBackedArray<Article>(
-                realmDataType: RealmArticle.self,
-                predicate: NSPredicate(format: "feed.id == %@", feed.id),
-                realmConfiguration: realm.configuration,
-                conversionFunction: { return Article(realmArticle: $0 as! RealmArticle, feed: self) },
-                sortDescriptors: [sortByUpdated, sortByPublished]
-            )
-        } else {
-            let articles = feed.articles.map { Article(realmArticle: $0, feed: self) }
-            self.articlesArray = DataStoreBackedArray(Array(articles))
-        }
+        self.unreadCount = feed.articles.filter(NSPredicate(format: "read == false")).count
 
         if let settings = feed.settings {
             self.settings = Settings(realmSettings: settings)
-        }
+        } else {
+            self.settings = nil
 
-        self.updated = false
+        }
     }
 }
 
 public func == (lhs: Feed, rhs: Feed) -> Bool {
-    return lhs.isEqual(rhs)
+    if let aID = lhs.feedID as? URL, let bID = rhs.feedID as? URL {
+        return aID == bID
+    }
+    return lhs.title == rhs.title && lhs.url == rhs.url && lhs.summary == rhs.summary && lhs.tags == rhs.tags
 }

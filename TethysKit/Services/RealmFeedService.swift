@@ -58,7 +58,7 @@ struct RealmFeedService: FeedService {
             ])
             return self.resolve(
                 promise: promise,
-                with: AnyCollection(Array(articles.map { Article(realmArticle: $0, feed: nil)} ))
+                with: AnyCollection(Array(articles.map { Article(realmArticle: $0)} ))
             )
         }
         return promise.future

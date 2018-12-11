@@ -226,7 +226,7 @@ final class RealmFeedServiceSpec: QuickSpec {
                     }
 
                     expect(Array(result)).to(equal(
-                        articles.reversed().map { Article(realmArticle: $0, feed: nil) }
+                        articles.reversed().map { Article(realmArticle: $0) }
                     ))
                 }
             }

@@ -16,7 +16,7 @@ class ArticleSpec: QuickSpec {
             }
 
             subject = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [],
-                              published: Date(), updatedAt: nil, identifier: "", content: "", read: false, feed: nil)
+                              published: Date(), updatedAt: nil, identifier: "", content: "", read: false)
         }
 
         describe("Equatable") {
@@ -30,19 +30,19 @@ class ArticleSpec: QuickSpec {
 
                 _ = try? realm.commitWrite()
 
-                expect(Article(realmArticle: a, feed: nil)).toNot(equal(Article(realmArticle: b, feed: nil)))
-                expect(Article(realmArticle: a, feed: nil)).to(equal(Article(realmArticle: a, feed: nil)))
+                expect(Article(realmArticle: a)).toNot(equal(Article(realmArticle: b)))
+                expect(Article(realmArticle: a)).to(equal(Article(realmArticle: a)))
             }
 
             it("should report two articles not created with datastore objects with the same property equality as equal") {
                 let date = Date()
                 let a = Article(title: "", link: URL(string: "https://example.com/articlea")!, summary: "", authors: [],
-                                published: date, updatedAt: nil, identifier: "", content: "", read: false, feed: nil)
+                                published: date, updatedAt: nil, identifier: "", content: "", read: false)
                 let b = Article(title: "blah", link: URL(string: "https://example.com")!, summary: "hello",
                                 authors: [Author("anAuthor")], published: Date(timeIntervalSince1970: 0),
-                                updatedAt: nil, identifier: "hi", content: "hello there", read: true, feed: nil)
+                                updatedAt: nil, identifier: "hi", content: "hello there", read: true)
                 let c = Article(title: "", link: URL(string: "https://example.com/articlea")!, summary: "", authors: [],
-                                published: date, updatedAt: nil, identifier: "", content: "", read: false, feed: nil)
+                                published: date, updatedAt: nil, identifier: "", content: "", read: false)
 
                 expect(a).toNot(equal(b))
                 expect(a).to(equal(c))
@@ -60,130 +60,22 @@ class ArticleSpec: QuickSpec {
 
                 _ = try? realm.commitWrite()
 
-                expect(Article(realmArticle: a, feed: nil).hashValue).toNot(equal(Article(realmArticle: b, feed: nil).hashValue))
-                expect(Article(realmArticle: a, feed: nil).hashValue).to(equal(Article(realmArticle: a, feed: nil).hashValue))
+                expect(Article(realmArticle: a).hashValue).toNot(equal(Article(realmArticle: b).hashValue))
+                expect(Article(realmArticle: a).hashValue).to(equal(Article(realmArticle: a).hashValue))
             }
 
             it("should report two articles not created from datastores with the same property equality as having the same hashValue") {
                 let date = Date()
                 let a = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [],
-                                published: date, updatedAt: nil, identifier: "", content: "", read: false, feed: nil)
+                                published: date, updatedAt: nil, identifier: "", content: "", read: false)
                 let b = Article(title: "blah", link: URL(string: "https://example.com")!, summary: "hello",
                                 authors: [Author("anAuthor")], published: Date(timeIntervalSince1970: 0),
-                                updatedAt: nil, identifier: "hi", content: "hello there", read: true, feed: nil)
+                                updatedAt: nil, identifier: "hi", content: "hello there", read: true)
                 let c = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [],
-                                published: date, updatedAt: nil, identifier: "", content: "", read: false, feed: nil)
+                                published: date, updatedAt: nil, identifier: "", content: "", read: false)
 
                 expect(a.hashValue).toNot(equal(b.hashValue))
                 expect(a.hashValue).to(equal(c.hashValue))
-            }
-        }
-
-        describe("changing feeds") {
-            var feed: Feed! = nil
-
-            beforeEach {
-                feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
-
-                subject.feed = feed
-            }
-
-            it("should add subject to the feed's articles list") {
-                expect(feed.articlesArray.contains(subject)).to(beTruthy())
-            }
-
-            it("should remove subject from the feed's articls list when that gets unset") {
-                subject.feed = nil
-
-                expect(feed.articlesArray.contains(subject)).toNot(beTruthy())
-            }
-
-            it("should remove from the old and add to the new when changing feeds") {
-                let newFeed = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
-
-                subject.feed = newFeed
-
-                expect(feed.articlesArray.contains(subject)).toNot(beTruthy())
-                expect(newFeed.articlesArray.contains(subject)).to(beTruthy())
-            }
-        }
-
-        describe("the updated flag") {
-            it("should start negative") {
-                expect(subject.updated) == false
-            }
-
-            describe("properties that change updated to positive") {
-                it("title") {
-                    subject.title = ""
-                    expect(subject.updated) == false
-                    subject.title = "title"
-                    expect(subject.updated) == true
-                }
-
-                it("link") {
-                    subject.link = URL(string: "https://example.com/article1")!
-                    expect(subject.updated) == false
-                    subject.link = URL(string: "http://example.com")!
-                    expect(subject.updated) == true
-                }
-
-                it("summary") {
-                    subject.summary = ""
-                    expect(subject.updated) == false
-                    subject.summary = "summary"
-                    expect(subject.updated) == true
-                }
-
-                it("author") {
-                    subject.authors = []
-                    expect(subject.updated) == false
-                    subject.authors = [Author("author")]
-                    expect(subject.updated) == true
-                }
-
-                it("published") {
-                    subject.published = subject.published
-                    expect(subject.updated) == false
-                    subject.published = Date(timeIntervalSince1970: 0)
-                    expect(subject.updated) == true
-                }
-
-                it("updatedAt") {
-                    subject.updatedAt = nil
-                    expect(subject.updated) == false
-                    subject.updatedAt = Date()
-                    expect(subject.updated) == true
-                }
-
-                it("identifier") {
-                    subject.identifier = ""
-                    expect(subject.updated) == false
-                    subject.identifier = "identifier"
-                    expect(subject.updated) == true
-                }
-
-                it("content") {
-                    subject.content = ""
-                    expect(subject.updated) == false
-                    subject.content = "content"
-                    expect(subject.updated) == true
-                }
-
-                it("read") {
-                    subject.read = false
-                    expect(subject.updated) == false
-                    subject.read = true
-                    expect(subject.updated) == true
-                }
-
-                it("feed") {
-                    subject.feed = nil
-                    expect(subject.updated) == false
-                    let feed = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], articles: [], image: nil)
-                    subject.feed = feed
-                    expect(subject.updated) == true
-                }
             }
         }
     }

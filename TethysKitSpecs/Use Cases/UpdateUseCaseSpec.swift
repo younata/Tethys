@@ -14,28 +14,14 @@ class UpdateUseCaseSpec: QuickSpec {
         var feed1: Feed!
         var feed3: Feed!
 
-        var article1: Article!
-        var article2: Article!
-
         var userDefaults: FakeUserDefaults!
 
         beforeEach {
             feed1 = Feed(title: "a", url: URL(string: "https://example.com/feed1.feed")!, summary: "",
-                tags: ["a", "b", "c", "d"], articles: [], image: nil)
-
-            article1 = Article(title: "b", link: URL(string: "https://example.com/article1.html")!,
-                summary: "<p>Hello world!</p>", authors: [], published: Date(), updatedAt: nil, identifier: "article1",
-                content: "", read: false, feed: feed1)
-
-            article2 = Article(title: "c", link: URL(string: "https://example.com/article2.html")!,
-                summary: "<p>Hello world!</p>", authors: [], published: Date(), updatedAt: nil, identifier: "article2",
-                content: "", read: true, feed: feed1)
-
-            feed1.addArticle(article1)
-            feed1.addArticle(article2)
+                         tags: ["a", "b", "c", "d"], unreadCount: 0, image: nil)
 
             feed3 = Feed(title: "e", url: URL(string: "https://example.com/feed3.feed")!, summary: "",
-                tags: ["dad"], articles: [], image: nil)
+                         tags: ["dad"], unreadCount: 0, image: nil)
 
             feeds = [feed1, feed3]
 

@@ -10,7 +10,6 @@ import CBGPromise
 final class FeedListControllerSpec: QuickSpec {
     override func spec() {
         var subject: FeedListController!
-        var dataUseCase: FakeDatabaseUseCase!
         var feedService: FakeFeedService!
         var navigationController: UINavigationController!
         var themeRepository: ThemeRepository!
@@ -24,7 +23,6 @@ final class FeedListControllerSpec: QuickSpec {
         ]
 
         beforeEach {
-            dataUseCase = FakeDatabaseUseCase()
             feedService = FakeFeedService()
             mainQueue = FakeOperationQueue()
             settingsRepository = SettingsRepository(userDefaults: nil)
@@ -479,8 +477,8 @@ final class FeedListControllerSpec: QuickSpec {
                                                     alert.actions.last?.handler?(alert.actions.last!)
                                                 }
 
-                                                it("does not delete the feed from the data store") {
-                                                    expect(dataUseCase.lastDeletedFeed).to(beNil())
+                                                it("does not delete the feed from the feed service") {
+                                                    expect(feedService.removeFeedCalls).to(beEmpty())
                                                 }
 
                                                 it("dismisses the alert") {

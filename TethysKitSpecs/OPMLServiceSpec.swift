@@ -120,9 +120,9 @@ class LeptonOPMLServiceSpec: QuickSpec {
             context("when the feeds promise succeeds") {
                 beforeEach {
                     let feed1 = Feed(title: "a", url: URL(string: "http://example.com/feed")!, summary: "",
-                        tags: ["a", "b", "c"], articles: [], image: nil)
+                                     tags: ["a", "b", "c"], unreadCount: 0, image: nil)
                     let feed3 = Feed(title: "e", url: URL(string: "http://example.com/otherfeed")!, summary: "",
-                        tags: ["dad"], articles: [], image: nil)
+                                     tags: ["dad"], unreadCount: 0, image: nil)
                     feedService.feedsPromises.last?.resolve(.success(AnyCollection([feed1, feed3])))
                 }
 

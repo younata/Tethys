@@ -49,16 +49,6 @@ public func configure(container: Container) {
 }
 
 private func configureServices(container: Container) {
-    container.register(DataServiceFactoryType.self) { r in
-        return DataServiceFactory(
-            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
-            realmQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!,
-            searchIndex: r.resolve(SearchIndex.self),
-            bundle: r.resolve(Bundle.self)!,
-            fileManager: r.resolve(FileManager.self)!
-        )
-    }
-
     container.register(UpdateService.self) { r in
         return RealmRSSUpdateService(
             httpClient: r.resolve(HTTPClient.self)!,
@@ -108,15 +98,6 @@ private func configureUseCases(container: Container) {
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!
         )
     }
-
-    container.register(DatabaseUseCase.self) { r in
-        return DefaultDatabaseUseCase(
-            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
-            reachable: r.resolve(Reachable.self),
-            dataServiceFactory: r.resolve(DataServiceFactoryType.self)!,
-            updateUseCase: r.resolve(UpdateUseCase.self)!
-        )
-    }.inObjectScope(.container)
 
     container.register(UpdateUseCase.self) { r in
         return DefaultUpdateUseCase(

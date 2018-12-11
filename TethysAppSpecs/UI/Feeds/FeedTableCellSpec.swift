@@ -49,7 +49,7 @@ class FeedTableCellSpec: QuickSpec {
             context("with a feed that has no unread articles") {
                 beforeEach {
                     feed = Feed(title: "Hello", url: URL(string: "https://example.com")!, summary: "World", tags: [],
-                        articles: [], image: nil)
+                        unreadCount: 0, image: nil)
                     subject.feed = feed
                 }
 
@@ -65,14 +65,8 @@ class FeedTableCellSpec: QuickSpec {
 
             context("with a feed that has some unread articles") {
                 beforeEach {
-                    let article1 = Article(title: "a", link: URL(string: "https://exapmle.com/1")!, summary: "", authors: [],
-                        published: Date(), updatedAt: nil, identifier: "", content: "",
-                        read: true, feed: nil)
-                    let article2 = Article(title: "b", link: URL(string: "https://exapmle.com/2")!, summary: "", authors: [],
-                        published: Date(), updatedAt: nil, identifier: "", content: "",
-                        read: false, feed: nil)
                     feed = Feed(title: "Hello", url: URL(string: "https://example.com")!, summary: "World", tags: [],
-                        articles: [article1, article2], image: nil)
+                                unreadCount: 1, image: nil)
                     subject.feed = feed
                 }
                 itBehavesLike("a standard feed cell") {
@@ -90,7 +84,7 @@ class FeedTableCellSpec: QuickSpec {
                 beforeEach {
                     image = UIImage(named: "GrayIcon")
                     feed = Feed(title: "Hello", url: URL(string: "https://example.com")!, summary: "World", tags: [],
-                        articles: [], image: image)
+                        unreadCount: 0, image: image)
                     subject.feed = feed
                 }
 
@@ -112,7 +106,7 @@ class FeedTableCellSpec: QuickSpec {
             context("with a feed that doesn't have an image") {
                 beforeEach {
                     feed = Feed(title: "Hello", url: URL(string: "https://example.com")!, summary: "World", tags: [],
-                        articles: [], image: nil)
+                        unreadCount: 0, image: nil)
                     subject.feed = feed
                 }
 

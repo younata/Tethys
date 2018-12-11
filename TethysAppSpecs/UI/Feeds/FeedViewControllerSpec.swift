@@ -15,7 +15,7 @@ class FeedViewControllerSpec: QuickSpec {
         var themeRepository: ThemeRepository!
 
         beforeEach {
-            feed = Feed(title: "title", url: URL(string: "http://example.com/feed")!, summary: "summary", tags: ["a", "b", "c"], articles: [], image: nil)
+            feed = Feed(title: "title", url: URL(string: "http://example.com/feed")!, summary: "summary", tags: ["a", "b", "c"], unreadCount: 0, image: nil)
 
             themeRepository = ThemeRepository(userDefaults: nil)
 

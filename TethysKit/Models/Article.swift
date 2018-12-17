@@ -1,14 +1,14 @@
 import Foundation
 
-public final class Article: CustomStringConvertible, Hashable {
-    public internal(set) var title: String
-    public internal(set) var link: URL
-    public internal(set) var summary: String
+public struct Article: CustomStringConvertible, Hashable {
+    public var title: String
+    public var link: URL
+    public var summary: String
 
-    public internal(set) var authors: [Author]
-    public internal(set) var identifier: String
-    public internal(set) var content: String
-    public internal(set) var read: Bool
+    public var authors: [Author]
+    public var identifier: String
+    public var content: String
+    public var read: Bool
 
     public var hashValue: Int {
         if let id = articleID as? String {

@@ -71,7 +71,7 @@ private func configureServices(container: Container) {
                 workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
             )
         )
-    }
+    }.inObjectScope(.container)
 
     container.register(ArticleService.self) { r in
         return ArticleRepository(
@@ -81,7 +81,7 @@ private func configureServices(container: Container) {
                 workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
             )
         )
-    }
+    }.inObjectScope(.container)
 
     container.register(OPMLService.self) { r in
         return LeptonOPMLService(

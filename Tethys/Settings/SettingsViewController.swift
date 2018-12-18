@@ -50,7 +50,7 @@ public final class SettingsViewController: UIViewController {
 
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.tableView)
-        self.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
+        self.tableView.autoPinEdgesToSuperviewEdges(with: .zero)
 
         self.tableView.register(TableViewCell.self, forCellReuseIdentifier: "cell")
         self.tableView.register(SwitchTableViewCell.self, forCellReuseIdentifier: "switch")

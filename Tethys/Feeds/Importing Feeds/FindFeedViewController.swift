@@ -51,7 +51,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.webContent.navigationDelegate = self
         self.webContent.uiDelegate = self
         self.view.addSubview(self.webContent)
-        self.webContent.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
+        self.webContent.autoPinEdgesToSuperviewEdges(with: .zero)
 
         self.observer = self.webContent.observe(\.estimatedProgress, options: [.new]) { _, _ in
             self.loadingBar.progress = Float(self.webContent.estimatedProgress)
@@ -108,7 +108,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 
         self.loadingBar.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.loadingBar)
-        self.loadingBar.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .bottom)
+        self.loadingBar.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
         self.loadingBar.autoSetDimension(.height, toSize: 1)
         self.loadingBar.progress = 0
         self.loadingBar.isHidden = true
@@ -322,7 +322,7 @@ extension FindFeedViewController {
     fileprivate func save(_ link: URL, opml: Bool = false) {
         let indicator = ActivityIndicator(forAutoLayout: ())
         self.view.addSubview(indicator)
-        indicator.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
+        indicator.autoPinEdgesToSuperviewEdges(with: .zero)
 
         let feedMessageTemplate = NSLocalizedString("FindFeedViewController_Save_Feed", comment: "")
         let opmlMessageTemplate = NSLocalizedString("FindFeedViewController_Save_Feed_List", comment: "")

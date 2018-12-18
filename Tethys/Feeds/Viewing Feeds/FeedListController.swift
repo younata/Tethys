@@ -14,15 +14,6 @@ public final class FeedListController: UIViewController {
         return tableView
     }()
 
-    public lazy var updateBar: UIProgressView = {
-        let updateBar = UIProgressView(progressViewStyle: .default)
-        updateBar.translatesAutoresizingMaskIntoConstraints = false
-        updateBar.progressTintColor = UIColor.darkGreen
-        updateBar.trackTintColor = UIColor.clear
-        updateBar.isHidden = true
-        return updateBar
-    }()
-
     public lazy var onboardingView: ExplanationView = {
         let view = ExplanationView(forAutoLayout: ())
         view.title = NSLocalizedString("FeedsTableViewController_Onboarding_Title", comment: "")
@@ -89,18 +80,12 @@ public final class FeedListController: UIViewController {
         self.addChild(self.tableViewController)
         self.tableView.keyboardDismissMode = .onDrag
         self.view.addSubview(self.tableView)
-        self.tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
+        self.tableView.autoPinEdgesToSuperviewEdges(with: .zero)
         self.tableView.delegate = self
         self.tableView.dataSource = self
         self.tableView.register(FeedTableCell.self, forCellReuseIdentifier: "read")
         self.tableView.register(FeedTableCell.self, forCellReuseIdentifier: "unread")
         self.refreshControl.updateSize(self.view.bounds.size)
-
-        self.navigationController?.navigationBar.addSubview(self.updateBar)
-        if self.updateBar.superview != nil {
-            self.updateBar.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .top)
-            self.updateBar.autoSetDimension(.height, toSize: 3)
-        }
 
         self.themeRepository.addSubscriber(self.notificationView)
         self.navigationController?.navigationBar.addSubview(self.notificationView)
@@ -126,14 +111,14 @@ public final class FeedListController: UIViewController {
         self.registerForPreviewing(with: self, sourceView: self.tableView)
 
         self.themeRepository.addSubscriber(self)
-        self.refreshControl.beginRefreshing()
-        self.reload()
     }
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.refreshControl.updateSize(self.view.bounds.size)
         self.navigationController?.setToolbarHidden(true, animated: true)
+        self.refreshControl.beginRefreshing()
+        self.reload()
     }
 
     public override func viewWillTransition(
@@ -155,11 +140,14 @@ public final class FeedListController: UIViewController {
             UIKeyCommand(input: "i", modifierFlags: .command,
                          action: #selector(FeedListController.importFromWeb)),
             UIKeyCommand(input: ",", modifierFlags: .command,
-                         action: #selector(FeedListController.presentSettings))
-            ]
+                         action: #selector(FeedListController.presentSettings)),
+            UIKeyCommand(input: "r", modifierFlags: .command,
+                         action: #selector(FeedListController.reload))
+        ]
         let discoverabilityTitles = [
             NSLocalizedString("FeedsTableViewController_Command_ImportWeb", comment: ""),
-            NSLocalizedString("FeedsTableViewController_Command_Settings", comment: "")
+            NSLocalizedString("FeedsTableViewController_Command_Settings", comment: ""),
+            NSLocalizedString("FeedsTableViewController_Command_Reload", comment: "")
         ]
         commands.enumerated().forEach { idx, cmd in cmd.discoverabilityTitle = discoverabilityTitles[idx] }
         return commands
@@ -175,27 +163,9 @@ public final class FeedListController: UIViewController {
         self.presentController(self.settingsViewController(), from: self.navigationItem.leftBarButtonItem)
     }
 
-    private func presentController(_ viewController: UIViewController, from: UIBarButtonItem?) {
-        let nc = UINavigationController(rootViewController: viewController)
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            nc.modalPresentationStyle = .popover
-            nc.preferredContentSize = CGSize(width: 600, height: 800)
-            nc.popoverPresentationController?.barButtonItem = from
-            self.present(nc, animated: true, completion: nil)
-        } else {
-            self.present(nc, animated: true, completion: nil)
-        }
-    }
-
-    private func showLoadingView(_ message: String) {
-        self.loadingView.configure(message: message)
-        self.view.addSubview(self.loadingView)
-        self.loadingView.autoPinEdgesToSuperviewEdges()
-    }
-
-    fileprivate func reload() {
+    @objc fileprivate func reload() {
         let reloadWithFeeds: ([Feed]) -> Void = {feeds in
-            self.refreshControl.endRefreshing()
+            self.refreshControl.endRefreshing(force: true)
 
             self.loadingView.removeFromSuperview()
             self.onboardingView.removeFromSuperview()
@@ -228,6 +198,24 @@ public final class FeedListController: UIViewController {
                 )
             }
         }
+    }
+
+    private func presentController(_ viewController: UIViewController, from: UIBarButtonItem?) {
+        let nc = UINavigationController(rootViewController: viewController)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            nc.modalPresentationStyle = .popover
+            nc.preferredContentSize = CGSize(width: 600, height: 800)
+            nc.popoverPresentationController?.barButtonItem = from
+            self.present(nc, animated: true, completion: nil)
+        } else {
+            self.present(nc, animated: true, completion: nil)
+        }
+    }
+
+    private func showLoadingView(_ message: String) {
+        self.loadingView.configure(message: message)
+        self.view.addSubview(self.loadingView)
+        self.loadingView.autoPinEdgesToSuperviewEdges()
     }
 
     @objc fileprivate func didTapAddFeed() {

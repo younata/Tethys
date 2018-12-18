@@ -33,8 +33,8 @@ class KitModuleSpec: QuickSpec {
 
             isA(RealmProvider.self, kindOf: DefaultRealmProvider.self)
 
-            exists(FeedService.self)
-            exists(ArticleService.self)
+            isA(FeedService.self, kindOf: FeedRepository.self)
+            isA(ArticleService.self, kindOf: ArticleRepository.self)
 
             isA(HTTPClient.self, kindOf: URLSession.self, singleton: true)
 

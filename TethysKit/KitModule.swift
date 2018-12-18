@@ -63,19 +63,23 @@ private func configureServices(container: Container) {
     }
 
     container.register(FeedService.self) { r in
-        return RealmFeedService(
-            realmProvider: r.resolve(RealmProvider.self)!,
-            updateService: r.resolve(UpdateService.self)!,
-            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
-            workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
+        return FeedRepository(
+            feedService: RealmFeedService(
+                realmProvider: r.resolve(RealmProvider.self)!,
+                updateService: r.resolve(UpdateService.self)!,
+                mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+                workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
+            )
         )
     }
 
     container.register(ArticleService.self) { r in
-        return RealmArticleService(
-            realmProvider: r.resolve(RealmProvider.self)!,
-            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
-            workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
+        return ArticleRepository(
+            articleService: RealmArticleService(
+                realmProvider: r.resolve(RealmProvider.self)!,
+                mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+                workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
+            )
         )
     }
 

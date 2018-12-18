@@ -27,9 +27,9 @@
 "FeedsTableViewController_Loading_Deleting_Feed_Error" = "Unable to delete feed";
 "FeedsTableViewController_Loading_Marking_Feed" = "Marking Articles as Read";
 "FeedsTableViewController_Loading_Marking_Feed_Error" = "Unable to update feed";
-"FeedsTableViewController_Command_Search" = "Filter by tags";
 "FeedsTableViewController_Command_ImportWeb" = "Add from Web";
 "FeedsTableViewController_Command_Settings" = "Open settings";
+"FeedsTableViewController_Command_Reload" = "Reload Feeds";
 "FeedsTableViewController_UpdateFeeds_Error_Title" = "Unable to fetch feeds";
 "FeedsTableViewController_UpdateFeeds_Error_Accept" = "OK";
 "FeedsTableViewController_Table_EditAction_Delete" = "Delete";

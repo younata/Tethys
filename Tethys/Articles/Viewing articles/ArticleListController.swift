@@ -296,7 +296,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     @objc private func markFeedRead() {
         let indicator = ActivityIndicator(forAutoLayout: ())
         self.view.addSubview(indicator)
-        indicator.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero)
+        indicator.autoPinEdgesToSuperviewEdges(with: .zero)
 
         indicator.configure(message: NSLocalizedString("ArticleListController_Action_MarkRead_Indicator", comment: ""))
 

@@ -97,10 +97,12 @@ final class FeedListControllerSpec: QuickSpec {
                     let expectedCommands = [
                         (input: "i", modifierFlags: UIKeyModifierFlags.command),
                         (input: ",", modifierFlags: UIKeyModifierFlags.command),
-                        ]
+                        (input: "r", modifierFlags: UIKeyModifierFlags.command),
+                    ]
                     let expectedDiscoverabilityTitles = [
                         "Add from Web",
                         "Open settings",
+                        "Reload Feeds",
                     ]
 
                     expect(commands.count).to(equal(expectedCommands.count))

@@ -10,7 +10,7 @@ public final class TagPickerView: UIView {
         textField.attributedPlaceholder = placeholder
 
         self.addSubview(textField)
-        textField.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .bottom)
+        textField.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
         textField.autoSetDimension(.height, toSize: 40)
         return textField
     }()
@@ -21,7 +21,7 @@ public final class TagPickerView: UIView {
         picker.dataSource = self
 
         self.addSubview(picker)
-        picker.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .top)
+        picker.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
         picker.autoPinEdge(.top, to: .bottom, of: self.textField)
         picker.autoSetDimension(.height, toSize: 120)
         return picker

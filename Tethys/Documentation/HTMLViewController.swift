@@ -52,7 +52,7 @@ public final class HTMLViewController: UIViewController {
         self.view.addSubview(self.content)
         self.view.addSubview(self.progressIndicator)
 
-        self.content.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets.zero, excludingEdge: .bottom)
+        self.content.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
         self.view.addConstraint(NSLayoutConstraint(item: self.content, attribute: .bottom, relatedBy: .equal,
                                                    toItem: self.bottomLayoutGuide, attribute: .top,
                                                    multiplier: 1, constant: 0))

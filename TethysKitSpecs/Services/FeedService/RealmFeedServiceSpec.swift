@@ -74,7 +74,7 @@ final class RealmFeedServiceSpec: QuickSpec {
         describe("feeds()") {
             var future: Future<Result<AnyCollection<Feed>, TethysError>>!
 
-            func itUpdatesTheFeeds(_ onSuccess: () -> Void) {
+            func itUpdatesTheFeeds(_ onSuccess: ([Feed]) -> Void) {
                 describe("updating feeds") {
                     it("asks the update service to update each of the feeds") {
                         expect(updateService.updateFeedCalls).to(contain(
@@ -86,26 +86,34 @@ final class RealmFeedServiceSpec: QuickSpec {
                     }
 
                     describe("if all feeds successfully update") {
+                        let feeds = [
+                            feedFactory(title: "Feed1_Updated"),
+                            feedFactory(title: "Feed2_Updated"),
+                            feedFactory(title: "Feed3_Updated")
+                        ]
                         beforeEach {
-                            let feeds = [realmFeed1, realmFeed2, realmFeed3]
                             updateService.updateFeedPromises.enumerated().forEach {
                                 let (index, promise) = $0
-                                promise.resolve(.success(Feed(realmFeed: feeds[index]!)))
+                                promise.resolve(.success(feeds[index]))
                             }
                         }
 
-                        onSuccess()
+                        onSuccess(feeds)
                     }
 
                     describe("if any feeds fail to update") {
+                        let feeds = [
+                            feedFactory(title: "Feed1_Updated"),
+                            feedFactory(title: "Feed3_Updated")
+                        ]
                         beforeEach {
                             guard updateService.updateFeedPromises.count == 3 else { return }
-                            updateService.updateFeedPromises[0].resolve(.success(Feed(realmFeed: realmFeed1)))
-                            updateService.updateFeedPromises[2].resolve(.success(Feed(realmFeed: realmFeed3)))
+                            updateService.updateFeedPromises[0].resolve(.success(feedFactory(title: "Feed1_Updated")))
+                            updateService.updateFeedPromises[2].resolve(.success(feedFactory(title: "Feed3_Updated")))
                             updateService.updateFeedPromises[1].resolve(.failure(.http(503)))
                         }
 
-                        onSuccess()
+                        onSuccess(feeds)
                     }
 
                     describe("if all feeds fail to update") {
@@ -131,18 +139,14 @@ final class RealmFeedServiceSpec: QuickSpec {
                     future = subject.feeds()
                 }
 
-                itUpdatesTheFeeds {
+                itUpdatesTheFeeds { expectedFeeds in
                     it("resolves the future with all stored feeds, ordered by the title of the feed") {
                         guard let result = future.value?.value else {
                             fail("Expected to have the list of feeds, got \(String(describing: future.value))")
                             return
                         }
 
-                        expect(Array(result)) == [
-                            Feed(realmFeed: realmFeed1),
-                            Feed(realmFeed: realmFeed2),
-                            Feed(realmFeed: realmFeed3),
-                        ]
+                        expect(Array(result)).to(equal(expectedFeeds))
                     }
                 }
             }
@@ -170,18 +174,14 @@ final class RealmFeedServiceSpec: QuickSpec {
                     future = subject.feeds()
                 }
 
-                itUpdatesTheFeeds {
+                itUpdatesTheFeeds { expectedFeeds in
                     it("resolves the future all stored feeds, ordered first by unread count, then by the title of the feed") {
                         guard let result = future.value?.value else {
                             fail("Expected to have the list of feeds, got \(String(describing: future.value))")
                             return
                         }
 
-                        expect(Array(result)) == [
-                            Feed(realmFeed: realmFeed2),
-                            Feed(realmFeed: realmFeed1),
-                            Feed(realmFeed: realmFeed3),
-                        ]
+                        expect(Array(result)).to(equal(expectedFeeds))
                     }
                 }
             }
@@ -271,12 +271,40 @@ final class RealmFeedServiceSpec: QuickSpec {
                     expect(feed?.summary).to(equal(""))
                 }
 
-                it("resolves the promise with the dummy feed") {
-                    expect(future.value?.value).to(equal(Feed(
+                it("does not yet resolve the future") {
+                    expect(future.value).to(beNil())
+                }
+
+                it("asks the UpdateService to update the feed") {
+                    expect(updateService.updateFeedCalls).to(haveCount(1))
+
+                    expect(updateService.updateFeedCalls.last).to(equal(Feed(
                         title: "",
                         url: url,
                         summary: "", tags: []
                     )))
+                }
+
+                describe("when the UpdateService succeeds") {
+                    beforeEach {
+                        updateService.updateFeedPromises.last?.resolve(.success(
+                            Feed(realmFeed: realmFeed1)
+                        ))
+                    }
+
+                    it("forwards the feed") {
+                        expect(future.value?.value).to(equal(Feed(realmFeed: realmFeed1)))
+                    }
+                }
+
+                describe("when the UpdateService fails") {
+                    beforeEach {
+                        updateService.updateFeedPromises.last?.resolve(.failure(TethysError.network(url, .unknown)))
+                    }
+
+                    it("forwards the error") {
+                        expect(future.value?.error).to(equal(TethysError.network(url, .unknown)))
+                    }
                 }
             }
         }

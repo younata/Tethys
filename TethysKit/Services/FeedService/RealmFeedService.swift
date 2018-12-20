@@ -40,7 +40,8 @@ struct RealmFeedService: FeedService {
                     self.resolve(promise: promise, error: .multiple(errors))
                     return
                 }
-                self.resolve(promise: promise, with: AnyCollection(feeds))
+                let updatedFeeds = results.compactMap { $0.value }
+                self.resolve(promise: promise, with: AnyCollection(updatedFeeds))
             }
         }
         return promise.future
@@ -85,7 +86,12 @@ struct RealmFeedService: FeedService {
                 dump(exception)
                 return self.resolve(promise: promise, error: .database(.unknown))
             }
-            self.resolve(promise: promise, with: Feed(realmFeed: feed))
+
+            self.updateService.updateFeed(Feed(realmFeed: feed)).then { result in
+                self.mainQueue.addOperation {
+                    promise.resolve(result)
+                }
+            }
         }
         return promise.future
     }

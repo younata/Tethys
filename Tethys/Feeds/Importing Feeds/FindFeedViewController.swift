@@ -295,31 +295,27 @@ extension FindFeedViewController {
 
     @objc fileprivate func save() {
         if let rl = self.rssLinks.first, self.rssLinks.count == 1 {
-            self.save(rl)
+            self.save(link: rl)
         } else if self.rssLinks.count > 1 {
-            // yay!
             let alertTitle = NSLocalizedString("FindFeedViewController_ImportFeeds_SelectFeed", comment: "")
             let alert = UIAlertController(title: alertTitle, message: nil, preferredStyle: .alert)
             for link in self.rssLinks {
                 let pathWithPrecedingSlash = link.path
-                let path = pathWithPrecedingSlash.substring(from:
-                    pathWithPrecedingSlash.index(after: pathWithPrecedingSlash.startIndex))
+                let index = pathWithPrecedingSlash.index(after: pathWithPrecedingSlash.startIndex)
+                let path = String(pathWithPrecedingSlash[index...])
                 alert.addAction(UIAlertAction(title: path, style: .default) { _ in
-                    self.save(link)
-                    self.dismiss(animated: true, completion: nil)
+                    self.save(link: link)
                 })
             }
             let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
-            alert.addAction(UIAlertAction(title: cancelTitle, style: .cancel) { _ in
-                self.dismiss(animated: true, completion: nil)
-            })
+            alert.addAction(UIAlertAction(title: cancelTitle, style: .cancel, handler: nil))
             self.present(alert, animated: true, completion: nil)
         } else {
             self.dismissFromNavigation()
         }
     }
 
-    fileprivate func save(_ link: URL, opml: Bool = false) {
+    fileprivate func save(link: URL, opml: Bool = false) {
         let indicator = ActivityIndicator(forAutoLayout: ())
         self.view.addSubview(indicator)
         indicator.autoPinEdgesToSuperviewEdges(with: .zero)
@@ -330,7 +326,7 @@ extension FindFeedViewController {
         let messageTemplate = opml ? opmlMessageTemplate : feedMessageTemplate
         let message = NSString.localizedStringWithFormat(messageTemplate as NSString, link as CVarArg) as String
         indicator.configure(message: message)
-        _ = self.importUseCase.importItem(link).then { _ in
+        self.importUseCase.importItem(link).then { _ in
             indicator.removeFromSuperview()
             self.analytics.logEvent("DidUseWebImport", data: nil)
             self.dismissFromNavigation()
@@ -343,7 +339,7 @@ extension FindFeedViewController {
         let message = String.localizedStringWithFormat(messageFormat, url.lastPathComponent)
 
         self.displayAlertToSave(title, alertMessage: message) {
-            self.save(url, opml: false)
+            self.save(link: url, opml: false)
         }
     }
 
@@ -352,7 +348,7 @@ extension FindFeedViewController {
         let message = NSLocalizedString("FindFeedViewController_FoundFeed_List_Subtitle", comment: "")
 
         self.displayAlertToSave(title, alertMessage: message) {
-            self.save(url, opml: true)
+            self.save(link: url, opml: true)
         }
     }
 

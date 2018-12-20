@@ -305,7 +305,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    it("should dismiss the alert") {
+                    it("dismisses the alert") {
                         expect(subject.presentedViewController).to(beNil())
                     }
                 }
@@ -318,7 +318,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    it("should dismiss the alert") {
+                    it("dismisses the alert") {
                         expect(subject.presentedViewController).to(beNil())
                     }
 
@@ -333,7 +333,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     importUseCase.scanForImportablePromises[0].resolve(.opml(url, 0))
                 }
 
-                it("should present an alert") {
+                it("presents an alert") {
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                     if let alert = subject.presentedViewController as? UIAlertController {
                         expect(alert.title) == "Feed List Detected"
@@ -357,7 +357,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    it("should dismiss the alert") {
+                    it("dismisses the alert") {
                         expect(subject.presentedViewController).to(beNil())
                     }
                 }
@@ -370,7 +370,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    it("should dismiss the alert") {
+                    it("dismisses the alert") {
                         expect(subject.presentedViewController).to(beNil())
                     }
 

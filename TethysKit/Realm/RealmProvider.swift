@@ -16,6 +16,7 @@ final class DefaultRealmProvider: RealmProvider {
     func realm() -> Realm {
         let thread = Thread.current
         if let realm = self.realmsForThreads[thread] {
+            realm.refresh()
             return realm
         }
 
@@ -26,6 +27,8 @@ final class DefaultRealmProvider: RealmProvider {
             fatalError("Received \(error) trying to create a realm")
         }
         self.realmsForThreads[thread] = realm
+
+        realm.refresh()
 
         return realm
     }

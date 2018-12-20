@@ -25,11 +25,13 @@ final class RealmRSSUpdateService: UpdateService {
             }
 
             self.fetch(url: feed.url).map {
-                return $0.mapFuture { data in
+                return $0.mapFuture { data -> Future<Result<Muon.Feed, TethysError>> in
                     return self.parse(feed: data)
                 }
             }.map {
-                return $0.mapFuture { return self.update(from: $0, identifier: identifier) }
+                return $0.mapFuture { muonFeed -> Future<Result<Feed, TethysError>> in
+                    return self.update(from: muonFeed, identifier: identifier)
+                }
             }.then { result in
                 promise.resolve(result)
             }

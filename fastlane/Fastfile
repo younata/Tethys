@@ -56,6 +56,11 @@ platform :ios do
     scan(project: 'Tethys.xcodeproj', scheme: 'Tethys')
   end
 
+  desc 'Runs acceptance tests'
+  lane :acceptance_test do
+    scan(project: 'Tethys.xcodeproj', scheme: 'TethysAcceptanceSpecs')
+  end
+
   desc 'Deploy a new version to TestFlight'
   lane :beta do
     match(type: 'development', app_identifier: 'com.rachelbrindle.RSSClient', readonly: true)

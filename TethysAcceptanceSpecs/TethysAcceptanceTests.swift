@@ -21,7 +21,7 @@ class TethysAcceptanceTests: XCTestCase {
 
     func waitForPredicate(_ predicate: NSPredicate, object: AnyObject) {
         expectation(for: predicate, evaluatedWith: object, handler: nil)
-        waitForExpectations(timeout: 120, handler: nil)
+        waitForExpectations(timeout: 30, handler: nil)
     }
 
     func loadWebFeed() {

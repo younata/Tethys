@@ -262,7 +262,10 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
             switch result {
             case .success(let articles):
                 self.articles = articles
-                self.tableView.reloadSections(IndexSet(integersIn: 0...1), with: .automatic)
+                self.tableView.beginUpdates()
+                self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
+                self.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
+                self.tableView.endUpdates()
             case .failure(let error):
                 self.showAlert(
                     error: error,

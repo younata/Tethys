@@ -214,18 +214,18 @@ class FindFeedViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    it("should dismiss itself") {
+                    it("dismisses itself") {
                         expect(rootViewController.presentedViewController).to(beNil())
                     }
                 }
             }
 
-            it("should show the loadingBar") {
+            it("shows the loadingBar") {
                 expect(subject.loadingBar.isHidden) == false
                 expect(subject.loadingBar.progress).to(beCloseTo(0))
             }
 
-            it("should disable the addFeedButton") {
+            it("disables the addFeedButton") {
                 expect(subject.addFeedButton.isEnabled) == false
             }
 
@@ -281,7 +281,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     importUseCase.scanForImportablePromises[0].resolve(.feed(url, 0))
                 }
 
-                it("should present an alert") {
+                it("presents an alert") {
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                     if let alert = subject.presentedViewController as? UIAlertController {
                         expect(alert.title) == "Feed Detected"
@@ -308,6 +308,10 @@ class FindFeedViewControllerSpec: QuickSpec {
                     it("dismisses the alert") {
                         expect(subject.presentedViewController).to(beNil())
                     }
+
+                    it("does not dismiss the controller") {
+                        expect(rootViewController.presentedViewController).toNot(beNil())
+                    }
                 }
 
                 describe("tapping 'Import'") {
@@ -320,6 +324,10 @@ class FindFeedViewControllerSpec: QuickSpec {
 
                     it("dismisses the alert") {
                         expect(subject.presentedViewController).to(beNil())
+                    }
+
+                    it("does not dismiss the controller") {
+                        expect(rootViewController.presentedViewController).toNot(beNil())
                     }
 
                     itBehavesLike("importing a feed")
@@ -360,6 +368,10 @@ class FindFeedViewControllerSpec: QuickSpec {
                     it("dismisses the alert") {
                         expect(subject.presentedViewController).to(beNil())
                     }
+
+                    it("does not dismiss the controller") {
+                        expect(rootViewController.presentedViewController).toNot(beNil())
+                    }
                 }
 
                 describe("tapping 'Import'") {
@@ -372,6 +384,10 @@ class FindFeedViewControllerSpec: QuickSpec {
 
                     it("dismisses the alert") {
                         expect(subject.presentedViewController).to(beNil())
+                    }
+
+                    it("does not dismiss the controller") {
+                        expect(rootViewController.presentedViewController).toNot(beNil())
                     }
 
                     it("should show an indicator that we're doing things") {
@@ -476,6 +492,10 @@ class FindFeedViewControllerSpec: QuickSpec {
                             }
                         }
 
+                        it("does not dismiss the controller") {
+                            expect(rootViewController.presentedViewController).toNot(beNil())
+                        }
+
                         itBehavesLike("importing a feed") {
                             return ["url": feedURL2]
                         }
@@ -507,27 +527,23 @@ class FindFeedViewControllerSpec: QuickSpec {
 
             describe("Failing to load the page") {
                 let err = NSError(domain: "", code: 0, userInfo: ["NSErrorFailingURLStringKey": "https://example.com"])
+
+                beforeEach {
+                    showRootController()
+                }
+
                 context("before loading the page (network error)") {
                     beforeEach {
                         subject.webView(subject.webContent, didFailProvisionalNavigation: nil, withError: err)
                     }
 
-                    it("should hide the webview") {
+                    it("should hide the loading bar") {
                         expect(subject.loadingBar.isHidden) == true
                     }
 
-                    it("shows an alert box") {
-                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                        if let alert = subject.presentedViewController as? UIAlertController {
-                            expect(alert.title) == "Unable to load page"
-                            expect(alert.message) == "The page at https://example.com failed to load"
-                            expect(alert.actions.count) == 1
-                            if let action = alert.actions.first {
-                                expect(action.title) == "Ok"
-                                action.handler?(action)
-                                expect(subject.presentedViewController).to(beNil())
-                            }
-                        }
+                    it("tells the user that we were unable to load the page") {
+                        expect(subject.webContent.lastHTMLStringLoaded).to(contain("Unable to load page"))
+                        expect(subject.webContent.lastHTMLStringLoaded).to(contain("The page at https://example.com failed to load"))
                     }
                 }
 
@@ -540,18 +556,9 @@ class FindFeedViewControllerSpec: QuickSpec {
                         expect(subject.loadingBar.isHidden) == true
                     }
 
-                    it("shows an alert box") {
-                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                        if let alert = subject.presentedViewController as? UIAlertController {
-                            expect(alert.title) == "Unable to load page"
-                            expect(alert.message) == "The page at https://example.com failed to load"
-                            expect(alert.actions.count) == 1
-                            if let action = alert.actions.first {
-                                expect(action.title) == "Ok"
-                                action.handler?(action)
-                                expect(subject.presentedViewController).to(beNil())
-                            }
-                        }
+                    it("tells the user that we were unable to load the page") {
+                        expect(subject.webContent.lastHTMLStringLoaded).to(contain("Unable to load page"))
+                        expect(subject.webContent.lastHTMLStringLoaded).to(contain("The page at https://example.com failed to load"))
                     }
                 }
             }

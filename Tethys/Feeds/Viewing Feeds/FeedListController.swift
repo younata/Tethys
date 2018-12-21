@@ -183,8 +183,11 @@ public final class FeedListController: UIViewController {
 
             let oldFeeds = self.feeds
             self.feeds = feeds
-            let animation: UITableView.RowAnimation = oldFeeds != feeds ? .right : .none
-            self.tableView.reloadSections(IndexSet(integer: 0), with: animation)
+            guard oldFeeds != feeds else { return }
+            self.tableView.reloadSections(
+                IndexSet(integer: 0),
+                with: oldFeeds.isEmpty ? .none : .right
+            )
         }
 
         self.feedService.feeds().then {

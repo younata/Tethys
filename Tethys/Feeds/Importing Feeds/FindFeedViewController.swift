@@ -62,6 +62,8 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.forward = UIBarButtonItem(title: ">", style: .plain, target: self.webContent,
                                        action: #selector(UIWebView.goForward))
 
+        self.edgesForExtendedLayout = [.left, .right]
+
         let addFeedTitle = NSLocalizedString("FindFeedViewController_AddFeed", comment: "")
         let save = #selector(FindFeedViewController.save as (FindFeedViewController) -> () -> Void)
         self.addFeedButton = UIBarButtonItem(title: addFeedTitle, style: .plain, target: self, action: save)
@@ -211,18 +213,33 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     }
 
     private func failedToLoadPage(_ error: NSError) {
-        let alertTitle = NSLocalizedString("FindFeedViewController_Error_Navigation_title", comment: "")
-        let alertMessageFormat = NSLocalizedString("FindFeedViewController_Error_Navigation_message", comment: "")
+        let title = NSLocalizedString("FindFeedViewController_Error_Navigation_title", comment: "")
+        let messageFormat = NSLocalizedString("FindFeedViewController_Error_Navigation_message", comment: "")
         let urlString = error.userInfo["NSErrorFailingURLStringKey"] as? String ?? ""
-        let alertMessage = NSString.localizedStringWithFormat(alertMessageFormat as NSString, urlString) as String
-        let alert = UIAlertController(title: alertTitle,
-                                      message: alertMessage,
-                                      preferredStyle: .alert)
-        let dismiss = NSLocalizedString("Generic_Ok", comment: "")
-        alert.addAction(UIAlertAction(title: dismiss, style: .default) { _ in
-            self.dismiss(animated: true, completion: nil)
-        })
-        self.present(alert, animated: true, completion: nil)
+        let message = NSString.localizedStringWithFormat(messageFormat as NSString, urlString) as String
+
+        let content = "<h1>\(title)</h1><span>\(message)</span>"
+
+        self.webContent.loadHTMLString(self.staticHTML(title: title, content: content), baseURL: nil)
+    }
+
+    private func staticHTML(title: String, content: String) -> String {
+        let prefix: String
+        let cssFileName = self.themeRepository.articleCSSFileName
+        if let cssURL = Bundle.main.url(forResource: cssFileName, withExtension: "css"),
+            let css = try? String(contentsOf: cssURL) {
+            prefix = "<html><head>" +
+                "<title>\(title)</title>" +
+                "<style type=\"text/css\">\(css)</style>" +
+                "<meta name=\"viewport\" content=\"initial-scale=1.0,maximum-scale=10.0\"/>" +
+            "</head><body>"
+        } else {
+            prefix = "<html><body>"
+        }
+
+        let postfix = "</body></html>"
+
+        return prefix + content + postfix
     }
 
     public func webView(_ webView: WKWebView, didStartProvisionalNavigation _: WKNavigation!) {
@@ -372,11 +389,14 @@ extension FindFeedViewController: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
         self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
         self.navigationController?.toolbar.barStyle = themeRepository.barStyle
+        self.navigationController?.navigationBar.isTranslucent = false
+        self.navigationController?.toolbar.isTranslucent = false
         self.navigationController?.navigationBar.titleTextAttributes = [
             NSAttributedString.Key.foregroundColor: themeRepository.textColor
         ]
 
         self.webContent.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
         self.webContent.backgroundColor = themeRepository.backgroundColor
+        self.view.backgroundColor = themeRepository.backgroundColor
     }
 }

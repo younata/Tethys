@@ -156,11 +156,11 @@ public final class FeedListController: UIViewController {
     // MARK: - Private/Internal
 
     @objc internal func importFromWeb() {
-        self.presentController(self.findFeedViewController(), from: self.navigationItem.rightBarButtonItem)
+        self.show(controller: self.findFeedViewController(), from: self.navigationItem.rightBarButtonItem, modal: true)
     }
 
     @objc fileprivate func presentSettings() {
-        self.presentController(self.settingsViewController(), from: self.navigationItem.leftBarButtonItem)
+        self.show(controller: self.settingsViewController(), from: self.navigationItem.leftBarButtonItem, modal: false)
     }
 
     @objc fileprivate func reload() {
@@ -191,27 +191,25 @@ public final class FeedListController: UIViewController {
         }
 
         self.feedService.feeds().then {
-            switch $0 {
-            case .success(let feeds):
+            let errorTitle = NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Title", comment: "")
+            self.unwrap(result: $0, errorTitle: errorTitle) { feeds in
                 reloadWithFeeds(Array(feeds))
-            case .failure(let error):
-                self.show(
-                    error: error,
-                    title: NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Title", comment: "")
-                )
             }
         }
     }
 
-    private func presentController(_ viewController: UIViewController, from: UIBarButtonItem?) {
-        let nc = UINavigationController(rootViewController: viewController)
+    private func show(controller: UIViewController, from: UIBarButtonItem?, modal: Bool) {
         if UIDevice.current.userInterfaceIdiom == .pad {
+            let nc = UINavigationController(rootViewController: controller)
             nc.modalPresentationStyle = .popover
             nc.preferredContentSize = CGSize(width: 600, height: 800)
             nc.popoverPresentationController?.barButtonItem = from
             self.present(nc, animated: true, completion: nil)
-        } else {
+        } else if modal {
+            let nc = UINavigationController(rootViewController: controller)
             self.present(nc, animated: true, completion: nil)
+        } else {
+            self.navigationController?.pushViewController(controller, animated: true)
         }
     }
 
@@ -232,9 +230,13 @@ public final class FeedListController: UIViewController {
         return articleListController
     }
 
-    fileprivate func show(error: TethysError, title: String) {
-        self.notificationView.display(title, message: error.localizedDescription)
-
+    fileprivate func unwrap<T>(result: Result<T, TethysError>, errorTitle: String, onSuccess: (T) -> Void) {
+        switch result {
+        case .success(let value):
+            onSuccess(value)
+        case .failure(let error):
+            self.notificationView.display(errorTitle, message: error.localizedDescription)
+        }
     }
 
     fileprivate func deleteFeed(feed: Feed, indexPath: IndexPath?) {
@@ -246,19 +248,14 @@ public final class FeedListController: UIViewController {
         alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
             self.dismiss(animated: true, completion: nil)
             self.feedService.remove(feed: feed).then { result in
-                switch result {
-                case .success:
-                    self.feeds = self.feeds.filter { $0 != feed }
-                    if let indexPath = indexPath {
-                        self.tableView.deleteRows(at: [indexPath], with: .automatic)
-                    } else {
-                        self.tableView.reloadData()
-                    }
-                case .failure(let error):
-                    self.show(
-                        error: error,
-                        title: NSLocalizedString("FeedsTableViewController_Loading_Deleting_Feed_Error", comment: "")
-                    )
+                let errorTitle = NSLocalizedString("FeedsTableViewController_Loading_Deleting_Feed_Error", comment: "")
+                self.unwrap(result: result, errorTitle: errorTitle) {
+                        self.feeds = self.feeds.filter { $0 != feed }
+                        if let indexPath = indexPath {
+                            self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                        } else {
+                            self.tableView.reloadData()
+                        }
                 }
             }
         })
@@ -271,20 +268,13 @@ public final class FeedListController: UIViewController {
 
     fileprivate func markRead(feed: Feed, indexPath: IndexPath?) {
         self.feedService.readAll(of: feed).then { result in
-            switch result {
-            case .success:
-                break
-            case .failure(let error):
-                self.show(
-                    error: error,
-                    title: NSLocalizedString("FeedsTableViewController_Loading_Marking_Feed_Error", comment: "")
-                )
-            }
-        }.then { _ in
-            if let indexPath = indexPath {
-                self.tableView.reloadRows(at: [indexPath], with: .automatic)
-            } else {
-                self.tableView.reloadData()
+            let errorTitle = NSLocalizedString("FeedsTableViewController_Loading_Marking_Feed_Error", comment: "")
+            self.unwrap(result: result, errorTitle: errorTitle) {
+                if let indexPath = indexPath {
+                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                } else {
+                    self.tableView.reloadData()
+                }
             }
         }
     }

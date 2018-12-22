@@ -132,11 +132,8 @@ final class FeedListControllerSpec: QuickSpec {
                             subject.navigationItem.leftBarButtonItem?.tap()
                         }
 
-                        it("presents a settings page") {
-                            expect(subject.presentedViewController).to(beAnInstanceOf(UINavigationController.self))
-                            if let nc = subject.presentedViewController as? UINavigationController {
-                                expect(nc.topViewController).to(beAnInstanceOf(SettingsViewController.self))
-                            }
+                        it("pushes a settings page") {
+                            expect(navigationController.visibleViewController).to(beAnInstanceOf(SettingsViewController.self))
                         }
                     }
                 }
@@ -208,7 +205,6 @@ final class FeedListControllerSpec: QuickSpec {
 
                         it("should tell the feedService to fetch new feeds") {
                             expect(feedService.feedsPromises).to(haveCount(2))
-                            // already showed this behavior, so no point continuing to show it.
                         }
 
                         it("should be refreshing") {

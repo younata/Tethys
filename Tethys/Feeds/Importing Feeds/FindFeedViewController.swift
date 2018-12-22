@@ -119,6 +119,8 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.themeRepository.addSubscriber(self)
 
         self.analytics.logEvent("DidViewWebImport", data: nil)
+
+        self.focusNavField()
     }
 
     public override func viewWillTransition(to size: CGSize,

@@ -31,7 +31,8 @@ class TethysAcceptanceTests: XCTestCase {
         app.navigationBars["Feeds"].buttons["Add"].tap()
 
         let enterUrlTextField = app.textFields["Enter URL"]
-        enterUrlTextField.tap()
+        self.waitForThingToExist(enterUrlTextField)
+        XCTAssertTrue(app.keyboards.element.exists, "Should be showing a keyboard")
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 10))
         app.typeText("https://younata.github.io")
         app.buttons["Return"].tap()

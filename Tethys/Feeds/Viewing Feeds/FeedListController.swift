@@ -34,7 +34,6 @@ public final class FeedListController: UIViewController {
         )
     }()
 
-    public let loadingView = ActivityIndicator(forAutoLayout: ())
     public fileprivate(set) var feeds: [Feed] = []
     private let tableViewController = UITableViewController(style: .plain)
     private var menuTopOffset: NSLayoutConstraint!
@@ -49,8 +48,6 @@ public final class FeedListController: UIViewController {
     fileprivate let feedViewController: (Feed) -> FeedViewController
     fileprivate let settingsViewController: () -> SettingsViewController
     fileprivate let articleListController: (Feed) -> ArticleListController
-
-    fileprivate var markReadFuture: Future<Result<Int, TethysError>>?
 
     public init(feedService: FeedService,
                 themeRepository: ThemeRepository,
@@ -93,17 +90,13 @@ public final class FeedListController: UIViewController {
         self.notificationView.autoPinEdge(toSuperviewMargin: .leading)
         self.notificationView.autoPinEdge(.top, to: .bottom, of: self.navigationController!.navigationBar)
 
-        self.showLoadingView(NSLocalizedString("FeedsTableViewController_Loading_Feeds", comment: ""))
-
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self,
                                         action: #selector(FeedListController.didTapAddFeed))
         self.navigationItem.rightBarButtonItems = [addButton, self.tableViewController.editButtonItem]
 
         let settingsTitle = NSLocalizedString("SettingsViewController_Title", comment: "")
-        let settingsButton = UIBarButtonItem(title: settingsTitle,
-            style: .plain,
-            target: self,
-            action: #selector(FeedListController.presentSettings))
+        let settingsButton = UIBarButtonItem(title: settingsTitle, style: .plain,
+                                             target: self, action: #selector(FeedListController.presentSettings))
         self.navigationItem.leftBarButtonItem = settingsButton
 
         self.navigationItem.title = NSLocalizedString("FeedsTableViewController_Title", comment: "")
@@ -125,7 +118,6 @@ public final class FeedListController: UIViewController {
         to size: CGSize,
         with coordinator: UIViewControllerTransitionCoordinator) {
             super.viewWillTransition(to: size, with: coordinator)
-
             self.refreshControl.updateSize(size)
     }
 
@@ -141,8 +133,7 @@ public final class FeedListController: UIViewController {
                          action: #selector(FeedListController.importFromWeb)),
             UIKeyCommand(input: ",", modifierFlags: .command,
                          action: #selector(FeedListController.presentSettings)),
-            UIKeyCommand(input: "r", modifierFlags: .command,
-                         action: #selector(FeedListController.reload))
+            UIKeyCommand(input: "r", modifierFlags: .command, action: #selector(FeedListController.reload))
         ]
         let discoverabilityTitles = [
             NSLocalizedString("FeedsTableViewController_Command_ImportWeb", comment: ""),
@@ -152,8 +143,6 @@ public final class FeedListController: UIViewController {
         commands.enumerated().forEach { idx, cmd in cmd.discoverabilityTitle = discoverabilityTitles[idx] }
         return commands
     }
-
-    // MARK: - Private/Internal
 
     @objc internal func importFromWeb() {
         self.show(controller: self.findFeedViewController(), from: self.navigationItem.rightBarButtonItem, modal: true)
@@ -167,7 +156,6 @@ public final class FeedListController: UIViewController {
         let reloadWithFeeds: ([Feed]) -> Void = {feeds in
             self.refreshControl.endRefreshing(force: true)
 
-            self.loadingView.removeFromSuperview()
             self.onboardingView.removeFromSuperview()
             if feeds.isEmpty {
                 self.view.addSubview(self.onboardingView)
@@ -181,17 +169,12 @@ public final class FeedListController: UIViewController {
             let oldFeeds = self.feeds
             self.feeds = feeds
             guard oldFeeds != feeds else { return }
-            self.tableView.reloadSections(
-                IndexSet(integer: 0),
-                with: oldFeeds.isEmpty ? .none : .right
-            )
+            self.tableView.reloadSections(IndexSet(integer: 0), with: oldFeeds.isEmpty ? .none : .right)
         }
 
         self.feedService.feeds().then {
             let errorTitle = NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Title", comment: "")
-            self.unwrap(result: $0, errorTitle: errorTitle) { feeds in
-                reloadWithFeeds(Array(feeds))
-            }
+            self.unwrap(result: $0, errorTitle: errorTitle) { reloadWithFeeds(Array($0)) }
         }
     }
 
@@ -208,12 +191,6 @@ public final class FeedListController: UIViewController {
         } else {
             self.navigationController?.pushViewController(controller, animated: true)
         }
-    }
-
-    private func showLoadingView(_ message: String) {
-        self.loadingView.configure(message: message)
-        self.view.addSubview(self.loadingView)
-        self.loadingView.autoPinEdgesToSuperviewEdges()
     }
 
     @objc fileprivate func didTapAddFeed() {
@@ -291,21 +268,17 @@ public final class FeedListController: UIViewController {
         self.present(shareSheet, animated: true, completion: nil)
     }
 
-    fileprivate func feed(indexPath: IndexPath) -> Feed {
-        return self.feeds[indexPath.row]
-    }
+    fileprivate func feed(indexPath: IndexPath) -> Feed { return self.feeds[indexPath.row] }
 }
 
 extension FeedListController: UIViewControllerPreviewingDelegate {
     public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
                                   viewControllerForLocation location: CGPoint) -> UIViewController? {
-        if let indexPath = self.tableView.indexPathForRow(at: location) {
-            let feed = self.feeds[indexPath.row]
-            let articleListController = self.articleListController(feed)
-            articleListController._previewActionItems = self.articleListPreviewItems(feed: feed)
-            return articleListController
-        }
-        return nil
+        guard let indexPath = self.tableView.indexPathForRow(at: location) else { return nil }
+        let feed = self.feeds[indexPath.row]
+        let articleListController = self.articleListController(feed)
+        articleListController._previewActionItems = self.articleListPreviewItems(feed: feed)
+        return articleListController
     }
 
     private func articleListPreviewItems(feed: Feed) -> [UIPreviewAction] {
@@ -330,16 +303,13 @@ extension FeedListController: UIViewControllerPreviewingDelegate {
 
     public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
                                   commit viewControllerToCommit: UIViewController) {
-        if let articleController = viewControllerToCommit as? ArticleListController {
-            self.navigationController?.pushViewController(articleController, animated: true)
-        }
+        guard let articleController = viewControllerToCommit as? ArticleListController else { return }
+        self.navigationController?.pushViewController(articleController, animated: true)
     }
 }
 
 extension FeedListController: Refresher {
-    public func refresh() {
-        self.reload()
-    }
+    public func refresh() { self.reload() }
 }
 
 extension FeedListController: ThemeRepositorySubscriber {
@@ -368,8 +338,7 @@ extension FeedListController: UITableViewDelegate, UITableViewDataSource {
         // Prevents a green triangle which'll (dis)appear depending on
         // whether new feed loaded into it has unread articles or not.
 
-        if let cell = tableView.dequeueReusableCell(withIdentifier: cellTypeToUse,
-                                                    for: indexPath) as? FeedTableCell {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: cellTypeToUse, for: indexPath) as? FeedTableCell {
             cell.feed = feed
             cell.themeRepository = self.themeRepository
             return cell
@@ -379,9 +348,7 @@ extension FeedListController: UITableViewDelegate, UITableViewDataSource {
 
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
-
         let feed = self.feed(indexPath: indexPath)
-
         self.navigationController?.pushViewController(self.articleListController(feed), animated: true)
     }
 
@@ -423,9 +390,8 @@ extension FeedListController: UITableViewDelegate, UITableViewDataSource {
     public func scrollViewWillEndDragging(_ scrollView: UIScrollView,
                                           withVelocity velocity: CGPoint,
                                           targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        self.refreshControl.scrollViewWillEndDragging(scrollView,
-                                                            withVelocity: velocity,
-                                                            targetContentOffset: targetContentOffset)
+        self.refreshControl.scrollViewWillEndDragging(scrollView, withVelocity: velocity,
+                                                      targetContentOffset: targetContentOffset)
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) { self.refreshControl.scrollViewDidScroll(scrollView) }

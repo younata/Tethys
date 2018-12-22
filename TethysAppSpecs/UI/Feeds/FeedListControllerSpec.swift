@@ -166,11 +166,6 @@ final class FeedListControllerSpec: QuickSpec {
                 }
             }
 
-            it("shows an activity indicator") {
-                expect(subject.loadingView.superview).toNot(beNil())
-                expect(subject.loadingView.message).to(equal("Loading Feeds"))
-            }
-
             it("asks the feed service to fetch the feeds") {
                 expect(feedService.feedsPromises).to(haveCount(1))
             }
@@ -501,10 +496,6 @@ final class FeedListControllerSpec: QuickSpec {
                 context("but no feeds were found") {
                     beforeEach {
                         feedService.feedsPromises.last?.resolve(.success(AnyCollection([])))
-                    }
-
-                    it("hides the activity indicator") {
-                        expect(subject.loadingView.superview).to(beNil())
                     }
 
                     it("shows the onboarding view") {

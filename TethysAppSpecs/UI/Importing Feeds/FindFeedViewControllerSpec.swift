@@ -108,13 +108,13 @@ class FindFeedViewControllerSpec: QuickSpec {
 
             describe("the first command") {
                 it("is bound to cmd+l") {
-                    guard let keyCommand = subject.keyCommands?.first else { fail("precondition failed"); return }
+                    guard let keyCommand = subject.keyCommands?.first else { fail("No key commands found"); return }
 
                     expect(keyCommand.input) == "l"
                 }
 
                 it("is titled 'open URL'") {
-                    guard let keyCommand = subject.keyCommands?.first else { fail("precondition failed"); return }
+                    guard let keyCommand = subject.keyCommands?.first else { fail("No key commands found"); return }
 
                     expect(keyCommand.discoverabilityTitle) == "Open URL"
                 }
@@ -122,13 +122,13 @@ class FindFeedViewControllerSpec: QuickSpec {
 
             describe("the second command") {
                 it("is bound to cmd+r") {
-                    guard let keyCommand = subject.keyCommands?.last else { fail("precondition failed"); return }
+                    guard let keyCommand = subject.keyCommands?.last else { fail("No key commands found"); return }
 
                     expect(keyCommand.input) == "r"
                 }
 
                 it("is titled 'Reload'") {
-                    guard let keyCommand = subject.keyCommands?.last else { fail("precondition failed"); return }
+                    guard let keyCommand = subject.keyCommands?.last else { fail("No key commands found"); return }
 
                     expect(keyCommand.discoverabilityTitle) == "Reload"
                 }

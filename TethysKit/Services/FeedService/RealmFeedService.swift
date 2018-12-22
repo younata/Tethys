@@ -21,15 +21,7 @@ struct RealmFeedService: FeedService {
     func feeds() -> Future<Result<AnyCollection<Feed>, TethysError>> {
         let promise = Promise<Result<AnyCollection<Feed>, TethysError>>()
         self.workQueue.addOperation {
-            let realmFeeds = self.realmProvider.realm().objects(RealmFeed.self).sorted(by: { (lhs, rhs) -> Bool in
-                let unreadPredicate = NSPredicate(format: "read == false")
-                let lhsUnread = lhs.articles.filter(unreadPredicate).count
-                let rhsUnread = rhs.articles.filter(unreadPredicate).count
-                guard lhsUnread == rhsUnread else {
-                    return lhsUnread > rhsUnread
-                }
-                return lhs.title < rhs.title
-            })
+            let realmFeeds = self.realmProvider.realm().objects(RealmFeed.self)
             let feeds = realmFeeds.map { Feed(realmFeed: $0) }
             let updatePromises: [Future<Result<Feed, TethysError>>] = feeds.map {
                 return self.updateService.updateFeed($0)
@@ -40,7 +32,12 @@ struct RealmFeedService: FeedService {
                     self.resolve(promise: promise, error: .multiple(errors))
                     return
                 }
-                let updatedFeeds = results.compactMap { $0.value }
+                let updatedFeeds = results.compactMap { $0.value }.sorted { (lhs, rhs) -> Bool in
+                    guard lhs.unreadCount == rhs.unreadCount else {
+                        return lhs.unreadCount > rhs.unreadCount
+                    }
+                    return lhs.title < rhs.title
+                }
                 self.resolve(promise: promise, with: AnyCollection(updatedFeeds))
             }
         }

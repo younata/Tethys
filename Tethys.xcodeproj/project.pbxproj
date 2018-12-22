@@ -217,6 +217,7 @@
 		89E186931D136C48005C5880 /* FakeAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E186911D136C38005C5880 /* FakeAnalytics.swift */; };
 		89E2A33D1B6A856900A40D4E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */; };
 		89E2A33F1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E2A33E1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift */; };
+		89E9DD4621CE9D5C00326E2D /* FeedsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9DD4521CE9D5C00326E2D /* FeedsTests.swift */; };
 		89EA6C371B4B308F00456892 /* FakeOPMLService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C11B3A7CCC0097045A /* FakeOPMLService.swift */; };
 		89EF4FD81A96852D0052A82F /* test.opml in Resources */ = {isa = PBXBuildFile; fileRef = 89EF4FD71A96852D0052A82F /* test.opml */; };
 		89F516571B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89F516561B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m */; };
@@ -509,6 +510,7 @@
 		89E186911D136C38005C5880 /* FakeAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeAnalytics.swift; sourceTree = "<group>"; };
 		89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		89E2A33E1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewControllerSpec.swift; sourceTree = "<group>"; };
+		89E9DD4521CE9D5C00326E2D /* FeedsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedsTests.swift; sourceTree = "<group>"; };
 		89EF4FD71A96852D0052A82F /* test.opml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = test.opml; sourceTree = "<group>"; };
 		89F516551B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+TethysTests.h"; sourceTree = "<group>"; };
 		89F516561B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarButtonItem+TethysTests.m"; sourceTree = "<group>"; };
@@ -865,6 +867,7 @@
 				8992D43D1C37C9B0004A5A35 /* Info.plist */,
 				899788801C508BB400B408C4 /* SnapshotHelper.swift */,
 				8992D43B1C37C9B0004A5A35 /* TethysAcceptanceTests.swift */,
+				89E9DD4521CE9D5C00326E2D /* FeedsTests.swift */,
 			);
 			path = TethysAcceptanceSpecs;
 			sourceTree = "<group>";
@@ -1667,6 +1670,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				899788811C508BB400B408C4 /* SnapshotHelper.swift in Sources */,
+				89E9DD4621CE9D5C00326E2D /* FeedsTests.swift in Sources */,
 				8992D43C1C37C9B0004A5A35 /* TethysAcceptanceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

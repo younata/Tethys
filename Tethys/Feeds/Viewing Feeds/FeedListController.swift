@@ -169,10 +169,7 @@ public final class FeedListController: UIViewController {
 
             self.loadingView.removeFromSuperview()
             self.onboardingView.removeFromSuperview()
-            let filteredFeeds = feeds.filter {
-                return $0.title != NSLocalizedString("AppDelegate_UnreadFeed_Title", comment: "")
-            }
-            if filteredFeeds.isEmpty {
+            if feeds.isEmpty {
                 self.view.addSubview(self.onboardingView)
                 self.onboardingView.autoCenterInSuperview()
                 self.onboardingView.autoMatch(.width,

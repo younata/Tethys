@@ -87,9 +87,9 @@ final class RealmFeedServiceSpec: QuickSpec {
 
                     describe("if all feeds successfully update") {
                         let feeds = [
-                            feedFactory(title: "Feed1_Updated"),
-                            feedFactory(title: "Feed2_Updated"),
-                            feedFactory(title: "Feed3_Updated")
+                            feedFactory(title: "Feed1_Updated", unreadCount: 1),
+                            feedFactory(title: "Feed2_Updated", unreadCount: 2),
+                            feedFactory(title: "Feed3_Updated", unreadCount: 1)
                         ]
                         beforeEach {
                             updateService.updateFeedPromises.enumerated().forEach {
@@ -98,7 +98,11 @@ final class RealmFeedServiceSpec: QuickSpec {
                             }
                         }
 
-                        onSuccess(feeds)
+                        onSuccess([
+                            feeds[1],
+                            feeds[0],
+                            feeds[2]
+                        ])
                     }
 
                     describe("if any feeds fail to update") {

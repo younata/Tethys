@@ -5,6 +5,7 @@ func feedFactory(
     url: URL = URL(string: "https://example.com/feed")!,
     summary: String = "summary",
     tags: [String] = [],
+    unreadCount: Int = 0,
     image: Image? = nil
     ) -> Feed {
     return Feed(
@@ -12,7 +13,7 @@ func feedFactory(
         url: url,
         summary: summary,
         tags: tags,
-        unreadCount: 0,
+        unreadCount: unreadCount,
         image: image
     )
 }

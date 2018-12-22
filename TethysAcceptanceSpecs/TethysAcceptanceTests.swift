@@ -33,7 +33,7 @@ class TethysAcceptanceTests: XCTestCase {
         let enterUrlTextField = app.textFields["Enter URL"]
         enterUrlTextField.tap()
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 10))
-        app.typeText("http://younata.github.io")
+        app.typeText("https://younata.github.io")
         app.buttons["Return"].tap()
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 10))
 
@@ -51,6 +51,9 @@ class TethysAcceptanceTests: XCTestCase {
 
     func testMakingScreenshots() {
         let app = XCUIApplication()
+
+        self.waitForThingToExist(app.navigationBars["Feeds"])
+        assertFirstLaunch(app: app)
 
         self.loadWebFeed()
 

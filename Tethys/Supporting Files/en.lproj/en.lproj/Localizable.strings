@@ -91,9 +91,6 @@
 
 "AuthorActivity_Title" = "Articles by %@";
 
-"AppDelegate_UnreadFeed_Title" = "All Unread";
-"AppDelegate_UnreadFeed_Summary" = "All unread articles";
-
 "RefreshControlStyle_Spinner" = "Spinner";
 "RefreshControlStyle_Breakout" = "Breakout";
 

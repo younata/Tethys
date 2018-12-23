@@ -94,8 +94,7 @@ public final class FeedListController: UIViewController {
                                         action: #selector(FeedListController.didTapAddFeed))
         self.navigationItem.rightBarButtonItems = [addButton, self.tableViewController.editButtonItem]
 
-        let settingsTitle = NSLocalizedString("SettingsViewController_Title", comment: "")
-        let settingsButton = UIBarButtonItem(title: settingsTitle, style: .plain,
+        let settingsButton = UIBarButtonItem(image: Image(named: "settings"), style: .plain,
                                              target: self, action: #selector(FeedListController.presentSettings))
         self.navigationItem.leftBarButtonItem = settingsButton
 

@@ -12,6 +12,8 @@ class SettingsViewControllerSpec: QuickSpec {
         var settingsRepository: SettingsRepository! = nil
         var opmlService: FakeOPMLService! = nil
 
+        var rootViewController: UIViewController!
+
         beforeEach {
             themeRepository = ThemeRepository(userDefaults: nil)
 
@@ -30,7 +32,10 @@ class SettingsViewControllerSpec: QuickSpec {
                 documentationViewController: { documentation in documentationViewControllerFactory(documentation: documentation) }
             )
 
-            navigationController = UINavigationController(rootViewController: subject)
+            rootViewController = UIViewController()
+
+            navigationController = UINavigationController(rootViewController: rootViewController)
+            navigationController.pushViewController(subject, animated: false)
 
             expect(subject.view).toNot(beNil())
         }
@@ -66,21 +71,6 @@ class SettingsViewControllerSpec: QuickSpec {
             expect(subject.navigationItem.rightBarButtonItem?.isEnabled) == false
         }
 
-        describe("tapping the cancel button") {
-            var rootViewController: UIViewController! = nil
-            beforeEach {
-                rootViewController = UIViewController()
-                rootViewController.present(navigationController, animated: false, completion: nil)
-                expect(rootViewController.presentedViewController).to(beIdenticalTo(navigationController))
-
-                subject.navigationItem.leftBarButtonItem?.tap()
-            }
-
-            it("dismisses itself") {
-                expect(rootViewController.presentedViewController).to(beNil())
-            }
-        }
-
         sharedExamples("a changed setting") { (sharedContext: @escaping SharedExampleContext) in
             it("should enable the save button") {
                 expect(subject.navigationItem.rightBarButtonItem?.isEnabled) == true
@@ -97,7 +87,7 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
 
                 it("dismisses itself") {
-                    expect(rootViewController.presentedViewController).to(beNil())
+                    expect(navigationController.visibleViewController).to(be(rootViewController))
                 }
 
                 it("saves the change to the userDefaults") {

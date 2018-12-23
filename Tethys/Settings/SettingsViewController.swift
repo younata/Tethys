@@ -44,9 +44,6 @@ public final class SettingsViewController: UIViewController {
             target: self,
             action: #selector(SettingsViewController.didTapSave))
         self.navigationItem.rightBarButtonItem?.isEnabled = false
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
-            target: self,
-            action: #selector(SettingsViewController.didTapDismiss))
 
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.tableView)
@@ -118,7 +115,7 @@ public final class SettingsViewController: UIViewController {
         if self.oldTheme != self.themeRepository.theme {
             self.themeRepository.theme = self.oldTheme
         }
-        self.navigationController?.presentingViewController?.dismiss(animated: true, completion: nil)
+        self.navigationController?.popViewController(animated: true)
     }
 
     @objc fileprivate func didTapSave() {

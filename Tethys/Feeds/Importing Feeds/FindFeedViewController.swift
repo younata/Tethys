@@ -18,8 +18,6 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     public var reload: UIBarButtonItem!
     public var cancelTextEntry: UIBarButtonItem!
 
-    public var lookForFeeds = true
-
     fileprivate let importUseCase: ImportUseCase
     fileprivate let themeRepository: ThemeRepository
     fileprivate let analytics: Analytics
@@ -86,11 +84,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         func spacer() -> UIBarButtonItem {
             return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         }
-        if self.lookForFeeds {
-            self.toolbarItems = [self.back, self.forward, spacer(), dismiss, spacer(), self.addFeedButton]
-        } else {
-            self.toolbarItems = [self.back, self.forward, spacer(), dismiss]
-        }
+        self.toolbarItems = [self.back, self.forward, spacer(), dismiss, spacer(), self.addFeedButton]
 
         self.navigationItem.titleView = self.navField
         self.navField.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width * 0.8, height: 32)
@@ -252,8 +246,8 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.navField.attributedPlaceholder = NSAttributedString(string: urlLoading,
                                                                  attributes: self.placeholderAttributes)
         self.addFeedButton.isEnabled = false
-        if let url = webView.url, lookForFeeds {
-            _ = self.importUseCase.scanForImportable(url).then { item in
+        if let url = webView.url {
+            self.importUseCase.scanForImportable(url).then { item in
                 switch item {
                 case .feed(let url, _):
                     self.askToImportFeed(url)

@@ -144,11 +144,11 @@ public final class FeedListController: UIViewController {
     }
 
     @objc internal func importFromWeb() {
-        self.show(controller: self.findFeedViewController(), from: self.navigationItem.rightBarButtonItem, modal: true)
+        self.show(controller: self.findFeedViewController(), from: self.navigationItem.rightBarButtonItem)
     }
 
     @objc fileprivate func presentSettings() {
-        self.show(controller: self.settingsViewController(), from: self.navigationItem.leftBarButtonItem, modal: false)
+        self.show(controller: self.settingsViewController(), from: self.navigationItem.leftBarButtonItem)
     }
 
     @objc fileprivate func reload() {
@@ -177,15 +177,12 @@ public final class FeedListController: UIViewController {
         }
     }
 
-    private func show(controller: UIViewController, from: UIBarButtonItem?, modal: Bool) {
+    private func show(controller: UIViewController, from: UIBarButtonItem?) {
         if UIDevice.current.userInterfaceIdiom == .pad {
             let nc = UINavigationController(rootViewController: controller)
             nc.modalPresentationStyle = .popover
             nc.preferredContentSize = CGSize(width: 600, height: 800)
             nc.popoverPresentationController?.barButtonItem = from
-            self.present(nc, animated: true, completion: nil)
-        } else if modal {
-            let nc = UINavigationController(rootViewController: controller)
             self.present(nc, animated: true, completion: nil)
         } else {
             self.navigationController?.pushViewController(controller, animated: true)

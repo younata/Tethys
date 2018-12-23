@@ -153,10 +153,7 @@ final class FeedListControllerSpec: QuickSpec {
                         }
 
                         it("presents a FindFeedViewController") {
-                            expect(subject.presentedViewController).to(beAnInstanceOf(UINavigationController.self))
-                            if let nc = subject.presentedViewController as? UINavigationController {
-                                expect(nc.topViewController).to(beAnInstanceOf(FindFeedViewController.self))
-                            }
+                            expect(navigationController.visibleViewController).to(beAnInstanceOf(FindFeedViewController.self))
                         }
                     }
 

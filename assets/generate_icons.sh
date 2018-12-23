@@ -9,6 +9,21 @@ svgexport AppIcon.xml ../$APP_NAME/Images.xcassets/settings.imageset/settings@3x
 EOF
 }
 
+function chevron_icons {
+    parallel --progress -j 0 << EOF
+svgexport Chevron.xml Chevron@2x.png 48:48
+svgexport Chevron.xml Chevron@3x.png 72:72
+EOF
+
+    parallel --progress -j 0 << EOF
+convert Chevron@2x.png -rotate -90 ../$APP_NAME/Images.xcassets/LeftChevron.imageset/LeftChevron@2x.png
+convert Chevron@3x.png -rotate -90 ../$APP_NAME/Images.xcassets/LeftChevron.imageset/LeftChevron@3x.png
+convert Chevron@2x.png -rotate 90 ../$APP_NAME/Images.xcassets/RightChevron.imageset/RightChevron@2x.png
+convert Chevron@3x.png -rotate 90 ../$APP_NAME/Images.xcassets/RightChevron.imageset/RightChevron@3x.png
+EOF
+    rm Chevron@2x.png Chevron@3x.png
+}
+
 function app_icon {
     parallel --progress -j 0 << EOF
 svgexport AppIcon.xml ../$APP_NAME/Images.xcassets/AppIcon.appiconset/Icon@2x.png 120:120
@@ -31,8 +46,9 @@ EOF
 
 if [ $# -eq 1 ]; then
     case "$1" in
-        "settings") settings_icon ;;
         "app") app_icon ;;
+        "chevron") chevron_icons ;;
+        "settings") settings_icon ;;
         *)
             echo "Usage: $0 [app, settings]"
             echo "No arguments will recreate all icons."
@@ -40,10 +56,12 @@ if [ $# -eq 1 ]; then
     esac
 else
     export -f app_icon
+    export -f chevron_icons
     export -f settings_icon
 
     parallel --progress -j 0 << EOF
 app_icon
+chevron_icons
 settings_icon
 EOF
 fi

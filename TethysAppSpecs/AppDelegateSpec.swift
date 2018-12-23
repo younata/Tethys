@@ -149,9 +149,7 @@ class AppDelegateSpec: QuickSpec {
                 it("opens an add feed from web window when the 'Add New Feed' action is selected") {
                     expect(completedAction) == true
                     let navController = (subject.window?.rootViewController as? UISplitViewController)?.viewControllers.first as? UINavigationController
-                    expect(navController?.visibleViewController).to(beAKindOf(UINavigationController.self))
-                    let viewController = (navController?.visibleViewController as? UINavigationController)?.topViewController
-                    expect(viewController).to(beAKindOf(FindFeedViewController.self))
+                    expect(navController?.visibleViewController).to(beAKindOf(FindFeedViewController.self))
                 }
 
                 it("tells analytics to log that the user used quick actions to add a new feed") {

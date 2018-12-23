@@ -77,17 +77,12 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("tapping the save button") {
-                var rootViewController: UIViewController! = nil
                 beforeEach {
-                    rootViewController = UIViewController()
-                    rootViewController.present(navigationController, animated: false, completion: nil)
-                    expect(rootViewController.presentedViewController).toNot(beNil())
-
                     subject.navigationItem.rightBarButtonItem?.tap()
                 }
 
                 it("dismisses itself") {
-                    expect(navigationController.visibleViewController).to(be(rootViewController))
+                    expect(navigationController.visibleViewController).to(equal(rootViewController))
                 }
 
                 it("saves the change to the userDefaults") {

@@ -55,9 +55,9 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
             self.loadingBar.progress = Float(self.webContent.estimatedProgress)
         }
 
-        self.back = UIBarButtonItem(title: "<", style: .plain, target: self.webContent,
+        self.back = UIBarButtonItem(image: Image(named: "LeftChevron"), style: .plain, target: self.webContent,
                                     action: #selector(UIWebView.goBack))
-        self.forward = UIBarButtonItem(title: ">", style: .plain, target: self.webContent,
+        self.forward = UIBarButtonItem(image: Image(named: "RightChevron"), style: .plain, target: self.webContent,
                                        action: #selector(UIWebView.goForward))
 
         self.edgesForExtendedLayout = [.left, .right]
@@ -69,9 +69,6 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.forward.isEnabled = false
         self.addFeedButton.isEnabled = false
 
-        let dismissTitle = NSLocalizedString("Generic_Dismiss", comment: "")
-        let dismiss = UIBarButtonItem(title: dismissTitle, style: .plain, target: self,
-                                      action: #selector(FindFeedViewController.dismissFromNavigation))
         self.reload = UIBarButtonItem(barButtonSystemItem: .refresh, target: self,
                                       action: #selector(FindFeedViewController.reloadWebPage))
 
@@ -84,7 +81,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         func spacer() -> UIBarButtonItem {
             return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         }
-        self.toolbarItems = [self.back, self.forward, spacer(), dismiss, spacer(), self.addFeedButton]
+        self.toolbarItems = [self.back, self.forward, spacer(), self.addFeedButton]
 
         self.navigationItem.titleView = self.navField
         self.navField.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width * 0.8, height: 32)
@@ -113,14 +110,16 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.themeRepository.addSubscriber(self)
 
         self.analytics.logEvent("DidViewWebImport", data: nil)
+    }
 
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         self.focusNavField()
     }
 
     public override func viewWillTransition(to size: CGSize,
                                             with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-
         self.navField.frame = CGRect(x: 0, y: 0, width: size.width * 0.8, height: 32)
     }
 

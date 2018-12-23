@@ -310,7 +310,7 @@ extension FindFeedViewController {
             self.save(link: rl)
         } else if self.rssLinks.count > 1 {
             let alertTitle = NSLocalizedString("FindFeedViewController_ImportFeeds_SelectFeed", comment: "")
-            let alert = UIAlertController(title: alertTitle, message: nil, preferredStyle: .alert)
+            let alert = UIAlertController(title: alertTitle, message: nil, preferredStyle: .actionSheet)
             for link in self.rssLinks {
                 let pathWithPrecedingSlash = link.path
                 let index = pathWithPrecedingSlash.index(after: pathWithPrecedingSlash.startIndex)

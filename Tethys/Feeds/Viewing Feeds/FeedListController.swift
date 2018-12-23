@@ -210,30 +210,17 @@ public final class FeedListController: UIViewController {
     }
 
     fileprivate func deleteFeed(feed: Feed, indexPath: IndexPath?) {
-        let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-        let confirmDelete = NSLocalizedString("Generic_ConfirmDelete", comment: "")
-        let deleteAlertTitle = NSString.localizedStringWithFormat(confirmDelete as NSString,
-                                                                  feed.displayTitle) as String
-        let alert = UIAlertController(title: deleteAlertTitle, message: "", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
-            self.dismiss(animated: true, completion: nil)
-            self.feedService.remove(feed: feed).then { result in
-                let errorTitle = NSLocalizedString("FeedsTableViewController_Loading_Deleting_Feed_Error", comment: "")
-                self.unwrap(result: result, errorTitle: errorTitle) {
-                        self.feeds = self.feeds.filter { $0 != feed }
-                        if let indexPath = indexPath {
-                            self.tableView.deleteRows(at: [indexPath], with: .automatic)
-                        } else {
-                            self.tableView.reloadData()
-                        }
+        self.feedService.remove(feed: feed).then { result in
+            let errorTitle = NSLocalizedString("FeedsTableViewController_Loading_Deleting_Feed_Error", comment: "")
+            self.unwrap(result: result, errorTitle: errorTitle) {
+                self.feeds = self.feeds.filter { $0 != feed }
+                if let indexPath = indexPath {
+                    self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                } else {
+                    self.tableView.reloadData()
                 }
             }
-        })
-        let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
-        alert.addAction(UIAlertAction(title: cancelTitle, style: .cancel) { _ in
-            self.dismiss(animated: true, completion: nil)
-        })
-        self.present(alert, animated: true, completion: nil)
+        }
     }
 
     fileprivate func markRead(feed: Feed, indexPath: IndexPath?) {
@@ -249,9 +236,17 @@ public final class FeedListController: UIViewController {
         }
     }
 
-    fileprivate func editFeed(feed: Feed) {
-        self.present(UINavigationController(rootViewController: self.feedViewController(feed)),
-                     animated: true, completion: nil)
+    fileprivate func editFeed(feed: Feed, view: UIView?) {
+        let controller = self.feedViewController(feed)
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            let nc = UINavigationController(rootViewController: controller)
+            nc.modalPresentationStyle = .popover
+            nc.preferredContentSize = CGSize(width: 600, height: 800)
+            nc.popoverPresentationController?.sourceView = view
+            self.present(nc, animated: true, completion: nil)
+        } else {
+            self.navigationController?.pushViewController(controller, animated: true)
+        }
     }
 
     fileprivate func shareFeed(feed: Feed) {
@@ -284,7 +279,7 @@ extension FeedListController: UIViewControllerPreviewingDelegate {
         }
         let editTitle = NSLocalizedString("Generic_Edit", comment: "")
         let edit = UIPreviewAction(title: editTitle, style: .default) { _, _  in
-            self.editFeed(feed: feed)
+            self.editFeed(feed: feed, view: nil)
         }
         let shareTitle = NSLocalizedString("Generic_Share", comment: "")
         let share = UIPreviewAction(title: shareTitle, style: .default) { _, _  in
@@ -368,7 +363,7 @@ extension FeedListController: UITableViewDelegate, UITableViewDataSource {
 
         let editTitle = NSLocalizedString("Generic_Edit", comment: "")
         let edit = UITableViewRowAction(style: .normal, title: editTitle) {_, indexPath in
-            self.editFeed(feed: self.feed(indexPath: indexPath))
+            self.editFeed(feed: self.feed(indexPath: indexPath), view: tableView.cellForRow(at: indexPath))
         }
         edit.backgroundColor = UIColor.blue
         let shareTitle = NSLocalizedString("Generic_Share", comment: "")

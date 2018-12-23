@@ -106,35 +106,19 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     }
 
     fileprivate func attemptDelete(article: Article) -> Future<Bool> {
-        let confirmDelete = NSLocalizedString("Generic_ConfirmDelete", comment: "")
-        let deleteAlertTitle = NSString.localizedStringWithFormat(confirmDelete as NSString,
-                                                                  article.title) as String
-        let alert = UIAlertController(title: deleteAlertTitle, message: "", preferredStyle: .alert)
-        let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-        let promise = Promise<Bool>()
-        alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
-            self.articleService.remove(article: article).then { result in
-                switch result {
-                case .success:
-                    self.articles = AnyCollection(self.articles.filter { $0 != article })
-                    promise.resolve(true)
-                case .failure(let error):
-                    self.showAlert(
-                        error: error,
-                        title: NSLocalizedString("ArticleListController_Action_Delete_Error_Title", comment: "")
-                    )
-                    promise.resolve(false)
-                }
+        return self.articleService.remove(article: article).map { result -> Bool in
+            switch result {
+            case .success:
+                self.articles = AnyCollection(self.articles.filter { $0 != article })
+                return true
+            case .failure(let error):
+                self.showAlert(
+                    error: error,
+                    title: NSLocalizedString("ArticleListController_Action_Delete_Error_Title", comment: "")
+                )
+                return false
             }
-            self.dismiss(animated: true, completion: nil)
-        })
-        let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
-        alert.addAction(UIAlertAction(title: cancelTitle, style: .cancel) { _ in
-            promise.resolve(false)
-            self.dismiss(animated: true, completion: nil)
-        })
-        self.present(alert, animated: true, completion: nil)
-        return promise.future
+        }
     }
 
     fileprivate func toggleRead(article: Article) {

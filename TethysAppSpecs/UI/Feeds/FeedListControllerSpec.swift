@@ -303,8 +303,8 @@ final class FeedListControllerSpec: QuickSpec {
                                                     feedService.readAllOfFeedPromises.last?.resolve(.success(()))
                                                 }
 
-                                                xit("reloads the feed cell, indicating that it's unread count has changed") {
-                                                    fail("Need to get rid of FeedDeleSource first")
+                                                it("marks the cell as unread") {
+                                                    expect(cell?.unreadCounter.unread).to(equal(0))
                                                 }
                                             }
 
@@ -344,11 +344,7 @@ final class FeedListControllerSpec: QuickSpec {
                                             }
 
                                             it("brings up a feed edit screen") {
-                                                expect(navigationController.visibleViewController).to(beAnInstanceOf(UINavigationController.self))
-                                                if let nc = navigationController.visibleViewController as? UINavigationController {
-                                                    expect(nc.viewControllers.count).to(equal(1))
-                                                    expect(nc.topViewController).to(beAnInstanceOf(FeedViewController.self))
-                                                }
+                                                expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedViewController.self))
                                             }
                                         }
                                     }
@@ -396,83 +392,38 @@ final class FeedListControllerSpec: QuickSpec {
                                                 action?.handler(action!, viewController!)
                                             }
 
-                                            it("does not yet delete the feed from the data store") {
-                                                expect(feedService.removeFeedCalls).to(haveCount(0))
+                                            it("deletes the feed from the data store") {
+                                                expect(feedService.removeFeedCalls).to(equal([feeds[0]]))
                                             }
 
-                                            it("presents an alert asking for confirmation that the user wants to do this") {
-                                                expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                                guard let alert = subject.presentedViewController as? UIAlertController else { return }
-                                                expect(alert.preferredStyle) == UIAlertController.Style.alert
-                                                expect(alert.title) == "Delete \(feeds[0].displayTitle)?"
-
-                                                expect(alert.actions.count) == 2
-                                                expect(alert.actions.first?.title) == "Delete"
-                                                expect(alert.actions.last?.title) == "Cancel"
-                                            }
-
-                                            describe("tapping 'Delete'") {
+                                            describe("if the feedService successfully removes the feed") {
                                                 beforeEach {
-                                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
-
-                                                    alert.actions.first?.handler?(alert.actions.first!)
+                                                    feedService.removeFeedPromises.last?.resolve(.success(()))
                                                 }
 
-                                                it("deletes the feed from the data store") {
-                                                    expect(feedService.removeFeedCalls).to(equal([feeds[0]]))
-                                                }
-
-                                                it("dismisses the alert") {
-                                                    expect(subject.presentedViewController).to(beNil())
-                                                }
-
-                                                describe("if the feedService successfully removes the feed") {
-                                                    beforeEach {
-                                                        feedService.removeFeedPromises.last?.resolve(.success(()))
-                                                    }
-
-                                                    it("removes the feed from the list of cells") {
-                                                        expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(2))
-                                                    }
-                                                }
-
-                                                describe("if the feedService fails to remove the feed") {
-                                                    beforeEach {
-                                                        UIView.pauseAnimations()
-                                                        feedService.removeFeedPromises.last?.resolve(.failure(.database(.unknown)))
-                                                    }
-
-                                                    afterEach {
-                                                        UIView.resumeAnimations()
-                                                    }
-
-                                                    it("brings up an alert notifying the user") {
-                                                        expect(subject.notificationView.titleLabel.isHidden) == false
-                                                        expect(subject.notificationView.titleLabel.text).to(equal("Unable to delete feed"))
-                                                        expect(subject.notificationView.messageLabel.text).to(equal("Unknown Database Error"))
-                                                    }
-
-                                                    it("does not remove the feed from the list of cells") {
-                                                        expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(3))
-                                                    }
+                                                it("removes the feed from the list of cells") {
+                                                    expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(2))
                                                 }
                                             }
 
-                                            describe("tapping 'Cancel'") {
+                                            describe("if the feedService fails to remove the feed") {
                                                 beforeEach {
-                                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
-
-                                                    alert.actions.last?.handler?(alert.actions.last!)
+                                                    UIView.pauseAnimations()
+                                                    feedService.removeFeedPromises.last?.resolve(.failure(.database(.unknown)))
                                                 }
 
-                                                it("does not delete the feed from the feed service") {
-                                                    expect(feedService.removeFeedCalls).to(beEmpty())
+                                                afterEach {
+                                                    UIView.resumeAnimations()
                                                 }
 
-                                                it("dismisses the alert") {
-                                                    expect(subject.presentedViewController).to(beNil())
+                                                it("brings up an alert notifying the user") {
+                                                    expect(subject.notificationView.titleLabel.isHidden) == false
+                                                    expect(subject.notificationView.titleLabel.text).to(equal("Unable to delete feed"))
+                                                    expect(subject.notificationView.messageLabel.text).to(equal("Unknown Database Error"))
+                                                }
+
+                                                it("does not remove the feed from the list of cells") {
+                                                    expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(3))
                                                 }
                                             }
                                         }
@@ -483,6 +434,166 @@ final class FeedListControllerSpec: QuickSpec {
                                     if let vc = viewController {
                                         subject.previewingContext(viewControllerPreviewing, commit: vc)
                                         expect(navigationController.topViewController) === viewController
+                                    }
+                                }
+                            }
+
+                            describe("edit actions") {
+                                var editActions: [UITableViewRowAction] = []
+
+                                var action: UITableViewRowAction?
+
+                                beforeEach {
+                                    editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAt: indexPath) ?? []
+                                }
+
+                                it("has 4 edit actions") {
+                                    expect(editActions).to(haveCount(4))
+                                }
+
+                                describe("the first one") {
+                                    beforeEach {
+                                        action = editActions.first
+                                    }
+
+                                    it("states it deletes the feed") {
+                                        expect(action?.title).to(equal("Delete"))
+                                    }
+
+                                    describe("tapping it") {
+                                        beforeEach {
+                                            action?.handler?(action!, indexPath)
+                                        }
+
+                                        it("deletes the feed from the data store") {
+                                            expect(feedService.removeFeedCalls).to(equal([feeds[0]]))
+                                        }
+
+                                        describe("if the feedService successfully removes the feed") {
+                                            beforeEach {
+                                                feedService.removeFeedPromises.last?.resolve(.success(()))
+                                            }
+
+                                            it("removes the feed from the list of cells") {
+                                                expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(2))
+                                            }
+                                        }
+
+                                        describe("if the feedService fails to remove the feed") {
+                                            beforeEach {
+                                                UIView.pauseAnimations()
+                                                feedService.removeFeedPromises.last?.resolve(.failure(.database(.unknown)))
+                                            }
+
+                                            afterEach {
+                                                UIView.resumeAnimations()
+                                            }
+
+                                            it("brings up an alert notifying the user") {
+                                                expect(subject.notificationView.titleLabel.isHidden) == false
+                                                expect(subject.notificationView.titleLabel.text).to(equal("Unable to delete feed"))
+                                                expect(subject.notificationView.messageLabel.text).to(equal("Unknown Database Error"))
+                                            }
+
+                                            it("does not remove the feed from the list of cells") {
+                                                expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(3))
+                                            }
+                                        }
+                                    }
+                                }
+
+                                describe("the second one") {
+                                    beforeEach {
+                                        guard editActions.count > 1 else { return }
+                                        action = editActions[1]
+                                    }
+
+                                    it("states it marks all items in the feed as read") {
+                                        expect(action?.title).to(equal("Mark\nRead"))
+                                    }
+
+                                    describe("tapping it") {
+                                        beforeEach {
+                                            action?.handler?(action!, indexPath)
+                                        }
+
+                                        it("marks all articles of that feed as read") {
+                                            expect(feedService.readAllOfFeedCalls).to(equal([feeds[0]]))
+                                        }
+
+                                        describe("when the feed service succeeds") {
+                                            beforeEach {
+                                                feedService.readAllOfFeedPromises.last?.resolve(.success(()))
+                                            }
+
+                                            it("marks the cell as unread") {
+                                                expect(cell?.unreadCounter.unread).to(equal(0))
+                                            }
+                                        }
+
+                                        describe("when the feed service fails") {
+                                            beforeEach {
+                                                UIView.pauseAnimations()
+                                                feedService.readAllOfFeedPromises.last?.resolve(.failure(.database(.unknown)))
+                                            }
+
+                                            afterEach {
+                                                UIView.resumeAnimations()
+                                            }
+
+                                            it("brings up an alert notifying the user") {
+                                                expect(subject.notificationView.titleLabel.isHidden) == false
+                                                expect(subject.notificationView.titleLabel.text).to(equal("Unable to update feed"))
+                                                expect(subject.notificationView.messageLabel.text).to(equal("Unknown Database Error"))
+                                            }
+                                        }
+                                    }
+                                }
+
+                                describe("the third one") {
+                                    beforeEach {
+                                        guard editActions.count > 2 else { return }
+                                        action = editActions[2]
+                                    }
+
+                                    it("states it edits the feed") {
+                                        expect(action?.title).to(equal("Edit"))
+                                    }
+
+                                    describe("tapping it") {
+                                        beforeEach {
+                                            action?.handler?(action!, indexPath)
+                                        }
+
+                                        it("brings up a feed edit screen") {
+                                            expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedViewController.self))
+                                        }
+                                    }
+                                }
+
+                                describe("the fourth one") {
+                                    beforeEach {
+                                        guard editActions.count > 3 else { return }
+                                        action = editActions[3]
+                                    }
+
+                                    it("states it opens a share sheet") {
+                                        expect(action?.title).to(equal("Share"))
+                                    }
+
+                                    describe("tapping it") {
+                                        beforeEach {
+                                            action?.handler?(action!, indexPath)
+                                        }
+
+                                        it("brings up a share sheet") {
+                                            expect(navigationController.visibleViewController).to(beAnInstanceOf(URLShareSheet.self))
+                                            if let shareSheet = navigationController.visibleViewController as? URLShareSheet {
+                                                expect(shareSheet.url) == feeds[0].url
+                                                expect(shareSheet.themeRepository) == themeRepository
+                                                expect(shareSheet.activityItems as? [URL]) == [feeds[0].url]
+                                            }
+                                        }
                                     }
                                 }
                             }

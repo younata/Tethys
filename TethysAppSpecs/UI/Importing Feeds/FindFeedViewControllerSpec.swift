@@ -466,18 +466,19 @@ class FindFeedViewControllerSpec: QuickSpec {
                     it("should bring up a list of available feeds to import") {
                         expect(subject.presentedViewController).to(beAKindOf(UIAlertController.self))
                         if let alertController = subject.presentedViewController as? UIAlertController {
-                            expect(alertController.actions.count) == 3
+                            expect(alertController.preferredStyle).to(equal(UIAlertController.Style.actionSheet))
+                            expect(alertController.actions).to(haveCount(3))
 
                             guard alertController.actions.count == 3 else { return }
 
                             let firstAction = alertController.actions[0]
-                            expect(firstAction.title) == "feed1"
+                            expect(firstAction.title).to(equal("feed1"))
 
                             let secondAction = alertController.actions[1]
-                            expect(secondAction.title) == "feed2"
+                            expect(secondAction.title).to(equal("feed2"))
 
                             let thirdAction = alertController.actions[2]
-                            expect(thirdAction.title) == "Cancel"
+                            expect(thirdAction.title).to(equal("Cancel"))
                         }
                     }
 

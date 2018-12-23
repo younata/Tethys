@@ -134,6 +134,22 @@ class ArticleListControllerSpec: QuickSpec {
             }
         }
 
+        func itTellsTheUserAboutTheError(title: String, message: String) {
+            it("shows an alert") {
+                expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
+                if let alert = subject.presentedViewController as? UIAlertController {
+                    expect(alert.title) == title
+                    expect(alert.message) == message
+                    expect(alert.actions.count) == 1
+                    if let action = alert.actions.first {
+                        expect(action.title) == "Ok"
+                        action.handler?(action)
+                        expect(subject.presentedViewController).to(beNil())
+                    }
+                }
+            }
+        }
+
         describe("when the request succeeds") {
             beforeEach {
                 feedService.articlesOfFeedPromises.last?.resolve(.success(AnyCollection(articles)))
@@ -262,19 +278,7 @@ class ArticleListControllerSpec: QuickSpec {
                                 expect(indicator).to(beNil())
                             }
 
-                            it("shows an alert box") {
-                                expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                if let alert = subject.presentedViewController as? UIAlertController {
-                                    expect(alert.title) == "Unable to Mark Articles as Read"
-                                    expect(alert.message) == "Unknown Database Error"
-                                    expect(alert.actions.count) == 1
-                                    if let action = alert.actions.first {
-                                        expect(action.title) == "Ok"
-                                        action.handler?(action)
-                                        expect(subject.presentedViewController).to(beNil())
-                                    }
-                                }
-                            }
+                            itTellsTheUserAboutTheError(title: "Unable to Mark Articles as Read", message: "Unknown Database Error")
                         }
                     }
                 }
@@ -353,19 +357,7 @@ class ArticleListControllerSpec: QuickSpec {
                                     articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
                                 }
 
-                                it("shows an alert box") {
-                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                    if let alert = subject.presentedViewController as? UIAlertController {
-                                        expect(alert.title) == "Error saving article"
-                                        expect(alert.message) == "Unknown Database Error"
-                                        expect(alert.actions.count) == 1
-                                        if let action = alert.actions.first {
-                                            expect(action.title) == "Ok"
-                                            action.handler?(action)
-                                            expect(subject.presentedViewController).to(beNil())
-                                        }
-                                    }
-                                }
+                                itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
                             }
                         }
 
@@ -407,19 +399,7 @@ class ArticleListControllerSpec: QuickSpec {
                                     articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
                                 }
 
-                                it("shows an alert box") {
-                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                    if let alert = subject.presentedViewController as? UIAlertController {
-                                        expect(alert.title) == "Error saving article"
-                                        expect(alert.message) == "Unknown Database Error"
-                                        expect(alert.actions.count) == 1
-                                        if let action = alert.actions.first {
-                                            expect(action.title) == "Ok"
-                                            action.handler?(action)
-                                            expect(subject.presentedViewController).to(beNil())
-                                        }
-                                    }
-                                }
+                                itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
                             }
                         }
                     }
@@ -438,90 +418,33 @@ class ArticleListControllerSpec: QuickSpec {
                                 action?.handler(action!, viewController!)
                             }
 
-                            it("does not yet delete the article") {
-                                expect(articleService.removeArticleCalls).to(beEmpty())
+                            it("deletes the article") {
+                                expect(articleService.removeArticleCalls.last).to(equal(articles.first))
                             }
 
-                            it("presents an alert asking for confirmation that the user wants to do this") {
-                                expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                guard let alert = subject.presentedViewController as? UIAlertController else { return }
-                                expect(alert.preferredStyle) == UIAlertController.Style.alert
-                                expect(alert.title) == "Delete \(articles.first!.title)?"
-
-                                expect(alert.actions.count) == 2
-                                expect(alert.actions.first?.title) == "Delete"
-                                expect(alert.actions.last?.title) == "Cancel"
+                            xit("shows a spinner while we wait to delete the article") {
+                                fail("Implement me!")
                             }
 
-                            describe("tapping 'Delete'") {
+                            context("when the delete operation succeeds") {
                                 beforeEach {
-                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
-
-                                    alert.actions.first?.handler?(alert.actions.first!)
+                                    articleService.removeArticlePromises.last?.resolve(.success(()))
                                 }
 
-                                it("deletes the article") {
-                                    expect(articleService.removeArticleCalls.last).to(equal(articles.first))
-                                }
-
-                                it("dismisses the alert") {
-                                    expect(subject.presentedViewController).to(beNil())
-                                }
-
-                                xit("shows a spinner while we wait to delete the article") {
-                                    fail("Implement me!")
-                                }
-
-                                context("when the delete operation succeeds") {
-                                    beforeEach {
-                                        articleService.removeArticlePromises.last?.resolve(.success(()))
-                                    }
-
-                                    it("removes the article from the list") {
-                                        expect(Array(subject.articles)).toNot(contain(articles[0]))
-                                    }
-                                }
-
-                                context("when the delete operation fails") {
-                                    beforeEach {
-                                        articleService.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
-                                    }
-
-                                    it("shows an alert box") {
-                                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                        if let alert = subject.presentedViewController as? UIAlertController {
-                                            expect(alert.title) == "Error deleting article"
-                                            expect(alert.message) == "Unknown Database Error"
-                                            expect(alert.actions.count) == 1
-                                            if let action = alert.actions.first {
-                                                expect(action.title) == "Ok"
-                                                action.handler?(action)
-                                                expect(subject.presentedViewController).to(beNil())
-                                            }
-                                        }
-                                    }
-
-                                    it("keeps the article from the list") {
-                                        expect(Array(subject.articles)).to(contain(articles[0]))
-                                    }
+                                it("removes the article from the list") {
+                                    expect(Array(subject.articles)).toNot(contain(articles[0]))
                                 }
                             }
 
-                            describe("tapping 'Cancel'") {
+                            context("when the delete operation fails") {
                                 beforeEach {
-                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                    guard let alert = subject.presentedViewController as? UIAlertController else { return }
-
-                                    alert.actions.last?.handler?(alert.actions.last!)
+                                    articleService.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
                                 }
 
-                                it("does not delete the article") {
-                                    expect(articleService.removeArticleCalls).to(beEmpty())
-                                }
+                                itTellsTheUserAboutTheError(title: "Error deleting article", message: "Unknown Database Error")
 
-                                it("dismisses the alert") {
-                                    expect(subject.presentedViewController).to(beNil())
+                                it("keeps the article from the list") {
+                                    expect(Array(subject.articles)).to(contain(articles[0]))
                                 }
                             }
                         }
@@ -565,19 +488,7 @@ class ArticleListControllerSpec: QuickSpec {
                             articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
                         }
 
-                        it("shows an alert box") {
-                            expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                            if let alert = subject.presentedViewController as? UIAlertController {
-                                expect(alert.title) == "Error saving article"
-                                expect(alert.message) == "Unknown Database Error"
-                                expect(alert.actions.count) == 1
-                                if let action = alert.actions.first {
-                                    expect(action.title) == "Ok"
-                                    action.handler?(action)
-                                    expect(subject.presentedViewController).to(beNil())
-                                }
-                            }
-                        }
+                        itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
                     }
                 }
             }
@@ -719,87 +630,30 @@ class ArticleListControllerSpec: QuickSpec {
                                         action?.handler?(action!, indexPath)
                                     }
 
-                                    it("does not yet delete the article") {
-                                        expect(articleService.removeArticleCalls).to(beEmpty())
+                                    it("deletes the article") {
+                                        expect(articleService.removeArticleCalls.last) == articles.first
                                     }
 
-                                    it("presents an alert asking for confirmation that the user wants to do this") {
-                                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                        guard let alert = subject.presentedViewController as? UIAlertController else { return }
-                                        expect(alert.preferredStyle) == UIAlertController.Style.alert
-                                        expect(alert.title) == "Delete \(articles.first!.title)?"
-
-                                        expect(alert.actions.count) == 2
-                                        expect(alert.actions.first?.title) == "Delete"
-                                        expect(alert.actions.last?.title) == "Cancel"
+                                    xit("shows a spinner while we wait to delete the article") {
+                                        fail("Implement me!")
                                     }
 
-                                    describe("tapping 'Delete'") {
+                                    context("when the delete operation succeeds") {
                                         beforeEach {
-                                            expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                            guard let alert = subject.presentedViewController as? UIAlertController else { return }
-
-                                            alert.actions.first?.handler?(alert.actions.first!)
+                                            articleService.removeArticlePromises.last?.resolve(.success(()))
                                         }
 
-                                        it("deletes the article") {
-                                            expect(articleService.removeArticleCalls.last) == articles.first
-                                        }
-
-                                        it("dismisses the alert") {
-                                            expect(subject.presentedViewController).to(beNil())
-                                        }
-
-                                        xit("shows a spinner while we wait to delete the article") {
-                                            fail("Implement me!")
-                                        }
-
-                                        context("when the delete operation succeeds") {
-                                            beforeEach {
-                                                articleService.removeArticlePromises.last?.resolve(.success(()))
-                                            }
-
-                                            it("removes the article from the list") {
-                                                expect(Array(subject.articles)).toNot(contain(articles[0]))
-                                            }
-                                        }
-
-                                        context("when the delete operation fails") {
-                                            beforeEach {
-                                                articleService.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
-                                            }
-
-                                            it("shows an alert box") {
-                                                expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                                if let alert = subject.presentedViewController as? UIAlertController {
-                                                    expect(alert.title) == "Error deleting article"
-                                                    expect(alert.message) == "Unknown Database Error"
-                                                    expect(alert.actions.count) == 1
-                                                    if let action = alert.actions.first {
-                                                        expect(action.title) == "Ok"
-                                                        action.handler?(action)
-                                                        expect(subject.presentedViewController).to(beNil())
-                                                    }
-                                                }
-                                            }
+                                        it("removes the article from the list") {
+                                            expect(Array(subject.articles)).toNot(contain(articles[0]))
                                         }
                                     }
 
-                                    describe("tapping 'Cancel'") {
+                                    context("when the delete operation fails") {
                                         beforeEach {
-                                            expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                            guard let alert = subject.presentedViewController as? UIAlertController else { return }
-
-                                            alert.actions.last?.handler?(alert.actions.last!)
+                                            articleService.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
                                         }
 
-                                        it("does not delete the article") {
-                                            expect(articleService.removeArticleCalls).to(beEmpty())
-                                        }
-
-                                        it("dismisses the alert") {
-                                            expect(subject.presentedViewController).to(beNil())
-                                        }
+                                        itTellsTheUserAboutTheError(title: "Error deleting article", message: "Unknown Database Error")
                                     }
                                 }
                             }
@@ -846,19 +700,7 @@ class ArticleListControllerSpec: QuickSpec {
                                         articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
                                     }
 
-                                    it("shows an alert box") {
-                                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                        if let alert = subject.presentedViewController as? UIAlertController {
-                                            expect(alert.title) == "Error saving article"
-                                            expect(alert.message) == "Unknown Database Error"
-                                            expect(alert.actions.count) == 1
-                                            if let action = alert.actions.first {
-                                                expect(action.title) == "Ok"
-                                                action.handler?(action)
-                                                expect(subject.presentedViewController).to(beNil())
-                                            }
-                                        }
-                                    }
+                                    itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
                                 }
                             }
 
@@ -904,19 +746,7 @@ class ArticleListControllerSpec: QuickSpec {
                                         articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
                                     }
 
-                                    it("shows an alert box") {
-                                        expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                        if let alert = subject.presentedViewController as? UIAlertController {
-                                            expect(alert.title) == "Error saving article"
-                                            expect(alert.message) == "Unknown Database Error"
-                                            expect(alert.actions.count) == 1
-                                            if let action = alert.actions.first {
-                                                expect(action.title) == "Ok"
-                                                action.handler?(action)
-                                                expect(subject.presentedViewController).to(beNil())
-                                            }
-                                        }
-                                    }
+                                    itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
                                 }
                             }
                         }
@@ -947,19 +777,7 @@ class ArticleListControllerSpec: QuickSpec {
                                     articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
                                 }
 
-                                it("shows an alert box") {
-                                    expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                                    if let alert = subject.presentedViewController as? UIAlertController {
-                                        expect(alert.title) == "Error saving article"
-                                        expect(alert.message) == "Unknown Database Error"
-                                        expect(alert.actions.count) == 1
-                                        if let action = alert.actions.first {
-                                            expect(action.title) == "Ok"
-                                            action.handler?(action)
-                                            expect(subject.presentedViewController).to(beNil())
-                                        }
-                                    }
-                                }
+                                itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
                             }
                         }
                     }
@@ -972,19 +790,7 @@ class ArticleListControllerSpec: QuickSpec {
                 feedService.articlesOfFeedPromises.last?.resolve(.failure(.database(.unknown)))
             }
 
-            it("shows an alert box") {
-                expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                if let alert = subject.presentedViewController as? UIAlertController {
-                    expect(alert.title) == "Unable to retrieve articles"
-                    expect(alert.message) == "Unknown Database Error"
-                    expect(alert.actions.count) == 1
-                    if let action = alert.actions.first {
-                        expect(action.title) == "Ok"
-                        action.handler?(action)
-                        expect(subject.presentedViewController).to(beNil())
-                    }
-                }
-            }
+            itTellsTheUserAboutTheError(title: "Unable to retrieve articles", message: "Unknown Database Error")
         }
     }
 }

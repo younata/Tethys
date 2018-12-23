@@ -410,11 +410,6 @@
 		898131671AF880400090FA7F /* Muon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Muon.framework; path = ../Carthage/Build/iOS/Muon.framework; sourceTree = "<group>"; };
 		89831FE91DB5C2FC00E32412 /* ArticleListHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListHeaderCell.swift; sourceTree = "<group>"; };
 		89831FEB1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListHeaderCellSpec.swift; sourceTree = "<group>"; };
-		8983208C1DC13B9B00E32412 /* WorkFlow.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WorkFlow.framework; path = Carthage/Build/Mac/WorkFlow.framework; sourceTree = "<group>"; };
-		8983208E1DC13BC000E32412 /* CBGPromise.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CBGPromise.framework; path = Carthage/Build/Mac/CBGPromise.framework; sourceTree = "<group>"; };
-		898320901DC13BC000E32412 /* Kanna.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kanna.framework; path = Carthage/Build/Mac/Kanna.framework; sourceTree = "<group>"; };
-		898320911DC13BC000E32412 /* Reachability.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Reachability.framework; path = Carthage/Build/Mac/Reachability.framework; sourceTree = "<group>"; };
-		898320921DC13BC000E32412 /* Result.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Result.framework; path = Carthage/Build/Mac/Result.framework; sourceTree = "<group>"; };
 		8984FE881CB984A40096F4B3 /* Author.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Author.swift; sourceTree = "<group>"; };
 		8984FE8B1CBA1A180096F4B3 /* AuthorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorSpec.swift; sourceTree = "<group>"; };
 		8984FE8E1CBAAFED0096F4B3 /* RealmMigratorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmMigratorSpec.swift; sourceTree = "<group>"; };
@@ -851,12 +846,7 @@
 			children = (
 				894E755021B3164100B4A0A1 /* FutureHTTP.framework */,
 				8978C523219166E000D702BB /* Swinject.framework */,
-				8983208E1DC13BC000E32412 /* CBGPromise.framework */,
-				898320901DC13BC000E32412 /* Kanna.framework */,
 				892E76BB1E0197DF00866336 /* libxml2.tbd */,
-				898320911DC13BC000E32412 /* Reachability.framework */,
-				898320921DC13BC000E32412 /* Result.framework */,
-				8983208C1DC13B9B00E32412 /* WorkFlow.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

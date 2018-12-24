@@ -156,8 +156,8 @@ class ArticleListControllerSpec: QuickSpec {
             }
 
             describe("the bar button items") {
-                it("displays 3 items") {
-                    expect(subject.navigationItem.rightBarButtonItems).to(haveCount(3))
+                it("displays 2 items") {
+                    expect(subject.navigationItem.rightBarButtonItems).to(haveCount(2))
                 }
 
                 describe("the first item") {
@@ -165,22 +165,6 @@ class ArticleListControllerSpec: QuickSpec {
 
                     beforeEach {
                         item = subject.navigationItem.rightBarButtonItems?.first
-                    }
-
-                    it("is the edit button") {
-                        expect(item) == subject.editButtonItem
-                    }
-                }
-
-                describe("the second item") {
-                    var item: UIBarButtonItem?
-
-                    beforeEach {
-                        guard subject.navigationItem.rightBarButtonItems?.count == 3 else {
-                            item = nil
-                            return
-                        }
-                        item = subject.navigationItem.rightBarButtonItems?[1]
                     }
 
                     describe("when tapped") {
@@ -204,7 +188,7 @@ class ArticleListControllerSpec: QuickSpec {
                     }
                 }
 
-                describe("the third item") {
+                describe("the second item") {
                     var item: UIBarButtonItem?
 
                     beforeEach {

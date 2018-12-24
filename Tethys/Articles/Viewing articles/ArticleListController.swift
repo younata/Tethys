@@ -263,7 +263,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         let shareSheet = UIBarButtonItem(barButtonSystemItem: .action,
                                          target: self,
                                          action: #selector(ArticleListController.shareFeed))
-        self.navigationItem.rightBarButtonItems = [self.editButtonItem, shareSheet, self.markReadButton]
+        self.navigationItem.rightBarButtonItems = [shareSheet, self.markReadButton]
     }
 
     private func spacer() -> UIBarButtonItem {

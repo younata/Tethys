@@ -9,8 +9,8 @@ class FindFeedViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: FindFeedViewController!
 
-        var navController: UINavigationController! = nil
-        var rootViewController: UIViewController! = nil
+        var navController: UINavigationController!
+        var rootViewController: UIViewController!
 
         var webView: FakeWebView!
         var importUseCase: FakeImportUseCase!
@@ -32,7 +32,9 @@ class FindFeedViewControllerSpec: QuickSpec {
             webView = FakeWebView()
             subject.webContent = webView
 
-            navController = UINavigationController(rootViewController: subject)
+            rootViewController = UIViewController()
+            navController = UINavigationController(rootViewController: rootViewController)
+            navController.pushViewController(subject, animated: false)
 
             expect(subject.view).toNot(beNil())
         }
@@ -169,13 +171,6 @@ class FindFeedViewControllerSpec: QuickSpec {
                 subject.webView(subject.webContent, didStartProvisionalNavigation: nil)
             }
 
-            let showRootController: () -> Void = {
-                rootViewController = UIViewController()
-
-                rootViewController.present(navController, animated: false, completion: nil)
-                expect(rootViewController.presentedViewController).toNot(beNil())
-            }
-
             sharedExamples("importing a feed") { (sharedContext: @escaping SharedExampleContext) in
                 var url: URL!
 
@@ -277,7 +272,6 @@ class FindFeedViewControllerSpec: QuickSpec {
             context("when the use case finds a feed") {
                 let url = URL(string: "https://example.com/feed")!
                 beforeEach {
-                    showRootController()
                     importUseCase.scanForImportablePromises[0].resolve(.feed(url, 0))
                 }
 
@@ -310,7 +304,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("does not dismiss the controller") {
-                        expect(rootViewController.presentedViewController).toNot(beNil())
+                        expect(navController.visibleViewController).to(equal(subject))
                     }
                 }
 
@@ -327,7 +321,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("does not dismiss the controller") {
-                        expect(rootViewController.presentedViewController).toNot(beNil())
+                        expect(navController.visibleViewController).to(equal(subject))
                     }
 
                     itBehavesLike("importing a feed")
@@ -337,7 +331,6 @@ class FindFeedViewControllerSpec: QuickSpec {
             context("when the use case finds an opml file") {
                 let url = URL(string: "https://example.com/feed")!
                 beforeEach {
-                    showRootController()
                     importUseCase.scanForImportablePromises[0].resolve(.opml(url, 0))
                 }
 
@@ -370,7 +363,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("does not dismiss the controller") {
-                        expect(rootViewController.presentedViewController).toNot(beNil())
+                        expect(navController.visibleViewController).to(equal(subject))
                     }
                 }
 
@@ -387,7 +380,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("does not dismiss the controller") {
-                        expect(rootViewController.presentedViewController).toNot(beNil())
+                        expect(navController.visibleViewController).to(equal(subject))
                     }
 
                     it("should show an indicator that we're doing things") {
@@ -434,7 +427,6 @@ class FindFeedViewControllerSpec: QuickSpec {
 
                 describe("tapping on the addFeedButton") {
                     beforeEach {
-                        showRootController()
                         subject.addFeedButton.tap()
                     }
 
@@ -459,7 +451,6 @@ class FindFeedViewControllerSpec: QuickSpec {
 
                 describe("tapping on the addFeedButton") {
                     beforeEach {
-                        showRootController()
                         subject.addFeedButton.tap()
                     }
 
@@ -493,10 +484,6 @@ class FindFeedViewControllerSpec: QuickSpec {
                             }
                         }
 
-                        it("does not dismiss the controller") {
-                            expect(rootViewController.presentedViewController).toNot(beNil())
-                        }
-
                         itBehavesLike("importing a feed") {
                             return ["url": feedURL2]
                         }
@@ -528,10 +515,6 @@ class FindFeedViewControllerSpec: QuickSpec {
 
             describe("Failing to load the page") {
                 let err = NSError(domain: "", code: 0, userInfo: ["NSErrorFailingURLStringKey": "https://example.com"])
-
-                beforeEach {
-                    showRootController()
-                }
 
                 context("before loading the page (network error)") {
                     beforeEach {

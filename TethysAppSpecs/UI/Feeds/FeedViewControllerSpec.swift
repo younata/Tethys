@@ -11,7 +11,7 @@ class FeedViewControllerSpec: QuickSpec {
         var subject: FeedViewController!
         var feedService: FakeFeedService!
 
-        var presentingController: UIViewController!
+        var rootViewController: UIViewController!
         var themeRepository: ThemeRepository!
 
         beforeEach {
@@ -29,10 +29,9 @@ class FeedViewControllerSpec: QuickSpec {
                 }
             )
 
-            navigationController = UINavigationController(rootViewController: subject)
-
-            presentingController = UIViewController()
-            presentingController.present(navigationController, animated: false, completion: nil)
+            rootViewController = UIViewController()
+            navigationController = UINavigationController(rootViewController: rootViewController)
+            navigationController.pushViewController(subject, animated: false)
 
             subject.view.layoutIfNeeded()
         }
@@ -48,22 +47,7 @@ class FeedViewControllerSpec: QuickSpec {
             }
 
             it("dismisses itself") {
-                expect(presentingController.presentedViewController).to(beNil())
-            }
-        }
-
-        it("has a dismiss button") {
-            expect(subject.navigationItem.leftBarButtonItem?.title) == "Dismiss"
-        }
-
-        describe("tapping 'dismiss'") {
-            beforeEach {
-                let dismissButton = subject.navigationItem.leftBarButtonItem
-                dismissButton?.tap()
-            }
-
-            it("dismisses itself") {
-                expect(presentingController.presentedViewController).to(beNil())
+                expect(navigationController.visibleViewController).to(equal(rootViewController))
             }
         }
 
@@ -119,7 +103,7 @@ class FeedViewControllerSpec: QuickSpec {
                         }
 
                         it("dismisses itself") {
-                            expect(presentingController.presentedViewController).to(beNil())
+                            expect(navigationController.visibleViewController).to(equal(rootViewController))
                         }
                     }
 
@@ -129,7 +113,7 @@ class FeedViewControllerSpec: QuickSpec {
                         }
 
                         it("dismisses itself") {
-                            expect(presentingController.presentedViewController).to(beNil())
+                            expect(navigationController.visibleViewController).to(equal(rootViewController))
                         }
                     }
                 }
@@ -167,7 +151,7 @@ class FeedViewControllerSpec: QuickSpec {
                         }
 
                         it("dismisses itself") {
-                            expect(presentingController.presentedViewController).to(beNil())
+                            expect(navigationController.visibleViewController).to(equal(rootViewController))
                         }
                     }
 
@@ -177,7 +161,7 @@ class FeedViewControllerSpec: QuickSpec {
                         }
 
                         it("dismisses itself") {
-                            expect(presentingController.presentedViewController).to(beNil())
+                            expect(navigationController.visibleViewController).to(equal(rootViewController))
                         }
                     }
                 }
@@ -205,7 +189,7 @@ class FeedViewControllerSpec: QuickSpec {
                     }
 
                     it("does not yet dismiss itself") {
-                        expect(presentingController.presentedViewController).toNot(beNil())
+                        expect(navigationController.visibleViewController).to(equal(subject))
                     }
 
                     describe("when the other finishes") {
@@ -214,7 +198,7 @@ class FeedViewControllerSpec: QuickSpec {
                         }
 
                         it("dismisses itself") {
-                            expect(presentingController.presentedViewController).to(beNil())
+                            expect(navigationController.visibleViewController).to(equal(rootViewController))
                         }
                     }
                 }

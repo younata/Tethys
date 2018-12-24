@@ -31,11 +31,6 @@ public final class FeedViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        let dismissTitle = NSLocalizedString("Generic_Dismiss", comment: "")
-        let dismissButton = UIBarButtonItem(title: dismissTitle, style: .plain, target: self,
-                                            action: #selector(FeedViewController.dismissFromNavigation))
-        self.navigationItem.leftBarButtonItem = dismissButton
-
         let saveTitle = NSLocalizedString("Generic_Save", comment: "")
         let saveButton = UIBarButtonItem(title: saveTitle, style: .plain, target: self, action:
             #selector(FeedViewController.save))
@@ -65,7 +60,7 @@ public final class FeedViewController: UIViewController {
     }
 
     @objc fileprivate func dismissFromNavigation() {
-        self.navigationController?.presentingViewController?.dismiss(animated: true, completion: nil)
+        self.navigationController?.popViewController(animated: false)
     }
 
     @objc fileprivate func save() {

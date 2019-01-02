@@ -26,6 +26,11 @@ platform :ios do
     carthage(platform: "iOS", cache_builds: true)
     Dir.chdir('..') do
       sh("bundle exec rake documentation:libraries")
+      unless ENV['INOREADER_CLIENT_ID'].nil? && !File.file?(".inoreader")
+        open('.inoreader', 'w') do |f|
+          f.puts ENV['INOREADER_CLIENT_ID']
+        end
+      end
     end
   end
 

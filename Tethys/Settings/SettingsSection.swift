@@ -2,26 +2,30 @@ import UIKit
 import TethysKit
 
 enum SettingsSection: Int, CustomStringConvertible {
+    case account
     case theme
     case refresh
     case other
     case credits
 
     static func numberOfSettings(_ traits: UITraitCollection) -> Int {
-        return 4
+        return 5
     }
 
     var rawValue: Int {
         switch self {
-        case .theme: return 0
-        case .refresh: return 1
-        case .other: return 2
-        case .credits: return 3
+        case .account: return 0
+        case .theme: return 1
+        case .refresh: return 2
+        case .other: return 3
+        case .credits: return 4
         }
     }
 
     var description: String {
         switch self {
+        case .account:
+            return NSLocalizedString("SettingsViewController_Table_Header_Account", comment: "")
         case .theme:
             return NSLocalizedString("SettingsViewController_Table_Header_Theme", comment: "")
         case .refresh:

@@ -1,8 +1,8 @@
 import Quick
 import Nimble
-import Tethys
 import TethysKit
 import SafariServices
+@testable import Tethys
 
 class SettingsViewControllerSpec: QuickSpec {
     override func spec() {
@@ -29,6 +29,7 @@ class SettingsViewControllerSpec: QuickSpec {
                 settingsRepository: settingsRepository,
                 opmlService: opmlService,
                 mainQueue: mainQueue,
+                loginController: { oauthLoginControllerFactory() },
                 documentationViewController: { documentation in documentationViewControllerFactory(documentation: documentation) }
             )
 
@@ -206,11 +207,63 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             it("has 5 sections") {
-                expect(subject.tableView.numberOfSections) == 4
+                expect(subject.tableView.numberOfSections) == 5
+            }
+
+            describe("the account section") {
+                let sectionNumber = 0
+
+                it("is titled 'Account'") {
+                    expect(dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)).to(equal("Account"))
+                }
+
+                context("if there is no local account for this user") {
+                    it("has a single cell") {
+                        expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(1))
+                    }
+
+                    describe("the cell") {
+                        var cell: TableViewCell?
+                        let indexPath = IndexPath(row: 0, section: sectionNumber)
+
+                        beforeEach {
+                            cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
+                        }
+
+                        it("it asks the user to log in") {
+                            expect(cell?.textLabel?.text).to(equal("Inoreader"))
+                            expect(cell?.detailTextLabel?.text).to(equal("No account"))
+                        }
+
+                        it("has its themeRepository set") {
+                            expect(cell?.themeRepository).to(beIdenticalTo(themeRepository))
+                        }
+
+                        describe("tapping the cell") {
+                            beforeEach {
+                                subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAt: indexPath)
+                            }
+
+                            it("shows a controller to login") {
+                                expect(navigationController.visibleViewController).to(beAnInstanceOf(OAuthLoginController.self))
+                            }
+                        }
+                    }
+                }
+
+                context("if there is an account for this user") {
+                    it("has a single cell") {
+                        expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(1))
+                    }
+
+                    it("states the account type and username") {
+                        fail("Implement me!")
+                    }
+                }
             }
 
             describe("the theme section") {
-                let sectionNumber = 0
+                let sectionNumber = 1
 
                 it("is titled 'Theme'") {
                     let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
@@ -318,7 +371,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the refresh style section") {
-                let sectionNumber = 1
+                let sectionNumber = 2
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
@@ -411,7 +464,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the other section") {
-                let sectionNumber = 2
+                let sectionNumber = 3
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
@@ -544,7 +597,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the credits section") {
-                let sectionNumber = 3
+                let sectionNumber = 4
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable

@@ -4,8 +4,11 @@
 "SettingsViewController_Table_Header_Theme" = "Theme";
 "SettingsViewController_Table_Header_Refresh" = "Refresh Style";
 "SettingsViewController_Table_Header_Other" = "Other";
+"SettingsViewController_Table_Header_Account" = "Account";
 "SettingsViewController_Table_Header_Credits" = "Credits";
 "SettingsViewController_Title" = "Settings";
+"SettingsViewController_Account_Inoreader" = "Inoreader"; // Name of product, don't localize.
+"SettingsViewController_Account_None" = "No account";
 "SettingsViewController_Other_ShowReadingTimes" = "Show Estimated Reading Times";
 "SettingsViewController_Other_ExportOPML" = "Export OPML";
 "SettingsViewController_Other_ExportOPML_Error_Title" = "Error Exporting OPML";

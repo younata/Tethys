@@ -103,11 +103,18 @@ func articleListControllerFactory(
     )
 }
 
+func oauthLoginControllerFactory(
+    themeRepository: ThemeRepository = themeRepositoryFactory()
+    ) ->  OAuthLoginController {
+    return OAuthLoginController(themeRepository: themeRepository)
+}
+
 func settingsViewControllerFactory(
     themeRepository: ThemeRepository = themeRepositoryFactory(),
     settingsRepository: SettingsRepository = settingsRepositoryFactory(),
     opmlService: OPMLService = FakeOPMLService(),
     mainQueue: FakeOperationQueue = FakeOperationQueue(),
+    loginController: @escaping () -> OAuthLoginController = { oauthLoginControllerFactory() },
     documentationViewController: @escaping (Documentation) -> DocumentationViewController = { docs in documentationViewControllerFactory(documentation: docs) }
     ) -> SettingsViewController {
     return SettingsViewController(
@@ -115,6 +122,7 @@ func settingsViewControllerFactory(
         settingsRepository: settingsRepository,
         opmlService: opmlService,
         mainQueue: mainQueue,
+        loginController: loginController,
         documentationViewController: documentationViewController
     )
 }

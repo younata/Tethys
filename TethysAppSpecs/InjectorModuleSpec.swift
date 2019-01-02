@@ -137,6 +137,8 @@ final class InjectorModuleSpec: QuickSpec {
 
             exists(HTMLViewController.self)
 
+            exists(OAuthLoginController.self)
+
             exists(SettingsViewController.self)
             exists(SplitViewController.self)
 

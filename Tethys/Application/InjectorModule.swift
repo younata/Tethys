@@ -119,12 +119,17 @@ private func registerViewControllers(container: Container) {
         return HTMLViewController(themeRepository: r.resolve(ThemeRepository.self)!)
     }
 
+    container.register(OAuthLoginController.self) { r in
+        return OAuthLoginController(themeRepository: r.resolve(ThemeRepository.self)!)
+    }
+
     container.register(SettingsViewController.self) { r in
         return SettingsViewController(
             themeRepository: r.resolve(ThemeRepository.self)!,
             settingsRepository: r.resolve(SettingsRepository.self)!,
             opmlService: r.resolve(OPMLService.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            loginController: { r.resolve(OAuthLoginController.self)! },
             documentationViewController: { documentation in
                 return r.resolve(DocumentationViewController.self, argument: documentation)!
             }

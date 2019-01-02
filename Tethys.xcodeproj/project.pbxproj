@@ -218,6 +218,10 @@
 		89E2A33D1B6A856900A40D4E /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */; };
 		89E2A33F1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E2A33E1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift */; };
 		89E9DD4621CE9D5C00326E2D /* FeedsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9DD4521CE9D5C00326E2D /* FeedsTests.swift */; };
+		89E9DD4921CF49B100326E2D /* AccountService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9DD4821CF49B100326E2D /* AccountService.swift */; };
+		89E9DD4F21D0069900326E2D /* OAuthLoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9DD4D21D0069900326E2D /* OAuthLoginController.swift */; };
+		89E9DF0D21D49CDB00326E2D /* OAuthLoginControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89E9DF0C21D49CDB00326E2D /* OAuthLoginControllerSpec.swift */; };
+		89E9DF1021D49DF000326E2D /* ASWebAuthenticationSession+TethysTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89E9DF0F21D49DF000326E2D /* ASWebAuthenticationSession+TethysTests.m */; };
 		89EA6C371B4B308F00456892 /* FakeOPMLService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C11B3A7CCC0097045A /* FakeOPMLService.swift */; };
 		89EF4FD81A96852D0052A82F /* test.opml in Resources */ = {isa = PBXBuildFile; fileRef = 89EF4FD71A96852D0052A82F /* test.opml */; };
 		89F516571B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89F516561B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m */; };
@@ -506,6 +510,11 @@
 		89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		89E2A33E1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsViewControllerSpec.swift; sourceTree = "<group>"; };
 		89E9DD4521CE9D5C00326E2D /* FeedsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedsTests.swift; sourceTree = "<group>"; };
+		89E9DD4821CF49B100326E2D /* AccountService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountService.swift; sourceTree = "<group>"; };
+		89E9DD4D21D0069900326E2D /* OAuthLoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthLoginController.swift; sourceTree = "<group>"; };
+		89E9DF0C21D49CDB00326E2D /* OAuthLoginControllerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OAuthLoginControllerSpec.swift; sourceTree = "<group>"; };
+		89E9DF0E21D49DF000326E2D /* ASWebAuthenticationSession+TethysTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ASWebAuthenticationSession+TethysTests.h"; sourceTree = "<group>"; };
+		89E9DF0F21D49DF000326E2D /* ASWebAuthenticationSession+TethysTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ASWebAuthenticationSession+TethysTests.m"; sourceTree = "<group>"; };
 		89EF4FD71A96852D0052A82F /* test.opml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = test.opml; sourceTree = "<group>"; };
 		89F516551B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+TethysTests.h"; sourceTree = "<group>"; };
 		89F516561B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarButtonItem+TethysTests.m"; sourceTree = "<group>"; };
@@ -900,6 +909,7 @@
 		899C48181A9AC0F000F57B96 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				89E9DF0B21D49CBB00326E2D /* Account */,
 				895AC5231C80BBD700A5F6A1 /* Articles */,
 				899C6A9B1DCAA3EF00E0A61C /* Documentation */,
 				895AC5251C80BC0700A5F6A1 /* Feeds */,
@@ -957,6 +967,7 @@
 		89C8307519D730E9009924DA /* Tethys */ = {
 			isa = PBXGroup;
 			children = (
+				89E9DD4A21CF49C100326E2D /* Account */,
 				89EF4FE31A97DAD70052A82F /* Application */,
 				89C830B419D7D2D2009924DA /* Articles */,
 				8933E93519EE342F00ECFF3F /* Categories */,
@@ -1149,8 +1160,25 @@
 				89A3417E1B150D1B0000C60B /* OPMLService.swift */,
 				89CBD5E521C8A5A800D3FB31 /* ArticleService */,
 				89CBD5E621C8A5B400D3FB31 /* FeedService */,
+				89E9DD4821CF49B100326E2D /* AccountService.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		89E9DD4A21CF49C100326E2D /* Account */ = {
+			isa = PBXGroup;
+			children = (
+				89E9DD4D21D0069900326E2D /* OAuthLoginController.swift */,
+			);
+			path = Account;
+			sourceTree = "<group>";
+		};
+		89E9DF0B21D49CBB00326E2D /* Account */ = {
+			isa = PBXGroup;
+			children = (
+				89E9DF0C21D49CDB00326E2D /* OAuthLoginControllerSpec.swift */,
+			);
+			path = Account;
 			sourceTree = "<group>";
 		};
 		89EF4FDC1A97D99B0052A82F /* Editing Feeds */ = {
@@ -1251,6 +1279,8 @@
 				8997C7F41B248D5A00972930 /* FakeWebView.swift */,
 				894D1AEA1DB0971E00E70B1A /* FakeWKNavigationAction.swift */,
 				894CEAA11DAE7C7500E8BDEB /* FakeWKPreviewItem.swift */,
+				89E9DF0E21D49DF000326E2D /* ASWebAuthenticationSession+TethysTests.h */,
+				89E9DF0F21D49DF000326E2D /* ASWebAuthenticationSession+TethysTests.m */,
 				89DFAA5D1B75CE65004CD9CA /* PCKMethodRedirector.h */,
 				89F516551B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.h */,
 				89F516561B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m */,
@@ -1346,6 +1376,7 @@
 				89CAD4C01BA3D36E006D79FC /* Embed Carthage Libraries */,
 				8916880A1BA8854E00F9FFE0 /* Embed rNewsKit */,
 				89D170B91C5835C600D546F9 /* Remove Frameworks folder from rNewsKit */,
+				8934FE5921DC466C00083387 /* Insert InoreaderClientId into info.plist */,
 			);
 			buildRules = (
 			);
@@ -1502,6 +1533,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		8934FE5921DC466C00083387 /* Insert InoreaderClientId into info.plist */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Insert InoreaderClientId into info.plist";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "infoplist=\"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}\"\ninoreaderClientFile=\"${PROJECT_DIR}/.inoreader\"\nif [[ -e ${inoreaderClientFile} ]]; then\n    contents=$(cat ${inoreaderClientFile})\n    /usr/libexec/PlistBuddy -c \"Add :InoreaderClientID string ${contents}\" \"${infoplist}\"\n    /usr/libexec/PlistBuddy -c \"Set :InoreaderClientID ${contents}\" \"${infoplist}\"\nfi\n";
+		};
 		896320951C17FF8300B7C980 /* Lint */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1595,6 +1644,7 @@
 				89CC82041B461A2B00648367 /* Helpers.swift in Sources */,
 				89D427E21CF556A90093D186 /* HTTPError.swift in Sources */,
 				8903F5CF1D4177DE00546099 /* Importable.swift in Sources */,
+				89E9DD4921CF49B100326E2D /* AccountService.swift in Sources */,
 				89CBD5EC21C8C85600D3FB31 /* ArticleRepository.swift in Sources */,
 				89146E421C88C70600EC8F10 /* ImportUseCase.swift in Sources */,
 				89CC82061B461A5500648367 /* KitModule.swift in Sources */,
@@ -1703,6 +1753,7 @@
 				8918D4DB1B8598D100DCDE0E /* ThemeRepository.swift in Sources */,
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
 				899B7DFD1E902B080067ABFF /* URLShareSheet.swift in Sources */,
+				89E9DD4F21D0069900326E2D /* OAuthLoginController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1730,6 +1781,7 @@
 				898F670C1B000451004A7BE3 /* FakeOperationQueue.swift in Sources */,
 				8978C52F2199180100D702BB /* Factories.swift in Sources */,
 				89EA6C371B4B308F00456892 /* FakeOPMLService.swift in Sources */,
+				89E9DF1021D49DF000326E2D /* ASWebAuthenticationSession+TethysTests.m in Sources */,
 				89C676541BA264F40037A224 /* FakeUserDefaults.swift in Sources */,
 				89FA3BDD21A7AF990026BC88 /* FakeArticleCellController.swift in Sources */,
 				8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */,
@@ -1753,6 +1805,7 @@
 				89943213219AAA5000FC6EB6 /* FakeArticleService.swift in Sources */,
 				899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */,
 				8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */,
+				89E9DF0D21D49CDB00326E2D /* OAuthLoginControllerSpec.swift in Sources */,
 				8918D4DD1B859D3B00DCDE0E /* ThemeRepositorySpec.swift in Sources */,
 				89F516571B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m in Sources */,
 				89735ABC1C0694C70032E09C /* UITraitCollection+TethysTests.m in Sources */,
@@ -2001,7 +2054,7 @@
 					"\"$(SDKROOT)/usr/include/libxml2\"",
 					"$(SRCROOT)/Library",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-lxml2";
@@ -2056,7 +2109,7 @@
 					"\"$(SDKROOT)/usr/include/libxml2\"",
 					"$(SRCROOT)/Library",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "-lxml2";
 				SDKROOT = iphoneos;

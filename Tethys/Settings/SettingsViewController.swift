@@ -11,6 +11,7 @@ public final class SettingsViewController: UIViewController {
     fileprivate let settingsRepository: SettingsRepository
     fileprivate let opmlService: OPMLService
     fileprivate let mainQueue: OperationQueue
+    fileprivate let loginController: () -> OAuthLoginController
     fileprivate let documentationViewController: (Documentation) -> DocumentationViewController
 
     fileprivate var oldTheme: ThemeRepository.Theme = .light
@@ -22,11 +23,13 @@ public final class SettingsViewController: UIViewController {
                 settingsRepository: SettingsRepository,
                 opmlService: OPMLService,
                 mainQueue: OperationQueue,
+                loginController: @escaping () -> OAuthLoginController,
                 documentationViewController: @escaping (Documentation) -> DocumentationViewController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.opmlService = opmlService
         self.mainQueue = mainQueue
+        self.loginController = loginController
         self.documentationViewController = documentationViewController
 
         super.init(nibName: nil, bundle: nil)
@@ -196,6 +199,8 @@ extension SettingsViewController: UITableViewDataSource {
             return 0
         }
         switch section {
+        case .account:
+            return 1
         case .theme:
             return 2
         case .refresh:
@@ -212,6 +217,8 @@ extension SettingsViewController: UITableViewDataSource {
             return TableViewCell()
         }
         switch section {
+        case .account:
+            return self.accountCell(indexPath: indexPath)
         case .theme:
             return self.themeCell(indexPath: indexPath)
         case .refresh:
@@ -226,6 +233,14 @@ extension SettingsViewController: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, titleForHeaderInSection sectionNum: Int) -> String? {
         guard let section = SettingsSection(rawValue: sectionNum) else { return nil }
         return section.description
+    }
+
+    private func accountCell(indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+        cell.themeRepository = self.themeRepository
+        cell.textLabel?.text = NSLocalizedString("SettingsViewController_Account_Inoreader", comment: "")
+        cell.detailTextLabel?.text = NSLocalizedString("SettingsViewController_Account_None", comment: "")
+        return cell
     }
 
     private func themeCell(indexPath: IndexPath) -> UITableViewCell {
@@ -313,6 +328,8 @@ extension SettingsViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let section = SettingsSection(rawValue: indexPath.section) else { return }
         switch section {
+        case .account:
+            self.didTapAccountCell(indexPath: indexPath)
         case .theme:
             self.didTapThemeCell(indexPath: indexPath)
         case .refresh:
@@ -322,6 +339,12 @@ extension SettingsViewController: UITableViewDelegate {
         case .credits:
             self.didTapCreditCell(tableView: tableView, indexPath: indexPath)
         }
+    }
+
+    private func didTapAccountCell(indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
+
+        self.navigationController?.pushViewController(self.loginController(), animated: true)
     }
 
     private func didTapThemeCell(indexPath: IndexPath) {

@@ -18,6 +18,8 @@ final class InjectorModuleSpec: QuickSpec {
 
         describe("services") {
             alwaysIs(UserDefaults.self, a: UserDefaults.standard)
+
+            exists(Messenger.self)
         }
 
         describe("Repositories") {
@@ -53,6 +55,8 @@ final class InjectorModuleSpec: QuickSpec {
                     expect(subject.resolve(ArticleCellController.self, argument: true)).to(beAKindOf(DefaultArticleCellController.self))
                 }
             }
+
+            isA(LoginController.self, kindOf: OAuthLoginController.self)
         }
 
         describe("Views") {
@@ -136,8 +140,6 @@ final class InjectorModuleSpec: QuickSpec {
             exists(FindFeedViewController.self)
 
             exists(HTMLViewController.self)
-
-            exists(OAuthLoginController.self)
 
             exists(SettingsViewController.self)
             exists(SplitViewController.self)

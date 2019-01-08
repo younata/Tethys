@@ -17,4 +17,5 @@ foo
 /Tethys.app*
 /Tethys.ipa
 /.inoreader
+/.inoreader_secret
 /documentation/libraries.html

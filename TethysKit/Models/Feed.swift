@@ -33,19 +33,20 @@ public final class Feed: Hashable, CustomStringConvertible {
 
     public internal(set) var unreadCount: Int
 
-    public var hashValue: Int {
-        if let id = feedID as? String {
-            return id.hash
+    public func hash(into hasher: inout Hasher) {
+        if let id = self.feedID as? String {
+            hasher.combine(id)
+            return
         }
-        let nonNilHashValues = title.hashValue ^ url.hashValue ^ summary.hashValue
-        let possiblyNilHashValues: Int
-        if let image = image {
-                possiblyNilHashValues = image.hash
-        } else {
-            possiblyNilHashValues = 0
+
+        hasher.combine(self.title)
+        hasher.combine(self.url)
+        hasher.combine(self.summary)
+        hasher.combine(self.tags)
+
+        if let image = self.image {
+            hasher.combine(image)
         }
-        let tagsHashValues = tags.map({$0.hashValue}).reduce(0, ^)
-        return nonNilHashValues ^ possiblyNilHashValues ^ tagsHashValues
     }
 
     public var description: String {

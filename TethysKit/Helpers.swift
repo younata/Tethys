@@ -46,7 +46,7 @@ func estimateReadingTime(_ htmlString: String) -> TimeInterval {
 }
 
 extension Promise {
-    static func resolved<T>(_ value: T) -> Future<T> {
+    public static func resolved<T>(_ value: T) -> Future<T> {
         let promise = Promise<T>()
         promise.resolve(value)
         return promise.future
@@ -54,7 +54,7 @@ extension Promise {
 }
 
 extension Result where Result.Error: Swift.Error {
-    func mapFuture<U>(_ transform: (Value) -> Future<Result<U, Error>>) -> Future<Result<U, Error>> {
+    public func mapFuture<U>(_ transform: (Value) -> Future<Result<U, Error>>) -> Future<Result<U, Error>> {
         switch self {
         case .success(let value):
             return transform(value)

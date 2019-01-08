@@ -8,7 +8,9 @@
 "SettingsViewController_Table_Header_Credits" = "Credits";
 "SettingsViewController_Title" = "Settings";
 "SettingsViewController_Account_Inoreader" = "Inoreader"; // Name of product, don't localize.
-"SettingsViewController_Account_None" = "No account";
+"SettingsViewController_Account_Add" = "Add account";
+"SettingsViewController_Account_Error_Title" = "Unable to Authenticate";
+"SettingsViewController_Account_Error_Message" = "Please try again";
 "SettingsViewController_Other_ShowReadingTimes" = "Show Estimated Reading Times";
 "SettingsViewController_Other_ExportOPML" = "Export OPML";
 "SettingsViewController_Other_ExportOPML_Error_Title" = "Error Exporting OPML";
@@ -98,6 +100,7 @@
 
 // Errors
 
+"Error_Network_BadResponse" = "Bad Server Response";
 "Error_Network_Cancelled" = "Request Cancelled";
 "Error_Network_DNS" = "DNS Error";
 "Error_Network_InternetDown" = "Internet Down";

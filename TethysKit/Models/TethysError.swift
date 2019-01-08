@@ -1,6 +1,7 @@
 import Muon
 
 public enum NetworkError: Error, Equatable {
+    case badResponse
     case cancelled
     case dns
     case http(HTTPError)
@@ -11,6 +12,8 @@ public enum NetworkError: Error, Equatable {
 
     public var localizedDescription: String {
         switch self {
+        case .badResponse:
+            return NSLocalizedString("Error_Network_BadResponse", comment: "")
         case .cancelled:
             return NSLocalizedString("Error_Network_Cancelled", comment: "")
         case .dns:

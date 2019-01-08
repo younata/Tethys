@@ -11,7 +11,9 @@ public final class SettingsViewController: UIViewController {
     fileprivate let settingsRepository: SettingsRepository
     fileprivate let opmlService: OPMLService
     fileprivate let mainQueue: OperationQueue
-    fileprivate let loginController: () -> OAuthLoginController
+    fileprivate let accountService: AccountService
+    fileprivate let messenger: Messenger
+    fileprivate let loginController: LoginController
     fileprivate let documentationViewController: (Documentation) -> DocumentationViewController
 
     fileprivate var oldTheme: ThemeRepository.Theme = .light
@@ -19,16 +21,22 @@ public final class SettingsViewController: UIViewController {
     fileprivate lazy var showReadingTimes: Bool = { return self.settingsRepository.showEstimatedReadingLabel }()
     fileprivate lazy var refreshControlStyle: RefreshControlStyle = { return self.settingsRepository.refreshControl }()
 
+    fileprivate var accounts: [Account] = []
+
     public init(themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
                 opmlService: OPMLService,
                 mainQueue: OperationQueue,
-                loginController: @escaping () -> OAuthLoginController,
+                accountService: AccountService,
+                messenger: Messenger,
+                loginController: LoginController,
                 documentationViewController: @escaping (Documentation) -> DocumentationViewController) {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.opmlService = opmlService
         self.mainQueue = mainQueue
+        self.accountService = accountService
+        self.messenger = messenger
         self.loginController = loginController
         self.documentationViewController = documentationViewController
 
@@ -62,6 +70,16 @@ public final class SettingsViewController: UIViewController {
         self.themeRepository.addSubscriber(self)
 
         self.registerForPreviewing(with: self, sourceView: self.tableView)
+
+        self.accountService.accounts().then { results in
+            self.mainQueue.addOperation {
+                self.accounts = results.compactMap { $0.value }
+                self.tableView.reloadSections(
+                    IndexSet(integer: SettingsSection.account.rawValue),
+                    with: .none
+                )
+            }
+        }
 
         self.oldTheme = self.themeRepository.theme
         self.reloadTable()
@@ -200,7 +218,7 @@ extension SettingsViewController: UITableViewDataSource {
         }
         switch section {
         case .account:
-            return 1
+            return 1 + self.accounts.count
         case .theme:
             return 2
         case .refresh:
@@ -239,7 +257,11 @@ extension SettingsViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
         cell.themeRepository = self.themeRepository
         cell.textLabel?.text = NSLocalizedString("SettingsViewController_Account_Inoreader", comment: "")
-        cell.detailTextLabel?.text = NSLocalizedString("SettingsViewController_Account_None", comment: "")
+        if indexPath.row < self.accounts.count {
+            cell.detailTextLabel?.text = self.accounts[indexPath.row].username
+        } else {
+            cell.detailTextLabel?.text = NSLocalizedString("SettingsViewController_Account_Add", comment: "")
+        }
         return cell
     }
 
@@ -344,7 +366,20 @@ extension SettingsViewController: UITableViewDelegate {
     private func didTapAccountCell(indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
 
-        self.navigationController?.pushViewController(self.loginController(), animated: true)
+        self.loginController.begin().then { result in
+            switch result {
+            case .success(let account):
+                self.accounts.append(account)
+                self.tableView.insertRows(at: [indexPath], with: .right)
+            case .failure(.network(_, .cancelled)):
+                break
+            default:
+                self.messenger.warning(
+                    title: NSLocalizedString("SettingsViewController_Account_Error_Title", comment: ""),
+                    message: NSLocalizedString("SettingsViewController_Account_Error_Message", comment: "")
+                )
+            }
+        }
     }
 
     private func didTapThemeCell(indexPath: IndexPath) {

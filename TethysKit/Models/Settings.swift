@@ -7,8 +7,8 @@ public struct Settings: Hashable {
         self.maxNumberOfArticles = maxNumberOfArticles
     }
 
-    public var hashValue: Int {
-        return self.maxNumberOfArticles.hashValue ^ 0xFFFF
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(self.maxNumberOfArticles)
     }
 
     init(realmSettings: RealmSettings) {

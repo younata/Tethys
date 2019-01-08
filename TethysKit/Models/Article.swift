@@ -10,13 +10,18 @@ public struct Article: CustomStringConvertible, Hashable {
     public var content: String
     public var read: Bool
 
-    public var hashValue: Int {
-        if let id = articleID as? String {
-            return id.hash
+    public func hash(into hasher: inout Hasher) {
+        if let id = self.articleID as? String {
+            hasher.combine(id)
+            return
         }
-        let authorsHashValue = authors.reduce(0) { $0 ^ $1.hashValue }
-        return title.hashValue ^ summary.hashValue ^ authorsHashValue ^ identifier.hashValue ^ content.hashValue ^
-            read.hashValue ^ link.hashValue
+        hasher.combine(self.authors)
+        hasher.combine(self.title)
+        hasher.combine(self.summary)
+        hasher.combine(self.identifier)
+        hasher.combine(self.content)
+        hasher.combine(self.read)
+        hasher.combine(self.link)
     }
 
     public var description: String {

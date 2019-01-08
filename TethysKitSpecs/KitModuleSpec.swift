@@ -25,20 +25,26 @@ class KitModuleSpec: QuickSpec {
         }
 
         describe("Services") {
+            exists(AccountService.self, kindOf: InoreaderAccountService.self)
+
             exists(Bundle.self)
+
+            exists(CredentialService.self, kindOf: KeychainCredentialService.self)
+
             exists(UserDefaults.self)
+
             exists(FileManager.self)
 
             exists(Reachable.self)
 
-            isA(RealmProvider.self, kindOf: DefaultRealmProvider.self)
+            exists(RealmProvider.self, kindOf: DefaultRealmProvider.self)
 
-            isA(FeedService.self, kindOf: FeedRepository.self, singleton: true)
-            isA(ArticleService.self, kindOf: ArticleRepository.self, singleton: true)
+            exists(FeedService.self, kindOf: FeedRepository.self, singleton: true)
+            exists(ArticleService.self, kindOf: ArticleRepository.self, singleton: true)
 
-            isA(HTTPClient.self, kindOf: URLSession.self, singleton: true)
+            exists(HTTPClient.self, kindOf: URLSession.self, singleton: true)
 
-            isA(UpdateService.self, kindOf: RealmRSSUpdateService.self)
+            exists(UpdateService.self, kindOf: RealmRSSUpdateService.self)
 
             #if os(iOS)
                 exists(SearchIndex.self)
@@ -67,7 +73,7 @@ class KitModuleSpec: QuickSpec {
             }
         }
 
-        func isA<T, U>(_ type: T.Type, kindOf otherType: U.Type, singleton: Bool = false) {
+        func exists<T, U>(_ type: T.Type, kindOf otherType: U.Type, singleton: Bool = false) {
             describe("\(type)") {
                 it("exists") {
                     expect(subject.resolve(type)).toNot(beNil())

@@ -22,15 +22,21 @@ default_platform :ios
 
 
 platform :ios do
+  def set_secret(secret_env, path)
+    unless ENV[secret_env].nil? && File.file?(path)
+      open(path, 'w') do |f|
+        f.puts ENV[secret_env]
+      end
+    end
+  end
+
   before_all do
     carthage(platform: "iOS", cache_builds: true)
     Dir.chdir('..') do
       sh("bundle exec rake documentation:libraries")
-      unless ENV['INOREADER_CLIENT_ID'].nil? && !File.file?(".inoreader")
-        open('.inoreader', 'w') do |f|
-          f.puts ENV['INOREADER_CLIENT_ID']
-        end
-      end
+
+      set_secret 'INOREADER_CLIENT_ID', '.inoreader'
+      set_secret 'INOREADER_CLIENT_SECRET', '.inoreader_secret'
     end
   end
 

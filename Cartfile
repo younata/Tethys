@@ -9,6 +9,8 @@ github "tid-kijyun/Kanna"
 github "antitypical/Result"
 github "cbguder/CBGPromise" "master"
 github "swinject/swinject"
+github "jrendel/SwiftKeychainWrapper"
+github "SwiftKickMobile/SwiftMessages"
 
 # objc
 github "PureLayout/PureLayout"

@@ -6,6 +6,7 @@ import Swinject
 import FutureHTTP
 import Reachability
 import RealmSwift
+import SwiftKeychainWrapper
 
 public let kMainQueue = "kMainQueue"
 public let kBackgroundQueue = "kBackgroundQueue"
@@ -49,17 +50,27 @@ public func configure(container: Container) {
 }
 
 private func configureServices(container: Container) {
-    container.register(UpdateService.self) { r in
-        return RealmRSSUpdateService(
+    container.register(AccountService.self) { r in
+        return InoreaderAccountService(
+            clientId: Bundle.main.infoDictionary?["InoreaderClientID"] as? String ?? "",
+            clientSecret: Bundle.main.infoDictionary?["InoreaderClientSecret"] as? String ?? "",
+            credentialService: r.resolve(CredentialService.self)!,
             httpClient: r.resolve(HTTPClient.self)!,
-            realmProvider: r.resolve(RealmProvider.self)!,
-            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
-            workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
+            dateOracle: Date.init
         )
     }
+    container.register(ArticleService.self) { r in
+        return ArticleRepository(
+            articleService: RealmArticleService(
+                realmProvider: r.resolve(RealmProvider.self)!,
+                mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+                workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
+            )
+        )
+    }.inObjectScope(.container)
 
-    container.register(RealmProvider.self) { _ in
-        return DefaultRealmProvider(configuration: Realm.Configuration.defaultConfiguration)
+    container.register(CredentialService.self) { _ in
+        return KeychainCredentialService(keychain: KeychainWrapper.standard)
     }
 
     container.register(FeedService.self) { r in
@@ -73,16 +84,6 @@ private func configureServices(container: Container) {
         )
     }.inObjectScope(.container)
 
-    container.register(ArticleService.self) { r in
-        return ArticleRepository(
-            articleService: RealmArticleService(
-                realmProvider: r.resolve(RealmProvider.self)!,
-                mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
-                workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
-            )
-        )
-    }.inObjectScope(.container)
-
     container.register(OPMLService.self) { r in
         return LeptonOPMLService(
             feedService: r.resolve(FeedService.self)!,
@@ -90,6 +91,19 @@ private func configureServices(container: Container) {
             importQueue: r.resolve(OperationQueue.self, name: kBackgroundQueue)!
         )
     }.inObjectScope(.container)
+
+    container.register(RealmProvider.self) { _ in
+        return DefaultRealmProvider(configuration: Realm.Configuration.defaultConfiguration)
+    }
+
+    container.register(UpdateService.self) { r in
+        return RealmRSSUpdateService(
+            httpClient: r.resolve(HTTPClient.self)!,
+            realmProvider: r.resolve(RealmProvider.self)!,
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
+        )
+    }
 }
 
 private func configureUseCases(container: Container) {

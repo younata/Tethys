@@ -2,15 +2,19 @@ import Quick
 import Nimble
 import TethysKit
 import SafariServices
+@testable import TethysKit
 @testable import Tethys
 
 class SettingsViewControllerSpec: QuickSpec {
     override func spec() {
-        var subject: SettingsViewController! = nil
-        var navigationController: UINavigationController! = nil
-        var themeRepository: ThemeRepository! = nil
-        var settingsRepository: SettingsRepository! = nil
-        var opmlService: FakeOPMLService! = nil
+        var subject: SettingsViewController!
+        var navigationController: UINavigationController!
+        var themeRepository: ThemeRepository!
+        var settingsRepository: SettingsRepository!
+        var accountService: FakeAccountService!
+        var opmlService: FakeOPMLService!
+        var messenger: FakeMessenger!
+        var loginController: FakeLoginController!
 
         var rootViewController: UIViewController!
 
@@ -23,13 +27,20 @@ class SettingsViewControllerSpec: QuickSpec {
             mainQueue.runSynchronously = true
 
             opmlService = FakeOPMLService()
+            accountService = FakeAccountService()
+
+            messenger = FakeMessenger()
+
+            loginController = FakeLoginController()
 
             subject = SettingsViewController(
                 themeRepository: themeRepository,
                 settingsRepository: settingsRepository,
                 opmlService: opmlService,
                 mainQueue: mainQueue,
-                loginController: { oauthLoginControllerFactory() },
+                accountService: accountService,
+                messenger: messenger,
+                loginController: loginController,
                 documentationViewController: { documentation in documentationViewControllerFactory(documentation: documentation) }
             )
 
@@ -70,6 +81,10 @@ class SettingsViewControllerSpec: QuickSpec {
 
         it("has a disabled save button") {
             expect(subject.navigationItem.rightBarButtonItem?.isEnabled) == false
+        }
+
+        it("makes a request for the logged in accounts") {
+            expect(accountService.accountsPromises).to(haveCount(1))
         }
 
         sharedExamples("a changed setting") { (sharedContext: @escaping SharedExampleContext) in
@@ -218,6 +233,11 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
 
                 context("if there is no local account for this user") {
+                    beforeEach {
+                        accountService.accountsPromises.last?.resolve([])
+                        subject.tableView.reloadData()
+                    }
+
                     it("has a single cell") {
                         expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(1))
                     }
@@ -232,7 +252,7 @@ class SettingsViewControllerSpec: QuickSpec {
 
                         it("it asks the user to log in") {
                             expect(cell?.textLabel?.text).to(equal("Inoreader"))
-                            expect(cell?.detailTextLabel?.text).to(equal("No account"))
+                            expect(cell?.detailTextLabel?.text).to(equal("Add account"))
                         }
 
                         it("has its themeRepository set") {
@@ -244,20 +264,128 @@ class SettingsViewControllerSpec: QuickSpec {
                                 subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAt: indexPath)
                             }
 
-                            it("shows a controller to login") {
-                                expect(navigationController.visibleViewController).to(beAnInstanceOf(OAuthLoginController.self))
+                            it("asks the login controller to begin the login process") {
+                                expect(loginController.beginPromises).to(haveCount(1))
+                            }
+
+                            describe("when the login succeeds") {
+                                beforeEach {
+                                    loginController.beginPromises.last?.resolve(.success(Account(
+                                        kind: .inoreader,
+                                        username: "username",
+                                        id: "id"
+                                    )))
+                                }
+
+                                it("shows the account in the table") {
+                                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(2))
+                                    cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
+                                    expect(cell?.textLabel?.text).to(equal("Inoreader"))
+                                    expect(cell?.detailTextLabel?.text).to(equal("username"))
+                                }
+
+                                it("still shows the add account in the table") {
+                                    let addIndexPath = IndexPath(row: 1, section: sectionNumber)
+                                    let addCell = dataSource.tableView(subject.tableView, cellForRowAt: addIndexPath) as? TableViewCell
+                                    expect(addCell?.textLabel?.text).to(equal("Inoreader"))
+                                    expect(addCell?.detailTextLabel?.text).to(equal("Add account"))
+                                }
+                            }
+
+                            describe("when the login fails") {
+                                context("because something nefarious was going on") {
+                                    beforeEach {
+                                        loginController.beginPromises.last?.resolve(.failure(.network(
+                                            URL(string: "https://www.inoreader.com/oauth2/auth")!,
+                                            .badResponse
+                                        )))
+                                    }
+
+                                    it("tells the user something was up") {
+                                        expect(messenger.warningCalls).to(haveCount(1))
+                                        guard let call = messenger.warningCalls.last else { return }
+
+                                        expect(call.title).to(equal("Unable to Authenticate"))
+                                        expect(call.message).to(equal("Please try again"))
+                                    }
+                                }
+
+                                context("because the user cancelled") {
+                                    beforeEach {
+                                        loginController.beginPromises.last?.resolve(.failure(.network(
+                                            URL(string: "https://www.inoreader.com/oauth2/auth")!,
+                                            .cancelled
+                                        )))
+                                    }
+
+                                    it("does not show an alert") {
+                                        expect(messenger.warningCalls).to(beEmpty())
+                                    }
+
+                                    it("does not alter the table") {
+                                        expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(1))
+                                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
+                                        expect(cell?.textLabel?.text).to(equal("Inoreader"))
+                                        expect(cell?.detailTextLabel?.text).to(equal("Add account"))
+                                    }
+                                }
+
+                                context("for any other reason") {
+                                    beforeEach {
+                                        loginController.beginPromises.last?.resolve(.failure(.network(
+                                            URL(string: "https://www.inoreader.com/oauth2/auth")!,
+                                            .unknown
+                                        )))
+                                    }
+
+                                    it("tells the user there was an error") {
+                                        expect(messenger.warningCalls).to(haveCount(1))
+                                        guard let call = messenger.warningCalls.last else { return }
+
+                                        expect(call.title).to(equal("Unable to Authenticate"))
+                                        expect(call.message).to(equal("Please try again"))
+                                    }
+
+                                    it("does not alter the table") {
+                                        expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(1))
+                                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
+                                        expect(cell?.textLabel?.text).to(equal("Inoreader"))
+                                        expect(cell?.detailTextLabel?.text).to(equal("Add account"))
+                                    }
+                                }
                             }
                         }
                     }
                 }
 
                 context("if there is an account for this user") {
-                    it("has a single cell") {
-                        expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(1))
+                    beforeEach {
+                        accountService.accountsPromises.last?.resolve([
+                            .success(Account(
+                                kind: .inoreader,
+                                username: "username",
+                                id: "id"
+                            ))
+                        ])
+                        subject.tableView.reloadData()
                     }
 
-                    it("states the account type and username") {
-                        fail("Implement me!")
+                    it("has a two cells") {
+                        expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(2))
+                    }
+
+                    it("the first cell states the account type and username") {
+                        let indexPath = IndexPath(row: 0, section: sectionNumber)
+                        let cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
+                        expect(cell?.textLabel?.text).to(equal("Inoreader"))
+                        expect(cell?.detailTextLabel?.text).to(equal("username"))
+                    }
+
+                    it("the second cell shows the add account in the table") {
+                        let addIndexPath = IndexPath(row: 1, section: sectionNumber)
+                        let addCell = dataSource.tableView(subject.tableView, cellForRowAt: addIndexPath) as? TableViewCell
+                        expect(addCell?.textLabel?.text).to(equal("Inoreader"))
+                        expect(addCell?.detailTextLabel?.text).to(equal("Add account"))
                     }
                 }
             }

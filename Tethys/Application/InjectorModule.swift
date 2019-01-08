@@ -1,6 +1,7 @@
 import UIKit
 import Swinject
 import TethysKit
+import AuthenticationServices
 
 public func configure(container: Container) {
     container.register(UnreadCounter.self) { _ in
@@ -16,6 +17,8 @@ public func configure(container: Container) {
     }
 
     container.register(UserDefaults.self) { _ in return UserDefaults.standard }
+
+    container.register(Messenger.self) { _ in return SwiftMessenger() }
 
     container.register(ThemeRepository.self) { r in
         return ThemeRepository(userDefaults: r.resolve(UserDefaults.self) ?? nil)
@@ -119,8 +122,12 @@ private func registerViewControllers(container: Container) {
         return HTMLViewController(themeRepository: r.resolve(ThemeRepository.self)!)
     }
 
-    container.register(OAuthLoginController.self) { r in
-        return OAuthLoginController(themeRepository: r.resolve(ThemeRepository.self)!)
+    container.register(LoginController.self) { r in
+        return OAuthLoginController(
+            accountService: r.resolve(AccountService.self)!,
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            authenticationSessionFactory: ASWebAuthenticationSession.init
+        )
     }
 
     container.register(SettingsViewController.self) { r in
@@ -129,7 +136,9 @@ private func registerViewControllers(container: Container) {
             settingsRepository: r.resolve(SettingsRepository.self)!,
             opmlService: r.resolve(OPMLService.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
-            loginController: { r.resolve(OAuthLoginController.self)! },
+            accountService: r.resolve(AccountService.self)!,
+            messenger: r.resolve(Messenger.self)!,
+            loginController: r.resolve(LoginController.self)!,
             documentationViewController: { documentation in
                 return r.resolve(DocumentationViewController.self, argument: documentation)!
             }

@@ -178,15 +178,7 @@ public final class FeedListController: UIViewController {
     }
 
     private func show(controller: UIViewController, from: UIBarButtonItem?) {
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            let nc = UINavigationController(rootViewController: controller)
-            nc.modalPresentationStyle = .popover
-            nc.preferredContentSize = CGSize(width: 600, height: 800)
-            nc.popoverPresentationController?.barButtonItem = from
-            self.present(nc, animated: true, completion: nil)
-        } else {
-            self.navigationController?.pushViewController(controller, animated: true)
-        }
+        self.navigationController?.pushViewController(controller, animated: true)
     }
 
     @objc fileprivate func didTapAddFeed() {
@@ -238,15 +230,7 @@ public final class FeedListController: UIViewController {
 
     fileprivate func editFeed(feed: Feed, view: UIView?) {
         let controller = self.feedViewController(feed)
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            let nc = UINavigationController(rootViewController: controller)
-            nc.modalPresentationStyle = .popover
-            nc.preferredContentSize = CGSize(width: 600, height: 800)
-            nc.popoverPresentationController?.sourceView = view
-            self.present(nc, animated: true, completion: nil)
-        } else {
-            self.navigationController?.pushViewController(controller, animated: true)
-        }
+        self.navigationController?.pushViewController(controller, animated: true)
     }
 
     fileprivate func shareFeed(feed: Feed) {

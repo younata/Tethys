@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11542" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
-        <capability name="Navigation items with more than one left or right bar item" minToolsVersion="7.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -24,7 +22,7 @@
                     <color key="tintColor" red="0.0" green="0.75" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <items>
                         <navigationItem title="Feeds" id="Fuw-43-eH9">
-                            <barButtonItem key="leftBarButtonItem" title="Settings" id="9tv-yK-lFM"/>
+                            <barButtonItem key="leftBarButtonItem" title="Settings" image="settings" id="9tv-yK-lFM"/>
                             <rightBarButtonItems>
                                 <barButtonItem systemItem="add" id="WoB-Sc-8tK"/>
                                 <barButtonItem systemItem="edit" id="7as-iI-5s3"/>
@@ -42,34 +40,19 @@
                         </mask>
                     </variation>
                 </navigationBar>
-                <searchBar contentMode="redraw" barStyle="black" placeholder="Filter By Tag" translatesAutoresizingMaskIntoConstraints="NO" id="dMM-uC-3uu">
-                    <rect key="frame" x="0.0" y="64" width="480" height="44"/>
-                    <textInputTraits key="textInputTraits"/>
-                </searchBar>
             </subviews>
             <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="deviceRGB"/>
             <constraints>
-                <constraint firstItem="D7s-5m-aRS" firstAttribute="leading" secondItem="dMM-uC-3uu" secondAttribute="trailing" constant="-320" id="5ef-Vj-Tsx">
-                    <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
-                </constraint>
                 <constraint firstItem="D7s-5m-aRS" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="7JW-Ls-K8L"/>
                 <constraint firstItem="D7s-5m-aRS" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="C2C-B2-n2Z">
                     <variation key="heightClass=regular-widthClass=regular" constant="20"/>
                 </constraint>
-                <constraint firstItem="dMM-uC-3uu" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="Csj-3T-WFF"/>
-                <constraint firstItem="dMM-uC-3uu" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="TrZ-zx-fYD"/>
-                <constraint firstAttribute="trailing" secondItem="dMM-uC-3uu" secondAttribute="trailing" constant="160" id="Tug-gj-LWg">
-                    <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
-                </constraint>
-                <constraint firstAttribute="trailing" secondItem="dMM-uC-3uu" secondAttribute="trailing" id="VoP-U2-m9m"/>
-                <constraint firstItem="dMM-uC-3uu" firstAttribute="top" secondItem="D7s-5m-aRS" secondAttribute="bottom" id="XI7-4B-56U"/>
                 <constraint firstItem="D7s-5m-aRS" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="ZJZ-RA-Qbw"/>
                 <constraint firstAttribute="trailing" secondItem="D7s-5m-aRS" secondAttribute="trailing" constant="160" id="qCW-l5-Y3n">
                     <variation key="heightClass=regular-widthClass=regular" constant="0.0"/>
                 </constraint>
                 <constraint firstAttribute="trailing" secondItem="D7s-5m-aRS" secondAttribute="trailing" id="tNb-kf-p7t"/>
                 <constraint firstItem="D7s-5m-aRS" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="20" id="vMC-R0-NUp"/>
-                <constraint firstItem="dMM-uC-3uu" firstAttribute="top" secondItem="D7s-5m-aRS" secondAttribute="bottom" id="wc7-B1-ojF"/>
             </constraints>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>
             <nil key="simulatedTopBarMetrics"/>
@@ -77,54 +60,40 @@
             <variation key="default">
                 <mask key="subviews">
                     <exclude reference="D7s-5m-aRS"/>
-                    <exclude reference="dMM-uC-3uu"/>
                 </mask>
                 <mask key="constraints">
-                    <exclude reference="5ef-Vj-Tsx"/>
                     <exclude reference="7JW-Ls-K8L"/>
                     <exclude reference="C2C-B2-n2Z"/>
                     <exclude reference="ZJZ-RA-Qbw"/>
                     <exclude reference="qCW-l5-Y3n"/>
                     <exclude reference="tNb-kf-p7t"/>
                     <exclude reference="vMC-R0-NUp"/>
-                    <exclude reference="Csj-3T-WFF"/>
-                    <exclude reference="TrZ-zx-fYD"/>
-                    <exclude reference="Tug-gj-LWg"/>
-                    <exclude reference="VoP-U2-m9m"/>
-                    <exclude reference="XI7-4B-56U"/>
-                    <exclude reference="wc7-B1-ojF"/>
                 </mask>
             </variation>
             <variation key="heightClass=regular-widthClass=compact">
                 <mask key="subviews">
                     <include reference="D7s-5m-aRS"/>
-                    <include reference="dMM-uC-3uu"/>
                 </mask>
                 <mask key="constraints">
                     <include reference="ZJZ-RA-Qbw"/>
                     <include reference="tNb-kf-p7t"/>
                     <include reference="vMC-R0-NUp"/>
-                    <include reference="Csj-3T-WFF"/>
-                    <include reference="VoP-U2-m9m"/>
-                    <include reference="XI7-4B-56U"/>
                 </mask>
             </variation>
             <variation key="heightClass=regular-widthClass=regular">
                 <mask key="subviews">
                     <include reference="D7s-5m-aRS"/>
-                    <include reference="dMM-uC-3uu"/>
                 </mask>
                 <mask key="constraints">
-                    <exclude reference="5ef-Vj-Tsx"/>
                     <include reference="7JW-Ls-K8L"/>
                     <include reference="C2C-B2-n2Z"/>
                     <include reference="qCW-l5-Y3n"/>
-                    <include reference="TrZ-zx-fYD"/>
-                    <include reference="Tug-gj-LWg"/>
-                    <include reference="wc7-B1-ojF"/>
                 </mask>
             </variation>
             <point key="canvasLocation" x="404" y="445"/>
         </view>
     </objects>
+    <resources>
+        <image name="settings" width="24" height="24"/>
+    </resources>
 </document>

@@ -121,6 +121,8 @@
 		896EF7EE21E5558300C0AB75 /* SwiftMessages.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 896EF7ED21E5558300C0AB75 /* SwiftMessages.framework */; };
 		896EF7EF21E5558C00C0AB75 /* SwiftMessages.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 896EF7ED21E5558300C0AB75 /* SwiftMessages.framework */; };
 		896EF7F021E5559200C0AB75 /* SwiftMessages.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 896EF7ED21E5558300C0AB75 /* SwiftMessages.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		896EF7F821EA801200C0AB75 /* AuthenticatedHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896EF7F721EA801200C0AB75 /* AuthenticatedHTTPClient.swift */; };
+		896EF7FA21EA807C00C0AB75 /* AuthenticatedHTTPClientSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896EF7F921EA807C00C0AB75 /* AuthenticatedHTTPClientSpec.swift */; };
 		89718F301AE0C9B4004C3CB4 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; };
 		89718F311AE0C9B4004C3CB4 /* Quick.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2F1AE0C9B4004C3CB4 /* Quick.framework */; };
 		89718F331AE0C9D6004C3CB4 /* Nimble.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -433,6 +435,8 @@
 		896EF7E921E5495D00C0AB75 /* Messenger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messenger.swift; sourceTree = "<group>"; };
 		896EF7EB21E54A3200C0AB75 /* FakeMessenger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeMessenger.swift; sourceTree = "<group>"; };
 		896EF7ED21E5558300C0AB75 /* SwiftMessages.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftMessages.framework; path = Carthage/Build/iOS/SwiftMessages.framework; sourceTree = "<group>"; };
+		896EF7F721EA801200C0AB75 /* AuthenticatedHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedHTTPClient.swift; sourceTree = "<group>"; };
+		896EF7F921EA807C00C0AB75 /* AuthenticatedHTTPClientSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedHTTPClientSpec.swift; sourceTree = "<group>"; };
 		89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Nimble.framework; path = Carthage/Build/iOS/Nimble.framework; sourceTree = SOURCE_ROOT; };
 		89718F2F1AE0C9B4004C3CB4 /* Quick.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quick.framework; path = Carthage/Build/iOS/Quick.framework; sourceTree = SOURCE_ROOT; };
 		89735ABA1C0694C70032E09C /* UITraitCollection+TethysTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITraitCollection+TethysTests.h"; sourceTree = "<group>"; };
@@ -757,6 +761,7 @@
 		894304221B45089A000078DC /* TethysKit */ = {
 			isa = PBXGroup;
 			children = (
+				896EF7F121EA567C00C0AB75 /* Clients */,
 				892E76F71E08358900866336 /* Extensions */,
 				892E76FA1E08382100866336 /* Factories */,
 				895AC5271C83816600A5F6A1 /* Models */,
@@ -776,6 +781,7 @@
 		894304301B45089A000078DC /* TethysKitSpecs */ = {
 			isa = PBXGroup;
 			children = (
+				896EF7F421EA59A000C0AB75 /* Client */,
 				8994320E219A920000FC6EB6 /* Helpers */,
 				89D256721C3CC038004066B9 /* Models */,
 				892E76F21E079A0500866336 /* Monitors */,
@@ -899,6 +905,22 @@
 				8918D4DA1B8598D100DCDE0E /* ThemeRepository.swift */,
 			);
 			path = Repositories;
+			sourceTree = "<group>";
+		};
+		896EF7F121EA567C00C0AB75 /* Clients */ = {
+			isa = PBXGroup;
+			children = (
+				896EF7F721EA801200C0AB75 /* AuthenticatedHTTPClient.swift */,
+			);
+			path = Clients;
+			sourceTree = "<group>";
+		};
+		896EF7F421EA59A000C0AB75 /* Client */ = {
+			isa = PBXGroup;
+			children = (
+				896EF7F921EA807C00C0AB75 /* AuthenticatedHTTPClientSpec.swift */,
+			);
+			path = Client;
 			sourceTree = "<group>";
 		};
 		8978C52D219917F100D702BB /* Helpers */ = {
@@ -1743,6 +1765,7 @@
 				893694F221E1A3D6002C3A09 /* CredentialService.swift in Sources */,
 				89CBD5EC21C8C85600D3FB31 /* ArticleRepository.swift in Sources */,
 				89146E421C88C70600EC8F10 /* ImportUseCase.swift in Sources */,
+				896EF7F821EA801200C0AB75 /* AuthenticatedHTTPClient.swift in Sources */,
 				89CC82061B461A5500648367 /* KitModule.swift in Sources */,
 				8978C531219A7FDC00D702BB /* ArticleService.swift in Sources */,
 				89CBD5DD21BF2EF300D3FB31 /* Reachable.swift in Sources */,
@@ -1797,6 +1820,7 @@
 				89CBD5EE21C8C86200D3FB31 /* ArticleRepositorySpec.swift in Sources */,
 				89146E441C88C73200EC8F10 /* ImportUseCaseSpec.swift in Sources */,
 				8937F6C01B79D0800044A442 /* KitModuleSpec.swift in Sources */,
+				896EF7FA21EA807C00C0AB75 /* AuthenticatedHTTPClientSpec.swift in Sources */,
 				892E77071E08459300866336 /* KVOMonitor.swift in Sources */,
 				8935F5D51B4628B3000FFD5D /* OPMLServiceSpec.swift in Sources */,
 				8984FE8F1CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */,

@@ -129,7 +129,7 @@ private struct AccountServiceResponse: Decodable {
     let userName: String
 }
 
-private struct OAuthTokenResponse: Decodable {
+struct OAuthTokenResponse: Decodable {
     let access_token: String
     let expires_in: TimeInterval
     let refresh_token: String

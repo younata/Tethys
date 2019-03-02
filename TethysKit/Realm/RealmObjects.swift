@@ -18,6 +18,11 @@ final class RealmString: Object {
     }
 }
 
+enum FeedSource: String {
+    case local
+    case inoreader
+}
+
 final class RealmFeed: Object {
     @objc dynamic var title = ""
     @objc dynamic var url = ""
@@ -26,6 +31,16 @@ final class RealmFeed: Object {
     var articles = LinkingObjects(fromType: RealmArticle.self, property: "feed")
     @objc dynamic var imageData: Data?
     @objc dynamic var settings: RealmSettings?
+
+    @objc private dynamic var _source = "local"
+    var source: FeedSource {
+        get {
+            return FeedSource(rawValue: self._source)!
+        }
+        set {
+            self._source = newValue.rawValue
+        }
+    }
 
     @objc dynamic var id: String = UUID().uuidString
     override static func primaryKey() -> String? {

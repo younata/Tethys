@@ -247,6 +247,8 @@
 		89EF4FD81A96852D0052A82F /* test.opml in Resources */ = {isa = PBXBuildFile; fileRef = 89EF4FD71A96852D0052A82F /* test.opml */; };
 		89F516571B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89F516561B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m */; };
 		89F517021B1C070C0005AB04 /* FeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F517011B1C070C0005AB04 /* FeedViewControllerSpec.swift */; };
+		89F73DBF21FE5F93001B3135 /* InoreaderFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F73DBE21FE5F93001B3135 /* InoreaderFeedService.swift */; };
+		89F73DC121FE5FF1001B3135 /* InoreaderFeedServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F73DC021FE5FF1001B3135 /* InoreaderFeedServiceSpec.swift */; };
 		89F98BA11BA079A3005C3CA8 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */; };
 		89F98BA41BA079EA005C3CA8 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */; };
 		89F98BA61BA07DC6005C3CA8 /* SettingsRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */; };
@@ -558,6 +560,8 @@
 		89F516551B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+TethysTests.h"; sourceTree = "<group>"; };
 		89F516561B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarButtonItem+TethysTests.m"; sourceTree = "<group>"; };
 		89F517011B1C070C0005AB04 /* FeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewControllerSpec.swift; sourceTree = "<group>"; };
+		89F73DBE21FE5F93001B3135 /* InoreaderFeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InoreaderFeedService.swift; sourceTree = "<group>"; };
+		89F73DC021FE5FF1001B3135 /* InoreaderFeedServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InoreaderFeedServiceSpec.swift; sourceTree = "<group>"; };
 		89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
 		89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsRepository.swift; sourceTree = "<group>"; };
@@ -884,6 +888,7 @@
 			isa = PBXGroup;
 			children = (
 				895B9A1921AA2C06003FFE46 /* RealmFeedServiceSpec.swift */,
+				89F73DC021FE5FF1001B3135 /* InoreaderFeedServiceSpec.swift */,
 				89CBD5E921C8A66000D3FB31 /* FeedRepositorySpec.swift */,
 			);
 			path = FeedService;
@@ -1194,6 +1199,7 @@
 			children = (
 				895B9A1521AA2585003FFE46 /* FeedService.swift */,
 				894644D821AB8FEB00153308 /* RealmFeedService.swift */,
+				89F73DBE21FE5F93001B3135 /* InoreaderFeedService.swift */,
 				89CBD5E721C8A5D900D3FB31 /* FeedRepository.swift */,
 			);
 			path = FeedService;
@@ -1780,6 +1786,7 @@
 				89D427DE1CF53D520093D186 /* TethysError.swift in Sources */,
 				892E77131E09A2E300866336 /* TimerFactory.swift in Sources */,
 				898911A21C30F0BE009A44E9 /* UpdateService.swift in Sources */,
+				89F73DBF21FE5F93001B3135 /* InoreaderFeedService.swift in Sources */,
 				8903F5B81D403FEF00546099 /* UpdateUseCase.swift in Sources */,
 				8903EB091C702843001C0189 /* WebPageParser.swift in Sources */,
 				895B9A1621AA2585003FFE46 /* FeedService.swift in Sources */,
@@ -1794,6 +1801,7 @@
 				895B9A1A21AA2C06003FFE46 /* RealmFeedServiceSpec.swift in Sources */,
 				8935F5DA1B4628B3000FFD5D /* ArticleSpec.swift in Sources */,
 				8984FE8C1CBA1A180096F4B3 /* AuthorSpec.swift in Sources */,
+				89F73DC121FE5FF1001B3135 /* InoreaderFeedServiceSpec.swift in Sources */,
 				892E76F41E079A3500866336 /* BackgroundStateMonitorSpec.swift in Sources */,
 				8994320A219A813800FC6EB6 /* RealmArticleServiceSpec.swift in Sources */,
 				893694F421E1A4E8002C3A09 /* FakeCredentialService.swift in Sources */,

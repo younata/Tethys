@@ -44,6 +44,28 @@ class KitModuleSpec: QuickSpec {
 
             exists(HTTPClient.self, kindOf: URLSession.self, singleton: true)
 
+            describe("HTTPClient with an account") {
+                it("exists") {
+                    expect(subject.resolve(HTTPClient.self, argument: "my_account")).toNot(beNil())
+                }
+
+                it("is a configured AuthenticatedHTTPClient") {
+                    let client = subject.resolve(HTTPClient.self, argument: "my_account")
+                    expect(client).to(beAKindOf(AuthenticatedHTTPClient.self))
+                    guard let httpClient = client as? AuthenticatedHTTPClient else {
+                        fail("Not an AuthenticatedHTTPClient")
+                        return
+                    }
+
+                    expect(httpClient.client).to(beIdenticalTo(subject.resolve(HTTPClient.self)))
+                    expect(httpClient.accountId).to(equal("my_account"))
+                    expect(httpClient.refreshURL.absoluteString).to(equal("https://www.inoreader.com/oauth2/token"))
+                    expect(httpClient.clientId).to(equal(Bundle.main.infoDictionary?["InoreaderClientID"] as? String))
+                    expect(httpClient.clientSecret).to(equal(Bundle.main.infoDictionary?["InoreaderClientSecret"] as? String))
+                    expect(httpClient.dateOracle().timeIntervalSince(Date())).to(beCloseTo(0))
+                }
+            }
+
             exists(UpdateService.self, kindOf: RealmRSSUpdateService.self)
 
             #if os(iOS)

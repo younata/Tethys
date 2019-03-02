@@ -2,7 +2,7 @@ import RealmSwift
 
 struct RealmMigrator {
     static func beginMigration() {
-        let schemaVersion: UInt64 = 14
+        let schemaVersion: UInt64 = 15
         if UserDefaults.standard.bool(forKey: "FASTLANE_SNAPSHOT") {
             Realm.Configuration.defaultConfiguration = Realm.Configuration(
                 inMemoryIdentifier: "SnapShot",
@@ -59,6 +59,11 @@ struct RealmMigrator {
                         migration.delete(newObject)
                     }
                 }
+            }
+        }
+        if oldSchemaVersion < 15 {
+            migration.enumerateObjects(ofType: RealmFeed.className()) { oldObject, newObject in
+                oldObject?["_source"] = "local"
             }
         }
     }

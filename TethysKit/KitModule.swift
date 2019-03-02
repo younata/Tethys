@@ -32,6 +32,17 @@ public func configure(container: Container) {
     container.register(Bundle.self) { _ in Bundle(for: WebPageParser.classForCoder() )}
 
     container.register(HTTPClient.self) { _ in URLSession.shared }
+    container.register(HTTPClient.self) { r, account in
+        return AuthenticatedHTTPClient(
+            client: r.resolve(HTTPClient.self)!,
+            credentialService: r.resolve(CredentialService.self)!,
+            refreshURL: URL(string: "https://www.inoreader.com/oauth2/token")!,
+            clientId: Bundle.main.infoDictionary?["InoreaderClientID"] as? String ?? "",
+            clientSecret: Bundle.main.infoDictionary?["InoreaderClientSecret"] as? String ?? "",
+            accountId: account,
+            dateOracle: Date.init
+        )
+    }
 
     container.register(Analytics.self) { _ in BadAnalytics() }.inObjectScope(.container)
 

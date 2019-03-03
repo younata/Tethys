@@ -1,3 +1,5 @@
+import FutureHTTP
+
 public enum HTTPError: Int, CustomStringConvertible {
     case badRequest = 400
     case unauthorized = 401
@@ -87,5 +89,11 @@ public enum HTTPError: Int, CustomStringConvertible {
         case .networkAuthenticationRequired: suffix = "Network Authentication Required"
         }
         return "\(self.rawValue) - \(suffix)"
+    }
+}
+
+extension HTTPError {
+    public init?(status: HTTPStatus) {
+        self.init(rawValue: status.rawValue)
     }
 }

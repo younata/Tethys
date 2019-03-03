@@ -1,4 +1,5 @@
 import Muon
+import FutureHTTP
 
 public enum NetworkError: Error, Equatable {
     case badResponse
@@ -28,6 +29,34 @@ public enum NetworkError: Error, Equatable {
             return NSLocalizedString("Error_Network_TimedOut", comment: "")
         case .unknown:
             return NSLocalizedString("Error_Network_Unknown", comment: "")
+        }
+    }
+}
+
+extension NetworkError {
+    init(httpClientError: HTTPClientError) {
+        switch httpClientError {
+        case .unknown, .url:
+            self = .unknown
+        case .security:
+            self = .badResponse
+        case .network(let networkError):
+            switch networkError {
+            case .cancelled:
+                self = .cancelled
+            case .timedOut:
+                self = .timedOut
+            case .cannotFindHost, .cannotConnectTohost:
+                self = .serverNotFound
+            case .connectionLost:
+                self = .timedOut
+            case .dnsFailed:
+                self = .dns
+            case .notConnectedToInternet:
+                self = .internetDown
+            }
+        case .http:
+            self = .badResponse
         }
     }
 }

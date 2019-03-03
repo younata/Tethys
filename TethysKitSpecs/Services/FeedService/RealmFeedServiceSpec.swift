@@ -8,7 +8,7 @@ import RealmSwift
 
 final class RealmFeedServiceSpec: QuickSpec {
     override func spec() {
-        let realmConf = Realm.Configuration(inMemoryIdentifier: "RealmArticleServiceSpec")
+        let realmConf = Realm.Configuration(inMemoryIdentifier: "RealmFeedServiceSpec")
         var realm: Realm!
 
         var mainQueue: FakeOperationQueue!

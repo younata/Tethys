@@ -2,15 +2,21 @@ import Quick
 import Nimble
 import Result
 import CBGPromise
+import FutureHTTP
 
 @testable import TethysKit
 
 final class InoreaderFeedServiceSpec: QuickSpec {
     override func spec() {
         var subject: InoreaderFeedService!
+        var httpClient: FakeHTTPClient!
+
+        let baseURL = URL(string: "https://example.com")!
 
         beforeEach {
-            subject = InoreaderFeedService()
+            httpClient = FakeHTTPClient()
+
+            subject = InoreaderFeedService(httpClient: httpClient, baseURL: baseURL)
         }
 
         describe("feeds()") {
@@ -21,7 +27,217 @@ final class InoreaderFeedServiceSpec: QuickSpec {
             }
 
             it("asks inoreader for the list of feeds") {
-                fail("do it")
+                expect(httpClient.requests).to(haveCount(1))
+                expect(httpClient.requests.last?.url).to(equal(
+                    URL(string: "https://example.com/reader/api/0/subscription/list")
+                ))
+                expect(httpClient.requests.last?.httpMethod).to(equal("GET"))
+            }
+
+            describe("when the request succeeds") {
+                context("and the data is valid") {
+                    let receivedData: [[String: Any]] = [[
+                        "id": "feed/http://www.example.com/feed1/",
+                        "title": "Feed 1 - Title",
+                        "categories": [[
+                            "id": "user/1005921515/label/Animation",
+                            "label": "Animation"
+                            ]],
+                        "sortid": "00DA6134",
+                        "firstitemmsec": 1424501776942006,
+                        "url": "http://www.example.com/feed1/",
+                        "htmlUrl": "http://www.example.com/",
+                        "iconUrl": ""
+                        ], [
+                            "id": "feed/http://example1.net/blog/feed/",
+                            "title": "Example 1 - Title",
+                            "categories": [[
+                                "id": "user/1005921515/label/MUST READ",
+                                "label": "MUST READ"
+                            ]],
+                            "sortid": "0136BF30",
+                            "firstitemmsec": 1424330872170656,
+                            "url": "http://example1.net/blog/feed/",
+                            "htmlUrl": "http://example1.net/blog",
+                            "iconUrl": "https://www.inoreader.com/cache/favicons/a/m/a/example1_net_16x16.png"
+                        ], [
+                            "id": "feed/http://example.com/2/feed",
+                            "title": "Example2 - Title",
+                            "categories": [[
+                                "id": "user/1005921515/label/Example2",
+                                "label": "Example2"
+                            ]],
+                            "sortid": "00F54F6B",
+                            "firstitemmsec": 1424502014872507,
+                            "url": "http://example.com/2/feed",
+                            "htmlUrl": "http://example.com/2",
+                            "iconUrl": "https://www.inoreader.com/cache/favicons/y/o/u/example2-com_16x16.png"
+                        ], [
+                            "id": "feed/http://example.com/3/feed",
+                            "title": "Example 3 - Title",
+                            "categories": [[
+                                "id": "user/1005921515/label/Example3",
+                                "label": "Example3"
+                            ]],
+                            "sortid": "00F54F5F",
+                            "firstitemmsec": 1424502014872507,
+                            "url": "http://http://example.com/3/feed",
+                            "htmlUrl": "http://www.example.com/3/",
+                            "iconUrl": "https://www.inoreader.com/cache/favicons/y/o/u/example3_com_16x16.png"
+                        ], [
+                            "id": "feed/http://example.com/4/feed/",
+                            "title": "example 4 - Title",
+                            "categories": [[
+                                "id": "user/1005921515/label/Databases",
+                                "label": "Databases"
+                                ], [
+                                    "id": "user/1005921515/label/MUST READ",
+                                    "label": "MUST READ"
+                                ]],
+                            "sortid": "009BC5E6",
+                            "firstitemmsec": 1424501919304951,
+                            "url": "http://example.com/4/feed/",
+                            "htmlUrl": "http://example.com/4",
+                            "iconUrl": "https://www.inoreader.com/cache/favicons/d/o/m/example_com_16x16.png"
+                        ], [
+                            "id": "feed/http://example.com/5/feed",
+                            "title": "Example 5 - Title",
+                            "categories": [[
+                                "id": "user/1005921515/label/MUST READ",
+                                "label": "MUST READ"
+                                ], [
+                                    "id": "user/1005921515/label/Animation",
+                                    "label": "Animation"
+                                ]],
+                            "sortid": "00D42F97",
+                            "firstitemmsec": 1424501776942006,
+                            "url": "http://example.com/5/feed",
+                            "htmlUrl": "http://example.com/5/",
+                            "iconUrl": "https://www.inoreader.com/cache/favicons/a/r/t/example_com_16x16.png"
+                        ]]
+
+                    beforeEach {
+                        httpClient.requestPromises.last?.resolve(.success(HTTPResponse(
+                            body: try! JSONSerialization.data(withJSONObject: ["subscriptions": receivedData], options: []),
+                            status: .ok,
+                            mimeType: "Application/JSON",
+                            headers: [:]
+                        )))
+                    }
+
+                    it("doesn't throw up, first of all.") {
+                        expect(future.value?.error).to(beNil())
+                    }
+                }
+
+                context("and the data is not valid") {
+                    beforeEach {
+                        httpClient.requestPromises.last?.resolve(.success(HTTPResponse(
+                            body: "[\"bad\": \"data\"]".data(using: .utf8)!,
+                            status: .ok,
+                            mimeType: "Application/JSON",
+                            headers: [:]
+                        )))
+                    }
+
+                    it("resolves the future with a bad response error") {
+                        expect(future.value?.error).to(equal(TethysError.network(
+                            URL(string: "https://example.com/reader/api/0/subscription/list")!,
+                            .badResponse
+                        )))
+                    }
+                }
+            }
+
+            context("when the request fails with a 400 level error") {
+                beforeEach {
+                    httpClient.requestPromises.last?.resolve(.success(HTTPResponse(
+                        body: "403".data(using: .utf8)!,
+                        status: HTTPStatus.init(rawValue: 403)!,
+                        mimeType: "Application/JSON",
+                        headers: [:]
+                    )))
+                }
+
+                it("resolves the future with the error") {
+                    expect(future.value?.error).to(equal(
+                        TethysError.network(URL(string: "https://example.com/reader/api/0/subscription/list")!,
+                                            .http(.forbidden))
+                    ))
+                }
+            }
+
+            context("when the request fails with a 500 level error") {
+                beforeEach {
+                    httpClient.requestPromises.last?.resolve(.success(HTTPResponse(
+                        body: "502".data(using: .utf8)!,
+                        status: HTTPStatus.init(rawValue: 502)!,
+                        mimeType: "Application/JSON",
+                        headers: [:]
+                    )))
+                }
+
+                it("resolves the future with the error") {
+                    expect(future.value?.error).to(equal(
+                        TethysError.network(URL(string: "https://example.com/reader/api/0/subscription/list")!,
+                                            .http(.badGateway))
+                    ))
+                }
+            }
+
+            context("when the request fails with an error") {
+                beforeEach {
+                    httpClient.requestPromises.last?.resolve(.failure(HTTPClientError.network(.timedOut)))
+                }
+
+                it("resolves the future with an error") {
+                    expect(future.value?.error).to(equal(
+                        TethysError.network(URL(string: "https://example.com/reader/api/0/subscription/list")!,
+                                            .timedOut)
+                    ))
+                }
+            }
+        }
+
+        describe("articles(of:)") {
+            it("needs to be implemented") {
+                fail("Implement me!")
+            }
+        }
+
+        describe("subscribe(to:)") {
+            it("needs to be implemented") {
+                fail("Implement me!")
+            }
+        }
+
+        describe("tags()") {
+            it("needs to be implemented") {
+                fail("Implement me!")
+            }
+        }
+
+        describe("set(tags:of:)") {
+            it("needs to be implemented") {
+                fail("Implement me!")
+            }
+        }
+
+        describe("set(url:on:)") {
+            it("needs to be implemented") {
+                fail("Implement me!")
+            }
+        }
+
+        describe("readAll(of:)") {
+            it("needs to be implemented") {
+                fail("Implement me!")
+            }
+        }
+
+        describe("remove(feed:)") {
+            it("needs to be implemented") {
+                fail("Implement me!")
             }
         }
     }

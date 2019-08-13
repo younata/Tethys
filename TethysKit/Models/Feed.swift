@@ -50,7 +50,7 @@ public final class Feed: Hashable, CustomStringConvertible {
     }
 
     public var description: String {
-        return "Feed: title: \(title), url: \(url), summary: \(summary), tags: \(tags)\n"
+        return "<Feed title=\"\(title)\" url=\"\(url)\" summary=\"\(summary)\" tags=\"\(tags)\" />\n"
     }
 
     public init(title: String, url: URL, summary: String, tags: [String], unreadCount: Int = 0, image: Image? = nil,
@@ -95,5 +95,23 @@ public func == (lhs: Feed, rhs: Feed) -> Bool {
     if let aID = lhs.feedID as? URL, let bID = rhs.feedID as? URL {
         return aID == bID
     }
-    return lhs.title == rhs.title && lhs.url == rhs.url && lhs.summary == rhs.summary && lhs.tags == rhs.tags
+
+    func log(reason: String) -> Bool {
+//        print("\(lhs) does not equal \(rhs) - \(reason)")
+        return false
+    }
+
+    guard lhs.title == rhs.title else {
+        return log(reason: "Titles don't match")
+    }
+    guard lhs.url == rhs.url else {
+        return log(reason: "URLs don't match")
+    }
+    guard lhs.summary == rhs.summary else {
+        return log(reason: "Summaries don't match")
+    }
+    guard lhs.tags == rhs.tags else {
+        return log(reason: "Tags don't match")
+    }
+    return true
 }

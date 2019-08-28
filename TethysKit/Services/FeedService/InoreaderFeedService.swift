@@ -17,7 +17,9 @@ struct InoreaderFeedService: FeedService {
         return self.httpClient.request(request).map { requestResult -> Result<[InoreaderFeed], NetworkError> in
             switch requestResult {
             case .success(let response):
-                return self.parseSubscriptionList(response: response)
+                return self.parse(response: response).map { (parsed: InoreaderSubscriptionResponse) -> [InoreaderFeed] in
+                    return parsed.subscriptions
+                }
             case .failure(let clientError):
                 return .failure(NetworkError(httpClientError: clientError))
             }
@@ -34,7 +36,9 @@ struct InoreaderFeedService: FeedService {
         return self.httpClient.request(URLRequest(url: url)).map { requestResult -> Result<[InoreaderArticle], NetworkError> in
             switch requestResult {
             case .success(let response):
-                return self.parseArticleList(response: response)
+                return self.parse(response: response).map { (parsed: InoreaderArticlesResponse) -> [InoreaderArticle] in
+                    return parsed.items
+                }
             case .failure(let clientError):
                 return .failure(NetworkError(httpClientError: clientError))
             }
@@ -46,6 +50,40 @@ struct InoreaderFeedService: FeedService {
     }
 
     func subscribe(to url: URL) -> Future<Result<Feed, TethysError>> {
+        let apiUrl = self.baseURL.appendingPathComponent("reader/api/0/subscription/quickadd")
+        let request: URLRequest
+        do {
+            let body = try JSONSerialization.data(
+                withJSONObject: ["quickadd": "feed/" + url.absoluteString],
+                options: []
+            )
+            request = URLRequest(url: apiUrl, headers: [:], method: .post(body))
+        } catch let error {
+            print("error creating json data: \(error)")
+            return Promise<Result<Feed, TethysError>>.resolved(.failure(TethysError.unknown))
+        }
+        return self.httpClient.request(request).map { requestResult -> Result<InoreaderSubscribeResponse, NetworkError> in
+            switch requestResult {
+            case .success(let response):
+                return self.parse(response: response)
+            case .failure(let clientError):
+                return .failure(NetworkError(httpClientError: clientError))
+            }
+        }.map { result -> Result<Feed, TethysError> in
+            switch result {
+            case .success(let subscribeResponse):
+                let subscribedUrlString = String(subscribeResponse.query.split(separator: "/", maxSplits: 1, omittingEmptySubsequences: true)[1])
+                let subscribedUrl = URL(string: subscribedUrlString)!
+                return .success(Feed(
+                    title: subscribeResponse.streamName,
+                    url: subscribedUrl,
+                    summary: "",
+                    tags: []
+                ))
+            case .failure(let networkError):
+                return .failure(.network(apiUrl, networkError))
+            }
+        }
         return Promise<Result<Feed, TethysError>>().future
     }
 
@@ -71,7 +109,7 @@ struct InoreaderFeedService: FeedService {
 
     // MARK: Private
 
-    private func parseSubscriptionList(response: HTTPResponse) -> Result<[InoreaderFeed], NetworkError> {
+    private func parse<T: Decodable>(response: HTTPResponse) -> Result<T, NetworkError> {
         guard response.status == .ok else {
             guard let receivedStatus = response.status, let status = HTTPError(status: receivedStatus) else {
                 return .failure(.unknown)
@@ -81,7 +119,7 @@ struct InoreaderFeedService: FeedService {
 
         let decoder = JSONDecoder()
         do {
-            return .success(try decoder.decode(InoreaderSubscriptionResponse.self, from: response.body).subscriptions)
+            return .success(try decoder.decode(T.self, from: response.body))
         } catch let error {
             print("error decoding data: \(String(describing: String(data: response.body, encoding: .utf8)))")
             dump(error)
@@ -102,25 +140,6 @@ struct InoreaderFeedService: FeedService {
                 settings: nil
             )
         }))
-    }
-
-    private func parseArticleList(response: HTTPResponse) -> Result<[InoreaderArticle], NetworkError> {
-        guard response.status == .ok else {
-            guard let receivedStatus = response.status, let status = HTTPError(status: receivedStatus) else {
-                return .failure(.unknown)
-            }
-            return .failure(.http(status))
-        }
-
-        let decoder = JSONDecoder()
-
-        do {
-            return .success(try decoder.decode(InoreaderArticlesResponse.self, from: response.body).items)
-        } catch let error {
-            print("error decoding data: \(String(describing: String(data: response.body, encoding: .utf8)))")
-            dump(error)
-            return .failure(.badResponse)
-        }
     }
 
     private func fulfillArticles(articles: [InoreaderArticle]) -> Future<Result<[Article], TethysError>> {
@@ -186,4 +205,11 @@ private struct InoreaderLink: Codable {
 
 private struct InoreaderSummary: Codable {
     let content: String
+}
+
+private struct InoreaderSubscribeResponse: Codable {
+    let query: String
+    let numResults: Int
+    let streamId: String
+    let streamName: String
 }

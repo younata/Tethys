@@ -110,7 +110,7 @@ platform :ios do
   end
 
   def next_tracker_release
-    require 'pivotal-tracker'
+    fastlane_require 'pivotal-tracker'
     PivotalTracker::Client.token = ENV['TRACKER_TOKEN']
     PivotalTracker::Client.use_ssl = true
     project = PivotalTracker::Project.find('1423142')

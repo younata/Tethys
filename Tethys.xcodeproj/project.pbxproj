@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		454A2E732316DFC300022660 /* BreakoutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454A2E722316DFC300022660 /* BreakoutToRefreshView.swift */; };
 		8902D5461BB07389003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; };
 		8902D5471BB0753E003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; };
 		8902D54A1BB075D6003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; };
@@ -350,6 +351,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		454A2E722316DFC300022660 /* BreakoutToRefreshView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakoutToRefreshView.swift; sourceTree = "<group>"; };
 		8902D5451BB07389003D7C22 /* Lepton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lepton.framework; path = ../Carthage/Build/iOS/Lepton.framework; sourceTree = "<group>"; };
 		8903A6241C4AB17C00E896BF /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationViewSpec.swift; sourceTree = "<group>"; };
@@ -494,7 +496,6 @@
 		89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeImportables.swift; sourceTree = "<group>"; };
 		89B8BBDE1B9C5B1000B2C112 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = "Base.lproj/Launch Screen.xib"; sourceTree = "<group>"; };
 		89B8BBE11B9C5B1500B2C112 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = "en.lproj/Launch Screen.xib"; sourceTree = "<group>"; };
-		89BA95381C4C8E7C001FD453 /* WorkFlow.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WorkFlow.framework; path = Carthage/Build/iOS/WorkFlow.framework; sourceTree = SOURCE_ROOT; };
 		89BFAC0F1C4C66AE007B3415 /* CustomMatchers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomMatchers.swift; sourceTree = "<group>"; };
 		89C204B41A73811000C792D2 /* AppDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateSpec.swift; sourceTree = "<group>"; };
 		89C204BC1A73F72800C792D2 /* SplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
@@ -521,9 +522,7 @@
 		89C830CC19DC67B9009924DA /* UnreadCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounter.swift; sourceTree = "<group>"; };
 		89CAD4C21BA483C9006D79FC /* PureLayout.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PureLayout.framework; path = ../Carthage/Build/iOS/PureLayout.framework; sourceTree = "<group>"; };
 		89CB98491B12C50000C87160 /* ActivityIndicatorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorSpec.swift; sourceTree = "<group>"; };
-		89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = BreakOutToRefresh.framework; path = Carthage/Build/iOS/BreakOutToRefresh.framework; sourceTree = SOURCE_ROOT; };
 		89CB98911B12DFB100C87160 /* TOBrowserActivityKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TOBrowserActivityKit.framework; path = Carthage/Build/iOS/TOBrowserActivityKit.framework; sourceTree = SOURCE_ROOT; };
-		89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MAKDropDownMenu.framework; path = Carthage/Build/iOS/MAKDropDownMenu.framework; sourceTree = SOURCE_ROOT; };
 		89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCellSpec.swift; sourceTree = "<group>"; };
 		89CBD5DC21BF2EF300D3FB31 /* Reachable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachable.swift; sourceTree = "<group>"; };
 		89CBD5DE21BF780C00D3FB31 /* RealmArticleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmArticleService.swift; sourceTree = "<group>"; };
@@ -1145,11 +1144,9 @@
 		89CB98BB1B13921200C87160 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */,
 				89DB074D1CBF2AC7006D672D /* CBGPromise.framework */,
 				8903EB141C72F8A7001C0189 /* Kanna.framework */,
 				8902D5451BB07389003D7C22 /* Lepton.framework */,
-				89CB98B61B12E9C900C87160 /* MAKDropDownMenu.framework */,
 				898131671AF880400090FA7F /* Muon.framework */,
 				89CAD4C21BA483C9006D79FC /* PureLayout.framework */,
 				890894971BFEC670002848A4 /* Reachability.framework */,
@@ -1157,7 +1154,6 @@
 				898911901C2FC88E009A44E9 /* RealmSwift.framework */,
 				89DB07471CBE1834006D672D /* Result.framework */,
 				89CB98911B12DFB100C87160 /* TOBrowserActivityKit.framework */,
-				89BA95381C4C8E7C001FD453 /* WorkFlow.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1297,6 +1293,7 @@
 				89C830C719DA2FEE009924DA /* FeedListController.swift */,
 				89C830C919DA37FB009924DA /* FeedTableCell.swift */,
 				894D1AF21DB1EF2500E70B1A /* RefreshControl.swift */,
+				454A2E722316DFC300022660 /* BreakoutToRefreshView.swift */,
 			);
 			path = "Viewing Feeds";
 			sourceTree = "<group>";
@@ -1873,6 +1870,7 @@
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				894644D321AB546200153308 /* BlankViewController.swift in Sources */,
+				454A2E732316DFC300022660 /* BreakoutToRefreshView.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
 				8941AB7B1DC9207200A2CE5F /* HTMLViewController.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,

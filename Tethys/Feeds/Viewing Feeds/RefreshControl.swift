@@ -34,15 +34,15 @@ public final class RefreshControl: NSObject {
 
     fileprivate var refreshControlStyle: RefreshControlStyle
 
-//    public private(set) lazy var breakoutView: BreakOutToRefreshView = {
-//        let refreshView = BreakOutToRefreshView(scrollView: self.scrollView)
-//        refreshView.breakoutDelegate = self
-//        refreshView.scenebackgroundColor = UIColor.white
-//        refreshView.paddleColor = UIColor.blue
-//        refreshView.ballColor = UIColor.darkGreen
-//        refreshView.blockColors = [UIColor.darkGray, UIColor.gray, UIColor.lightGray]
-//        return refreshView
-//    }()
+    public private(set) lazy var breakoutView: BreakOutToRefreshView = {
+        let refreshView = BreakOutToRefreshView(scrollView: self.scrollView)
+        refreshView.refreshDelegate = self
+        refreshView.scenebackgroundColor = UIColor.white
+        refreshView.paddleColor = UIColor.blue
+        refreshView.ballColor = UIColor.darkGreen
+        refreshView.blockColors = [UIColor.darkGray, UIColor.gray, UIColor.lightGray]
+        return refreshView
+    }()
 
     public let spinner = UIRefreshControl()
 
@@ -81,8 +81,7 @@ public final class RefreshControl: NSObject {
         guard !self.isRefreshing || force else { return }
         switch self.refreshControlStyle {
         case .breakout:
-            break
-//            self.breakoutView.beginRefreshing()
+            self.breakoutView.beginRefreshing()
         case .spinner:
             self.spinner.beginRefreshing()
         }
@@ -91,18 +90,18 @@ public final class RefreshControl: NSObject {
     public func endRefreshing(force: Bool = false) {
         guard self.isRefreshing || force else { return }
 
-//        self.breakoutView.endRefreshing()
+        self.breakoutView.endRefreshing()
         self.spinner.endRefreshing()
     }
 
     public var isRefreshing: Bool {
-        return /* self.breakoutView.isRefreshing || */ self.spinner.isRefreshing
+        return self.breakoutView.isRefreshing || self.spinner.isRefreshing
     }
 
     public func updateSize(_ size: CGSize) {
         let height: CGFloat = 100
-//        self.breakoutView.frame = CGRect(x: 0, y: -height, width: size.width, height: height)
-//        self.breakoutView.layoutSubviews()
+        self.breakoutView.frame = CGRect(x: 0, y: -height, width: size.width, height: height)
+        self.breakoutView.layoutSubviews()
     }
 
     @objc private func powerStateDidChange() {
@@ -131,19 +130,19 @@ public final class RefreshControl: NSObject {
     }
 
     private func switchInBreakoutToRefresh() {
-//        self.scrollView.addSubview(self.breakoutView)
-//        self.scrollView.refreshControl = nil
-//
-//        if self.isRefreshing {
-//            self.endRefreshing()
-//            self.breakoutView.beginRefreshing()
-//        }
-//
-//        self.refreshControlStyle = .breakout
+        self.scrollView.addSubview(self.breakoutView)
+        self.scrollView.refreshControl = nil
+
+        if self.isRefreshing {
+            self.endRefreshing()
+            self.breakoutView.beginRefreshing()
+        }
+
+        self.refreshControlStyle = .breakout
     }
 
     private func switchInSpinner() {
-//        self.breakoutView.removeFromSuperview()
+        self.breakoutView.removeFromSuperview()
         self.scrollView.refreshControl = self.spinner
 
         if self.isRefreshing {
@@ -161,8 +160,8 @@ public final class RefreshControl: NSObject {
 
 extension RefreshControl: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-//        self.breakoutView.scenebackgroundColor = themeRepository.backgroundColor
-//        self.breakoutView.textColor = themeRepository.textColor
+        self.breakoutView.scenebackgroundColor = themeRepository.backgroundColor
+        self.breakoutView.textColor = themeRepository.textColor
 
         self.spinner.tintColor = themeRepository.textColor
     }
@@ -177,27 +176,27 @@ extension RefreshControl: SettingsRepositorySubscriber {
 
 extension RefreshControl: UIScrollViewDelegate {
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-//        guard self.refreshControlStyle == .breakout else { return }
-//        self.breakoutView.scrollViewWillBeginDragging(scrollView)
+        guard self.refreshControlStyle == .breakout else { return }
+        self.breakoutView.scrollViewWillBeginDragging(scrollView)
     }
 
     public func scrollViewWillEndDragging(_ scrollView: UIScrollView,
                                           withVelocity velocity: CGPoint,
                                           targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-//        guard self.refreshControlStyle == .breakout else { return }
-//        self.breakoutView.scrollViewWillEndDragging(scrollView,
-//                                                    withVelocity: velocity,
-//                                                    targetContentOffset: targetContentOffset)
+        guard self.refreshControlStyle == .breakout else { return }
+        self.breakoutView.scrollViewWillEndDragging(scrollView,
+                                                    withVelocity: velocity,
+                                                    targetContentOffset: targetContentOffset)
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        guard self.refreshControlStyle == .breakout else { return }
-//        self.breakoutView.scrollViewDidScroll(scrollView)
+        guard self.refreshControlStyle == .breakout else { return }
+        self.breakoutView.scrollViewDidScroll(scrollView)
     }
 }
 
-//extension RefreshControl: BreakOutToRefreshDelegate {
-//    public func refreshViewDidRefresh(_ refreshView: BreakOutToRefreshView) {
-//        self.refresher.refresh()
-//    }
-//}
+extension RefreshControl: BreakOutToRefreshDelegate {
+    public func refreshViewDidRefresh(_ refreshView: BreakOutToRefreshView) {
+        self.refresher.refresh()
+    }
+}

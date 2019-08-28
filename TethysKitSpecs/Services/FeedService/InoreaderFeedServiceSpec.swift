@@ -3,6 +3,7 @@ import Nimble
 import Result
 import CBGPromise
 import FutureHTTP
+import Foundation
 
 @testable import TethysKit
 
@@ -23,6 +24,10 @@ final class InoreaderFeedServiceSpec: QuickSpec {
             describe("when the request succeeds") {
                 context("and the data is not valid") {
                     beforeEach {
+                        guard httpClient.requestPromises.last?.future.value == nil else {
+                            fail("most recent promise was already resolved")
+                            return
+                        }
                         httpClient.requestPromises.last?.resolve(.success(HTTPResponse(
                             body: "[\"bad\": \"data\"]".data(using: .utf8)!,
                             status: .ok,
@@ -41,6 +46,10 @@ final class InoreaderFeedServiceSpec: QuickSpec {
             describe("when the request fails") {
                 context("when the request fails with a 400 level error") {
                     beforeEach {
+                        guard httpClient.requestPromises.last?.future.value == nil else {
+                            fail("most recent promise was already resolved")
+                            return
+                        }
                         httpClient.requestPromises.last?.resolve(.success(HTTPResponse(
                             body: "403".data(using: .utf8)!,
                             status: HTTPStatus.init(rawValue: 403)!,
@@ -59,6 +68,10 @@ final class InoreaderFeedServiceSpec: QuickSpec {
 
                 context("when the request fails with a 500 level error") {
                     beforeEach {
+                        guard httpClient.requestPromises.last?.future.value == nil else {
+                            fail("most recent promise was already resolved")
+                            return
+                        }
                         httpClient.requestPromises.last?.resolve(.success(HTTPResponse(
                             body: "502".data(using: .utf8)!,
                             status: HTTPStatus.init(rawValue: 502)!,
@@ -77,6 +90,10 @@ final class InoreaderFeedServiceSpec: QuickSpec {
 
                 context("when the request fails with an error") {
                     beforeEach {
+                        guard httpClient.requestPromises.last?.future.value == nil else {
+                            fail("most recent promise was already resolved")
+                            return
+                        }
                         httpClient.requestPromises.last?.resolve(.failure(HTTPClientError.network(.timedOut)))
                     }
 
@@ -415,9 +432,61 @@ final class InoreaderFeedServiceSpec: QuickSpec {
         }
 
         describe("subscribe(to:)") {
-            it("needs to be implemented") {
-                fail("Implement me!")
+            var future: Future<Result<Feed, TethysError>>!
+            let url = URL(string: "https://example.com/reader/api/0/subscription/quickadd")!
+
+            let feedURL = URL(string: "https://example.com/feed1")!
+
+            beforeEach {
+                future = subject.subscribe(to: feedURL)
             }
+
+            it("asks inoreader for the contents of the stream") {
+                expect(httpClient.requests).to(haveCount(1))
+                expect(httpClient.requests.last?.url).to(equal(
+                    url
+                ))
+                expect(httpClient.requests.last?.httpMethod).to(equal("POST"))
+                expect(httpClient.requests.last?.httpBody).toNot(beNil())
+                guard let body = httpClient.requests.last?.httpBody else { return }
+                do {
+                    let json = try JSONSerialization.jsonObject(with: body, options: []) as? [String: String]
+                    expect(json).to(equal(["quickadd": "feed/https://example.com/feed1"]))
+                } catch let error {
+                    fail("Expected to not throw, got \(error) while parsing request body")
+                    return
+                }
+            }
+
+            describe("when the request succeeds with valid data") {
+                let data: [String: Any] = [
+                    "query": "feed/https://example.com/feed1.xml",
+                    "numResults": 1,
+                    "streamId": "feed/https://example.com/contents1",
+                    "streamName": "Title of the feed"
+                ]
+
+                beforeEach {
+                    httpClient.requestPromises.last?.resolve(.success(HTTPResponse(
+                        body: try! JSONSerialization.data(withJSONObject: data, options: []),
+                        status: .ok,
+                        mimeType: "Application/JSON",
+                        headers: [:]
+                    )))
+                }
+
+                it("resolves the promise with a feed object") {
+                    expect(future.value).toNot(beNil(), description: "Expected the future to be resolved")
+                    expect(future.value?.value).to(equal(Feed(
+                        title: "Title of the feed",
+                        url: URL(string: "https://example.com/feed1.xml")!,
+                        summary: "",
+                        tags: []
+                    )))
+                }
+            }
+
+            itBehavesLikeTheRequestFailed(url: url, future: { future })
         }
 
         describe("tags()") {

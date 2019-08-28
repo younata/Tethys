@@ -25,6 +25,7 @@ final class FeedListControllerSpec: QuickSpec {
             feedService = FakeFeedService()
             mainQueue = FakeOperationQueue()
             settingsRepository = SettingsRepository(userDefaults: nil)
+            settingsRepository.refreshControl = .spinner
             themeRepository = ThemeRepository(userDefaults: nil)
 
             subject = FeedListController(
@@ -191,7 +192,7 @@ final class FeedListControllerSpec: QuickSpec {
                     describe("pull to refresh") {
                         beforeEach {
                             subject.refreshControl.beginRefreshing()
-//                            subject.refreshControl.refreshViewDidRefresh(subject.refreshControl.spinner)
+                            subject.refreshControl.spinner.sendActions(for: .valueChanged)
                         }
 
                         it("should tell the feedService to fetch new feeds") {

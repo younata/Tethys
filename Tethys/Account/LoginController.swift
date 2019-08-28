@@ -17,7 +17,7 @@ public final class OAuthLoginController: LoginController {
     private let mainQueue: OperationQueue
     private let authenticationSessionFactory: AuthSessionOracle
 
-    private var session: ASWebAuthenticationSession? = nil
+    private var session: ASWebAuthenticationSession?
 
     public init(accountService: AccountService,
                 mainQueue: OperationQueue,

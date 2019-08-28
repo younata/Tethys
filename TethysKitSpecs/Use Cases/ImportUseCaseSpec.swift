@@ -133,7 +133,7 @@ class ImportUseCaseSpec: QuickSpec {
                     }
 
                     it("calls the callback with .OPML and the URL") {
-                        expect(receivedItem) == ImportUseCaseItem.opml(url, 4)
+                        expect(receivedItem) == ImportUseCaseItem.opml(url, 3)
                     }
 
                     context("later calling -importItem:callback: with that url") {
@@ -212,7 +212,7 @@ class ImportUseCaseSpec: QuickSpec {
 
                 context("when the network returns an error") {
                     beforeEach {
-                        httpClient.requestPromises.last?.resolve(.failure(.unknown))
+                        httpClient.requestPromises.last?.resolve(.failure(.unknown("error")))
                     }
 
                     it("calls the callback with .None and the URL") {
@@ -264,7 +264,7 @@ class ImportUseCaseSpec: QuickSpec {
                     }
 
                     it("calls the callback with .OPML and the URL") {
-                        expect(receivedItem) == ImportUseCaseItem.opml(opmlURL, 4)
+                        expect(receivedItem) == ImportUseCaseItem.opml(opmlURL, 3)
                     }
 
                     context("later calling -importItem:callback: with that url") {

@@ -32,9 +32,6 @@
 		89146E421C88C70600EC8F10 /* ImportUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB001C6F9DFB001C0189 /* ImportUseCase.swift */; };
 		89146E441C88C73200EC8F10 /* ImportUseCaseSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB021C6FA022001C0189 /* ImportUseCaseSpec.swift */; };
 		89146E4E1C88F01F00EC8F10 /* FakeFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C676551BA28FE60037A224 /* FakeFileManager.swift */; };
-		89146E501C88F0A600EC8F10 /* WorkFlow.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		89146E511C88F0B800EC8F10 /* WorkFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; };
-		89146E521C88F0BC00EC8F10 /* WorkFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; };
 		8916880B1BA8856400F9FFE0 /* TethysKit.framework in Embed rNewsKit */ = {isa = PBXBuildFile; fileRef = 894304211B45089A000078DC /* TethysKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		891754701C5B449E0036D96D /* RealmObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8917546F1C5B449E0036D96D /* RealmObjects.swift */; };
 		8917B7E01E71395700D388A7 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8917B7DF1E71395700D388A7 /* Settings.swift */; };
@@ -185,8 +182,6 @@
 		89A3A8C91DEF942F002AF9B5 /* ActionableTableViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A3A8C81DEF942F002AF9B5 /* ActionableTableViewSpec.swift */; };
 		89AFF9FF1D4870F7002255E8 /* FakeImportables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */; };
 		89B8BBDD1B9C5B1000B2C112 /* Launch Screen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89B8BBDF1B9C5B1000B2C112 /* Launch Screen.xib */; };
-		89BA95391C4C8E7C001FD453 /* WorkFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; };
-		89BA953A1C4C8E7C001FD453 /* WorkFlow.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89BA95381C4C8E7C001FD453 /* WorkFlow.framework */; };
 		89BFAC101C4C66AE007B3415 /* CustomMatchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BFAC0F1C4C66AE007B3415 /* CustomMatchers.swift */; };
 		89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204B41A73811000C792D2 /* AppDelegateSpec.swift */; };
 		89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204BC1A73F72800C792D2 /* SplitViewController.swift */; };
@@ -211,8 +206,6 @@
 		89CAD4C31BA483C9006D79FC /* PureLayout.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CAD4C21BA483C9006D79FC /* PureLayout.framework */; };
 		89CAD4C41BA48401006D79FC /* PureLayout.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CAD4C21BA483C9006D79FC /* PureLayout.framework */; };
 		89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB98491B12C50000C87160 /* ActivityIndicatorSpec.swift */; };
-		89CB986C1B12CCD700C87160 /* BreakOutToRefresh.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */; };
-		89CB986D1B12CCE800C87160 /* BreakOutToRefresh.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB986A1B12CCD700C87160 /* BreakOutToRefresh.framework */; };
 		89CB98931B12DFB100C87160 /* TOBrowserActivityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB98911B12DFB100C87160 /* TOBrowserActivityKit.framework */; };
 		89CB98941B12DFBA00C87160 /* TOBrowserActivityKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89CB98911B12DFB100C87160 /* TOBrowserActivityKit.framework */; };
 		89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */; };
@@ -334,7 +327,6 @@
 				898911941C2FC8A2009A44E9 /* RealmSwift.framework in Embed Frameworks */,
 				89DB07491CBE1862006D672D /* Result.framework in Embed Frameworks */,
 				8978C5282191672100D702BB /* Swinject.framework in Embed Frameworks */,
-				89146E501C88F0A600EC8F10 /* WorkFlow.framework in Embed Frameworks */,
 				894E755221B3164D00B4A0A1 /* FutureHTTP.framework in Embed Frameworks */,
 				896EF7E621E45D5200C0AB75 /* SwiftKeychainWrapper.framework in Embed Frameworks */,
 			);
@@ -597,7 +589,6 @@
 				898911921C2FC88E009A44E9 /* RealmSwift.framework in Frameworks */,
 				89DB07481CBE1834006D672D /* Result.framework in Frameworks */,
 				8978C526219166FB00D702BB /* Swinject.framework in Frameworks */,
-				89146E521C88F0BC00EC8F10 /* WorkFlow.framework in Frameworks */,
 				894E755121B3164100B4A0A1 /* FutureHTTP.framework in Frameworks */,
 				896EF7E521E45D4900C0AB75 /* SwiftKeychainWrapper.framework in Frameworks */,
 			);
@@ -616,7 +607,6 @@
 				898911961C2FC8A6009A44E9 /* RealmSwift.framework in Frameworks */,
 				8978C5272191670300D702BB /* Swinject.framework in Frameworks */,
 				8943042B1B45089A000078DC /* TethysKit.framework in Frameworks */,
-				89146E511C88F0B800EC8F10 /* WorkFlow.framework in Frameworks */,
 				896EF7E721E45D5A00C0AB75 /* SwiftKeychainWrapper.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -632,14 +622,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				89CB986D1B12CCE800C87160 /* BreakOutToRefresh.framework in Frameworks */,
 				8902D5461BB07389003D7C22 /* Lepton.framework in Frameworks */,
 				892E76BC1E0197DF00866336 /* libxml2.tbd in Frameworks */,
 				898131681AF880400090FA7F /* Muon.framework in Frameworks */,
 				89CAD4C31BA483C9006D79FC /* PureLayout.framework in Frameworks */,
 				894304361B45089B000078DC /* TethysKit.framework in Frameworks */,
 				89CB98941B12DFBA00C87160 /* TOBrowserActivityKit.framework in Frameworks */,
-				89BA95391C4C8E7C001FD453 /* WorkFlow.framework in Frameworks */,
 				8978C524219166E000D702BB /* Swinject.framework in Frameworks */,
 				896EF7EE21E5558300C0AB75 /* SwiftMessages.framework in Frameworks */,
 			);
@@ -649,13 +637,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				89CB986C1B12CCD700C87160 /* BreakOutToRefresh.framework in Frameworks */,
 				89718F301AE0C9B4004C3CB4 /* Nimble.framework in Frameworks */,
 				89CAD4C41BA48401006D79FC /* PureLayout.framework in Frameworks */,
 				89718F311AE0C9B4004C3CB4 /* Quick.framework in Frameworks */,
 				89CB98931B12DFB100C87160 /* TOBrowserActivityKit.framework in Frameworks */,
 				896276F41C4C34980005E8E7 /* UIKit_PivotalSpecHelperStubs.framework in Frameworks */,
-				89BA953A1C4C8E7C001FD453 /* WorkFlow.framework in Frameworks */,
 				8978C525219166F000D702BB /* Swinject.framework in Frameworks */,
 				896EF7EF21E5558C00C0AB75 /* SwiftMessages.framework in Frameworks */,
 			);
@@ -1524,7 +1510,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0720;
-				LastUpgradeCheck = 1000;
+				LastUpgradeCheck = 1030;
 				ORGANIZATIONNAME = "Rachel Brindle";
 				TargetAttributes = {
 					894304201B45089A000078DC = {
@@ -1577,6 +1563,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -1703,7 +1690,6 @@
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/BreakOutToRefresh.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Muon.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/PureLayout.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/TOBrowserActivityKit.framework",
@@ -1711,7 +1697,6 @@
 				"$(SRCROOT)/Carthage/Build/iOS/Reachability.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Realm.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/RealmSwift.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/WorkFlow.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Kanna.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/Result.framework",
 				"$(SRCROOT)/Carthage/Build/iOS/CBGPromise.framework",
@@ -2047,7 +2032,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.TethysKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2075,7 +2059,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.TethysKit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2096,7 +2079,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.TethysKitSpecs;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tethys.app/Tethys";
 			};
 			name = Debug;
@@ -2117,7 +2099,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.TethysKitSpecs;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "102ff7ac-9378-49de-8e9e-fa6cf25e9870";
-				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tethys.app/Tethys";
 			};
 			name = Release;
@@ -2135,7 +2116,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 3.0;
 				TEST_TARGET_NAME = Tethys;
 				USES_XCTRUNNER = YES;
 			};
@@ -2153,7 +2133,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.TethysAcceptanceTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 3.0;
 				TEST_TARGET_NAME = Tethys;
 				USES_XCTRUNNER = YES;
 			};
@@ -2163,6 +2142,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -2208,7 +2188,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"\"$(SDKROOT)/usr/include/libxml2\"",
+					"$(SDKROOT)/usr/include/libxml2",
 					"$(SRCROOT)/Library",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -2217,6 +2197,7 @@
 				OTHER_LDFLAGS = "-lxml2";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -2225,6 +2206,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -2263,7 +2245,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = (
-					"\"$(SDKROOT)/usr/include/libxml2\"",
+					"$(SDKROOT)/usr/include/libxml2",
 					"$(SRCROOT)/Library",
 				);
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -2271,6 +2253,7 @@
 				OTHER_LDFLAGS = "-lxml2";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -2292,10 +2275,6 @@
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				HEADER_SEARCH_PATHS = (
-					"\"$(SDKROOT)/usr/include/libxml2\"",
-					"$(SRCROOT)/Library",
-				);
 				INFOPLIST_FILE = "Tethys/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.RSSClient;
@@ -2303,7 +2282,6 @@
 				PROVISIONING_PROFILE = "184da801-b6b9-47e3-a560-e3d9c54e5ac0";
 				PROVISIONING_PROFILE_SPECIFIER = "match Development com.rachelbrindle.RSSClient";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Debug;
@@ -2323,17 +2301,12 @@
 				);
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
-				HEADER_SEARCH_PATHS = (
-					"\"$(SDKROOT)/usr/include/libxml2\"",
-					"$(SRCROOT)/Library",
-				);
 				INFOPLIST_FILE = "Tethys/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.RSSClient;
 				PRODUCT_NAME = Tethys;
 				PROVISIONING_PROFILE = "102ff7ac-9378-49de-8e9e-fa6cf25e9870";
 				PROVISIONING_PROFILE_SPECIFIER = "match AppStore com.rachelbrindle.RSSClient";
-				SWIFT_VERSION = 4.2;
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;
@@ -2362,7 +2335,6 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "TethysAppSpecs/TethysAppSpecs-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Tethys-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tethys.app/Tethys";
 			};
 			name = Debug;
@@ -2387,7 +2359,6 @@
 				PROVISIONING_PROFILE = "102ff7ac-9378-49de-8e9e-fa6cf25e9870";
 				SWIFT_OBJC_BRIDGING_HEADER = "TethysAppSpecs/TethysAppSpecs-Bridging-Header.h";
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "Tethys-Swift.h";
-				SWIFT_VERSION = 4.2;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tethys.app/Tethys";
 			};
 			name = Release;

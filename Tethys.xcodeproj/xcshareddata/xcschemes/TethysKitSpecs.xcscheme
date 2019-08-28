@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1000"
+   LastUpgradeVersion = "1030"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -60,7 +60,7 @@
             BlueprintIdentifier = "894304201B45089A000078DC"
             BuildableName = "TethysKit.framework"
             BlueprintName = "TethysKit"
-            ReferencedContainer = "container:RSSClient.xcodeproj">
+            ReferencedContainer = "container:Tethys.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -94,6 +94,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "894304201B45089A000078DC"
+            BuildableName = "TethysKit.framework"
+            BlueprintName = "TethysKit"
+            ReferencedContainer = "container:Tethys.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

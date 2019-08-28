@@ -111,12 +111,12 @@ final class AuthenticatedHTTPClientSpec: QuickSpec {
                     describe("with a generic error") {
                         beforeEach {
                             guard client.requestPromises.last?.future.value == nil else { return }
-                            client.requestPromises.last?.resolve(.failure(.unknown))
+                            client.requestPromises.last?.resolve(.failure(.unknown("error")))
                         }
 
                         it("forwards the error") {
                             expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
-                            expect(future.value?.error).to(equal(.unknown))
+                            expect(future.value?.error).to(equal(.unknown("error")))
                         }
                     }
                 }
@@ -262,7 +262,7 @@ final class AuthenticatedHTTPClientSpec: QuickSpec {
 
                     describe("with a generic error") {
                         beforeEach {
-                            client.requestPromises.last?.resolve(.failure(.unknown))
+                            client.requestPromises.last?.resolve(.failure(.unknown("error")))
                         }
 
                         it("does not make the original request") {
@@ -271,7 +271,7 @@ final class AuthenticatedHTTPClientSpec: QuickSpec {
 
                         it("resolves the future with that error") {
                             expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
-                            expect(future.value?.error).to(equal(.unknown))
+                            expect(future.value?.error).to(equal(.unknown("error")))
                         }
                     }
                 }

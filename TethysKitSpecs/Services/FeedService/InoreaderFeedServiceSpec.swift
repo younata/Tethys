@@ -32,6 +32,7 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                     }
 
                     it("resolves the future with a bad response error") {
+                        expect(future().value).toNot(beNil(), description: "Expected future to be resolved")
                         expect(future().value?.error).to(equal(TethysError.network(url, .badResponse)))
                     }
                 }
@@ -49,6 +50,7 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                     }
 
                     it("resolves the future with the error") {
+                        expect(future().value).toNot(beNil(), description: "Expected future to be resolved")
                         expect(future().value?.error).to(equal(
                             TethysError.network(url, .http(.forbidden))
                         ))
@@ -66,6 +68,7 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                     }
 
                     it("resolves the future with the error") {
+                        expect(future().value).toNot(beNil(), description: "Expected future to be resolved")
                         expect(future().value?.error).to(equal(
                             TethysError.network(url, .http(.badGateway))
                         ))
@@ -78,6 +81,7 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                     }
 
                     it("resolves the future with an error") {
+                        expect(future().value).toNot(beNil(), description: "Expected future to be resolved")
                         expect(future().value?.error).to(equal(
                             TethysError.network(url, .timedOut)
                         ))

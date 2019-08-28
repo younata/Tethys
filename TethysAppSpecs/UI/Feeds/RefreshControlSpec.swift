@@ -51,10 +51,10 @@ class RefreshControlSpec: QuickSpec {
                 themeRepository.theme = .dark
             }
 
-            it("updates the breakoutView's colors") {
-                expect(subject.breakoutView.scenebackgroundColor) == themeRepository.backgroundColor
-                expect(subject.breakoutView.textColor) == themeRepository.textColor
-            }
+//            it("updates the breakoutView's colors") {
+//                expect(subject.breakoutView.scenebackgroundColor) == themeRepository.backgroundColor
+//                expect(subject.breakoutView.textColor) == themeRepository.textColor
+//            }
 
             it("updates the spinner's colors") {
                 expect(subject.spinner.tintColor) == themeRepository.textColor
@@ -68,7 +68,7 @@ class RefreshControlSpec: QuickSpec {
 
             it("switches to that refresh style") {
                 expect(scrollView.refreshControl) == subject.spinner
-                expect(subject.breakoutView.superview).to(beNil())
+//                expect(subject.breakoutView.superview).to(beNil())
             }
         }
 
@@ -91,9 +91,9 @@ class RefreshControlSpec: QuickSpec {
                 expect(scrollView.refreshControl) == subject.spinner
             }
 
-            it("does not install the breakout view") {
-                expect(subject.breakoutView.superview).to(beNil())
-            }
+//            it("does not install the breakout view") {
+//                expect(subject.breakoutView.superview).to(beNil())
+//            }
 
             describe("when switching out of low power mode") {
                 beforeEach {
@@ -111,9 +111,9 @@ class RefreshControlSpec: QuickSpec {
                         expect(scrollView.refreshControl).to(beNil())
                     }
 
-                    it("installs the breakout view") {
-                        expect(subject.breakoutView.superview) == scrollView
-                    }
+//                    it("installs the breakout view") {
+//                        expect(subject.breakoutView.superview) == scrollView
+//                    }
                 }
             }
         }
@@ -123,9 +123,9 @@ class RefreshControlSpec: QuickSpec {
                 expect(scrollView.refreshControl).to(beNil())
             }
 
-            it("installs the breakout view") {
-                expect(subject.breakoutView.superview) == scrollView
-            }
+//            it("installs the breakout view") {
+//                expect(subject.breakoutView.superview) == scrollView
+//            }
 
             describe("when switching into low power mode") {
                 beforeEach {
@@ -139,9 +139,9 @@ class RefreshControlSpec: QuickSpec {
                     expect(scrollView.refreshControl) == subject.spinner
                 }
 
-                it("uninstalls the breakout view") {
-                    expect(subject.breakoutView.superview).to(beNil())
-                }
+//                it("uninstalls the breakout view") {
+//                    expect(subject.breakoutView.superview).to(beNil())
+//                }
             }
         }
 
@@ -151,10 +151,10 @@ class RefreshControlSpec: QuickSpec {
             expect(refresher.refreshCallCount) == 1
         }
 
-        it("triggers a refresh when the breakout view activates") {
-            subject.refreshViewDidRefresh(subject.breakoutView)
-
-            expect(refresher.refreshCallCount) == 1
-        }
+//        it("triggers a refresh when the breakout view activates") {
+//            subject.refreshViewDidRefresh(subject.breakoutView)
+//
+//            expect(refresher.refreshCallCount) == 1
+//        }
     }
 }

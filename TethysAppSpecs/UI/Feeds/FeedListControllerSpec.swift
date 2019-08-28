@@ -1,7 +1,6 @@
 import Quick
 import Nimble
 import Tethys
-import BreakOutToRefresh
 import TethysKit
 import Result
 import UIKit_PivotalSpecHelperStubs
@@ -192,7 +191,7 @@ final class FeedListControllerSpec: QuickSpec {
                     describe("pull to refresh") {
                         beforeEach {
                             subject.refreshControl.beginRefreshing()
-                            subject.refreshControl.refreshViewDidRefresh(subject.refreshControl.breakoutView)
+//                            subject.refreshControl.refreshViewDidRefresh(subject.refreshControl.spinner)
                         }
 
                         it("should tell the feedService to fetch new feeds") {

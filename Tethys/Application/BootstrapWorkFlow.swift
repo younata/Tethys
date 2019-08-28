@@ -1,4 +1,4 @@
-import WorkFlow
+import UIKit
 import TethysKit
 
 public protocol Bootstrapper {
@@ -6,8 +6,6 @@ public protocol Bootstrapper {
 }
 
 public final class BootstrapWorkFlow: Bootstrapper {
-    private var workflow: LinearWorkFlow!
-
     private let window: UIWindow
     private let splitViewController: SplitViewController
     private let feedsTableViewController: () -> FeedListController
@@ -29,12 +27,12 @@ public final class BootstrapWorkFlow: Bootstrapper {
         self.showFeedsController()
     }
 
-    public func workFlowDidAdvance(_ workFlow: WorkFlow) {
-    }
-
-    public func workFlowDidFinish(_ workFlow: WorkFlow) {
-        self.showFeedsController()
-    }
+//    public func workFlowDidAdvance(_ workFlow: WorkFlow) {
+//    }
+//
+//    public func workFlowDidFinish(_ workFlow: WorkFlow) {
+//        self.showFeedsController()
+//    }
 
     private func showFeedsController() {
         let feedsTableViewController = self.feedsTableViewController()

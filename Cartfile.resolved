@@ -1,4 +1,4 @@
-github "PureLayout/PureLayout" "3.1.5"
+github "PureLayout/PureLayout" "v3.1.5"
 github "SwiftKickMobile/SwiftMessages" "7.0.0"
 github "TimOliver/TOBrowserActivityKit" "fdd6dab00d2ffcf8227348e9fc690bd0e9519f5e"
 github "antitypical/Result" "5.0.0"

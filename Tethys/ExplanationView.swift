@@ -1,14 +1,14 @@
 import UIKit
 import PureLayout
 
+@IBDesignable
 public final class ExplanationView: UIView {
-
-    public var title: String {
+    @IBInspectable public var title: String {
         get { return self.titleLabel.text ?? "" }
         set { self.titleLabel.text = newValue }
     }
 
-    public var detail: String {
+    @IBInspectable public var detail: String {
         get { return self.detailLabel.text ?? "" }
         set { self.detailLabel.text = newValue }
     }
@@ -44,8 +44,6 @@ public final class ExplanationView: UIView {
 
         self.layer.cornerRadius = 5
     }
-
-    public convenience init(forAutoLayout: ()) { self.init(frame: CGRect.zero) }
 
     public required init?(coder aDecoder: NSCoder) { fatalError() }
 }

@@ -57,17 +57,17 @@ class SettingsRepositorySpec: QuickSpec {
         }
 
         describe("refreshControl") {
-            it("is initially .breakout") {
-                expect(subject.refreshControl) == RefreshControlStyle.breakout
+            it("is initially .spinner") {
+                expect(subject.refreshControl) == RefreshControlStyle.spinner
             }
 
             describe("when set") {
                 beforeEach {
-                    subject.refreshControl = .spinner
+                    subject.refreshControl = .breakout
                 }
 
                 it("records the result") {
-                    expect(subject.refreshControl) == RefreshControlStyle.spinner
+                    expect(subject.refreshControl) == RefreshControlStyle.breakout
                 }
 
                 it("notifies subscribers") {
@@ -76,7 +76,7 @@ class SettingsRepositorySpec: QuickSpec {
 
                 it("persists if userDefaults is not nil") {
                     let newRepository = SettingsRepository(userDefaults: userDefaults)
-                    expect(newRepository.refreshControl) == RefreshControlStyle.spinner
+                    expect(newRepository.refreshControl) == RefreshControlStyle.breakout
                 }
             }
         }

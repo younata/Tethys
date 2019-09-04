@@ -53,6 +53,12 @@ final class FeedListControllerSpec: QuickSpec {
         describe("when the view loads") {
             beforeEach {
                 expect(subject.view).toNot(beNil())
+
+                // Make sure the refresh control has set the refresh control style.
+                // Which requires running an operation on the main queue.
+                expect(subject.refreshControl).toNot(beNil())
+                mainQueue.runNextOperation()
+
                 subject.viewWillAppear(false)
             }
 
@@ -182,7 +188,7 @@ final class FeedListControllerSpec: QuickSpec {
                     }
 
                     it("stops refreshing") {
-                        expect(subject.refreshControl.isRefreshing).to(beFalse())
+                        expect(subject.refreshControl.isRefreshing).toEventually(beFalse())
                     }
 
                     it("removes the onboarding view") {
@@ -195,12 +201,12 @@ final class FeedListControllerSpec: QuickSpec {
                             subject.refreshControl.spinner.sendActions(for: .valueChanged)
                         }
 
-                        it("should tell the feedService to fetch new feeds") {
+                        it("tells the feedService to fetch new feeds") {
                             expect(feedService.feedsPromises).to(haveCount(2))
                         }
 
-                        it("should be refreshing") {
-                            expect(subject.refreshControl.isRefreshing).to(beTrue())
+                        it("refreshes") {
+                            expect(subject.refreshControl.isRefreshing).toEventually(beTrue())
                         }
                     }
 

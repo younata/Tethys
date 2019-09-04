@@ -91,20 +91,24 @@ public class BreakOutToRefreshView: SKView {
 
         let frame = CGRect(x: 0.0, y: -sceneHeight, width: inScrollView.frame.size.width, height: sceneHeight)
 
-        breakOutScene = BreakOutScene(size: frame.size)
+        self.breakOutScene = BreakOutScene(size: frame.size)
         self.scrollView = inScrollView
 
-        scenebackgroundColor = UIColor.white
-        textColor = UIColor.black
-        paddleColor = UIColor.gray
-        ballColor = UIColor.black
-        blockColors = [UIColor(white: 0.2, alpha: 1.0), UIColor(white: 0.4, alpha: 1.0), UIColor(white: 0.6, alpha: 1.0)]
+        self.scenebackgroundColor = UIColor.white
+        self.textColor = UIColor.black
+        self.paddleColor = UIColor.gray
+        self.ballColor = UIColor.black
+        self.blockColors = [
+            UIColor(white: 0.2, alpha: 1.0),
+            UIColor(white: 0.4, alpha: 1.0),
+            UIColor(white: 0.6, alpha: 1.0)
+        ]
 
-        breakOutScene.scenebackgroundColor = scenebackgroundColor
-        breakOutScene.textColor = textColor
-        breakOutScene.paddleColor = paddleColor
-        breakOutScene.ballColor = ballColor
-        breakOutScene.blockColors = blockColors
+        self.breakOutScene.scenebackgroundColor = scenebackgroundColor
+        self.breakOutScene.textColor = textColor
+        self.breakOutScene.paddleColor = paddleColor
+        self.breakOutScene.ballColor = ballColor
+        self.breakOutScene.blockColors = blockColors
 
         super.init(frame: frame)
 

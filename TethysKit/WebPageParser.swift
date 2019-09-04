@@ -1,3 +1,5 @@
+import Kanna
+
 public final class WebPageParser: Operation {
     public enum SearchType {
         case feeds
@@ -34,26 +36,25 @@ public final class WebPageParser: Operation {
     }
 
     public override func main() {
-        self.callback([])
-//        if let doc = try? Kanna.HTML(html: self.webPage, encoding: String.Encoding.utf8) {
-//            switch self.searchType {
-//            case .feeds:
-//                for link in doc.xpath("//link") where link["rel"] == "alternate" &&
-//                    self.searchType.acceptableTypes.contains(link["type"] ?? "") {
-//                        if let urlString = link["href"], let url = URL(string: urlString) {
-//                            self.urls.append(url as URL)
-//                        }
-//                }
-//            case .links:
-//                for link in doc.xpath("//a") {
-//                    if let urlString = link["href"], let url = URL(string: urlString) {
-//                        self.urls.append(url as URL)
-//                    }
-//                }
-//            default:
-//                break
-//            }
-//        }
-//        self.callback(self.urls)
+        if let doc = try? Kanna.HTML(html: self.webPage, encoding: String.Encoding.utf8) {
+            switch self.searchType {
+            case .feeds:
+                for link in doc.xpath("//link") where link["rel"] == "alternate" &&
+                    self.searchType.acceptableTypes.contains(link["type"] ?? "") {
+                        if let urlString = link["href"], let url = URL(string: urlString) {
+                            self.urls.append(url as URL)
+                        }
+                }
+            case .links:
+                for link in doc.xpath("//a") {
+                    if let urlString = link["href"], let url = URL(string: urlString) {
+                        self.urls.append(url as URL)
+                    }
+                }
+            default:
+                break
+            }
+        }
+        self.callback(self.urls)
     }
 }

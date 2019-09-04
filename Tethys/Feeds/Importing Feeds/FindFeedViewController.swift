@@ -56,9 +56,9 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         }
 
         self.back = UIBarButtonItem(image: Image(named: "LeftChevron"), style: .plain, target: self.webContent,
-                                    action: #selector(UIWebView.goBack))
+                                    action: #selector(WKWebView.goBack))
         self.forward = UIBarButtonItem(image: Image(named: "RightChevron"), style: .plain, target: self.webContent,
-                                       action: #selector(UIWebView.goForward))
+                                       action: #selector(WKWebView.goForward))
 
         self.edgesForExtendedLayout = [.left, .right]
 
@@ -302,7 +302,7 @@ extension FindFeedViewController {
     }
 
     @objc fileprivate func dismissFromNavigation() {
-        self.navigationController?.presentingViewController?.dismiss(animated: true, completion: nil)
+        self.navigationController?.popViewController(animated: true)
     }
 
     @objc fileprivate func save() {

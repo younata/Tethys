@@ -490,30 +490,105 @@ final class InoreaderFeedServiceSpec: QuickSpec {
         }
 
         describe("tags()") {
+            var future: Future<Result<AnyCollection<String>, TethysError>>!
+            let url = URL(string: "https://example.com/reader/api/0/tag/list")!
+
+            beforeEach {
+                future = subject.tags()
+            }
+
+            it("asks inoreader for the tags") {
+                expect(httpClient.requests).to(haveCount(1))
+                expect(httpClient.requests.last?.url).to(equal(
+                    url
+                ))
+                expect(httpClient.requests.last?.httpMethod).to(equal("GET"))
+            }
+
+            describe("when the request succeeds with valid data") {
+                let data: [String: Any] = [
+                    "tags": [
+                        [
+                            "id": "user/1005921515/state/com.google/starred",
+                            "sortid": "FFFFFFFF"
+                        ],
+                        [
+                            "id": "user/1005921515/state/com.google/broadcast",
+                            "sortid": "FFFFFFFE"
+                        ],
+                        [
+                            "id": "user/1005921515/state/com.google/blogger-following",
+                            "sortid": "FFFFFFFD"
+                        ],
+                        [
+                            "id": "user/1005921515/label/Google",
+                            "sortid": "BEBC2063",
+                            "type": "tag",
+                            "unread_count": 0,
+                            "unseen_count": 0
+                        ],
+                        [
+                            "id": "user/1005921515/label/DIY",
+                            "sortid": "BECC0BE1",
+                            "type": "folder"
+                        ],
+                        [
+                            "id": "user/1005921515/label/Feedly active search",
+                            "sortid": "BECC502C",
+                            "type": "active_search",
+                            "unread_count": 0,
+                            "unseen_count": 0
+                        ]
+                    ]
+                ]
+
+                beforeEach {
+                    httpClient.requestPromises.last?.resolve(.success(HTTPResponse(
+                        body: try! JSONSerialization.data(withJSONObject: data, options: []),
+                        status: .ok,
+                        mimeType: "Application/JSON",
+                        headers: [:]
+                    )))
+                }
+
+                it("resolves the promise with the names of the ids") {
+                    expect(future.value).toNot(beNil(), description: "Expected the future to be resolved")
+                    expect(future.value?.value).toNot(beNil(), description: "Expected request to succeed")
+
+                    guard let value = future.value?.value else { return }
+                    expect(Array(value)).to(equal([
+                        "starred",
+                        "broadcast",
+                        "blogger-following",
+                        "Google",
+                        "DIY",
+                        "Feedly active search"
+                    ]))
+                }
+            }
+
+            itBehavesLikeTheRequestFailed(url: url, future: { future })
+        }
+
+        xdescribe("set(tags:of:)") {
             it("needs to be implemented") {
                 fail("Implement me!")
             }
         }
 
-        describe("set(tags:of:)") {
+        xdescribe("set(url:on:)") {
             it("needs to be implemented") {
                 fail("Implement me!")
             }
         }
 
-        describe("set(url:on:)") {
+        xdescribe("readAll(of:)") {
             it("needs to be implemented") {
                 fail("Implement me!")
             }
         }
 
-        describe("readAll(of:)") {
-            it("needs to be implemented") {
-                fail("Implement me!")
-            }
-        }
-
-        describe("remove(feed:)") {
+        xdescribe("remove(feed:)") {
             it("needs to be implemented") {
                 fail("Implement me!")
             }

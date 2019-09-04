@@ -32,6 +32,7 @@ class RefreshControlSpec: QuickSpec {
             mainQueue.runSynchronously = true
             themeRepository = ThemeRepository(userDefaults: nil)
             settingsRepository = SettingsRepository(userDefaults: nil)
+            settingsRepository.refreshControl = .breakout
             refresher = FakeRefresher()
             lowPowerDiviner = FakeLowPowerDiviner()
 
@@ -51,24 +52,36 @@ class RefreshControlSpec: QuickSpec {
                 themeRepository.theme = .dark
             }
 
-//            it("updates the breakoutView's colors") {
-//                expect(subject.breakoutView.scenebackgroundColor) == themeRepository.backgroundColor
-//                expect(subject.breakoutView.textColor) == themeRepository.textColor
-//            }
+            it("updates the breakoutView's colors") {
+                expect(subject.breakoutView?.scenebackgroundColor).to(equal(themeRepository.backgroundColor))
+                expect(subject.breakoutView?.textColor).to(equal(themeRepository.textColor))
+            }
 
             it("updates the spinner's colors") {
-                expect(subject.spinner.tintColor) == themeRepository.textColor
+                expect(subject.spinner.tintColor).to(equal(themeRepository.textColor))
             }
         }
 
-        describe("when the user changes refresh styles") {
+        describe("when the user changes refresh styles (to spinner)") {
             beforeEach {
                 settingsRepository.refreshControl = .spinner
             }
 
             it("switches to that refresh style") {
-                expect(scrollView.refreshControl) == subject.spinner
-//                expect(subject.breakoutView.superview).to(beNil())
+                expect(scrollView.refreshControl).to(equal(subject.spinner))
+                expect(subject.breakoutView?.superview).to(beNil())
+            }
+        }
+
+        describe("when the user changes refresh styles (to breakout)") {
+            beforeEach {
+                settingsRepository.refreshControl = .breakout
+            }
+
+            it("switches to that refresh style") {
+                expect(scrollView.refreshControl).to(beNil())
+                expect(subject.breakoutView).toNot(beNil())
+                expect(subject.breakoutView?.superview).to(equal(scrollView))
             }
         }
 
@@ -88,12 +101,12 @@ class RefreshControlSpec: QuickSpec {
             }
 
             it("sets the scrollview's refreshControl") {
-                expect(scrollView.refreshControl) == subject.spinner
+                expect(scrollView.refreshControl).to(equal(subject.spinner))
             }
 
-//            it("does not install the breakout view") {
-//                expect(subject.breakoutView.superview).to(beNil())
-//            }
+            it("does not install the breakout view") {
+                expect(subject.breakoutView?.superview).to(beNil())
+            }
 
             describe("when switching out of low power mode") {
                 beforeEach {
@@ -111,21 +124,47 @@ class RefreshControlSpec: QuickSpec {
                         expect(scrollView.refreshControl).to(beNil())
                     }
 
-//                    it("installs the breakout view") {
-//                        expect(subject.breakoutView.superview) == scrollView
-//                    }
+                    it("installs the breakout view") {
+                        expect(subject.breakoutView?.superview).to(equal(scrollView))
+                    }
+                }
+            }
+
+            describe("if the user tries to change refresh control style to breakout") {
+                beforeEach {
+                    settingsRepository.refreshControl = .breakout
+                }
+
+                it("does not install the breakout view") {
+                    expect(subject.breakoutView?.superview).to(beNil())
+                    expect(scrollView.refreshControl).to(equal(subject.spinner))
                 }
             }
         }
 
-        describe("when not in low power mode") {
+        describe("when not in low power mode & under breakout mode") {
+            beforeEach {
+                lowPowerDiviner.isLowPowerModeEnabled = false
+
+                subject = RefreshControl(
+                    notificationCenter: notificationCenter,
+                    scrollView: scrollView,
+                    mainQueue: mainQueue,
+                    themeRepository: themeRepository,
+                    settingsRepository: settingsRepository,
+                    refresher: refresher,
+                    lowPowerDiviner: lowPowerDiviner
+                )
+            }
+
             it("does not set the scrollview's refreshControl") {
                 expect(scrollView.refreshControl).to(beNil())
             }
 
-//            it("installs the breakout view") {
-//                expect(subject.breakoutView.superview) == scrollView
-//            }
+            it("installs the breakout view") {
+                expect(subject.breakoutView).toNot(beNil())
+                expect(subject.breakoutView?.superview).to(equal(scrollView))
+            }
 
             describe("when switching into low power mode") {
                 beforeEach {
@@ -139,22 +178,27 @@ class RefreshControlSpec: QuickSpec {
                     expect(scrollView.refreshControl) == subject.spinner
                 }
 
-//                it("uninstalls the breakout view") {
-//                    expect(subject.breakoutView.superview).to(beNil())
-//                }
+                it("uninstalls the breakout view") {
+                    expect(subject.breakoutView?.superview).to(beNil())
+                }
             }
         }
 
         it("triggers a refresh when the spinner activates") {
+            settingsRepository.refreshControl = .spinner
             subject.spinner.sendActions(for: .valueChanged)
 
-            expect(refresher.refreshCallCount) == 1
+            expect(refresher.refreshCallCount).to(equal(1))
         }
 
-//        it("triggers a refresh when the breakout view activates") {
-//            subject.refreshViewDidRefresh(subject.breakoutView)
-//
-//            expect(refresher.refreshCallCount) == 1
-//        }
+        it("triggers a refresh when the breakout view activates") {
+            settingsRepository.refreshControl = .breakout
+            guard let breakoutView = subject.breakoutView else {
+                return fail("BreakoutView not installed")
+            }
+            subject.refreshViewDidRefresh(breakoutView)
+
+            expect(refresher.refreshCallCount).to(equal(1))
+        }
     }
 }

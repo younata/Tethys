@@ -38,7 +38,7 @@ public final class FeedViewController: UIViewController {
         self.navigationItem.title = self.feed.displayTitle
 
         self.view.addSubview(self.feedDetailView)
-        self.feedDetailView.autoPinEdgesToSuperviewEdges()
+        self.feedDetailView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0))
 
         self.themeRepository.addSubscriber(self)
         self.feedDetailView.themeRepository = self.themeRepository

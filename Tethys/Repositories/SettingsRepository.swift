@@ -18,7 +18,7 @@ public final class SettingsRepository {
         }
     }
 
-    public var refreshControl: RefreshControlStyle = .breakout {
+    public var refreshControl: RefreshControlStyle = .spinner {
         didSet {
             self.informSubscribers()
             self.userDefaults?.set(refreshControl.rawValue,

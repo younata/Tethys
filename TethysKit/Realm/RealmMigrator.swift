@@ -62,7 +62,7 @@ struct RealmMigrator {
             }
         }
         if oldSchemaVersion < 15 {
-            migration.enumerateObjects(ofType: RealmFeed.className()) { oldObject, newObject in
+            migration.enumerateObjects(ofType: RealmFeed.className()) { oldObject, _ in
                 oldObject?["_source"] = "local"
             }
         }

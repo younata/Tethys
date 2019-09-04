@@ -3,7 +3,7 @@ github "younata/Muon" "master"
 github "younata/Lepton" "master"
 github "younata/FutureHTTP" "master"
 github "ashleymills/Reachability.swift"
-github "tid-kijyun/Kanna" ~> 5.0.0
+github "tid-kijyun/Kanna" "master"
 github "antitypical/Result"
 github "cbguder/CBGPromise" "master"
 github "swinject/swinject"

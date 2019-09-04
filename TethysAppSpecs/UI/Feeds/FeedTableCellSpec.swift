@@ -54,7 +54,7 @@ class FeedTableCellSpec: QuickSpec {
                 }
 
                 itBehavesLike("a standard feed cell") {
-                    ["subject": subject, "title": "Hello", "summary": "World"]
+                    ["subject": subject!, "title": "Hello", "summary": "World"]
                 }
 
                 it("should hide the unread counter") {
@@ -70,7 +70,7 @@ class FeedTableCellSpec: QuickSpec {
                     subject.feed = feed
                 }
                 itBehavesLike("a standard feed cell") {
-                    ["subject": subject, "title": "Hello", "summary": "World"]
+                    ["subject": subject!, "title": "Hello", "summary": "World"]
                 }
 
                 it("should hide the unread counter") {
@@ -89,7 +89,7 @@ class FeedTableCellSpec: QuickSpec {
                 }
 
                 itBehavesLike("a standard feed cell") {
-                    ["subject": subject, "title": "Hello", "summary": "World"]
+                    ["subject": subject!, "title": "Hello", "summary": "World"]
                 }
 
                 it("should show the image") {
@@ -111,7 +111,7 @@ class FeedTableCellSpec: QuickSpec {
                 }
 
                 itBehavesLike("a standard feed cell") {
-                    ["subject": subject, "title": "Hello", "summary": "World"]
+                    ["subject": subject!, "title": "Hello", "summary": "World"]
                 }
 
                 it("should set an image of nil") {

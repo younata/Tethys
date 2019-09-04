@@ -17,6 +17,7 @@ public class NetworkPagedCollection<T>: Collection {
     private let dataParser: (Data) throws -> ([T], String?)
 
     private var items: [T] = []
+    private var batchCount: Int = 0
 
     init(httpClient: HTTPClient, requestFactory: @escaping (String?) -> URLRequest,
          dataParser: @escaping (Data) throws -> ([T], String?)) {
@@ -33,7 +34,8 @@ public class NetworkPagedCollection<T>: Collection {
     public var underestimatedCount: Int { return items.count }
 
     public subscript(index: Index) -> Element {
-        if Double(index) * 0.75 >= 1.0 {
+        // Determine whether to refetch because we're close the end of this page of data
+        if (self.items.count - (index + 1)) < self.batchCount && (Double(index + 1) / Double(self.batchCount)) >= 0.75 {
             self.requestItems(upTo: index)
         }
         while index > self.underestimatedCount && !self.inProgressRequests.isEmpty {
@@ -77,6 +79,7 @@ public class NetworkPagedCollection<T>: Collection {
                 self.nextPageInfo = .last
                 return
             }
+            self.batchCount = data.count
             self.items += data
             if let pageInfo = nextPage {
                 self.nextPageInfo = .next(pageInfo)

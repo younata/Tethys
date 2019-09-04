@@ -61,7 +61,7 @@ public final class ArticleViewController: UIViewController {
         self.toolbarItems = [
             self.spacer(), self.shareButton, self.spacer(), self.openInSafariButton, self.spacer()
         ]
-        self.title = article.title
+        self.title = self.article.title
     }
 
     public override func viewDidAppear(_ animated: Bool) {

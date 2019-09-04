@@ -5,17 +5,16 @@ import TethysKit
 
 public final class FeedListController: UIViewController {
     public private(set) lazy var tableView: UITableView = {
-        let tableView = self.tableViewController.tableView!
+        let tableView = UITableView(forAutoLayout: ())
         tableView.tableHeaderView = UIView()
         tableView.tableFooterView = UIView()
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 80
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         return tableView
     }()
 
     public lazy var onboardingView: ExplanationView = {
-        let view = ExplanationView(forAutoLayout: ())
+        let view = ExplanationView(frame: .zero)
         view.title = NSLocalizedString("FeedsTableViewController_Onboarding_Title", comment: "")
         view.detail = NSLocalizedString("FeedsTableViewController_Onboarding_Detail", comment: "")
         view.themeRepository = self.themeRepository
@@ -35,7 +34,6 @@ public final class FeedListController: UIViewController {
     }()
 
     public fileprivate(set) var feeds: [Feed] = []
-    private let tableViewController = UITableViewController(style: .plain)
     private var menuTopOffset: NSLayoutConstraint!
     public let notificationView = NotificationView(forAutoLayout: ())
 
@@ -74,7 +72,6 @@ public final class FeedListController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.addChild(self.tableViewController)
         self.tableView.keyboardDismissMode = .onDrag
         self.view.addSubview(self.tableView)
         self.tableView.autoPinEdgesToSuperviewEdges(with: .zero)
@@ -92,14 +89,12 @@ public final class FeedListController: UIViewController {
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self,
                                         action: #selector(FeedListController.didTapAddFeed))
-        self.navigationItem.rightBarButtonItems = [addButton, self.tableViewController.editButtonItem]
+        self.navigationItem.rightBarButtonItems = [addButton, self.editButtonItem]
 
         let settingsButton = UIBarButtonItem(image: Image(named: "settings"), style: .plain,
                                              target: self, action: #selector(FeedListController.presentSettings))
         self.navigationItem.leftBarButtonItem = settingsButton
-
         self.navigationItem.title = NSLocalizedString("FeedsTableViewController_Title", comment: "")
-
         self.registerForPreviewing(with: self, sourceView: self.tableView)
 
         self.themeRepository.addSubscriber(self)

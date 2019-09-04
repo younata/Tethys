@@ -17,7 +17,7 @@ struct InoreaderFeedService: FeedService {
         return self.httpClient.request(request).map { requestResult -> Result<[InoreaderFeed], NetworkError> in
             switch requestResult {
             case .success(let response):
-                return self.parse(response: response).map { (parsed: InoreaderSubscriptionResponse) -> [InoreaderFeed] in
+                return self.parse(response: response).map { (parsed: InoreaderSubscriptions) -> [InoreaderFeed] in
                     return parsed.subscriptions
                 }
             case .failure(let clientError):
@@ -31,12 +31,14 @@ struct InoreaderFeedService: FeedService {
     }
 
     func articles(of feed: Feed) -> Future<Result<AnyCollection<Article>, TethysError>> {
-        let encodedURL: String = feed.url.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? ""
+        let encodedURL: String = feed.url.absoluteString.addingPercentEncoding(
+            withAllowedCharacters: .urlPathAllowed
+        ) ?? ""
         let url = self.baseURL.appendingPathComponent("reader/api/0/stream/contents/feed%2F" + encodedURL)
-        return self.httpClient.request(URLRequest(url: url)).map { requestResult -> Result<[InoreaderArticle], NetworkError> in
-            switch requestResult {
+        return self.httpClient.request(URLRequest(url: url)).map { result -> Result<[InoreaderArticle], NetworkError> in
+            switch result {
             case .success(let response):
-                return self.parse(response: response).map { (parsed: InoreaderArticlesResponse) -> [InoreaderArticle] in
+                return self.parse(response: response).map { (parsed: InoreaderArticles) -> [InoreaderArticle] in
                     return parsed.items
                 }
             case .failure(let clientError):
@@ -62,8 +64,8 @@ struct InoreaderFeedService: FeedService {
             print("error creating json data: \(error)")
             return Promise<Result<Feed, TethysError>>.resolved(.failure(TethysError.unknown))
         }
-        return self.httpClient.request(request).map { requestResult -> Result<InoreaderSubscribeResponse, NetworkError> in
-            switch requestResult {
+        return self.httpClient.request(request).map { result -> Result<InoreaderSubscribeResponse, NetworkError> in
+            switch result {
             case .success(let response):
                 return self.parse(response: response)
             case .failure(let clientError):
@@ -72,7 +74,11 @@ struct InoreaderFeedService: FeedService {
         }.map { result -> Result<Feed, TethysError> in
             switch result {
             case .success(let subscribeResponse):
-                let subscribedUrlString = String(subscribeResponse.query.split(separator: "/", maxSplits: 1, omittingEmptySubsequences: true)[1])
+                let subscribedUrlString = String(subscribeResponse.query.split(
+                    separator: "/",
+                    maxSplits: 1,
+                    omittingEmptySubsequences: true
+                )[1])
                 let subscribedUrl = URL(string: subscribedUrlString)!
                 return .success(Feed(
                     title: subscribeResponse.streamName,
@@ -84,11 +90,23 @@ struct InoreaderFeedService: FeedService {
                 return .failure(.network(apiUrl, networkError))
             }
         }
-        return Promise<Result<Feed, TethysError>>().future
     }
 
     func tags() -> Future<Result<AnyCollection<String>, TethysError>> {
-        return Promise<Result<AnyCollection<String>, TethysError>>().future
+        let apiUrl = self.baseURL.appendingPathComponent("reader/api/0/tag/list")
+        let request = URLRequest(url: apiUrl)
+        return self.httpClient.request(request).map { requestResult -> Result<[String], NetworkError> in
+            switch requestResult {
+            case .success(let response):
+                return self.parse(response: response).map { (parsed: InoreaderTags) -> [String] in
+                    return parsed.tags.map { $0.tagName }
+                }
+            case .failure(let clientError):
+                return .failure(NetworkError(httpClientError: clientError))
+            }
+            }.map { result -> Result<AnyCollection<String>, TethysError> in
+                return result.mapError { return TethysError.network(apiUrl, $0) }.map { AnyCollection($0) }
+        }
     }
 
     func set(tags: [String], of feed: Feed) -> Future<Result<Feed, TethysError>> {
@@ -158,7 +176,7 @@ struct InoreaderFeedService: FeedService {
     }
 }
 
-private struct InoreaderSubscriptionResponse: Codable {
+private struct InoreaderSubscriptions: Codable {
     let subscriptions: [InoreaderFeed]
 }
 
@@ -178,7 +196,7 @@ private struct InoreaderCategory: Codable {
     let label: String
 }
 
-private struct InoreaderArticlesResponse: Codable {
+private struct InoreaderArticles: Codable {
     let id: String
     let title: String
     let updated: Date
@@ -212,4 +230,16 @@ private struct InoreaderSubscribeResponse: Codable {
     let numResults: Int
     let streamId: String
     let streamName: String
+}
+
+private struct InoreaderTags: Codable {
+    let tags: [InoreaderTag]
+}
+
+private struct InoreaderTag: Codable {
+    let id: String
+
+    var tagName: String {
+        return self.id.components(separatedBy: "/").last ?? ""
+    }
 }

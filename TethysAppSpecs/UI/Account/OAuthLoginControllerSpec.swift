@@ -23,7 +23,7 @@ final class OAuthLoginControllerSpec: QuickSpec {
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
 
-            subject = OAuthLoginController(accountService: accountService, mainQueue: mainQueue) {
+            subject = OAuthLoginController(accountService: accountService, mainQueue: mainQueue, clientId: "testClientId") {
                 let session = ASWebAuthenticationSession(url: $0, callbackURLScheme: $1, completionHandler: $2)
                 authenticationSessions.append(session)
                 return session
@@ -62,15 +62,11 @@ final class OAuthLoginControllerSpec: QuickSpec {
 
                 expect(components.queryItems).to(haveCount(5), description: "Should have 5 query items")
 
-                let clientID = Bundle.main.infoDictionary?["InoreaderClientID"] as? String
-
-                expect(clientID).toNot(beNil())
-
                 expect(components.queryItems).to(contain(
                     URLQueryItem(name: "redirect_uri", value: "https://tethys.younata.com/oauth"),
                     URLQueryItem(name: "response_type", value: "code"),
                     URLQueryItem(name: "scope", value: "read write"),
-                    URLQueryItem(name: "client_id", value: clientID)
+                    URLQueryItem(name: "client_id", value: "testClientId")
                 ))
 
                 guard let stateItem = (components.queryItems ?? []).first(where: { $0.name == "state" }) else {

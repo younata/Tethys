@@ -15,15 +15,18 @@ public typealias AuthSessionOracle = (
 public final class OAuthLoginController: LoginController {
     private let accountService: AccountService
     private let mainQueue: OperationQueue
+    private let clientId: String
     private let authenticationSessionFactory: AuthSessionOracle
 
     private var session: ASWebAuthenticationSession?
 
     public init(accountService: AccountService,
                 mainQueue: OperationQueue,
+                clientId: String,
                 authenticationSessionFactory: @escaping AuthSessionOracle) {
         self.accountService = accountService
         self.mainQueue = mainQueue
+        self.clientId = clientId
         self.authenticationSessionFactory = authenticationSessionFactory
     }
 
@@ -36,13 +39,13 @@ public final class OAuthLoginController: LoginController {
             )!
         let csrf = UUID().uuidString
 
-        guard let clientId = Bundle.main.infoDictionary?["InoreaderClientID"] as? String, !clientId.isEmpty else {
+        guard self.clientId.isEmpty == false else {
             fputs("No inoreaderclientid in bundle\n", stderr)
             return Promise<Result<Account, TethysError>>.resolved(.failure(.database(.entryNotFound)))
         }
 
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: clientId),
+            URLQueryItem(name: "client_id", value: self.clientId),
             URLQueryItem(name: "redirect_uri", value: "https://tethys.younata.com/oauth"),
             URLQueryItem(name: "response_type", value: "code"),
             URLQueryItem(name: "scope", value: "read write"),

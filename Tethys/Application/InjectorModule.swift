@@ -126,6 +126,7 @@ private func registerViewControllers(container: Container) {
         return OAuthLoginController(
             accountService: r.resolve(AccountService.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            clientId: Bundle.main.infoDictionary?["InoreaderClientID"] as? String ?? "",
             authenticationSessionFactory: ASWebAuthenticationSession.init
         )
     }

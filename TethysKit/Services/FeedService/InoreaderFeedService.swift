@@ -24,7 +24,7 @@ struct InoreaderFeedService: FeedService {
                 return .failure(NetworkError(httpClientError: clientError))
             }
         }.map { feedResult -> Future<Result<[Feed], TethysError>> in
-            return feedResult.mapError { return TethysError.network(url, $0) }.mapFuture(self.retrieveArticleDetails)
+            return feedResult.mapError { return TethysError.network(url, $0) }.mapFuture(self.retrieveFeedDetails)
         }.map { parseResult -> Result<AnyCollection<Feed>, TethysError> in
             return parseResult.map { AnyCollection($0) }
         }
@@ -32,9 +32,10 @@ struct InoreaderFeedService: FeedService {
 
     func articles(of feed: Feed) -> Future<Result<AnyCollection<Article>, TethysError>> {
         let encodedURL: String = feed.url.absoluteString.addingPercentEncoding(
-            withAllowedCharacters: .urlPathAllowed
+            withAllowedCharacters: .urlHostAllowed
         ) ?? ""
-        let url = self.baseURL.appendingPathComponent("reader/api/0/stream/contents/feed%2F" + encodedURL)
+        let apiUrl = self.baseURL.appendingPathComponent("reader/api/0/stream/contents/feed")
+        let url = URL(string: apiUrl.absoluteString + "%2F" + encodedURL)!
         return self.httpClient.request(URLRequest(url: url)).map { result -> Result<[InoreaderArticle], NetworkError> in
             switch result {
             case .success(let response):
@@ -145,7 +146,7 @@ struct InoreaderFeedService: FeedService {
         }
     }
 
-    private func retrieveArticleDetails(feeds: [InoreaderFeed]) -> Future<Result<[Feed], TethysError>> {
+    private func retrieveFeedDetails(feeds: [InoreaderFeed]) -> Future<Result<[Feed], TethysError>> {
         return Promise<Result<[Feed], TethysError>>.resolved(.success(feeds.map {
             return Feed(
                 title: $0.title,

@@ -35,7 +35,7 @@ public class NetworkPagedCollection<T>: Collection {
 
     public subscript(index: Index) -> Element {
         // Determine whether to refetch because we're close the end of this page of data
-        if (self.items.count - (index + 1)) < self.batchCount && (Double(index + 1) / Double(self.batchCount)) >= 0.75 {
+        if (Double(self.items.count - (index + 1)) / Double(self.batchCount)) <= 0.25 {
             self.requestItems(upTo: index)
         }
         while index > self.underestimatedCount && !self.inProgressRequests.isEmpty {

@@ -179,7 +179,7 @@ final class RealmFeedServiceSpec: QuickSpec {
                 }
 
                 itUpdatesTheFeeds { expectedFeeds in
-                    it("resolves the future all stored feeds, ordered first by unread count, then by the title of the feed") {
+                    it("resolves the future with all stored feeds, ordered first by unread count, then by the title of the feed") {
                         guard let result = future.value?.value else {
                             fail("Expected to have the list of feeds, got \(String(describing: future.value))")
                             return
@@ -187,6 +187,23 @@ final class RealmFeedServiceSpec: QuickSpec {
 
                         expect(Array(result)).to(equal(expectedFeeds))
                     }
+                }
+            }
+
+            context("when there are no feeds in the database") {
+                beforeEach {
+                    try! realm.write {
+                        realm.deleteAll()
+                    }
+
+                    future = subject.feeds()
+                }
+
+                it("resolves the future with .success([])") {
+                    expect(future.value).toNot(beNil(), description: "Expected to resolve the future")
+                    expect(future.value?.error).to(beNil(), description: "Expected to resolve successfully")
+
+                    expect(future.value?.value).to(beEmpty(), description: "Expected to successfully resolve with no feeds")
                 }
             }
         }

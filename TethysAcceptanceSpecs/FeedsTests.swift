@@ -1,49 +1,25 @@
 import XCTest
+import Nimble
 
-func assertFirstLaunch(app: XCUIApplication) {
-    assertFeedsList(app: app)
+func assertFirstLaunch(app: XCUIApplication, file: FileString = #file, line: UInt = #line) {
+    assertFeedsList(app: app, file: file, line: line)
 
-    XCTAssertEqual(
-        app.cells.count, 0,
-        "feeds list has no feeds loaded"
-    )
+    expect(app.cells.count, file: file, line: line).to(equal(0), description: "feeds list should have feeds loaded")
 
     // Doesn't show the 'loading feeds' dialog.
-    XCTAssertFalse(
-        app.staticTexts["loading feeds"].exists,
-        "feeds list is not showing the 'loading feeds' dialog'"
-    )
-    XCTAssertEqual(
-        app.activityIndicators.count, 0,
-        "feeds list is not showing the activity indicator"
-    )
+    expect(app.staticTexts["loading feeds"].exists, file: file, line: line).to(beFalse(), description: "feeds list should not show the 'loading feeds' dialog'")
+    expect(app.activityIndicators.count, file: file, line: line).to(equal(0), description: "feeds list should not show any activity indicators")
 }
 
-func assertSecondLaunch(app: XCUIApplication) {
-    assertFeedsList(app: app)
+func assertSecondLaunch(app: XCUIApplication, file: FileString = #file, line: UInt = #line) {
+    assertFeedsList(app: app, file: file, line: line)
 
-    XCTAssertGreaterThan(
-        app.cells.count, 0,
-        "feeds list has at least 1 feed loaded"
-    )
-
-    XCTAssertTrue(
-        app.staticTexts["loading feeds"].exists,
-        "feeds list is showing the 'loading feeds' dialog'"
-    )
-    XCTAssertGreaterThan(
-        app.activityIndicators.count, 1,
-        "feeds list is showing the activity indicator"
-    )
+    expect(app.cells.count, file: file, line: line).to(beGreaterThan(0), description: "Expected feeds list to have at least 1 feed loaded")
+    expect(app.staticTexts["loading feeds"].exists, file: file, line: line).to(beTrue(), description: "Expected to show the 'loading feeds' dialog")
+    expect(app.activityIndicators.count, file: file, line: line).to(beGreaterThan(1), description: "feeds list is showing the activity indicator")
 }
 
-private func assertFeedsList(app: XCUIApplication) {
-    XCTAssertTrue(
-        app.navigationBars["Feeds"].buttons["Settings"].exists,
-        "feeds list has a button to enter settings"
-    )
-    XCTAssertTrue(
-        app.navigationBars["Feeds"].buttons["Add"].exists,
-        "feeds list has a button to add more feeds"
-    )
+private func assertFeedsList(app: XCUIApplication, file: FileString, line: UInt) {
+    expect(app.navigationBars["Feeds"].buttons["Settings"].exists, file: file, line: line).to(beTrue(), description: "Expected to show the settings button on the feeds list")
+    expect(app.navigationBars["Feeds"].buttons["Add"].exists, file: file, line: line).to(beTrue(), description: "Expected to show button to add more feeds")
 }

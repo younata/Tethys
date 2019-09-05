@@ -1,14 +1,15 @@
 import XCTest
+import Nimble
 
 class TethysAcceptanceTests: XCTestCase {
         
     override func setUp() {
         super.setUp()
 
-        continueAfterFailure = false
-        XCUIApplication().launch()
-
+        self.continueAfterFailure = false
         setupSnapshot(XCUIApplication())
+
+        XCUIApplication().launch()
     }
 
     override func tearDown() {
@@ -20,33 +21,28 @@ class TethysAcceptanceTests: XCTestCase {
     }
 
     func waitForPredicate(_ predicate: NSPredicate, object: AnyObject) {
-        expectation(for: predicate, evaluatedWith: object, handler: nil)
-        waitForExpectations(timeout: 30, handler: nil)
+        self.expectation(for: predicate, evaluatedWith: object, handler: nil)
+        self.waitForExpectations(timeout: 10, handler: nil)
     }
 
     func loadWebFeed() {
         let app = XCUIApplication()
 
         self.waitForThingToExist(app.navigationBars["Feeds"])
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 5))
         app.navigationBars["Feeds"].buttons["Add"].tap()
 
         let enterUrlTextField = app.textFields["Enter URL"]
         self.waitForThingToExist(enterUrlTextField)
-        XCTAssertTrue(app.keyboards.element.exists, "Should be showing a keyboard")
-        RunLoop.main.run(until: Date(timeIntervalSinceNow: 10))
-        app.typeText("https://younata.github.io")
+        expect(app.keyboards.element.exists).to(beTrue(), description: "Expected to show a keyboard")
+        app.typeText("blog.rachelbrindle.com")
         app.buttons["Return"].tap()
-        RunLoop.main.run(until: Date(timeIntervalSinceNow: 10))
 
         let addFeedButton = app.toolbars.buttons["Add Feed"]
-
         self.waitForThingToExist(addFeedButton)
-
         addFeedButton.tap()
 
         let feedCell = app.cells.element(boundBy: 0)
-
-        RunLoop.main.run(until: Date(timeIntervalSinceNow: 10))
         self.waitForThingToExist(feedCell)
     }
 

@@ -23,6 +23,10 @@ struct RealmFeedService: FeedService {
         self.workQueue.addOperation {
             let realmFeeds = self.realmProvider.realm().objects(RealmFeed.self)
             let feeds = realmFeeds.map { Feed(realmFeed: $0) }
+            guard feeds.isEmpty == false else {
+                self.resolve(promise: promise, with: AnyCollection([]))
+                return
+            }
             let updatePromises: [Future<Result<Feed, TethysError>>] = feeds.map {
                 return self.updateService.updateFeed($0)
             }

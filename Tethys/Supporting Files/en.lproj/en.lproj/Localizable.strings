@@ -27,6 +27,7 @@
 "FeedsTableViewController_Onboarding_Title" = "Welcome to Tethys!";
 "FeedsTableViewController_Onboarding_Detail" = "Tap the '+' button to find feeds to follow.";
 "FeedsTableViewController_Title" = "Feeds";
+"FeedsTableViewController_Accessibility_Settings" = "Settings";
 "FeedsTableViewController_Loading_Deleting_Feed" = "Deleting Feed";
 "FeedsTableViewController_Loading_Deleting_Feed_Error" = "Unable to delete feed";
 "FeedsTableViewController_Loading_Marking_Feed" = "Marking Articles as Read";

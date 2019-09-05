@@ -93,6 +93,8 @@ public final class FeedListController: UIViewController {
 
         let settingsButton = UIBarButtonItem(image: Image(named: "settings"), style: .plain,
                                              target: self, action: #selector(FeedListController.presentSettings))
+        settingsButton.accessibilityLabel = NSLocalizedString("FeedsTableViewController_Accessibility_Settings",
+                                                              comment: "")
         self.navigationItem.leftBarButtonItem = settingsButton
         self.navigationItem.title = NSLocalizedString("FeedsTableViewController_Title", comment: "")
         self.registerForPreviewing(with: self, sourceView: self.tableView)

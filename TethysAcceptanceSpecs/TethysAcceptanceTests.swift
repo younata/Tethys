@@ -42,8 +42,7 @@ class TethysAcceptanceTests: XCTestCase {
         self.waitForThingToExist(addFeedButton)
         addFeedButton.tap()
 
-        let feedCell = app.cells.element(boundBy: 0)
-        self.waitForThingToExist(feedCell)
+        self.waitForThingToExist(app.cells["Rachel Brindle"])
     }
 
     func testMakingScreenshots() {
@@ -56,7 +55,7 @@ class TethysAcceptanceTests: XCTestCase {
 
         snapshot("01-feedsList", waitForLoadingIndicator: false)
 
-        app.cells.element(boundBy: 0).tap()
+        app.cells["Rachel Brindle"].tap()
 
         self.waitForThingToExist(app.navigationBars["Rachel Brindle"])
 

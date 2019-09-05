@@ -9,6 +9,8 @@ public final class FeedTableCell: UITableViewCell {
                 self.nameLabel.text = f.displayTitle
                 self.summaryLabel.text = f.displaySummary
                 self.unreadCounter.unread = f.unreadCount
+
+                self.accessibilityLabel = f.displayTitle
             } else {
                 self.nameLabel.text = ""
                 self.summaryLabel.text = ""
@@ -86,6 +88,7 @@ public final class FeedTableCell: UITableViewCell {
         self.unreadCounter.autoPinEdge(toSuperviewEdge: .bottom, withInset: 0, relation: .greaterThanOrEqual)
 
         self.selectedBackgroundView = self.backgroundColorView
+        self.isAccessibilityElement = true
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError() }

@@ -418,55 +418,37 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                         return fail("Promise did not resolve successfully")
                     }
 
-                    expect(Array(articles)).to(equal([
-                        Article(
-                            title: "Article 1 - Title",
-                            link: URL(string: "http://www.example.com/1/articles/1")!,
-                            summary: "this is my article summary",
-                            authors: [Author("Foo Bar")],
-                            identifier: "whatever",
-                            content: "this is my article summary",
-                            read: false
-                        ),
-                        Article(
-                            title: "Article 2",
-                            link: URL(string: "http://www.example.com/1/articles/2")!,
-                            summary: "some more summary",
-                            authors: [Author("First Last")],
-                            identifier: "whatever2",
-                            content: "some more summary",
-                            read: false
-                        ),
-                        Article(
-                            title: "Article 3",
-                            link: URL(string: "http://www.example.com/1/articles/3")!,
-                            summary: "more summary",
-                            authors: [Author("Jane Smith")],
-                            identifier: "whatever3",
-                            content: "more summary",
-                            read: false
-                        )
-                    ]))
-                }
+                    expect(articles).to(haveCount(3))
+                    expect(articles[AnyIndex(0)]).to(equal(Article(
+                        title: "Article 1 - Title",
+                        link: URL(string: "http://www.example.com/1/articles/1")!,
+                        summary: "this is my article summary",
+                        authors: [Author("Foo Bar")],
+                        identifier: "whatever",
+                        content: "this is my article summary",
+                        read: false
 
-                xit("doesn't yet resolve the promise") {
-                    expect(future.value).to(beNil())
+                    )))
+                    expect(articles[AnyIndex(1)]).to(equal(Article(
+                        title: "Article 2",
+                        link: URL(string: "http://www.example.com/1/articles/2")!,
+                        summary: "some more summary",
+                        authors: [Author("First Last")],
+                        identifier: "whatever2",
+                        content: "some more summary",
+                        read: false
+                    )))
+                    expect(articles[AnyIndex(2)]).to(equal(Article(
+                        title: "Article 3",
+                        link: URL(string: "http://www.example.com/1/articles/3")!,
+                        summary: "more summary",
+                        authors: [Author("Jane Smith")],
+                        identifier: "whatever3",
+                        content: "more summary",
+                        read: false
+                    )))
                 }
-
-                xit("makes another request for the next set of articles, using the continuation token it was given") {
-                    var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-                    urlComponents.queryItems = [URLQueryItem(name: "c", value: "continuation_token_1")]
-                    expect(httpClient.requests).to(haveCount(2))
-                    expect(httpClient.requests.last?.url).to(equal(
-                        urlComponents.url!
-                    ))
-                    expect(httpClient.requests.last?.httpMethod).to(equal("GET"))
-                }
-
-//                itBehavesLikeTheRequestFailed(url: url, future: { future })
             }
-
-            itBehavesLikeTheRequestFailed(url: url, future: { future })
         }
 
         describe("subscribe(to:)") {

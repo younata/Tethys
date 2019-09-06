@@ -36,20 +36,36 @@ struct InoreaderFeedService: FeedService {
         ) ?? ""
         let apiUrl = self.baseURL.appendingPathComponent("reader/api/0/stream/contents/feed")
         let url = URL(string: apiUrl.absoluteString + "%2F" + encodedURL)!
-        return self.httpClient.request(URLRequest(url: url)).map { result -> Result<[InoreaderArticle], NetworkError> in
-            switch result {
-            case .success(let response):
-                return self.parse(response: response).map { (parsed: InoreaderArticles) -> [InoreaderArticle] in
-                    return parsed.items
+        let collection = NetworkPagedCollection<Article>(
+            httpClient: self.httpClient,
+            requestFactory: { (continuationString) -> URLRequest in
+                guard let token = continuationString else {
+                    return URLRequest(url: url)
                 }
-            case .failure(let clientError):
-                return .failure(NetworkError(httpClientError: clientError))
-            }
-        }.map { result -> Future<Result<[Article], TethysError>> in
-            return result.mapError { return TethysError.network(url, $0) }.mapFuture(self.fulfillArticles)
-        }.map { parseResult -> Result<AnyCollection<Article>, TethysError> in
-            return parseResult.map { AnyCollection($0) }
-        }
+                var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+                components.queryItems = [
+                    URLQueryItem(name: "c", value: token)
+                ]
+                return URLRequest(url: components.url!)
+        },
+            dataParser: { (body: Data) throws -> ([Article], String?) in
+                let decoder = JSONDecoder()
+                let parsedArticlesResponse = try decoder.decode(InoreaderArticles.self, from: body)
+                let articles: [Article] = parsedArticlesResponse.items.compactMap {
+                    guard let url = $0.canonical.first?.href else { return nil }
+                    return Article(
+                        title: $0.title,
+                        link: url,
+                        summary: $0.summary.content,
+                        authors: [Author($0.author)],
+                        identifier: $0.id,
+                        content: $0.summary.content,
+                        read: false
+                    )
+                }
+                return (articles, parsedArticlesResponse.continuation)
+        })
+        return Promise<Result<AnyCollection<Article>, TethysError>>.resolved(.success(AnyCollection(collection)))
     }
 
     func subscribe(to url: URL) -> Future<Result<Feed, TethysError>> {
@@ -157,21 +173,6 @@ struct InoreaderFeedService: FeedService {
                 image: nil,
                 identifier: $0.id,
                 settings: nil
-            )
-        }))
-    }
-
-    private func fulfillArticles(articles: [InoreaderArticle]) -> Future<Result<[Article], TethysError>> {
-        return Promise<Result<[Article], TethysError>>.resolved(.success(articles.compactMap {
-            guard let url = $0.canonical.first?.href else { return nil }
-            return Article(
-                title: $0.title,
-                link: url,
-                summary: $0.summary.content,
-                authors: [Author($0.author)],
-                identifier: $0.id,
-                content: $0.summary.content,
-                read: false
             )
         }))
     }

@@ -55,8 +55,8 @@ public final class HTMLViewController: UIViewController {
         self.content.autoPinEdgesToSuperviewEdges()
 
         self.view.addConstraint(NSLayoutConstraint(item: self.progressIndicator, attribute: .top, relatedBy: .equal,
-                                                   toItem: self.topLayoutGuide, attribute: .bottom, multiplier: 1,
-                                                   constant: 0))
+                                                   toItem: self.view.safeAreaLayoutGuide, attribute: .bottom,
+                                                   multiplier: 1, constant: 0))
         self.progressIndicator.autoPinEdge(toSuperviewEdge: .leading)
         self.progressIndicator.autoPinEdge(toSuperviewEdge: .trailing)
         self.progressIndicator.progressTintColor = UIColor.darkGreen

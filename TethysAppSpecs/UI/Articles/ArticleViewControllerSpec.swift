@@ -151,10 +151,15 @@ class ArticleViewControllerSpec: QuickSpec {
             context("tapping a link") {
                 it("opens in an SFSafariViewController") {
                     let url = URL(string: "https://example.com")!
-                    let shouldOpen = htmlViewController.delegate?.openURL(url: url)
-                    expect(shouldOpen) == true
-                    expect(shouldOpen) == true
+                    expect(htmlViewController.delegate?.openURL(url: url)).to(beTrue())
                     expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
+                }
+
+                it("non-http/https links don't open in SFSafariViewController") {
+                    let url = URL(string: "about:none")!
+
+                    expect(htmlViewController.delegate?.openURL(url: url)).to(beFalse())
+                    expect(navigationController.visibleViewController).to(be(subject))
                 }
             }
 

@@ -158,6 +158,9 @@ public final class ArticleViewController: UIViewController {
 
 extension ArticleViewController: HTMLViewControllerDelegate {
     public func openURL(url: URL) -> Bool {
+        guard ["http", "https"].contains(url.scheme ?? "") else {
+            return false
+        }
         self.openURL(url)
         return true
     }

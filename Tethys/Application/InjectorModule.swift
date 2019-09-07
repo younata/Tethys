@@ -62,6 +62,7 @@ private func registerViewControllers(container: Container) {
             feedService: r.resolve(FeedService.self)!,
             articleService: r.resolve(ArticleService.self)!,
             themeRepository: r.resolve(ThemeRepository.self)!,
+            notificationCenter: .default,
             articleCellController: r.resolve(ArticleCellController.self, argument: false)!,
             articleViewController: { article in r.resolve(ArticleViewController.self, argument: article)! }
         )
@@ -94,6 +95,7 @@ private func registerViewControllers(container: Container) {
             themeRepository: r.resolve(ThemeRepository.self)!,
             settingsRepository: r.resolve(SettingsRepository.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            notificationCenter: .default,
             findFeedViewController: { r.resolve(FindFeedViewController.self)! },
             feedViewController: { feed in r.resolve(FeedViewController.self, argument: feed)! },
             settingsViewController: { r.resolve(SettingsViewController.self)! },

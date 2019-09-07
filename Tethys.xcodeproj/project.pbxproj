@@ -10,6 +10,7 @@
 		454A2E732316DFC300022660 /* BreakoutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454A2E722316DFC300022660 /* BreakoutToRefreshView.swift */; };
 		4563009123202CD5008D0401 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; };
 		4563009323202CE4008D0401 /* Nimble.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		456300A323236C6F008D0401 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456300A223236C6F008D0401 /* Notifications.swift */; };
 		8902D5461BB07389003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; };
 		8902D5471BB0753E003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; };
 		8902D54A1BB075D6003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; };
@@ -365,6 +366,7 @@
 
 /* Begin PBXFileReference section */
 		454A2E722316DFC300022660 /* BreakoutToRefreshView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakoutToRefreshView.swift; sourceTree = "<group>"; };
+		456300A223236C6F008D0401 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		8902D5451BB07389003D7C22 /* Lepton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lepton.framework; path = ../Carthage/Build/iOS/Lepton.framework; sourceTree = "<group>"; };
 		8903A6241C4AB17C00E896BF /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationViewSpec.swift; sourceTree = "<group>"; };
@@ -1365,6 +1367,7 @@
 				89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */,
 				89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */,
 				899B7DFC1E902B080067ABFF /* URLShareSheet.swift */,
+				456300A223236C6F008D0401 /* Notifications.swift */,
 			);
 			path = Generic;
 			sourceTree = "<group>";
@@ -1887,6 +1890,7 @@
 				894644D321AB546200153308 /* BlankViewController.swift in Sources */,
 				454A2E732316DFC300022660 /* BreakoutToRefreshView.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
+				456300A323236C6F008D0401 /* Notifications.swift in Sources */,
 				8941AB7B1DC9207200A2CE5F /* HTMLViewController.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
 				8903A6251C4AB17C00E896BF /* NotificationView.swift in Sources */,

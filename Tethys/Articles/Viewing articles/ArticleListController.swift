@@ -27,6 +27,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     fileprivate let feedService: FeedService
     fileprivate let articleService: ArticleService
     private let themeRepository: ThemeRepository
+    private let notificationCenter: NotificationCenter
     private let articleCellController: ArticleCellController
     fileprivate let articleViewController: (Article) -> ArticleViewController
 
@@ -34,12 +35,14 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
                 feedService: FeedService,
                 articleService: ArticleService,
                 themeRepository: ThemeRepository,
+                notificationCenter: NotificationCenter,
                 articleCellController: ArticleCellController,
                 articleViewController: @escaping (Article) -> ArticleViewController) {
         self.feed = feed
         self.feedService = feedService
         self.articleService = articleService
         self.themeRepository = themeRepository
+        self.notificationCenter = notificationCenter
         self.articleCellController = articleCellController
         self.articleViewController = articleViewController
 
@@ -134,6 +137,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
             switch result {
             case .success(let updatedArticle):
                 self.update(article: article, to: updatedArticle)
+                self.notificationCenter.post(name: Notifications.reloadUI, object: self)
             case .failure(let error):
                 self.showAlert(
                     error: error,
@@ -294,6 +298,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
             case .success:
                 indicator.removeFromSuperview()
                 self.resetArticles()
+                self.notificationCenter.post(name: Notifications.reloadUI, object: self)
             case let .failure(error):
                 indicator.removeFromSuperview()
                 self.showAlert(

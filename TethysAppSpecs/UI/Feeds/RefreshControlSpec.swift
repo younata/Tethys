@@ -137,7 +137,7 @@ class RefreshControlSpec: QuickSpec {
 
                 it("does not install the breakout view") {
                     expect(subject.breakoutView?.superview).to(beNil())
-                    expect(scrollView.refreshControl).to(equal(subject.spinner))
+                    expect(scrollView.refreshControl).toEventually(equal(subject.spinner))
                 }
             }
         }

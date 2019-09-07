@@ -41,6 +41,7 @@ public final class FeedListController: UIViewController {
     fileprivate let themeRepository: ThemeRepository
     fileprivate let settingsRepository: SettingsRepository
     fileprivate let mainQueue: OperationQueue
+    fileprivate let notificationCenter: NotificationCenter
 
     fileprivate let findFeedViewController: () -> FindFeedViewController
     fileprivate let feedViewController: (Feed) -> FeedViewController
@@ -51,6 +52,7 @@ public final class FeedListController: UIViewController {
                 themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
                 mainQueue: OperationQueue,
+                notificationCenter: NotificationCenter,
                 findFeedViewController: @escaping () -> FindFeedViewController,
                 feedViewController: @escaping (Feed) -> FeedViewController,
                 settingsViewController: @escaping () -> SettingsViewController,
@@ -60,6 +62,7 @@ public final class FeedListController: UIViewController {
         self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.mainQueue = mainQueue
+        self.notificationCenter = notificationCenter
         self.findFeedViewController = findFeedViewController
         self.feedViewController = feedViewController
         self.settingsViewController = settingsViewController
@@ -100,6 +103,9 @@ public final class FeedListController: UIViewController {
         self.registerForPreviewing(with: self, sourceView: self.tableView)
 
         self.themeRepository.addSubscriber(self)
+
+        self.notificationCenter.addObserver(self, selector: #selector(FeedListController.reloadFrom(notification:)),
+                                            name: Notifications.reloadUI, object: nil)
     }
 
     public override func viewWillAppear(_ animated: Bool) {
@@ -148,7 +154,13 @@ public final class FeedListController: UIViewController {
         self.show(controller: self.settingsViewController(), from: self.navigationItem.leftBarButtonItem)
     }
 
-    @objc fileprivate func reload() {
+    @objc private func reloadFrom(notification: Notification) {
+        guard notification.object as? NSObject != self else { return }
+
+        self.reload(force: true)
+    }
+
+    @objc fileprivate func reload(force: Bool = false) {
         let reloadWithFeeds: ([Feed]) -> Void = {feeds in
             self.refreshControl.endRefreshing(force: true)
 
@@ -164,7 +176,7 @@ public final class FeedListController: UIViewController {
 
             let oldFeeds = self.feeds
             self.feeds = feeds
-            guard oldFeeds != feeds else { return }
+            guard force || oldFeeds != feeds else { return }
             self.tableView.reloadSections(IndexSet(integer: 0), with: oldFeeds.isEmpty ? .none : .right)
         }
 
@@ -221,6 +233,8 @@ public final class FeedListController: UIViewController {
                 } else {
                     self.tableView.reloadData()
                 }
+
+                self.notificationCenter.post(name: Notifications.reloadUI, object: self)
             }
         }
     }

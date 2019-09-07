@@ -14,6 +14,7 @@ final class FeedListControllerSpec: QuickSpec {
         var themeRepository: ThemeRepository!
         var settingsRepository: SettingsRepository!
         var mainQueue: FakeOperationQueue!
+        var notificationCenter: NotificationCenter!
 
         let feeds: [Feed] = [
             feedFactory(title: "a"),
@@ -21,18 +22,22 @@ final class FeedListControllerSpec: QuickSpec {
             feedFactory(title: "c")
         ]
 
+        var recorder: NotificationRecorder!
+
         beforeEach {
             feedService = FakeFeedService()
             mainQueue = FakeOperationQueue()
             settingsRepository = SettingsRepository(userDefaults: nil)
             settingsRepository.refreshControl = .spinner
             themeRepository = ThemeRepository(userDefaults: nil)
+            notificationCenter = NotificationCenter()
 
             subject = FeedListController(
                 feedService: feedService,
                 themeRepository: themeRepository,
                 settingsRepository: settingsRepository,
                 mainQueue: mainQueue,
+                notificationCenter: notificationCenter,
                 findFeedViewController: {
                     return FindFeedViewController(
                         importUseCase: FakeImportUseCase(),
@@ -48,6 +53,9 @@ final class FeedListControllerSpec: QuickSpec {
             )
 
             navigationController = UINavigationController(rootViewController: subject)
+
+            recorder = NotificationRecorder()
+            notificationCenter.addObserver(recorder, selector: #selector(NotificationRecorder.received(notification:)), name: Notifications.reloadUI, object: subject)
         }
 
         describe("when the view loads") {
@@ -312,6 +320,15 @@ final class FeedListControllerSpec: QuickSpec {
                                                 it("marks the cell as unread") {
                                                     expect(cell?.unreadCounter.unread).to(equal(0))
                                                 }
+
+                                                it("posts a notification telling other things to reload") {
+                                                    expect(recorder.notifications).to(haveCount(1))
+                                                    expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
+                                                }
+
+                                                it("does not tell the feedService to fetch new feeds") {
+                                                    expect(feedService.feedsPromises).to(haveCount(1))
+                                                }
                                             }
 
                                             describe("when the feed service fails") {
@@ -328,6 +345,10 @@ final class FeedListControllerSpec: QuickSpec {
                                                     expect(subject.notificationView.titleLabel.isHidden) == false
                                                     expect(subject.notificationView.titleLabel.text).to(equal("Unable to update feed"))
                                                     expect(subject.notificationView.messageLabel.text).to(equal("Unknown Database Error"))
+                                                }
+
+                                                it("doesn't post a notification telling other things to reload") {
+                                                    expect(recorder.notifications).to(beEmpty())
                                                 }
                                             }
                                         }
@@ -535,6 +556,15 @@ final class FeedListControllerSpec: QuickSpec {
                                             it("marks the cell as unread") {
                                                 expect(cell?.unreadCounter.unread).to(equal(0))
                                             }
+
+                                            it("posts a notification telling other things to reload") {
+                                                expect(recorder.notifications).to(haveCount(1))
+                                                expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
+                                            }
+
+                                            it("does not tell the feedService to fetch new feeds") {
+                                                expect(feedService.feedsPromises).to(haveCount(1))
+                                            }
                                         }
 
                                         describe("when the feed service fails") {
@@ -551,6 +581,10 @@ final class FeedListControllerSpec: QuickSpec {
                                                 expect(subject.notificationView.titleLabel.isHidden) == false
                                                 expect(subject.notificationView.titleLabel.text).to(equal("Unable to update feed"))
                                                 expect(subject.notificationView.messageLabel.text).to(equal("Unknown Database Error"))
+                                            }
+
+                                            it("doesn't post a notification") {
+                                                expect(recorder.notifications).to(beEmpty())
                                             }
                                         }
                                     }
@@ -605,6 +639,16 @@ final class FeedListControllerSpec: QuickSpec {
                             }
                         }
                     }
+
+                    describe("when the reloadUI notification is posted") {
+                        beforeEach {
+                            notificationCenter.post(name: Notifications.reloadUI, object: self)
+                        }
+
+                        it("tells the feedService to fetch new feeds") {
+                            expect(feedService.feedsPromises).to(haveCount(2))
+                        }
+                    }
                 }
 
                 context("but no feeds were found") {
@@ -647,4 +691,12 @@ fileprivate func convertFromOptionalNSAttributedStringKeyDictionary(_ input: [NS
 // Helper function inserted by Swift 4.2 migrator.
 fileprivate func convertFromNSAttributedStringKey(_ input: NSAttributedString.Key) -> String {
 	return input.rawValue
+}
+
+class NotificationRecorder: NSObject {
+    var notifications: [Notification] = []
+
+    @objc func received(notification: Notification) {
+        self.notifications.append(notification)
+    }
 }

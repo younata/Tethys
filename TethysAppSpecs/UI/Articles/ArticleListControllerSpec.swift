@@ -63,7 +63,10 @@ class ArticleListControllerSpec: QuickSpec {
         var feedService: FakeFeedService!
         var articleService: FakeArticleService!
         var themeRepository: ThemeRepository!
+        var notificationCenter: NotificationCenter!
         var articleCellController: FakeArticleCellController!
+
+        var recorder: NotificationRecorder!
 
         beforeEach {
             mainQueue = FakeOperationQueue()
@@ -72,6 +75,8 @@ class ArticleListControllerSpec: QuickSpec {
             articleUseCase.readArticleReturns("hello")
 
             themeRepository = ThemeRepository(userDefaults: nil)
+
+            notificationCenter = NotificationCenter()
 
             publishedOffset = 0
 
@@ -92,6 +97,7 @@ class ArticleListControllerSpec: QuickSpec {
                 feedService: feedService,
                 articleService: articleService,
                 themeRepository: themeRepository,
+                notificationCenter: notificationCenter,
                 articleCellController: articleCellController,
                 articleViewController: { article in articleViewControllerFactory(article: article, articleUseCase: articleUseCase) }
             )
@@ -99,6 +105,10 @@ class ArticleListControllerSpec: QuickSpec {
             navigationController = UINavigationController(rootViewController: subject)
 
             subject.view.layoutIfNeeded()
+
+            recorder = NotificationRecorder()
+            notificationCenter.addObserver(recorder!, selector: #selector(NotificationRecorder.received(notification:)),
+                                           name: Notifications.reloadUI, object: subject)
         }
 
         it("requests the articles from the cell") {
@@ -228,6 +238,11 @@ class ArticleListControllerSpec: QuickSpec {
                                 expect(feedService.articlesOfFeedCalls.last).to(equal(feed))
                             }
 
+                            it("posts a notification telling other things to reload") {
+                                expect(recorder.notifications).to(haveCount(1))
+                                expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
+                            }
+
                             describe("when the articles request succeeds") {
                                 let updatedArticles = [
                                     articleFactory(title: "1"),
@@ -263,6 +278,10 @@ class ArticleListControllerSpec: QuickSpec {
                             }
 
                             itTellsTheUserAboutTheError(title: "Unable to Mark Articles as Read", message: "Unknown Database Error")
+
+                            it("doesn't post a notification") {
+                                expect(recorder.notifications).to(beEmpty())
+                            }
                         }
                     }
                 }
@@ -334,6 +353,11 @@ class ArticleListControllerSpec: QuickSpec {
                                 it("Updates the articles in the controller to reflect that") {
                                     expect(subject.articles.first).to(equal(updatedArticle))
                                 }
+
+                                it("posts a notification telling other things to reload") {
+                                    expect(recorder.notifications).to(haveCount(1))
+                                    expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
+                                }
                             }
 
                             context("when the articleService fails to mark the article as read") {
@@ -342,6 +366,10 @@ class ArticleListControllerSpec: QuickSpec {
                                 }
 
                                 itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
+
+                                it("doesn't post a notification") {
+                                    expect(recorder.notifications).to(beEmpty())
+                                }
                             }
                         }
 
@@ -376,6 +404,11 @@ class ArticleListControllerSpec: QuickSpec {
                                 it("Updates the articles in the controller to reflect that") {
                                     expect(Array(subject.articles)[2]).to(equal(updatedArticle))
                                 }
+
+                                it("posts a notification telling other things to reload") {
+                                    expect(recorder.notifications).to(haveCount(1))
+                                    expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
+                                }
                             }
 
                             context("when the articleService fails to mark the article as read") {
@@ -384,6 +417,10 @@ class ArticleListControllerSpec: QuickSpec {
                                 }
 
                                 itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
+
+                                it("doesn't post a notification") {
+                                    expect(recorder.notifications).to(beEmpty())
+                                }
                             }
                         }
                     }
@@ -465,6 +502,11 @@ class ArticleListControllerSpec: QuickSpec {
                         it("Updates the articles in the controller to reflect that") {
                             expect(subject.articles.first).to(equal(updatedArticle))
                         }
+
+                        it("posts a notification telling other things to reload") {
+                            expect(recorder.notifications).to(haveCount(1))
+                            expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
+                        }
                     }
 
                     context("when the articleService fails to mark the article as read") {
@@ -473,6 +515,10 @@ class ArticleListControllerSpec: QuickSpec {
                         }
 
                         itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
+
+                        it("doesn't post a notification") {
+                            expect(recorder.notifications).to(beEmpty())
+                        }
                     }
                 }
             }

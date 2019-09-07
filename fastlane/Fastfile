@@ -69,6 +69,7 @@ platform :ios do
 
   desc 'Runs acceptance tests'
   lane :acceptance_test do
+    reset_simulator_contents
     scan(project: 'Tethys.xcodeproj', scheme: 'TethysAcceptanceSpecs')
   end
 

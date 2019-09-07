@@ -16,6 +16,10 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         return UIBarButtonItem(title: NSLocalizedString("ArticleListController_Action_MarkRead", comment: ""),
                                style: .plain, target: self, action: #selector(ArticleListController.markFeedRead))
     }()
+    public private(set) lazy var shareButton: UIBarButtonItem = {
+        return UIBarButtonItem(barButtonSystemItem: .action, target: self,
+                               action: #selector(ArticleListController.shareFeed))
+    }()
 
     public let tableView = UITableView(forAutoLayout: ())
 
@@ -260,10 +264,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     }
 
     fileprivate func resetBarItems() {
-        let shareSheet = UIBarButtonItem(barButtonSystemItem: .action,
-                                         target: self,
-                                         action: #selector(ArticleListController.shareFeed))
-        self.navigationItem.rightBarButtonItems = [shareSheet, self.markReadButton]
+        self.navigationItem.rightBarButtonItems = [self.shareButton, self.markReadButton]
     }
 
     private func spacer() -> UIBarButtonItem {
@@ -277,6 +278,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
             activityItems: [self.feed.url],
             applicationActivities: nil
         )
+        shareSheet.popoverPresentationController?.barButtonItem = self.shareButton
         self.present(shareSheet, animated: true, completion: nil)
     }
 

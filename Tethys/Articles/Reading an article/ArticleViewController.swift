@@ -138,6 +138,7 @@ public final class ArticleViewController: UIViewController {
             activityItems: [self.article.link],
             applicationActivities: [safari, chrome]
         )
+        activity.popoverPresentationController?.barButtonItem = self.shareButton
 
         self.present(activity, animated: true, completion: nil)
     }

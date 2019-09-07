@@ -61,10 +61,16 @@ class TethysAcceptanceTests: XCTestCase {
 
         snapshot("02-articlesList", waitForLoadingIndicator: false)
 
+        app.buttons["ArticleListController_ShareFeed"].tap()
+        app.buttons["Cancel"].tap()
+
         app.staticTexts["Homemade thermostat for my apartment"].tap()
 
         self.waitForThingToExist(app.navigationBars["Homemade thermostat for my apartment"])
 
         snapshot("03-article", waitForLoadingIndicator: false)
+
+        app.buttons["ArticleViewController_ShareArticle"].tap()
+        app.buttons["Cancel"].tap()
     }
 }

@@ -83,7 +83,7 @@
 "ArticleListController_Action_Save_Error_Title" = "Error saving article";
 "ArticleListController_Action_Delete_Error_Title" = "Error deleting article";
 "ArticleListController_Retrieving_Error_Title" = "Unable to retrieve articles";
-
+"ArticleListController_Action_Accessibility_ShareFeed" = "Share %@";
 
 "ArticleCell_EstimatedReadingTime" = "%@ to read";
 
@@ -93,6 +93,7 @@
 "ArticleViewController_Command_ToggleRead" = "Toggle Read";
 "ArticleViewController_Command_OpenInWebView" = "Open Article in WebView";
 "ArticleViewController_Command_OpenShareSheet" = "Open Share Sheet";
+"ArticleViewController_Action_Accessibility_ShareArticle" = "Share %@";
 
 "AuthorActivity_Title" = "Articles by %@";
 

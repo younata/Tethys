@@ -17,8 +17,15 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
                                style: .plain, target: self, action: #selector(ArticleListController.markFeedRead))
     }()
     public private(set) lazy var shareButton: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .action, target: self,
-                               action: #selector(ArticleListController.shareFeed))
+        let button = UIBarButtonItem(barButtonSystemItem: .action, target: self,
+                                     action: #selector(ArticleListController.shareFeed))
+        button.accessibilityIdentifier = "ArticleListController_ShareFeed"
+        button.accessibilityLabel = String.localizedStringWithFormat(
+            NSLocalizedString("ArticleListController_Action_Accessibility_ShareFeed", comment: ""),
+            self.feed.displayTitle
+        )
+        button.isAccessibilityElement = true
+        return button
     }()
 
     public let tableView = UITableView(forAutoLayout: ())

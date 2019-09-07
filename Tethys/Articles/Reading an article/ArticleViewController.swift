@@ -9,8 +9,15 @@ public final class ArticleViewController: UIViewController {
     public let article: Article
 
     public private(set) lazy var shareButton: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .action, target: self,
-                               action: #selector(ArticleViewController.share))
+        let button = UIBarButtonItem(barButtonSystemItem: .action, target: self,
+                                     action: #selector(ArticleViewController.share))
+        button.accessibilityIdentifier = "ArticleViewController_ShareArticle"
+        button.accessibilityLabel = String.localizedStringWithFormat(
+            NSLocalizedString("ArticleViewController_Action_Accessibility_ShareArticle", comment: ""),
+            self.article.title
+        )
+        button.isAccessibilityElement = true
+        return button
     }()
     public private(set) lazy var openInSafariButton: UIBarButtonItem = {
         return UIBarButtonItem(title: self.linkString, style: .plain,

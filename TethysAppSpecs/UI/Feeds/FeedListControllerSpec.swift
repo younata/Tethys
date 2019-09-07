@@ -55,7 +55,8 @@ final class FeedListControllerSpec: QuickSpec {
             navigationController = UINavigationController(rootViewController: subject)
 
             recorder = NotificationRecorder()
-            notificationCenter.addObserver(recorder, selector: #selector(NotificationRecorder.received(notification:)), name: Notifications.reloadUI, object: subject)
+            notificationCenter.addObserver(recorder!, selector: #selector(NotificationRecorder.received(notification:)),
+                                           name: Notifications.reloadUI, object: subject)
         }
 
         describe("when the view loads") {
@@ -196,7 +197,7 @@ final class FeedListControllerSpec: QuickSpec {
                     }
 
                     it("stops refreshing") {
-                        expect(subject.refreshControl.isRefreshing).toEventually(beFalse())
+                        expect(subject.refreshControl.isRefreshing).to(beFalse())
                     }
 
                     it("removes the onboarding view") {
@@ -214,7 +215,7 @@ final class FeedListControllerSpec: QuickSpec {
                         }
 
                         it("refreshes") {
-                            expect(subject.refreshControl.isRefreshing).toEventually(beTrue())
+                            expect(subject.refreshControl.isRefreshing).to(beTrue())
                         }
                     }
 

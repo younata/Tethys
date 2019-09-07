@@ -210,6 +210,17 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         }
     }
 
+    public func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        return ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles
+    }
+
+    public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        guard ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles else {
+            return nil
+        }
+        return indexPath
+    }
+
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles {
             let article = self.articleForIndexPath(indexPath)

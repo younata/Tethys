@@ -567,6 +567,14 @@ class ArticleListControllerSpec: QuickSpec {
                                 expect(subject.tableView(subject.tableView, editActionsForRowAt: IndexPath(row: 0, section: 0))).to(beNil())
                             }
 
+                            it("doesn't allow highlighting") {
+                                expect(subject.tableView.delegate?.tableView?(subject.tableView, shouldHighlightRowAt: IndexPath(row: 0, section: 0))).to(beFalse())
+                            }
+
+                            it("doesn't allow selection") {
+                                expect(subject.tableView.delegate?.tableView?(subject.tableView, willSelectRowAt: IndexPath(row: 0, section: 0))).to(beNil())
+                            }
+
                             it("does nothing when tapped") {
                                 subject.tableView(subject.tableView, didSelectRowAt: IndexPath(row: 0, section: 0))
                                 expect(navigationController.topViewController).to(beIdenticalTo(subject))
@@ -627,6 +635,22 @@ class ArticleListControllerSpec: QuickSpec {
                             for row in 0..<subject.tableView.numberOfRows(inSection: section) {
                                 let indexPath = IndexPath(row: row, section: section)
                                 expect(subject.tableView(subject.tableView, canEditRowAt: indexPath)) == true
+                            }
+                        }
+
+                        it("allows highlighting") {
+                            let section = 1
+                            for row in 0..<subject.tableView.numberOfRows(inSection: section) {
+                                let indexPath = IndexPath(row: row, section: section)
+                                expect(subject.tableView.delegate?.tableView?(subject.tableView, shouldHighlightRowAt: indexPath)).to(beTrue())
+                            }
+                        }
+
+                        it("allows selection") {
+                            let section = 1
+                            for row in 0..<subject.tableView.numberOfRows(inSection: section) {
+                                let indexPath = IndexPath(row: row, section: section)
+                                expect(subject.tableView.delegate?.tableView?(subject.tableView, willSelectRowAt: indexPath)).to(equal(indexPath))
                             }
                         }
 

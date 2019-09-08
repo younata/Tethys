@@ -21,7 +21,7 @@
 "SettingsViewController_Credits_Icons" = "Icons";
 "SettingsViewController_Commands_Theme" = "Change Theme to '%@'";
 "SettingsViewController_Commands_Save" = "Save and dismiss";
-"SettingsViewController_Commands_Dismiss" = "Dismiss without saving";
+"SettingsViewController_Commands_Close" = "Close without saving";
 
 "FeedsTableViewController_SearchBar_Placeholder" = "Filter by Tag";
 "FeedsTableViewController_Onboarding_Title" = "Welcome to Tethys!";
@@ -127,6 +127,7 @@
 // Generic
 
 "Generic_Dismiss" = "Dismiss";
+"Generic_Close" = "Close";
 "Generic_Ok" = "Ok";
 "Generic_Save" = "Save";
 "Generic_Delete" = "Delete";

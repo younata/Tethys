@@ -55,6 +55,9 @@ public final class SettingsViewController: UIViewController {
             target: self,
             action: #selector(SettingsViewController.didTapSave))
         self.navigationItem.rightBarButtonItem?.isEnabled = false
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: NSLocalizedString("Generic_Close", comment: ""),
+                                                                style: .plain, target: self,
+                                                                action: #selector(SettingsViewController.didTapDismiss))
 
         self.tableView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.tableView)
@@ -122,7 +125,7 @@ public final class SettingsViewController: UIViewController {
                                    action: #selector(SettingsViewController.didTapDismiss))
 
         save.discoverabilityTitle = NSLocalizedString("SettingsViewController_Commands_Save", comment: "")
-        dismiss.discoverabilityTitle = NSLocalizedString("SettingsViewController_Commands_Dismiss", comment: "")
+        dismiss.discoverabilityTitle = NSLocalizedString("SettingsViewController_Commands_Close", comment: "")
 
         commands.append(save)
         commands.append(dismiss)
@@ -136,7 +139,11 @@ public final class SettingsViewController: UIViewController {
         if self.oldTheme != self.themeRepository.theme {
             self.themeRepository.theme = self.oldTheme
         }
-        self.navigationController?.popViewController(animated: true)
+        if let presentingController = self.presentingViewController ?? self.navigationController?.presentingViewController {
+            presentingController.dismiss(animated: true, completion: nil)
+        } else {
+            self.navigationController?.popViewController(animated: true)
+        }
     }
 
     @objc fileprivate func didTapSave() {

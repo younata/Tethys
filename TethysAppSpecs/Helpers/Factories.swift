@@ -15,9 +15,11 @@ func splitViewControllerFactory(themeRepository: ThemeRepository = themeReposito
 func findFeedViewControllerFactory(
     importUseCase: ImportUseCase = FakeImportUseCase(),
     themeRepository: ThemeRepository = themeRepositoryFactory(),
-    analytics: Analytics = FakeAnalytics()
+    analytics: Analytics = FakeAnalytics(),
+    notificationCenter: NotificationCenter = NotificationCenter()
     ) -> FindFeedViewController {
-    return FindFeedViewController(importUseCase: importUseCase, themeRepository: themeRepository, analytics: analytics)
+    return FindFeedViewController(importUseCase: importUseCase, themeRepository: themeRepository, analytics: analytics,
+                                  notificationCenter: notificationCenter)
 }
 
 func feedViewControllerFactory(

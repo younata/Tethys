@@ -42,7 +42,8 @@ final class FeedListControllerSpec: QuickSpec {
                     return FindFeedViewController(
                         importUseCase: FakeImportUseCase(),
                         themeRepository: themeRepository,
-                        analytics: FakeAnalytics()
+                        analytics: FakeAnalytics(),
+                        notificationCenter: notificationCenter
                     )
                 },
                 feedViewController: { feed in
@@ -147,8 +148,9 @@ final class FeedListControllerSpec: QuickSpec {
                             subject.navigationItem.leftBarButtonItem?.tap()
                         }
 
-                        it("pushes a settings page") {
-                            expect(navigationController.visibleViewController).to(beAnInstanceOf(SettingsViewController.self))
+                        it("presents a settings page") {
+                            expect(subject.presentedViewController).to(beAnInstanceOf(UINavigationController.self))
+                            expect((subject.presentedViewController as? UINavigationController)?.visibleViewController).to(beAnInstanceOf(SettingsViewController.self))
                         }
                     }
                 }
@@ -168,7 +170,8 @@ final class FeedListControllerSpec: QuickSpec {
                         }
 
                         it("presents a FindFeedViewController") {
-                            expect(navigationController.visibleViewController).to(beAnInstanceOf(FindFeedViewController.self))
+                            expect(subject.presentedViewController).to(beAnInstanceOf(UINavigationController.self))
+                            expect((subject.presentedViewController as? UINavigationController)?.visibleViewController).to(beAnInstanceOf(FindFeedViewController.self))
                         }
                     }
 

@@ -21,6 +21,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     fileprivate let importUseCase: ImportUseCase
     fileprivate let themeRepository: ThemeRepository
     fileprivate let analytics: Analytics
+    fileprivate let notificationCenter: NotificationCenter
 
     private let placeholderAttributes: [NSAttributedString.Key: AnyObject] = [
         NSAttributedString.Key.foregroundColor: UIColor.black
@@ -30,10 +31,12 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 
     public init(importUseCase: ImportUseCase,
                 themeRepository: ThemeRepository,
-                analytics: Analytics) {
+                analytics: Analytics,
+                notificationCenter: NotificationCenter) {
         self.importUseCase = importUseCase
         self.themeRepository = themeRepository
         self.analytics = analytics
+        self.notificationCenter = notificationCenter
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -76,6 +79,12 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.cancelTextEntry = UIBarButtonItem(title: cancelTitle, style: .plain,
                                                target: self,
                                                action: #selector(FindFeedViewController.dismissNavFieldKeyboard))
+
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(
+            title: NSLocalizedString("Generic_Close", comment: ""),
+            style: .plain, target: self,
+            action: #selector(FindFeedViewController.dismissFromNavigation)
+        )
 
         self.navigationController?.isToolbarHidden = false
         func spacer() -> UIBarButtonItem {
@@ -271,7 +280,8 @@ extension FindFeedViewController: WKUIDelegate {
         if let url = elementInfo.linkURL {
             let controller = FindFeedViewController(importUseCase: self.importUseCase,
                                                     themeRepository: self.themeRepository,
-                                                    analytics: self.analytics)
+                                                    analytics: self.analytics,
+                                                    notificationCenter: self.notificationCenter)
             _ = controller.view
             controller.webContent.load(URLRequest(url: url))
             return controller
@@ -302,7 +312,11 @@ extension FindFeedViewController {
     }
 
     @objc fileprivate func dismissFromNavigation() {
-        self.navigationController?.popViewController(animated: true)
+        if let presentingController = self.presentingViewController ?? self.navigationController?.presentingViewController {
+            presentingController.dismiss(animated: true, completion: nil)
+        } else {
+            self.navigationController?.popViewController(animated: true)
+        }
     }
 
     @objc fileprivate func save() {
@@ -342,6 +356,7 @@ extension FindFeedViewController {
             indicator.removeFromSuperview()
             self.analytics.logEvent("DidUseWebImport", data: nil)
             self.dismissFromNavigation()
+            self.notificationCenter.post(name: Notifications.reloadUI, object: self)
         }
     }
 

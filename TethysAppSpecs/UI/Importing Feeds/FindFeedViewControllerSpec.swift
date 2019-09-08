@@ -16,6 +16,9 @@ class FindFeedViewControllerSpec: QuickSpec {
         var importUseCase: FakeImportUseCase!
         var themeRepository: ThemeRepository!
         var analytics: FakeAnalytics!
+        var notificationCenter: NotificationCenter!
+
+        var recorder: NotificationRecorder!
 
         beforeEach {
             importUseCase = FakeImportUseCase()
@@ -24,19 +27,26 @@ class FindFeedViewControllerSpec: QuickSpec {
 
             themeRepository = ThemeRepository(userDefaults: nil)
 
+            notificationCenter = NotificationCenter()
+
             subject = FindFeedViewController(
                 importUseCase: importUseCase,
                 themeRepository: themeRepository,
-                analytics: analytics
+                analytics: analytics,
+                notificationCenter: notificationCenter
             )
             webView = FakeWebView()
             subject.webContent = webView
 
             rootViewController = UIViewController()
-            navController = UINavigationController(rootViewController: rootViewController)
-            navController.pushViewController(subject, animated: false)
+            navController = UINavigationController(rootViewController: subject)
+            rootViewController.present(navController, animated: false, completion: nil)
 
-            expect(subject.view).toNot(beNil())
+            subject.view.layoutIfNeeded()
+
+            recorder = NotificationRecorder()
+            notificationCenter.addObserver(recorder!, selector: #selector(NotificationRecorder.received(notification:)),
+                                           name: Notifications.reloadUI, object: subject)
         }
 
         describe("changing the theme") {
@@ -67,6 +77,26 @@ class FindFeedViewControllerSpec: QuickSpec {
             if (analytics.logEventCallCount > 0) {
                 expect(analytics.logEventArgsForCall(0).0) == "DidViewWebImport"
                 expect(analytics.logEventArgsForCall(0).1).to(beNil())
+            }
+        }
+
+        describe("the left bar button item") {
+            it("indicates it'll close the controller") {
+                expect(subject.navigationItem.leftBarButtonItem?.title).to(equal("Close"))
+            }
+
+            describe("when tapped") {
+                beforeEach {
+                    subject.navigationItem.leftBarButtonItem?.tap()
+                }
+
+                it("dismisses the controller") {
+                    expect(rootViewController.presentedViewController).to(beNil())
+                }
+
+                it("does not post a notification") {
+                    expect(recorder.notifications).to(beEmpty())
+                }
             }
         }
 
@@ -209,6 +239,11 @@ class FindFeedViewControllerSpec: QuickSpec {
                         }
                     }
 
+                    it("posts a notification telling other things to reload") {
+                        expect(recorder.notifications).to(haveCount(1))
+                        expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
+                    }
+
                     it("dismisses itself") {
                         expect(rootViewController.presentedViewController).to(beNil())
                     }
@@ -304,7 +339,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("does not dismiss the controller") {
-                        expect(navController.visibleViewController).to(equal(subject))
+                        expect(rootViewController.presentedViewController).toNot(beNil())
                     }
                 }
 
@@ -321,7 +356,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("does not dismiss the controller") {
-                        expect(navController.visibleViewController).to(equal(subject))
+                        expect(rootViewController.presentedViewController).toNot(beNil())
                     }
 
                     itBehavesLike("importing a feed")
@@ -363,7 +398,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("does not dismiss the controller") {
-                        expect(navController.visibleViewController).to(equal(subject))
+                        expect(rootViewController.presentedViewController).toNot(beNil())
                     }
                 }
 
@@ -380,10 +415,10 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("does not dismiss the controller") {
-                        expect(navController.visibleViewController).to(equal(subject))
+                        expect(rootViewController.presentedViewController).toNot(beNil())
                     }
 
-                    it("should show an indicator that we're doing things") {
+                    it("shows an indicator that we're doing things") {
                         let indicator = subject.view.subviews.filter {
                             return $0.isKind(of: ActivityIndicator.classForCoder())
                         }.first as? ActivityIndicator
@@ -399,14 +434,19 @@ class FindFeedViewControllerSpec: QuickSpec {
                             importUseCase.importItemPromises[0].resolve(.success(()))
                         }
 
-                        it("should remove the indicator") {
+                        it("removes the indicator") {
                             let indicator = subject.view.subviews.filter {
                                 return $0.isKind(of: ActivityIndicator.classForCoder())
                                 }.first
                             expect(indicator).to(beNil())
                         }
 
-                        it("should dismiss itself") {
+                        it("posts a notification telling other things to reload") {
+                            expect(recorder.notifications).to(haveCount(1))
+                            expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
+                        }
+
+                        it("dismisses itself") {
                             expect(rootViewController.presentedViewController).to(beNil())
                         }
                     }

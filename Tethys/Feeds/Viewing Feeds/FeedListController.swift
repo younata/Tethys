@@ -186,8 +186,11 @@ public final class FeedListController: UIViewController {
         }
     }
 
-    private func show(controller: UIViewController, from: UIBarButtonItem?) {
-        self.navigationController?.pushViewController(controller, animated: true)
+    private func show(controller: UIViewController, from item: UIBarButtonItem?) {
+        let navigationController = UINavigationController(rootViewController: controller)
+        navigationController.modalPresentationStyle = .formSheet
+
+        self.present(navigationController, animated: true, completion: nil)
     }
 
     @objc fileprivate func didTapAddFeed() {

@@ -46,8 +46,8 @@ class SettingsViewControllerSpec: QuickSpec {
 
             rootViewController = UIViewController()
 
-            navigationController = UINavigationController(rootViewController: rootViewController)
-            navigationController.pushViewController(subject, animated: false)
+            navigationController = UINavigationController(rootViewController: subject)
+            rootViewController.present(navigationController, animated: false, completion: nil)
 
             expect(subject.view).toNot(beNil())
         }
@@ -83,6 +83,11 @@ class SettingsViewControllerSpec: QuickSpec {
             expect(subject.navigationItem.rightBarButtonItem?.isEnabled).to(equal(false))
         }
 
+        it("has a close button") {
+            expect(subject.navigationItem.leftBarButtonItem?.title).to(equal("Close"))
+            expect(subject.navigationItem.leftBarButtonItem?.isEnabled).to(equal(true))
+        }
+
         it("makes a request for the logged in accounts") {
             expect(accountService.accountsPromises).to(haveCount(1))
         }
@@ -98,11 +103,26 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
 
                 it("dismisses itself") {
-                    expect(navigationController.visibleViewController).to(equal(rootViewController))
+                    expect(rootViewController.presentedViewController).to(beNil())
                 }
 
                 it("saves the change to the userDefaults") {
                     let op = sharedContext()["saveToUserDefaults"] as? Operation
+                    op?.main()
+                }
+            }
+
+            describe("tapping the close button") {
+                beforeEach {
+                    subject.navigationItem.leftBarButtonItem?.tap()
+                }
+
+                it("dismisses itself") {
+                    expect(rootViewController.presentedViewController).to(beNil())
+                }
+
+                it("does not save the change to the userDefaults") {
+                    let op = sharedContext()["dismissWithoutSaving"] as? Operation
                     op?.main()
                 }
             }
@@ -196,7 +216,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     ]
                     let expectedDiscoverabilityTitles = [
                         "Save and dismiss",
-                        "Dismiss without saving",
+                        "Close without saving",
                     ]
 
                     expect(commands.count) == expectedCommands.count
@@ -447,10 +467,13 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         itBehavesLike("a changed setting") {
-                            let op = BlockOperation {
-                                expect(themeRepository.theme) == ThemeRepository.Theme.light
+                            let saveOperation = BlockOperation {
+                                expect(themeRepository.theme).to(equal(ThemeRepository.Theme.light))
                             }
-                            return ["saveToUserDefaults": op]
+                            let dismissOperation = BlockOperation {
+                                expect(themeRepository.theme).to(equal(ThemeRepository.Theme.dark))
+                            }
+                            return ["saveToUserDefaults": saveOperation, "dismissWithoutSaving": dismissOperation]
                         }
                     }
 
@@ -544,10 +567,13 @@ class SettingsViewControllerSpec: QuickSpec {
                             delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
                         }
                         itBehavesLike("a changed setting") {
-                            let op = BlockOperation {
-                                expect(settingsRepository.refreshControl) == RefreshControlStyle.spinner
+                            let saveOperation = BlockOperation {
+                                expect(settingsRepository.refreshControl).to(equal(RefreshControlStyle.spinner))
                             }
-                            return ["saveToUserDefaults": op]
+                            let dismissOperation = BlockOperation {
+                                expect(settingsRepository.refreshControl).to(equal(RefreshControlStyle.breakout))
+                            }
+                            return ["saveToUserDefaults": saveOperation, "dismissWithoutSaving": dismissOperation]
                         }
                     }
 
@@ -631,14 +657,17 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         it("does not yet change the settings repository") {
-                            expect(settingsRepository.showEstimatedReadingLabel) == true
+                            expect(settingsRepository.showEstimatedReadingLabel).to(equal(true))
                         }
 
                         itBehavesLike("a changed setting") {
-                            let op = BlockOperation {
-                                expect(settingsRepository.showEstimatedReadingLabel) == false
+                            let saveOperation = BlockOperation {
+                                expect(settingsRepository.showEstimatedReadingLabel).to(equal(false))
                             }
-                            return ["saveToUserDefaults": op]
+                            let dismissOperation = BlockOperation {
+                                expect(settingsRepository.showEstimatedReadingLabel).to(equal(true))
+                            }
+                            return ["saveToUserDefaults": saveOperation, "dismissWithoutSaving": dismissOperation]
                         }
                     }
 

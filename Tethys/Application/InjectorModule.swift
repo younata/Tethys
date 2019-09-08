@@ -116,7 +116,8 @@ private func registerViewControllers(container: Container) {
         return FindFeedViewController(
             importUseCase: r.resolve(ImportUseCase.self)!,
             themeRepository: r.resolve(ThemeRepository.self)!,
-            analytics: r.resolve(Analytics.self)!
+            analytics: r.resolve(Analytics.self)!,
+            notificationCenter: .default
         )
     }
 

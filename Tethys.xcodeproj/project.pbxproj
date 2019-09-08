@@ -198,7 +198,7 @@
 		89C676541BA264F40037A224 /* FakeUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C676531BA264F40037A224 /* FakeUserDefaults.swift */; };
 		89C676561BA28FE60037A224 /* FakeFileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C676551BA28FE60037A224 /* FakeFileManager.swift */; };
 		89C8307919D730E9009924DA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C8307819D730E9009924DA /* AppDelegate.swift */; };
-		89C8308319D730E9009924DA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89C8308219D730E9009924DA /* Images.xcassets */; };
+		89C8308319D730E9009924DA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89C8308219D730E9009924DA /* Assets.xcassets */; };
 		89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830AD19D7CB8E009924DA /* ArticleListController.swift */; };
 		89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830B219D7D2CB009924DA /* ArticleCell.swift */; };
 		89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C830B519D7DE97009924DA /* ArticleViewController.swift */; };
@@ -525,7 +525,7 @@
 		89C8307319D730E9009924DA /* Tethys.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tethys.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C8307719D730E9009924DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89C8307819D730E9009924DA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		89C8308219D730E9009924DA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		89C8308219D730E9009924DA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		89C8308B19D730E9009924DA /* TethysAppSpecs.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TethysAppSpecs.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		89C8309019D730E9009924DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		89C830AD19D7CB8E009924DA /* ArticleListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListController.swift; sourceTree = "<group>"; };
@@ -1081,7 +1081,7 @@
 				89C8307619D730E9009924DA /* Supporting Files */,
 				898F6E111B129AB6000D343D /* ActivityIndicator.swift */,
 				8918D4A31B8115F800DCDE0E /* ExplanationView.swift */,
-				89C8308219D730E9009924DA /* Images.xcassets */,
+				89C8308219D730E9009924DA /* Assets.xcassets */,
 				89B8BBDF1B9C5B1000B2C112 /* Launch Screen.xib */,
 				8903A6241C4AB17C00E896BF /* NotificationView.swift */,
 				898046D11A1BC8FD00EB29F0 /* Tethys.entitlements */,
@@ -1626,7 +1626,7 @@
 				8918D4D91B85887E00DCDE0E /* darkhub2.css in Resources */,
 				8924D8E91A094CF5003B7529 /* github2.css in Resources */,
 				890C8D4F1DE4096C00A037D7 /* icons.html in Resources */,
-				89C8308319D730E9009924DA /* Images.xcassets in Resources */,
+				89C8308319D730E9009924DA /* Assets.xcassets in Resources */,
 				89B8BBDD1B9C5B1000B2C112 /* Launch Screen.xib in Resources */,
 				899C6A9F1DCAACF800E0A61C /* libraries.html in Resources */,
 				895901B31A32B61A002E2C62 /* Localizable.strings in Resources */,

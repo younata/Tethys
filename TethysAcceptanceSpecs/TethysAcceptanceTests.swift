@@ -45,6 +45,20 @@ class TethysAcceptanceTests: XCTestCase {
         self.waitForThingToExist(app.cells["Rachel Brindle"])
     }
 
+    func assertShareShows(shareButtonName: String, app: XCUIApplication) {
+        app.buttons[shareButtonName].tap()
+
+        let element: XCUIElement
+        if app.buttons["Cancel"].exists {
+            element = app.buttons["Cancel"]
+        } else if app.otherElements["PopoverDismissRegion"].exists {
+            element = app.otherElements["PopoverDismissRegion"]
+        } else {
+            return fail("No way to dismiss share sheet")
+        }
+        element.tap()
+    }
+
     func testMakingScreenshots() {
         let app = XCUIApplication()
 
@@ -61,8 +75,7 @@ class TethysAcceptanceTests: XCTestCase {
 
         snapshot("02-articlesList", waitForLoadingIndicator: false)
 
-        app.buttons["ArticleListController_ShareFeed"].tap()
-        app.buttons["Cancel"].tap()
+        self.assertShareShows(shareButtonName: "ArticleListController_ShareFeed", app: app)
 
         app.staticTexts["Homemade thermostat for my apartment"].tap()
 
@@ -70,7 +83,6 @@ class TethysAcceptanceTests: XCTestCase {
 
         snapshot("03-article", waitForLoadingIndicator: false)
 
-        app.buttons["ArticleViewController_ShareArticle"].tap()
-        app.buttons["Cancel"].tap()
+        self.assertShareShows(shareButtonName: "ArticleViewController_ShareArticle", app: app)
     }
 }

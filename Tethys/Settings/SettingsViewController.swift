@@ -150,10 +150,10 @@ public final class SettingsViewController: UIViewController {
         self.tableView.reloadData()
         let currentThemeIndexPath = IndexPath(row: self.themeRepository.theme.rawValue,
                                               section: SettingsSection.theme.rawValue)
-        let currentRefreshStyleIndexPath = IndexPath(row: self.refreshControlStyle.rawValue,
-                                                     section: SettingsSection.refresh.rawValue)
+//        let currentRefreshStyleIndexPath = IndexPath(row: self.refreshControlStyle.rawValue,
+//                                                     section: SettingsSection.refresh.rawValue)
         self.tableView.selectRow(at: currentThemeIndexPath, animated: false, scrollPosition: .none)
-        self.tableView.selectRow(at: currentRefreshStyleIndexPath, animated: false, scrollPosition: .none)
+//        self.tableView.selectRow(at: currentRefreshStyleIndexPath, animated: false, scrollPosition: .none)
     }
 }
 

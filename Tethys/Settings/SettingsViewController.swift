@@ -4,6 +4,8 @@ import SafariServices
 import Result
 import TethysKit
 
+// swiftlint:disable file_length
+
 public final class SettingsViewController: UIViewController {
     public let tableView = UITableView(frame: CGRect.zero, style: .grouped)
 
@@ -139,7 +141,8 @@ public final class SettingsViewController: UIViewController {
         if self.oldTheme != self.themeRepository.theme {
             self.themeRepository.theme = self.oldTheme
         }
-        if let presentingController = self.presentingViewController ?? self.navigationController?.presentingViewController {
+        let presenter = self.presentingViewController ?? self.navigationController?.presentingViewController
+        if let presentingController = presenter {
             presentingController.dismiss(animated: true, completion: nil)
         } else {
             self.navigationController?.popViewController(animated: true)

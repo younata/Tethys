@@ -40,37 +40,30 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         super.init(nibName: nil, bundle: nil)
     }
 
-    public required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-
-        self.edgesForExtendedLayout = UIRectEdge()
+        self.edgesForExtendedLayout = [.left, .right]
 
         self.webContent.navigationDelegate = self
         self.webContent.uiDelegate = self
         self.view.addSubview(self.webContent)
         self.webContent.autoPinEdgesToSuperviewEdges(with: .zero)
-
         self.observer = self.webContent.observe(\.estimatedProgress, options: [.new]) { _, _ in
             self.loadingBar.progress = Float(self.webContent.estimatedProgress)
         }
 
+        let save = #selector(FindFeedViewController.save as (FindFeedViewController) -> () -> Void)
+        self.addFeedButton = UIBarButtonItem(title: NSLocalizedString("FindFeedViewController_AddFeed", comment: ""),
+                                             style: .plain, target: self, action: save)
+        self.addFeedButton.isEnabled = false
         self.back = UIBarButtonItem(image: Image(named: "LeftChevron"), style: .plain, target: self.webContent,
                                     action: #selector(WKWebView.goBack))
         self.forward = UIBarButtonItem(image: Image(named: "RightChevron"), style: .plain, target: self.webContent,
                                        action: #selector(WKWebView.goForward))
-
-        self.edgesForExtendedLayout = [.left, .right]
-
-        let addFeedTitle = NSLocalizedString("FindFeedViewController_AddFeed", comment: "")
-        let save = #selector(FindFeedViewController.save as (FindFeedViewController) -> () -> Void)
-        self.addFeedButton = UIBarButtonItem(title: addFeedTitle, style: .plain, target: self, action: save)
         self.back.isEnabled = false
         self.forward.isEnabled = false
-        self.addFeedButton.isEnabled = false
 
         self.reload = UIBarButtonItem(barButtonSystemItem: .refresh, target: self,
                                       action: #selector(FindFeedViewController.reloadWebPage))
@@ -167,10 +160,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     }
 
     public func textFieldDidEndEditing(_ textField: UITextField) {
-        var button: UIBarButtonItem?
-        if self.webContent.estimatedProgress >= 1.0 {
-            button = self.reload
-        }
+        let button: UIBarButtonItem? = self.webContent.estimatedProgress >= 1.0 ? self.reload : nil
         self.navigationItem.setRightBarButton(button, animated: true)
     }
 
@@ -302,9 +292,7 @@ extension FindFeedViewController {
         self.navField.selectAll(nil)
     }
 
-    @objc fileprivate func reloadWebPage() {
-        self.webContent.reload()
-    }
+    @objc fileprivate func reloadWebPage() { self.webContent.reload() }
 
     @objc fileprivate func dismissNavFieldKeyboard() {
         self.navField.resignFirstResponder()
@@ -312,7 +300,8 @@ extension FindFeedViewController {
     }
 
     @objc fileprivate func dismissFromNavigation() {
-        if let presentingController = self.presentingViewController ?? self.navigationController?.presentingViewController {
+        let presenter = self.presentingViewController ?? self.navigationController?.presentingViewController
+        if let presentingController = presenter {
             presentingController.dismiss(animated: true, completion: nil)
         } else {
             self.navigationController?.popViewController(animated: true)
@@ -365,18 +354,14 @@ extension FindFeedViewController {
         let messageFormat = NSLocalizedString("FindFeedViewController_FoundFeed_Subtitle", comment: "")
         let message = String.localizedStringWithFormat(messageFormat, url.lastPathComponent)
 
-        self.displayAlertToSave(title, alertMessage: message) {
-            self.save(link: url, opml: false)
-        }
+        self.displayAlertToSave(title, alertMessage: message) { self.save(link: url, opml: false) }
     }
 
     fileprivate func askToImportOPML(_ url: URL) {
         let title = NSLocalizedString("FindFeedViewController_FoundFeed_List_Title", comment: "")
         let message = NSLocalizedString("FindFeedViewController_FoundFeed_List_Subtitle", comment: "")
 
-        self.displayAlertToSave(title, alertMessage: message) {
-            self.save(link: url, opml: true)
-        }
+        self.displayAlertToSave(title, alertMessage: message) { self.save(link: url, opml: true) }
     }
 
     fileprivate func displayAlertToSave(_ alertTitle: String, alertMessage: String, success: @escaping () -> Void) {

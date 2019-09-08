@@ -17,6 +17,7 @@ struct RealmMigrator {
         }
     }
 
+    // swiftlint:disable cyclomatic_complexity
     static func realmMigration(_ migration: Migration, oldSchemaVersion: UInt64) {
         if oldSchemaVersion < 1 {
             migration.enumerateObjects(ofType: RealmArticle.className()) { oldObject, newObject in
@@ -67,6 +68,7 @@ struct RealmMigrator {
             }
         }
     }
+    // swiftlint:enable=cyclomatic_complexity
 
     static func nameAndEmailFromAuthorString(_ author: String) -> (name: String, email: String) {
         let author = author.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)

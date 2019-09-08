@@ -55,6 +55,7 @@ public func configure(container: Container) {
     registerViewControllers(container: container)
 }
 
+// swiftlint:disable function_body_length
 private func registerViewControllers(container: Container) {
     container.register(ArticleListController.self) { r, feed in
         return ArticleListController(
@@ -160,3 +161,4 @@ private func registerViewControllers(container: Container) {
         )
     }
 }
+// swiftlint: enable=function_body_length

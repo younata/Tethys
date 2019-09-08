@@ -1488,6 +1488,7 @@
 				89D170B91C5835C600D546F9 /* Remove Frameworks folder from rNewsKit */,
 				8934FE5921DC466C00083387 /* Insert InoreaderClientId into info.plist */,
 				893694F721E2D60C002C3A09 /* Insert InoreaderClientSecret into info.plist */,
+				89B0A3632324C8B600FBCB67 /* Insert current version into info.plist */,
 			);
 			buildRules = (
 			);
@@ -1698,6 +1699,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "if which swiftlint >/dev/null; then\n    swiftlint\nelse\n    echo \"SwiftLint does not exist, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+		89B0A3632324C8B600FBCB67 /* Insert current version into info.plist */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Insert current version into info.plist";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "${PROJECT_DIR}/scripts/insert_current_version_into_plist.sh\n";
+			showEnvVarsInLog = 0;
 		};
 		89CAD4C01BA3D36E006D79FC /* Embed Carthage Libraries */ = {
 			isa = PBXShellScriptBuildPhase;

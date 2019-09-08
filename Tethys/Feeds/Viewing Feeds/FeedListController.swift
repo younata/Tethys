@@ -188,7 +188,7 @@ public final class FeedListController: UIViewController {
 
     private func show(controller: UIViewController, from item: UIBarButtonItem?) {
         let navigationController = UINavigationController(rootViewController: controller)
-        navigationController.modalPresentationStyle = .formSheet
+        navigationController.modalPresentationStyle = .pageSheet
 
         self.present(navigationController, animated: true, completion: nil)
     }

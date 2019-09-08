@@ -19,6 +19,7 @@
 "SettingsViewController_Credits_MainDeveloper_Detail" = "Developer";
 "SettingsViewController_Credits_Libraries" = "Libraries";
 "SettingsViewController_Credits_Icons" = "Icons";
+"SettingsViewController_Credits_Version" = "Version";
 "SettingsViewController_Commands_Theme" = "Change Theme to '%@'";
 "SettingsViewController_Commands_Save" = "Save and dismiss";
 "SettingsViewController_Commands_Close" = "Close without saving";

@@ -41,6 +41,7 @@ enum SettingsSection: Int, CustomStringConvertible {
 enum OtherSection: Int, CustomStringConvertible {
     case showReadingTimes = 0
     case exportOPML = 1
+    case gitVersion = 2
 
     var description: String {
         switch self {
@@ -48,8 +49,11 @@ enum OtherSection: Int, CustomStringConvertible {
             return NSLocalizedString("SettingsViewController_Other_ShowReadingTimes", comment: "")
         case .exportOPML:
             return NSLocalizedString("SettingsViewController_Other_ExportOPML", comment: "")
+        case .gitVersion:
+            return NSLocalizedString("SettingsViewController_Credits_Version", comment: "")
         }
+
     }
 
-    static let numberOfOptions = 2
+    static let numberOfOptions = 3
 }

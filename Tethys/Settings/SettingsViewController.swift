@@ -296,7 +296,7 @@ extension SettingsViewController: UITableViewDataSource {
         var tableCell: UITableViewCell
         switch row {
         case .showReadingTimes:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "switch",
+            let cell = self.tableView.dequeueReusableCell(withIdentifier: "switch",
                                                      for: indexPath) as! SwitchTableViewCell
             cell.themeRepository = self.themeRepository
             cell.onTapSwitch = {_ in }
@@ -307,9 +307,15 @@ extension SettingsViewController: UITableViewDataSource {
             }
             tableCell = cell
         case .exportOPML:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+            let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
             cell.themeRepository = self.themeRepository
             tableCell = cell
+        case .gitVersion:
+            let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+            cell.themeRepository = self.themeRepository
+            tableCell = cell
+
+            cell.detailTextLabel?.text = Bundle.main.infoDictionary?["CurrentGitVersion"] as? String
         }
         tableCell.textLabel?.text = row.description
         return tableCell
@@ -417,6 +423,8 @@ extension SettingsViewController: UITableViewDelegate {
                 case let .success(url):
                     self.mainQueue.addOperation {
                         let shareSheet = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+                        shareSheet.popoverPresentationController?.sourceView = tableView
+                        shareSheet.popoverPresentationController?.sourceRect = tableView.rectForRow(at: indexPath)
                         self.present(shareSheet, animated: true, completion: nil)
                     }
                 case .failure:

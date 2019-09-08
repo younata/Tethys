@@ -630,11 +630,11 @@ class SettingsViewControllerSpec: QuickSpec {
                     expect(title) == "Other"
                 }
 
-                it("has two cell") {
-                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == 2
+                it("has three cells") {
+                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(3))
                 }
 
-                describe("the first cell") {
+                describe("the estimated reading times cell") {
                     var cell: SwitchTableViewCell! = nil
                     let indexPath = IndexPath(row: 0, section: sectionNumber)
 
@@ -681,7 +681,7 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
                 }
 
-                describe("the second cell") {
+                describe("the export cell") {
                     var cell: TableViewCell! = nil
                     let indexPath = IndexPath(row: 1, section: sectionNumber)
 
@@ -752,6 +752,56 @@ class SettingsViewControllerSpec: QuickSpec {
                         expect(viewController).to(beNil())
                     }
                 }
+
+                describe("the version cell") {
+                    var cell: TableViewCell!
+                    let indexPath = IndexPath(row: 2, section: sectionNumber)
+
+                    beforeEach {
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
+                    }
+
+                    it("is configured with the theme repository") {
+                        expect(cell.themeRepository).to(equal(themeRepository))
+                    }
+
+                    it("has 'version'' name as the text") {
+                        expect(cell.textLabel?.text).to(equal("Version"))
+                    }
+
+                    it("has the git version as the detail text") {
+                        let gitVersion = Bundle.main.infoDictionary?["CurrentGitVersion"] as? String
+                        expect(cell.detailTextLabel?.text).to(equal(gitVersion))
+                    }
+
+                    describe("tapping it") {
+                        beforeEach {
+                            delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
+                        }
+
+                        it("does nothing") {
+                            expect(navigationController.visibleViewController).to(be(subject))
+                        }
+                    }
+
+                    describe("3d touching the cell") {
+                        var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
+                        var viewController: UIViewController? = nil
+
+                        beforeEach {
+                            subject.tableView.frame = CGRect(x: 0, y: 0, width: 320, height: 480)
+                            viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
+
+                            let rect = subject.tableView.rectForRow(at: indexPath)
+                            let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
+                            viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                        }
+
+                        it("does nothing") {
+                            expect(viewController).to(beNil())
+                        }
+                    }
+                }
             }
 
             describe("the credits section") {
@@ -771,6 +821,9 @@ class SettingsViewControllerSpec: QuickSpec {
                 ]
 
                 it("has \(values.count + 2) cells") {
+                    // people getting credit
+                    // libraries
+                    // icons
                     expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == (values.count + 2)
                 }
 
@@ -942,7 +995,7 @@ class SettingsViewControllerSpec: QuickSpec {
                             delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
                         }
 
-                        it("should show a DocumentationViewController with the .icons documentation") {
+                        it("shows a DocumentationViewController with the .icons documentation") {
                             expect(navigationController.visibleViewController).to(beAnInstanceOf(DocumentationViewController.self))
 
                             if let documentationViewController = navigationController.visibleViewController as? DocumentationViewController {

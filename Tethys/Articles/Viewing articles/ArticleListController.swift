@@ -13,8 +13,12 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     public private(set) var articles = AnyCollection<Article>([])
 
     public private(set) lazy var markReadButton: UIBarButtonItem = {
-        return UIBarButtonItem(title: NSLocalizedString("ArticleListController_Action_MarkRead", comment: ""),
-                               style: .plain, target: self, action: #selector(ArticleListController.markFeedRead))
+        let button = UIBarButtonItem(image: UIImage(named: "MarkRead"), style: .plain, target: self,
+                                     action: #selector(ArticleListController.markFeedRead))
+        button.accessibilityLabel = String.localizedStringWithFormat(
+            NSLocalizedString("ArticleListController_Action_Accessibility_MarkFeedAsRead", comment: ""),
+            self.feed.displayTitle)
+        return button
     }()
     public private(set) lazy var shareButton: UIBarButtonItem = {
         let button = UIBarButtonItem(barButtonSystemItem: .action, target: self,

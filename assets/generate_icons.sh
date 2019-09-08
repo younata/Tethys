@@ -44,13 +44,25 @@ convert $ASSET_PATH/Icon-AppStore.png -background white -alpha remove $ASSET_PAT
 EOF
 }
 
+function markread_icons {
+    parallel --progress -j 0 << EOF
+svgexport MarkRead.xml ../$APP_NAME/Images.xcassets/MarkRead.imageset/MarkRead.png 25:25
+svgexport MarkRead.xml ../$APP_NAME/Images.xcassets/MarkRead.imageset/MarkRead@2x.png 50:50
+svgexport MarkRead.xml ../$APP_NAME/Images.xcassets/MarkRead.imageset/MarkRead@3x.png 75:75
+svgexport MarkUnread.xml ../$APP_NAME/Images.xcassets/MarkUnread.imageset/MarkUnread.png 25:25
+svgexport MarkUnread.xml ../$APP_NAME/Images.xcassets/MarkUnread.imageset/MarkUnread@2x.png 50:50
+svgexport MarkUnread.xml ../$APP_NAME/Images.xcassets/MarkUnread.imageset/MarkUnread@3x.png 75:75
+EOF
+}
+
 if [ $# -eq 1 ]; then
     case "$1" in
         "app") app_icon ;;
         "chevron") chevron_icons ;;
         "settings") settings_icon ;;
+        "markread") markread_icons ;;
         *)
-            echo "Usage: $0 [app, settings]"
+            echo "Usage: $0 [app, chevron, markread, settings]"
             echo "No arguments will recreate all icons."
             ;;
     esac
@@ -58,11 +70,13 @@ else
     export -f app_icon
     export -f chevron_icons
     export -f settings_icon
+    export -f markread_icons 
 
     parallel --progress -j 0 << EOF
 app_icon
 chevron_icons
 settings_icon
+markread_icons
 EOF
 fi
 

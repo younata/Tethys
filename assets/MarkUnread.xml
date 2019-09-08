@@ -1,0 +1,27 @@
+<?xml version="1.0" standalone="yes"?>
+<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100%" height="100%" fill="transparent"/>
+
+    <g stroke="black" stroke-width="4" fill="transparent" stroke-linecap="round">
+        <path d="M 32,62
+                 L 2,48
+                 L 2,8
+                 L 32,24
+                 L 62,8
+                 L 62,48
+                 L 32,62
+                 L 32,24"/>
+    </g>
+    <g stroke="black" stroke-width="3" fill="transparent" stroke-linecap="round">
+        <path d="M 32,24
+                 Q 24,4,2,8
+                 M 32,24
+                 Q 40,4,62,8"/>
+    </g>
+    <g stroke="black" stroke-width="8" fill="transparent" stroke-linecap="round">
+        <path d="M 16,24
+                 L 48,48
+                 M 48,24
+                 L 16,48"/>
+    </g>
+</svg>

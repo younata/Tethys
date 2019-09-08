@@ -79,10 +79,7 @@ public final class SettingsViewController: UIViewController {
         self.accountService.accounts().then { results in
             self.mainQueue.addOperation {
                 self.accounts = results.compactMap { $0.value }
-                self.tableView.reloadSections(
-                    IndexSet(integer: SettingsSection.account.rawValue),
-                    with: .none
-                )
+                self.reloadTable()
             }
         }
 
@@ -219,7 +216,7 @@ extension SettingsViewController: UIViewControllerPreviewingDelegate {
 
 extension SettingsViewController: UITableViewDataSource {
     public func numberOfSections(in tableView: UITableView) -> Int {
-        return SettingsSection.numberOfSettings(self.traitCollection)
+        return SettingsSection.numberOfSettings()
     }
 
     public func tableView(_ tableView: UITableView, numberOfRowsInSection sectionNum: Int) -> Int {

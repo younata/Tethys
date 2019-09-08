@@ -8,7 +8,7 @@ enum SettingsSection: Int, CustomStringConvertible {
     case other = 1
     case credits = 2
 
-    static func numberOfSettings(_ traits: UITraitCollection) -> Int {
+    static func numberOfSettings() -> Int {
         return 3 //5
     }
 

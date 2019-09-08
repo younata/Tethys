@@ -60,7 +60,6 @@ final class InjectorModuleSpec: QuickSpec {
         }
 
         describe("Views") {
-            exists(UnreadCounter.self)
             exists(TagPickerView.self)
         }
 

@@ -3,14 +3,7 @@ import Swinject
 import TethysKit
 import AuthenticationServices
 
-public func configure(container: Container) {
-    container.register(UnreadCounter.self) { _ in
-        let unreadCounter = UnreadCounter(frame: CGRect.zero)
-        unreadCounter.translatesAutoresizingMaskIntoConstraints = false
-        return unreadCounter
-    }
-
-    container.register(TagPickerView.self) { _ in
+public func configure(container: Container) {    container.register(TagPickerView.self) { _ in
         let tagPicker = TagPickerView(frame: CGRect.zero)
         tagPicker.translatesAutoresizingMaskIntoConstraints = false
         return tagPicker

@@ -55,6 +55,7 @@ class RefreshControlSpec: QuickSpec {
             it("updates the breakoutView's colors") {
                 expect(subject.breakoutView?.scenebackgroundColor).to(equal(themeRepository.backgroundColor))
                 expect(subject.breakoutView?.textColor).to(equal(themeRepository.textColor))
+                expect(subject.breakoutView?.ballColor).to(equal(themeRepository.highlightColor))
             }
 
             it("updates the spinner's colors") {
@@ -137,7 +138,7 @@ class RefreshControlSpec: QuickSpec {
 
                 it("does not install the breakout view") {
                     expect(subject.breakoutView?.superview).to(beNil())
-                    expect(scrollView.refreshControl).to(equal(subject.spinner))
+                    expect(scrollView.refreshControl).to(beAKindOf(UIRefreshControl.self))
                 }
             }
         }

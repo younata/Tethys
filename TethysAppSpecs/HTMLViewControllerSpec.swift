@@ -41,15 +41,16 @@ class HTMLViewControllerSpec: QuickSpec {
             }
 
             it("should update the content's background color") {
-                expect(subject.content.backgroundColor) == themeRepository.backgroundColor
+                expect(subject.content.backgroundColor).to(equal(themeRepository.backgroundColor))
             }
 
             it("should update the scroll indicator style") {
-                expect(subject.content.scrollView.indicatorStyle) == themeRepository.scrollIndicatorStyle
+                expect(subject.content.scrollView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
             }
 
-            it("updates the progress view's trackTintColor") {
-                expect(subject.progressIndicator.trackTintColor) == themeRepository.backgroundColor
+            it("updates the progress view's colors") {
+                expect(subject.progressIndicator.trackTintColor).to(equal(themeRepository.backgroundColor))
+                expect(subject.progressIndicator.progressTintColor).to(equal(themeRepository.highlightColor))
             }
         }
 

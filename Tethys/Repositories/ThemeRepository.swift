@@ -14,6 +14,7 @@ public final class ThemeRepository: NSObject {
     public var scrollIndicatorStyle: UIScrollView.IndicatorStyle { return self.theme.scrollIndicatorStyle }
     public var spinnerStyle: UIActivityIndicatorView.Style { return self.theme.spinnerStyle }
     public var errorColor: UIColor { return self.theme.errorColor }
+    public var highlightColor: UIColor { return self.theme.highlightColor }
 
     public enum Theme: Int, CustomStringConvertible {
         case light = 0
@@ -44,10 +45,14 @@ public final class ThemeRepository: NSObject {
         public var textColor: UIColor {
             switch self {
             case .light:
-                return UIColor.black
+                return UIColor.darkText
             case .dark:
-                return UIColor(white: 0.85, alpha: 1)
+                return UIColor.lightText
             }
+        }
+
+        public var highlightColor: UIColor {
+            return UIColor(named: "highlight")!
         }
 
         public var articleCSSFileName: String {

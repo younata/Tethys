@@ -93,7 +93,6 @@ public final class FeedDetailView: UIView {
 
         self.addTagButton.setTitle(NSLocalizedString("FeedViewController_Actions_AddTag", comment: ""), for: .normal)
         self.addTagButton.addTarget(self, action: #selector(FeedDetailView.didTapAddTarget), for: .touchUpInside)
-        self.addTagButton.setTitleColor(UIColor.darkGreen, for: .normal)
         self.urlField.textColor = UIColor.gray
     }
 
@@ -128,6 +127,7 @@ extension FeedDetailView: ThemeRepositorySubscriber {
 
         self.titleLabel.textColor = themeRepository.textColor
         self.summaryLabel.textColor = themeRepository.textColor
+        self.addTagButton.setTitleColor(themeRepository.highlightColor, for: .normal)
     }
 }
 

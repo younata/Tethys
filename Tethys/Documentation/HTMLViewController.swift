@@ -59,7 +59,6 @@ public final class HTMLViewController: UIViewController {
                                                    multiplier: 1, constant: 0))
         self.progressIndicator.autoPinEdge(toSuperviewEdge: .leading)
         self.progressIndicator.autoPinEdge(toSuperviewEdge: .trailing)
-        self.progressIndicator.progressTintColor = UIColor.darkGreen
         self.progressIndicator.isHidden = true
 
         self.content.allowsLinkPreview = true
@@ -117,5 +116,6 @@ extension HTMLViewController: ThemeRepositorySubscriber {
 
         self.view.backgroundColor = themeRepository.backgroundColor
         self.progressIndicator.trackTintColor = themeRepository.backgroundColor
+        self.progressIndicator.progressTintColor = themeRepository.highlightColor
     }
 }

@@ -54,21 +54,25 @@ class FindFeedViewControllerSpec: QuickSpec {
                 themeRepository.theme = .dark
             }
 
-            it("should update the navigation bar") {
-                expect(subject.navigationController?.navigationBar.barStyle) == themeRepository.barStyle
-                expect(convertFromOptionalNSAttributedStringKeyDictionary(subject.navigationController?.navigationBar.titleTextAttributes) as? [String: UIColor]) == [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): themeRepository.textColor]
+            it("updates the navigation bar") {
+                expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
+                expect(convertFromOptionalNSAttributedStringKeyDictionary(subject.navigationController?.navigationBar.titleTextAttributes) as? [String: UIColor]).to(equal([convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): themeRepository.textColor]))
             }
 
-            it("should update the toolbar") {
-                expect(subject.navigationController?.toolbar.barStyle) == themeRepository.barStyle
+            it("updates the toolbar") {
+                expect(subject.navigationController?.toolbar.barStyle).to(equal(themeRepository.barStyle))
             }
 
-            it("should update the webView's background color") {
-                expect(subject.webContent.backgroundColor) == themeRepository.backgroundColor
+            it("updates the webView's background color") {
+                expect(subject.webContent.backgroundColor).to(equal(themeRepository.backgroundColor))
             }
 
-            it("should update the scroll indicator style") {
-                expect(subject.webContent.scrollView.indicatorStyle) == themeRepository.scrollIndicatorStyle
+            it("updates the scroll indicator style") {
+                expect(subject.webContent.scrollView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
+            }
+
+            it("updates the progress bar") {
+                expect(subject.loadingBar.progressTintColor).to(equal(themeRepository.highlightColor))
             }
         }
 

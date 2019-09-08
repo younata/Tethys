@@ -56,7 +56,7 @@ class FeedDetailViewSpec: QuickSpec {
         }
 
         it("sets the tagsList's themeRepository") {
-            expect(subject.tagsList.themeRepository) === themeRepository
+            expect(subject.tagsList.themeRepository).to(be(themeRepository))
         }
 
         describe("changing the theme") {
@@ -65,15 +65,19 @@ class FeedDetailViewSpec: QuickSpec {
             }
 
             it("updates the background color") {
-                expect(subject.backgroundColor) == themeRepository.backgroundColor
+                expect(subject.backgroundColor).to(equal(themeRepository.backgroundColor))
             }
 
             it("changes the titleLabel text color") {
-                expect(subject.titleLabel.textColor) == themeRepository.textColor
+                expect(subject.titleLabel.textColor).to(equal(themeRepository.textColor))
             }
 
             it("changes the summaryLabel's text color") {
-                expect(subject.summaryLabel.textColor) == themeRepository.textColor
+                expect(subject.summaryLabel.textColor).to(equal(themeRepository.textColor))
+            }
+
+            it("sets the addTagButton's title color") {
+                expect(subject.addTagButton.titleColor(for: .normal)).to(equal(themeRepository.highlightColor))
             }
         }
 

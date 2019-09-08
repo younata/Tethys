@@ -368,7 +368,7 @@ extension FeedListController: UITableViewDelegate, UITableViewDataSource {
         let share = UITableViewRowAction(style: .normal, title: shareTitle) {_, _  in
             self.shareFeed(feed: self.feed(indexPath: indexPath))
         }
-        share.backgroundColor = UIColor.darkGreen
+        share.backgroundColor = self.themeRepository.highlightColor
         return [delete, markRead, edit, share]
     }
 

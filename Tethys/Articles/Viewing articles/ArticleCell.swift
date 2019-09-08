@@ -77,6 +77,7 @@ extension ArticleCell: ThemeRepositorySubscriber {
         self.author.textColor = themeRepository.textColor
         self.readingTime.textColor = themeRepository.textColor
         self.backgroundColorView.backgroundColor = themeRepository.textColor.withAlphaComponent(0.3)
+        self.unread.triangleColor = themeRepository.highlightColor
 
         self.backgroundColor = themeRepository.backgroundColor
     }

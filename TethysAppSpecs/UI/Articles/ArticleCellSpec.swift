@@ -14,20 +14,24 @@ class ArticleCellSpec: QuickSpec {
             subject.themeRepository = themeRepository
         }
 
-       describe("changing the theme") {
+        describe("changing the theme") {
             beforeEach {
                 themeRepository.theme = .dark
             }
 
             it("updates each label") {
-                expect(subject.title.textColor) == themeRepository.textColor
-                expect(subject.published.textColor) == themeRepository.textColor
-                expect(subject.author.textColor) == themeRepository.textColor
-                expect(subject.readingTime.textColor) == themeRepository.textColor
+                expect(subject.title.textColor).to(equal(themeRepository.textColor))
+                expect(subject.published.textColor).to(equal(themeRepository.textColor))
+                expect(subject.author.textColor).to(equal(themeRepository.textColor))
+                expect(subject.readingTime.textColor).to(equal(themeRepository.textColor))
             }
 
             it("changes the cell's background colors") {
-                expect(subject.backgroundColor) == themeRepository.backgroundColor
+                expect(subject.backgroundColor).to(equal(themeRepository.backgroundColor))
+            }
+
+            it("updates the unreadCounter's triangleColor") {
+                expect(subject.unread.triangleColor).to(equal(themeRepository.highlightColor))
             }
         }
     }

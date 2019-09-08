@@ -158,7 +158,6 @@ public final class RefreshControl: NSObject {
         let refreshView = BreakOutToRefreshView(scrollView: scrollView)
         refreshView.refreshDelegate = self
         refreshView.paddleColor = UIColor.blue
-        refreshView.ballColor = UIColor.darkGreen
         refreshView.blockColors = [UIColor.darkGray, UIColor.gray, UIColor.lightGray]
         self.style(breakoutView: refreshView, themeRepository: self.themeRepository)
         return refreshView
@@ -175,8 +174,9 @@ extension RefreshControl: ThemeRepositorySubscriber {
     }
 
     func style(breakoutView: BreakOutToRefreshView, themeRepository: ThemeRepository) {
-        breakoutView.scenebackgroundColor = self.themeRepository.backgroundColor
-        breakoutView.textColor = self.themeRepository.textColor
+        breakoutView.scenebackgroundColor = themeRepository.backgroundColor
+        breakoutView.textColor = themeRepository.textColor
+        breakoutView.ballColor = themeRepository.highlightColor
     }
 }
 

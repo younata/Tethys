@@ -100,6 +100,7 @@ extension FeedTableCell: ThemeRepositorySubscriber {
         self.summaryLabel.textColor = self.themeRepository?.textColor
 
         self.backgroundColorView.backgroundColor = themeRepository.textColor.withAlphaComponent(0.3)
+        self.unreadCounter.triangleColor = themeRepository.highlightColor
 
         self.backgroundColor = self.themeRepository?.backgroundColor
     }

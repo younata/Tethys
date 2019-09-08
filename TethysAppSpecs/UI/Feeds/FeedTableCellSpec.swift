@@ -27,6 +27,10 @@ class FeedTableCellSpec: QuickSpec {
             it("changes the background color") {
                 expect(subject.backgroundColor).to(equal(themeRepository.backgroundColor))
             }
+
+            it("updates the unreadCounter's colors") {
+                expect(subject.unreadCounter.triangleColor).to(equal(themeRepository.highlightColor))
+            }
         }
 
         sharedExamples("a standard feed cell") {(ctx: @escaping SharedExampleContext) in

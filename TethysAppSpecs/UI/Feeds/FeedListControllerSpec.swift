@@ -625,6 +625,10 @@ final class FeedListControllerSpec: QuickSpec {
                                         expect(action?.title).to(equal("Share"))
                                     }
 
+                                    it("colors itself based on the themerepository's highlight color") {
+                                        expect(action?.backgroundColor).to(equal(themeRepository.highlightColor))
+                                    }
+
                                     describe("tapping it") {
                                         beforeEach {
                                             action?.handler?(action!, indexPath)

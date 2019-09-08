@@ -107,7 +107,6 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.loadingBar.autoSetDimension(.height, toSize: 1)
         self.loadingBar.progress = 0
         self.loadingBar.isHidden = true
-        self.loadingBar.progressTintColor = UIColor.darkGreen
 
         self.themeRepository.addSubscriber(self)
 
@@ -393,5 +392,6 @@ extension FindFeedViewController: ThemeRepositorySubscriber {
         self.webContent.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
         self.webContent.backgroundColor = themeRepository.backgroundColor
         self.view.backgroundColor = themeRepository.backgroundColor
+        self.loadingBar.progressTintColor = themeRepository.highlightColor
     }
 }

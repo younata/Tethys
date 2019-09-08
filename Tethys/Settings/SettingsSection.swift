@@ -4,21 +4,21 @@ import TethysKit
 enum SettingsSection: Int, CustomStringConvertible {
     case account = -1
     case theme = 0
-    case refresh = -2
-    case other = 1
-    case credits = 2
+    case refresh = 1
+    case other = 2
+    case credits = 3
 
     static func numberOfSettings() -> Int {
-        return 3 //5
+        return 4 //5
     }
 
     var rawValue: Int {
         switch self {
         case .account: return 0
-        case .theme: return 0 //1
-        case .refresh: return 2
-        case .other: return 1 //3
-        case .credits: return 2 //4
+        case .theme: return 0
+        case .refresh: return 1
+        case .other: return 2
+        case .credits: return 3
         }
     }
 

@@ -92,8 +92,9 @@ public final class RefreshControl: NSObject {
     }
 
     public func updateSize(_ size: CGSize) {
-        let height: CGFloat = 100
-        self.breakoutView?.frame = CGRect(x: 0, y: -height, width: size.width, height: height)
+        guard let originalFrame = self.breakoutView?.frame else { return }
+        self.breakoutView?.frame = CGRect(x: originalFrame.origin.x, y: originalFrame.origin.y,
+                                          width: size.width, height: originalFrame.size.height)
         self.breakoutView?.layoutSubviews()
     }
 
@@ -156,22 +157,26 @@ public final class RefreshControl: NSObject {
     private func newBreakoutControl(scrollView: UIScrollView) -> BreakOutToRefreshView {
         let refreshView = BreakOutToRefreshView(scrollView: scrollView)
         refreshView.refreshDelegate = self
-        refreshView.scenebackgroundColor = UIColor.white
         refreshView.paddleColor = UIColor.blue
         refreshView.ballColor = UIColor.darkGreen
         refreshView.blockColors = [UIColor.darkGray, UIColor.gray, UIColor.lightGray]
-        refreshView.scenebackgroundColor = self.themeRepository.backgroundColor
-        refreshView.textColor = self.themeRepository.textColor
+        self.style(breakoutView: refreshView, themeRepository: self.themeRepository)
         return refreshView
     }
 }
 
 extension RefreshControl: ThemeRepositorySubscriber {
     public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.breakoutView?.scenebackgroundColor = themeRepository.backgroundColor
-        self.breakoutView?.textColor = themeRepository.textColor
+        if let breakoutView = self.breakoutView {
+            self.style(breakoutView: breakoutView, themeRepository: themeRepository)
+        }
 
         self.spinner.tintColor = themeRepository.textColor
+    }
+
+    func style(breakoutView: BreakOutToRefreshView, themeRepository: ThemeRepository) {
+        breakoutView.scenebackgroundColor = self.themeRepository.backgroundColor
+        breakoutView.textColor = self.themeRepository.textColor
     }
 }
 

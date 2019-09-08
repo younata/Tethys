@@ -119,8 +119,8 @@ public final class FeedListController: UIViewController {
     public override func viewWillTransition(
         to size: CGSize,
         with coordinator: UIViewControllerTransitionCoordinator) {
-            super.viewWillTransition(to: size, with: coordinator)
-            self.refreshControl.updateSize(size)
+        super.viewWillTransition(to: size, with: coordinator)
+        self.refreshControl.updateSize(size)
     }
 
     public override func viewWillDisappear(_ animated: Bool) {

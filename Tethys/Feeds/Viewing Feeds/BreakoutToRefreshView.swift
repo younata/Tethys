@@ -124,6 +124,13 @@ public class BreakOutToRefreshView: SKView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+
+        self.breakOutScene.size = self.bounds.size
+        self.startScene.size = self.bounds.size
+    }
+
     public func beginRefreshing() {
         self.isRefreshing = true
 
@@ -134,14 +141,13 @@ public class BreakOutToRefreshView: SKView {
             self.breakOutScene.reset()
             self.breakOutScene.start()
         }
+        self.isVisible = true
         UIView.animate(withDuration: 0.4, delay: 0, options: [], animations: { () -> Void in
             if #available(iOS 11.0, *) {
                 self.scrollView.contentInset.top += self.sceneHeight + self.scrollView.safeAreaInsets.top
             } else {
                 self.scrollView.contentInset.top += self.sceneHeight
             }
-        }, completion: { (_) -> Void in
-            self.isVisible = true
         })
     }
 
@@ -209,8 +215,19 @@ private class BreakOutScene: SKScene, SKPhysicsContactDelegate {
     var contentCreated = false
     var isStarted = false
 
-    var scenebackgroundColor: UIColor!
-    var textColor: UIColor!
+    var scenebackgroundColor: UIColor! {
+        didSet {
+            self.backgroundColor = self.scenebackgroundColor
+        }
+    }
+    var textColor: UIColor! {
+        didSet {
+            guard let labelNode = self.childNode(withName: self.backgroundLabelName) as? SKLabelNode else {
+                return
+            }
+            labelNode.fontColor = self.textColor
+        }
+    }
     var paddleColor: UIColor!
     var ballColor: UIColor!
     var blockColors: [UIColor]!

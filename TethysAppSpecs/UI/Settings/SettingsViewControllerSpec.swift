@@ -241,8 +241,8 @@ class SettingsViewControllerSpec: QuickSpec {
                 dataSource = subject.tableView.dataSource
             }
 
-            it("has 3 sections") { // until I get accounts &  breakout working again.
-                expect(subject.tableView.numberOfSections).to(equal(3))
+            it("has 4 sections") { // until I get accounts working.
+                expect(subject.tableView.numberOfSections).to(equal(4))
                 // expect(subject.tableView.numberOfSections).to(equal(5))
             }
 
@@ -522,8 +522,8 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
             }
 
-            xdescribe("the refresh style section") {
-                let sectionNumber = 2
+            describe("the refresh style section") {
+                let sectionNumber = 1 //2
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
@@ -562,21 +562,6 @@ class SettingsViewControllerSpec: QuickSpec {
                         expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
                     }
 
-                    describe("when tapped") {
-                        beforeEach {
-                            delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
-                        }
-                        itBehavesLike("a changed setting") {
-                            let saveOperation = BlockOperation {
-                                expect(settingsRepository.refreshControl).to(equal(RefreshControlStyle.spinner))
-                            }
-                            let dismissOperation = BlockOperation {
-                                expect(settingsRepository.refreshControl).to(equal(RefreshControlStyle.breakout))
-                            }
-                            return ["saveToUserDefaults": saveOperation, "dismissWithoutSaving": dismissOperation]
-                        }
-                    }
-
                     it("does not respond to 3d touch") {
                         let viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
 
@@ -607,6 +592,21 @@ class SettingsViewControllerSpec: QuickSpec {
                         expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
                     }
 
+                    describe("when tapped") {
+                        beforeEach {
+                            delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
+                        }
+                        itBehavesLike("a changed setting") {
+                            let saveOperation = BlockOperation {
+                                expect(settingsRepository.refreshControl).to(equal(RefreshControlStyle.breakout))
+                            }
+                            let dismissOperation = BlockOperation {
+                                expect(settingsRepository.refreshControl).to(equal(RefreshControlStyle.spinner))
+                            }
+                            return ["saveToUserDefaults": saveOperation, "dismissWithoutSaving": dismissOperation]
+                        }
+                    }
+
                     it("does not respond to 3d touch") {
                         let viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
 
@@ -619,7 +619,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the other section") {
-                let sectionNumber = 1 // 3
+                let sectionNumber = 2 // 3
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
@@ -805,7 +805,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the credits section") {
-                let sectionNumber = 2// 4
+                let sectionNumber = 3// 4
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable

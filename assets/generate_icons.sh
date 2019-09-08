@@ -44,6 +44,14 @@ convert $ASSET_PATH/Icon-AppStore.png -background white -alpha remove $ASSET_PAT
 EOF
 }
 
+function gray_icon {
+    export ASSET_PATH="../$APP_NAME/Images.xcassets/GrayIcon.imageset"
+    parallel --progress -j 0 << EOF
+svgexport GrayIcon.xml $ASSET_PATH/GrayIcon@2x.png 120:120
+svgexport GrayIcon.xml $ASSET_PATH/GrayIcon@3x.png 180:180
+EOF
+}
+
 function markread_icons {
     parallel --progress -j 0 << EOF
 svgexport MarkRead.xml ../$APP_NAME/Images.xcassets/MarkRead.imageset/MarkRead.png 25:25
@@ -59,6 +67,7 @@ if [ $# -eq 1 ]; then
     case "$1" in
         "app") app_icon ;;
         "chevron") chevron_icons ;;
+        "gray") gray_icon ;;
         "settings") settings_icon ;;
         "markread") markread_icons ;;
         *)
@@ -69,12 +78,14 @@ if [ $# -eq 1 ]; then
 else
     export -f app_icon
     export -f chevron_icons
+    export -f gray_icon
     export -f settings_icon
     export -f markread_icons 
 
     parallel --progress -j 0 << EOF
 app_icon
 chevron_icons
+gray_icon
 settings_icon
 markread_icons
 EOF

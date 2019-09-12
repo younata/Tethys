@@ -111,6 +111,10 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 
+    public func applicationWillEnterForeground(_ application: UIApplication) {
+        application.applicationIconBadgeNumber = 0
+    }
+
     // MARK: - Private
 
     private func createControllerHierarchy(_ feed: Feed? = nil, article: Article? = nil) {

@@ -11,16 +11,13 @@ public final class FeedViewController: UIViewController {
 
     public let feed: Feed
     private let feedService: FeedService
-    private let themeRepository: ThemeRepository
     fileprivate let tagEditorViewController: () -> TagEditorViewController
 
     public init(feed: Feed,
                 feedService: FeedService,
-                themeRepository: ThemeRepository,
                 tagEditorViewController: @escaping () -> TagEditorViewController) {
         self.feed = feed
         self.feedService = feedService
-        self.themeRepository = themeRepository
         self.tagEditorViewController = tagEditorViewController
 
         super.init(nibName: nil, bundle: nil)
@@ -40,8 +37,6 @@ public final class FeedViewController: UIViewController {
         self.view.addSubview(self.feedDetailView)
         self.feedDetailView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0))
 
-        self.themeRepository.addSubscriber(self)
-        self.feedDetailView.themeRepository = self.themeRepository
         self.feedDetailView.delegate = self
         self.feedDetailView.configure(title: feed.displayTitle, url: feed.url,
                                       summary: feed.displaySummary, tags: feed.tags)
@@ -99,14 +94,5 @@ extension FeedViewController: FeedDetailViewDelegate {
         }
         tagEditorViewController.onSave = completion
         self.navigationController?.pushViewController(tagEditorViewController, animated: true)
-    }
-}
-
-extension FeedViewController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
-        self.navigationController?.navigationBar.titleTextAttributes = [
-            NSAttributedString.Key.foregroundColor: themeRepository.textColor
-        ]
     }
 }

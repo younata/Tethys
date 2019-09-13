@@ -7,7 +7,6 @@ class TagEditorViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: TagEditorViewController!
         var feedService: FakeFeedService!
-        var themeRepository: ThemeRepository!
 
         var navigationController: UINavigationController!
         let rootViewController = UIViewController()
@@ -18,9 +17,7 @@ class TagEditorViewControllerSpec: QuickSpec {
 
         beforeEach {
             feedService = FakeFeedService()
-            themeRepository = ThemeRepository(userDefaults: nil)
-
-            subject = TagEditorViewController(feedService: feedService, themeRepository: themeRepository)
+            subject = TagEditorViewController(feedService: feedService)
 
             navigationController = UINavigationController(rootViewController: rootViewController)
             navigationController.pushViewController(subject, animated: false)
@@ -37,21 +34,13 @@ class TagEditorViewControllerSpec: QuickSpec {
             expect(navigationController.topViewController) == subject
         }
 
-        describe("changing the theme") {
-            beforeEach {
-                themeRepository.theme = .dark
+        describe("the theme") {
+            it("sets background color") {
+                expect(subject.view.backgroundColor).to(equal(Theme.backgroundColor))
             }
 
-            it("should change background color") {
-                expect(subject.view.backgroundColor) == themeRepository.backgroundColor
-            }
-
-            it("should change the navigation bar style") {
-                expect(subject.navigationController?.navigationBar.barTintColor) == themeRepository.backgroundColor
-            }
-
-            it("should change the tagPicker's textColors") {
-                expect(subject.tagPicker.textField.textColor) == themeRepository.textColor
+            it("sets the tagPicker's textColors") {
+                expect(subject.tagPicker.textField.textColor).to(equal(Theme.textColor))
             }
         }
 

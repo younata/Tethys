@@ -14,7 +14,6 @@ class FindFeedViewControllerSpec: QuickSpec {
 
         var webView: FakeWebView!
         var importUseCase: FakeImportUseCase!
-        var themeRepository: ThemeRepository!
         var analytics: FakeAnalytics!
         var notificationCenter: NotificationCenter!
 
@@ -25,13 +24,10 @@ class FindFeedViewControllerSpec: QuickSpec {
 
             analytics = FakeAnalytics()
 
-            themeRepository = ThemeRepository(userDefaults: nil)
-
             notificationCenter = NotificationCenter()
 
             subject = FindFeedViewController(
                 importUseCase: importUseCase,
-                themeRepository: themeRepository,
                 analytics: analytics,
                 notificationCenter: notificationCenter
             )
@@ -49,30 +45,14 @@ class FindFeedViewControllerSpec: QuickSpec {
                                            name: Notifications.reloadUI, object: subject)
         }
 
-        describe("changing the theme") {
-            beforeEach {
-                themeRepository.theme = .dark
+        describe("the theme") {
+            it("sets the webView's background color") {
+                expect(subject.webContent.backgroundColor).to(equal(Theme.backgroundColor))
             }
 
-            it("updates the navigation bar") {
-                expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
-                expect(convertFromOptionalNSAttributedStringKeyDictionary(subject.navigationController?.navigationBar.titleTextAttributes) as? [String: UIColor]).to(equal([convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): themeRepository.textColor]))
-            }
-
-            it("updates the toolbar") {
-                expect(subject.navigationController?.toolbar.barStyle).to(equal(themeRepository.barStyle))
-            }
-
-            it("updates the webView's background color") {
-                expect(subject.webContent.backgroundColor).to(equal(themeRepository.backgroundColor))
-            }
-
-            it("updates the scroll indicator style") {
-                expect(subject.webContent.scrollView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
-            }
-
-            it("updates the progress bar") {
-                expect(subject.loadingBar.progressTintColor).to(equal(themeRepository.highlightColor))
+            it("sets the progress bar") {
+                expect(subject.loadingBar.progressTintColor).to(equal(Theme.progressTintColor))
+                expect(subject.loadingBar.trackTintColor).to(equal(Theme.progressTrackColor))
             }
         }
 

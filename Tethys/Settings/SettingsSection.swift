@@ -3,22 +3,20 @@ import TethysKit
 
 enum SettingsSection: Int, CustomStringConvertible {
     case account = -1
-    case theme = 0
-    case refresh = 1
-    case other = 2
-    case credits = 3
+    case refresh = 0
+    case other = 1
+    case credits = 2
 
     static func numberOfSettings() -> Int {
-        return 4 //5
+        return 3 //4
     }
 
     var rawValue: Int {
         switch self {
         case .account: return 0
-        case .theme: return 0
-        case .refresh: return 1
-        case .other: return 2
-        case .credits: return 3
+        case .refresh: return 0
+        case .other: return 1
+        case .credits: return 2
         }
     }
 
@@ -26,8 +24,6 @@ enum SettingsSection: Int, CustomStringConvertible {
         switch self {
         case .account:
             return NSLocalizedString("SettingsViewController_Table_Header_Account", comment: "")
-        case .theme:
-            return NSLocalizedString("SettingsViewController_Table_Header_Theme", comment: "")
         case .refresh:
             return NSLocalizedString("SettingsViewController_Table_Header_Refresh", comment: "")
         case .other:

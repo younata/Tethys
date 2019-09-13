@@ -28,7 +28,6 @@ public final class RefreshControl: NSObject {
     private let notificationCenter: NotificationCenter
     private let scrollView: UIScrollView
     private let mainQueue: OperationQueue
-    private let themeRepository: ThemeRepository
     private let settingsRepository: SettingsRepository
     fileprivate let refresher: Refresher
     fileprivate let lowPowerDiviner: LowPowerDiviner
@@ -42,14 +41,12 @@ public final class RefreshControl: NSObject {
     public init(notificationCenter: NotificationCenter,
                 scrollView: UIScrollView,
                 mainQueue: OperationQueue,
-                themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
                 refresher: Refresher,
                 lowPowerDiviner: LowPowerDiviner) {
         self.notificationCenter = notificationCenter
         self.scrollView = scrollView
         self.mainQueue = mainQueue
-        self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.refresher = refresher
         self.lowPowerDiviner = lowPowerDiviner
@@ -61,7 +58,6 @@ public final class RefreshControl: NSObject {
             object: nil
         )
         self.spinner.addTarget(self, action: #selector(RefreshControl.beginRefresh), for: .valueChanged)
-        themeRepository.addSubscriber(self)
         settingsRepository.addSubscriber(self)
         self.powerStateDidChange()
     }
@@ -159,24 +155,12 @@ public final class RefreshControl: NSObject {
         refreshView.refreshDelegate = self
         refreshView.paddleColor = UIColor.blue
         refreshView.blockColors = [UIColor.darkGray, UIColor.gray, UIColor.lightGray]
-        self.style(breakoutView: refreshView, themeRepository: self.themeRepository)
+
+        refreshView.scenebackgroundColor = Theme.backgroundColor
+        refreshView.textColor = Theme.textColor
+        refreshView.ballColor = Theme.highlightColor
+
         return refreshView
-    }
-}
-
-extension RefreshControl: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        if let breakoutView = self.breakoutView {
-            self.style(breakoutView: breakoutView, themeRepository: themeRepository)
-        }
-
-        self.spinner.tintColor = themeRepository.textColor
-    }
-
-    func style(breakoutView: BreakOutToRefreshView, themeRepository: ThemeRepository) {
-        breakoutView.scenebackgroundColor = themeRepository.backgroundColor
-        breakoutView.textColor = themeRepository.textColor
-        breakoutView.ballColor = themeRepository.highlightColor
     }
 }
 

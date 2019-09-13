@@ -39,45 +39,31 @@ class FeedDetailViewSpec: QuickSpec {
         var subject: FeedDetailView!
         var delegate: FakeFeedDetailViewDelegate!
 
-        var themeRepository: ThemeRepository!
-
         var tableView: UITableView!
 
         beforeEach {
             delegate = FakeFeedDetailViewDelegate()
             subject = FeedDetailView(forAutoLayout: ())
 
-            themeRepository = ThemeRepository(userDefaults: nil)
-
             subject.delegate = delegate
-            subject.themeRepository = themeRepository
-
             tableView = subject.tagsList.tableView
         }
 
-        it("sets the tagsList's themeRepository") {
-            expect(subject.tagsList.themeRepository).to(be(themeRepository))
-        }
-
-        describe("changing the theme") {
-            beforeEach {
-                themeRepository.theme = .dark
+        describe("the theme") {
+            it("sets the background color") {
+                expect(subject.backgroundColor).to(equal(Theme.backgroundColor))
             }
 
-            it("updates the background color") {
-                expect(subject.backgroundColor).to(equal(themeRepository.backgroundColor))
+            it("sets the titleLabel text color") {
+                expect(subject.titleLabel.textColor).to(equal(Theme.textColor))
             }
 
-            it("changes the titleLabel text color") {
-                expect(subject.titleLabel.textColor).to(equal(themeRepository.textColor))
-            }
-
-            it("changes the summaryLabel's text color") {
-                expect(subject.summaryLabel.textColor).to(equal(themeRepository.textColor))
+            it("sets the summaryLabel's text color") {
+                expect(subject.summaryLabel.textColor).to(equal(Theme.textColor))
             }
 
             it("sets the addTagButton's title color") {
-                expect(subject.addTagButton.titleColor(for: .normal)).to(equal(themeRepository.highlightColor))
+                expect(subject.addTagButton.titleColor(for: .normal)).to(equal(Theme.highlightColor))
             }
         }
 
@@ -147,12 +133,6 @@ class FeedDetailViewSpec: QuickSpec {
             describe("a cell") {
                 let indexPath = IndexPath(row: 0, section: 0)
 
-                it("sets the cell's themeRepository") {
-                    let cell = tableView.dataSource?.tableView(tableView, cellForRowAt: indexPath) as! TableViewCell
-
-                    expect(cell.themeRepository) === themeRepository
-                }
-
                 describe("the edit actions") {
                     var editActions: [UITableViewRowAction]?
 
@@ -161,7 +141,7 @@ class FeedDetailViewSpec: QuickSpec {
                     }
 
                     it("has two edit actions") {
-                        expect(editActions?.count) == 2
+                        expect(editActions).to(haveCount(2))
                     }
 
                     describe("the first edit action") {

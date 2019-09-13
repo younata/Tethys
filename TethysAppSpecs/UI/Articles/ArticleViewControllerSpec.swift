@@ -9,14 +9,12 @@ class ArticleViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: ArticleViewController!
         var navigationController: UINavigationController!
-        var themeRepository: ThemeRepository!
         var htmlViewController: HTMLViewController!
         var articleUseCase: FakeArticleUseCase!
 
         let article = articleFactory()
 
         beforeEach {
-            themeRepository = ThemeRepository(userDefaults: nil)
             articleUseCase = FakeArticleUseCase()
 
             htmlViewController = htmlViewControllerFactory()
@@ -25,7 +23,6 @@ class ArticleViewControllerSpec: QuickSpec {
 
             subject = ArticleViewController(
                 article: article,
-                themeRepository: themeRepository,
                 articleUseCase: articleUseCase,
                 htmlViewController: { htmlViewController }
             )
@@ -52,17 +49,9 @@ class ArticleViewControllerSpec: QuickSpec {
             }
         }
 
-        describe("changing the theme") {
-            beforeEach {
-                themeRepository.theme = .dark
-            }
-
-            it("should update the navigation bar") {
-                expect(subject.navigationController?.navigationBar.barStyle) == themeRepository.barStyle
-                expect(convertFromOptionalNSAttributedStringKeyDictionary(subject.navigationController?.navigationBar.titleTextAttributes) as? [String: UIColor]) == [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): themeRepository.textColor]
-            }
-            it("should update the toolbar") {
-                expect(subject.navigationController?.toolbar.barStyle) == themeRepository.barStyle
+        describe("theming") {
+            it("sets the view's background color") {
+                expect(subject.view.backgroundColor).to(equal(Theme.backgroundColor))
             }
         }
 
@@ -127,14 +116,13 @@ class ArticleViewControllerSpec: QuickSpec {
 
                 it("should bring up an activity view controller") {
                     expect(subject.presentedViewController).to(beAnInstanceOf(URLShareSheet.self))
-                    if let activityViewController = subject.presentedViewController as? URLShareSheet {
-                        expect(activityViewController.activityItems.count) == 1
-                        expect(activityViewController.activityItems.first as? URL) == article.link
-                        expect(activityViewController.url) == article.link
-                        expect(activityViewController.themeRepository) == themeRepository
+                    if let shareSheet = subject.presentedViewController as? URLShareSheet {
+                        expect(shareSheet.activityItems.count) == 1
+                        expect(shareSheet.activityItems.first as? URL) == article.link
+                        expect(shareSheet.url) == article.link
 
-                        expect(activityViewController.applicationActivities as? [NSObject]).toNot(beNil())
-                        if let activities = activityViewController.applicationActivities as? [NSObject] {
+                        expect(shareSheet.applicationActivities as? [NSObject]).toNot(beNil())
+                        if let activities = shareSheet.applicationActivities as? [NSObject] {
                             expect(activities.first).to(beAnInstanceOf(TOActivitySafari.self))
                             expect(activities.last).to(beAnInstanceOf(TOActivityChrome.self))
                         }

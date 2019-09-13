@@ -26,31 +26,21 @@ class FakeHTMLViewControllerDelegate: HTMLViewControllerDelegate {
 class HTMLViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: HTMLViewController!
-        var themeRepository: ThemeRepository!
 
         beforeEach {
-            themeRepository = ThemeRepository(userDefaults: nil)
-            subject = HTMLViewController(themeRepository: themeRepository)
+            subject = HTMLViewController()
 
             expect(subject.view).toNot(beNil())
         }
 
-        describe("changing the theme") {
-            beforeEach {
-                themeRepository.theme = .dark
+        describe("the theme") {
+            it("sets the content's background color") {
+                expect(subject.content.backgroundColor).to(equal(Theme.backgroundColor))
             }
 
-            it("should update the content's background color") {
-                expect(subject.content.backgroundColor).to(equal(themeRepository.backgroundColor))
-            }
-
-            it("should update the scroll indicator style") {
-                expect(subject.content.scrollView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
-            }
-
-            it("updates the progress view's colors") {
-                expect(subject.progressIndicator.trackTintColor).to(equal(themeRepository.backgroundColor))
-                expect(subject.progressIndicator.progressTintColor).to(equal(themeRepository.highlightColor))
+            it("sets the progress view's colors") {
+                expect(subject.progressIndicator.trackTintColor).to(equal(Theme.progressTrackColor))
+                expect(subject.progressIndicator.progressTintColor).to(equal(Theme.progressTintColor))
             }
         }
 

@@ -5,26 +5,18 @@ import Tethys
 class ArticleListHeaderCellSpec: QuickSpec {
     override func spec() {
         var subject: ArticleListHeaderCell!
-        var themeRepository: ThemeRepository!
 
         beforeEach {
             subject = ArticleListHeaderCell(style: .default, reuseIdentifier: nil)
-
-            themeRepository = ThemeRepository(userDefaults: nil)
-            subject.themeRepository = themeRepository
         }
 
-        describe("changing the theme") {
-            beforeEach {
-                themeRepository.theme = .dark
-            }
-
-            it("updates each label") {
-                expect(subject.summary.textColor) == themeRepository.textColor
+        describe("theming") {
+            it("sets each label's textcolor") {
+                expect(subject.summary.textColor).to(equal(Theme.textColor))
             }
 
             it("changes the cell's background colors") {
-                expect(subject.backgroundColor) == themeRepository.backgroundColor
+                expect(subject.backgroundColor).to(equal(Theme.backgroundColor))
             }
         }
 

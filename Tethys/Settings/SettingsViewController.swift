@@ -4,12 +4,9 @@ import SafariServices
 import Result
 import TethysKit
 
-// swiftlint:disable file_length
-
 public final class SettingsViewController: UIViewController {
     public let tableView = UITableView(frame: CGRect.zero, style: .grouped)
 
-    fileprivate let themeRepository: ThemeRepository
     fileprivate let settingsRepository: SettingsRepository
     fileprivate let opmlService: OPMLService
     fileprivate let mainQueue: OperationQueue
@@ -18,22 +15,18 @@ public final class SettingsViewController: UIViewController {
     fileprivate let loginController: LoginController
     fileprivate let documentationViewController: (Documentation) -> DocumentationViewController
 
-    fileprivate var oldTheme: ThemeRepository.Theme = .light
-
     fileprivate lazy var showReadingTimes: Bool = { return self.settingsRepository.showEstimatedReadingLabel }()
     fileprivate lazy var refreshControlStyle: RefreshControlStyle = { return self.settingsRepository.refreshControl }()
 
     fileprivate var accounts: [Account] = []
 
-    public init(themeRepository: ThemeRepository,
-                settingsRepository: SettingsRepository,
+    public init(settingsRepository: SettingsRepository,
                 opmlService: OPMLService,
                 mainQueue: OperationQueue,
                 accountService: AccountService,
                 messenger: Messenger,
                 loginController: LoginController,
                 documentationViewController: @escaping (Documentation) -> DocumentationViewController) {
-        self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.opmlService = opmlService
         self.mainQueue = mainQueue
@@ -72,8 +65,6 @@ public final class SettingsViewController: UIViewController {
         self.tableView.dataSource = self
         self.tableView.allowsMultipleSelection = true
 
-        self.themeRepository.addSubscriber(self)
-
         self.registerForPreviewing(with: self, sourceView: self.tableView)
 
         self.accountService.accounts().then { results in
@@ -83,8 +74,12 @@ public final class SettingsViewController: UIViewController {
             }
         }
 
-        self.oldTheme = self.themeRepository.theme
+        self.applyTheme()
         self.reloadTable()
+    }
+
+    private func applyTheme() {
+        self.tableView.backgroundColor = Theme.backgroundColor
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -103,21 +98,6 @@ public final class SettingsViewController: UIViewController {
     public override var canBecomeFirstResponder: Bool { return true }
 
     public override var keyCommands: [UIKeyCommand]? {
-        var commands: [UIKeyCommand] = []
-
-        for (idx, theme) in ThemeRepository.Theme.array().enumerated() {
-            guard theme != self.themeRepository.theme else {
-                continue
-            }
-
-            let keyCommand = UIKeyCommand(input: "\(idx+1)", modifierFlags: .command,
-                                          action: #selector(SettingsViewController.didHitChangeTheme(_:)))
-            let title = NSLocalizedString("SettingsViewController_Commands_Theme", comment: "")
-            keyCommand.discoverabilityTitle = String(NSString.localizedStringWithFormat(title as NSString,
-                                                                                        theme.description))
-            commands.append(keyCommand)
-        }
-
         let save = UIKeyCommand(input: "s", modifierFlags: .command,
                                 action: #selector(SettingsViewController.didTapSave))
         let dismiss = UIKeyCommand(input: "w", modifierFlags: .command,
@@ -126,18 +106,10 @@ public final class SettingsViewController: UIViewController {
         save.discoverabilityTitle = NSLocalizedString("SettingsViewController_Commands_Save", comment: "")
         dismiss.discoverabilityTitle = NSLocalizedString("SettingsViewController_Commands_Close", comment: "")
 
-        commands.append(save)
-        commands.append(dismiss)
-
-        return commands
+        return [save, dismiss]
     }
 
-    @objc fileprivate func didHitChangeTheme(_ keyCommand: UIKeyCommand) {}
-
     @objc fileprivate func didTapDismiss() {
-        if self.oldTheme != self.themeRepository.theme {
-            self.themeRepository.theme = self.oldTheme
-        }
         let presenter = self.presentingViewController ?? self.navigationController?.presentingViewController
         if let presentingController = presenter {
             presentingController.dismiss(animated: true, completion: nil)
@@ -147,7 +119,6 @@ public final class SettingsViewController: UIViewController {
     }
 
     @objc fileprivate func didTapSave() {
-        self.oldTheme = self.themeRepository.theme
         self.settingsRepository.showEstimatedReadingLabel = self.showReadingTimes
         self.settingsRepository.refreshControl = self.refreshControlStyle
         self.didTapDismiss()
@@ -155,32 +126,9 @@ public final class SettingsViewController: UIViewController {
 
     fileprivate func reloadTable() {
         self.tableView.reloadData()
-        let currentThemeIndexPath = IndexPath(row: self.themeRepository.theme.rawValue,
-                                              section: SettingsSection.theme.rawValue)
         let currentRefreshStyleIndexPath = IndexPath(row: self.refreshControlStyle.rawValue,
                                                      section: SettingsSection.refresh.rawValue)
-        self.tableView.selectRow(at: currentThemeIndexPath, animated: false, scrollPosition: .none)
         self.tableView.selectRow(at: currentRefreshStyleIndexPath, animated: false, scrollPosition: .none)
-    }
-}
-
-extension SettingsViewController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.navigationController?.navigationBar.barStyle = self.themeRepository.barStyle
-        self.navigationController?.navigationBar.titleTextAttributes = [
-            NSAttributedString.Key.foregroundColor: self.themeRepository.textColor
-        ]
-        self.view.backgroundColor = self.themeRepository.backgroundColor
-
-        func colorWithDefault(_ color: UIColor) -> UIColor? {
-            return self.themeRepository.theme == .light ? nil : color
-        }
-
-        self.tableView.backgroundColor = colorWithDefault(self.themeRepository.backgroundColor)
-        for section in 0..<self.tableView.numberOfSections {
-            let headerView = self.tableView.headerView(forSection: section)
-            headerView?.textLabel?.textColor = colorWithDefault(self.themeRepository.tintColor)
-        }
     }
 }
 
@@ -226,8 +174,6 @@ extension SettingsViewController: UITableViewDataSource {
         switch section {
         case .account:
             return 1 + self.accounts.count
-        case .theme:
-            return 2
         case .refresh:
             return 2
         case .other:
@@ -244,8 +190,6 @@ extension SettingsViewController: UITableViewDataSource {
         switch section {
         case .account:
             return self.accountCell(indexPath: indexPath)
-        case .theme:
-            return self.themeCell(indexPath: indexPath)
         case .refresh:
             return self.refreshCell(indexPath: indexPath)
         case .other:
@@ -262,7 +206,6 @@ extension SettingsViewController: UITableViewDataSource {
 
     private func accountCell(indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-        cell.themeRepository = self.themeRepository
         cell.textLabel?.text = NSLocalizedString("SettingsViewController_Account_Inoreader", comment: "")
         if indexPath.row < self.accounts.count {
             cell.detailTextLabel?.text = self.accounts[indexPath.row].username
@@ -272,18 +215,9 @@ extension SettingsViewController: UITableViewDataSource {
         return cell
     }
 
-    private func themeCell(indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-        guard let theme = ThemeRepository.Theme(rawValue: indexPath.row) else { return cell }
-        cell.themeRepository = self.themeRepository
-        cell.textLabel?.text = theme.description
-        return cell
-    }
-
     private func refreshCell(indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
         guard let refreshStyle = RefreshControlStyle(rawValue: indexPath.row) else { return cell }
-        cell.themeRepository = self.themeRepository
         cell.textLabel?.text = refreshStyle.description
         return cell
     }
@@ -295,7 +229,6 @@ extension SettingsViewController: UITableViewDataSource {
         case .showReadingTimes:
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "switch",
                                                      for: indexPath) as! SwitchTableViewCell
-            cell.themeRepository = self.themeRepository
             cell.onTapSwitch = {_ in }
             cell.theSwitch.isOn = self.showReadingTimes
             cell.onTapSwitch = {aSwitch in
@@ -305,11 +238,9 @@ extension SettingsViewController: UITableViewDataSource {
             tableCell = cell
         case .exportOPML:
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-            cell.themeRepository = self.themeRepository
             tableCell = cell
         case .gitVersion:
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-            cell.themeRepository = self.themeRepository
             tableCell = cell
 
             cell.detailTextLabel?.text = Bundle.main.infoDictionary?["CurrentGitVersion"] as? String
@@ -320,7 +251,6 @@ extension SettingsViewController: UITableViewDataSource {
 
     private func creditCell(indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
-        cell.themeRepository = self.themeRepository
         if indexPath.row == 0 {
             cell.textLabel?.text = NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Name", comment: "")
             cell.detailTextLabel?.text = NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Detail",
@@ -341,8 +271,6 @@ extension SettingsViewController: UITableViewDelegate {
         guard let section = SettingsSection(rawValue: indexPath.section) else { return }
 
         switch section {
-        case .theme:
-            tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
         case .refresh:
             tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
         default:
@@ -365,8 +293,6 @@ extension SettingsViewController: UITableViewDelegate {
         switch section {
         case .account:
             self.didTapAccountCell(indexPath: indexPath)
-        case .theme:
-            self.didTapThemeCell(indexPath: indexPath)
         case .refresh:
             self.didTapRefreshCell(indexPath: indexPath)
         case .other:
@@ -393,13 +319,6 @@ extension SettingsViewController: UITableViewDelegate {
                 )
             }
         }
-    }
-
-    private func didTapThemeCell(indexPath: IndexPath) {
-        guard let theme = ThemeRepository.Theme(rawValue: indexPath.row) else { return }
-        self.themeRepository.theme = theme
-        self.navigationItem.rightBarButtonItem?.isEnabled = true
-        self.reloadTable()
     }
 
     private func didTapRefreshCell(indexPath: IndexPath) {

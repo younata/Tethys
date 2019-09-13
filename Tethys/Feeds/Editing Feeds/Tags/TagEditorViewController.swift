@@ -14,11 +14,9 @@ public final class TagEditorViewController: UIViewController {
     public var onSave: ((String) -> Void)?
 
     private let feedService: FeedService
-    private let themeRepository: ThemeRepository
 
-    public init(feedService: FeedService, themeRepository: ThemeRepository) {
+    public init(feedService: FeedService) {
         self.feedService = feedService
-        self.themeRepository = themeRepository
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -39,7 +37,6 @@ public final class TagEditorViewController: UIViewController {
         self.navigationItem.title = NSLocalizedString("TagEditorViewController_Title", comment: "")
 
         self.tagPicker.translatesAutoresizingMaskIntoConstraints = false
-        self.tagPicker.themeRepository = self.themeRepository
         _ = self.feedService.tags().then {
             if case let Result.success(tags) = $0 {
                 self.tagPicker.configureWithTags(Array(tags)) {
@@ -59,7 +56,16 @@ public final class TagEditorViewController: UIViewController {
         self.tagLabel.numberOfLines = 0
         self.tagLabel.text = NSLocalizedString("TagEditorViewController_Explanation", comment: "")
 
-        self.themeRepository.addSubscriber(self)
+        self.applyTheme()
+    }
+
+    private func applyTheme() {
+        self.view.backgroundColor = Theme.backgroundColor
+
+        self.tagPicker.picker.tintColor = Theme.textColor
+        self.tagPicker.textField.textColor = Theme.textColor
+
+        self.tagLabel.textColor = Theme.textColor
     }
 
     public func configure(tag: String) {
@@ -77,18 +83,5 @@ public final class TagEditorViewController: UIViewController {
         }
 
         self.dismiss()
-    }
-}
-
-extension TagEditorViewController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.view.backgroundColor = themeRepository.backgroundColor
-
-        self.tagPicker.picker.tintColor = themeRepository.textColor
-        self.tagPicker.textField.textColor = themeRepository.textColor
-
-        self.tagLabel.textColor = themeRepository.textColor
-
-        self.navigationController?.navigationBar.barTintColor = themeRepository.backgroundColor
     }
 }

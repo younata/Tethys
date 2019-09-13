@@ -8,12 +8,6 @@ public final class ArticleCell: UITableViewCell {
     public let unread = UnreadCounter(forAutoLayout: ())
     public let readingTime = UILabel(forAutoLayout: ())
 
-    public var themeRepository: ThemeRepository? = nil {
-        didSet {
-            self.themeRepository?.addSubscriber(self)
-        }
-    }
-
     var unreadWidth: NSLayoutConstraint! = nil
 
     fileprivate let backgroundColorView = UIView()
@@ -65,20 +59,20 @@ public final class ArticleCell: UITableViewCell {
 
         self.multipleSelectionBackgroundView  = self.backgroundColorView
         self.selectedBackgroundView = self.backgroundColorView
+
+        self.applyTheme()
     }
 
     public required init(coder aDecoder: NSCoder) { fatalError() }
-}
 
-extension ArticleCell: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.title.textColor = themeRepository.textColor
-        self.published.textColor = themeRepository.textColor
-        self.author.textColor = themeRepository.textColor
-        self.readingTime.textColor = themeRepository.textColor
-        self.backgroundColorView.backgroundColor = themeRepository.textColor.withAlphaComponent(0.3)
-        self.unread.triangleColor = themeRepository.highlightColor
+    private func applyTheme() {
+        self.title.textColor = Theme.textColor
+        self.published.textColor = Theme.textColor
+        self.author.textColor = Theme.textColor
+        self.readingTime.textColor = Theme.textColor
+        self.backgroundColorView.backgroundColor = Theme.overlappingBackgroundColor
+        self.unread.triangleColor = Theme.highlightColor
 
-        self.backgroundColor = themeRepository.backgroundColor
+        self.backgroundColor = Theme.backgroundColor
     }
 }

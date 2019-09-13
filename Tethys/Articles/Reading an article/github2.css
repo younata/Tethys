@@ -309,7 +309,6 @@ sup {
 code[class*="language-"],
 pre[class*="language-"] {
     color: black;
-    text-shadow: 0 1px white;
     font-family: Consolas, Monaco, 'Andale Mono', monospace;
     direction: ltr;
     text-align: left;
@@ -330,21 +329,12 @@ pre[class*="language-"] {
 
 pre[class*="language-"]::-moz-selection, pre[class*="language-"] ::-moz-selection,
 code[class*="language-"]::-moz-selection, code[class*="language-"] ::-moz-selection {
-    text-shadow: none;
     background: #b3d4fc;
 }
 
 pre[class*="language-"]::selection, pre[class*="language-"] ::selection,
 code[class*="language-"]::selection, code[class*="language-"] ::selection {
-    text-shadow: none;
     background: #b3d4fc;
-}
-
-@media print {
-    code[class*="language-"],
-    pre[class*="language-"] {
-        text-shadow: none;
-    }
 }
 
 /* Code blocks */
@@ -405,7 +395,7 @@ pre[class*="language-"] {
 .language-css .token.string,
 .style .token.string {
     color: #a67f59;
-    background: hsla(0, 0%, 100%, .5);
+/*    background: hsla(0, 0%, 100%, .5);*/
 }
 
 .token.atrule,
@@ -434,4 +424,56 @@ pre[class*="language-"] {
 
 .token.entity {
     cursor: help;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        color: #D9D9D9 !important;
+        background-color: black !important;
+    }
+
+    h1, h2 {
+        color: #D9D9D9 !important;
+    }
+
+    h6 {
+        color: #999999 !important;
+    }
+
+    table tr {
+        background-color: black !important;
+    }
+
+    table tr:nth-child(2n) {
+        background-color: #282828 !important;
+    }
+    span.frame > span {
+        border: 1px solid #323232 !important;
+    }
+
+    code, tt {
+        border: none !important;
+        background-color: transparent !important;
+        color: #D9D9D9 !important;
+    }
+
+    .highlight pre {
+        border: 1px solid #666 !important;
+        background-color: #282828 !important;
+    }
+    pre {
+        border: 1px solid #666 !important;
+        background-color: #282828 !important;
+        color: #D9D9D9 !important;
+    }
+
+    pre[class*="language-"] {
+        border: 0 !important;
+        color: #D9D9D9 !important;
+    }
+
+    :not(pre) > code[class*="language-"], pre[class*="language-"] {
+        background: #252220 !important;
+        color: #D9D9D9 !important;
+    }
 }

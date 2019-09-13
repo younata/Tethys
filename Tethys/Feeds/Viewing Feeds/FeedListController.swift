@@ -17,7 +17,6 @@ public final class FeedListController: UIViewController {
         let view = ExplanationView(frame: .zero)
         view.title = NSLocalizedString("FeedsTableViewController_Onboarding_Title", comment: "")
         view.detail = NSLocalizedString("FeedsTableViewController_Onboarding_Detail", comment: "")
-        view.themeRepository = self.themeRepository
         return view
     }()
 
@@ -26,7 +25,6 @@ public final class FeedListController: UIViewController {
             notificationCenter: NotificationCenter.default,
             scrollView: self.tableView,
             mainQueue: self.mainQueue,
-            themeRepository: self.themeRepository,
             settingsRepository: self.settingsRepository,
             refresher: self,
             lowPowerDiviner: ProcessInfo.processInfo
@@ -38,7 +36,6 @@ public final class FeedListController: UIViewController {
     public let notificationView = NotificationView(forAutoLayout: ())
 
     fileprivate let feedService: FeedService
-    fileprivate let themeRepository: ThemeRepository
     fileprivate let settingsRepository: SettingsRepository
     fileprivate let mainQueue: OperationQueue
     fileprivate let notificationCenter: NotificationCenter
@@ -49,7 +46,6 @@ public final class FeedListController: UIViewController {
     fileprivate let articleListController: (Feed) -> ArticleListController
 
     public init(feedService: FeedService,
-                themeRepository: ThemeRepository,
                 settingsRepository: SettingsRepository,
                 mainQueue: OperationQueue,
                 notificationCenter: NotificationCenter,
@@ -59,7 +55,6 @@ public final class FeedListController: UIViewController {
                 articleListController: @escaping (Feed) -> ArticleListController
         ) {
         self.feedService = feedService
-        self.themeRepository = themeRepository
         self.settingsRepository = settingsRepository
         self.mainQueue = mainQueue
         self.notificationCenter = notificationCenter
@@ -84,7 +79,6 @@ public final class FeedListController: UIViewController {
         self.tableView.register(FeedTableCell.self, forCellReuseIdentifier: "unread")
         self.refreshControl.updateSize(self.view.bounds.size)
 
-        self.themeRepository.addSubscriber(self.notificationView)
         self.navigationController?.navigationBar.addSubview(self.notificationView)
         self.notificationView.autoPinEdge(toSuperviewMargin: .trailing)
         self.notificationView.autoPinEdge(toSuperviewMargin: .leading)
@@ -102,10 +96,15 @@ public final class FeedListController: UIViewController {
         self.navigationItem.title = NSLocalizedString("FeedsTableViewController_Title", comment: "")
         self.registerForPreviewing(with: self, sourceView: self.tableView)
 
-        self.themeRepository.addSubscriber(self)
+        self.applyTheme()
 
         self.notificationCenter.addObserver(self, selector: #selector(FeedListController.reloadFrom(notification:)),
                                             name: Notifications.reloadUI, object: nil)
+    }
+
+    private func applyTheme() {
+        self.tableView.backgroundColor = Theme.backgroundColor
+        self.tableView.separatorColor = Theme.separatorColor
     }
 
     public override func viewWillAppear(_ animated: Bool) {
@@ -250,7 +249,6 @@ public final class FeedListController: UIViewController {
     fileprivate func shareFeed(feed: Feed) {
         let shareSheet = URLShareSheet(
             url: feed.url,
-            themeRepository: self.themeRepository,
             activityItems: [feed.url],
             applicationActivities: nil
         )
@@ -301,21 +299,6 @@ extension FeedListController: Refresher {
     public func refresh() { self.reload() }
 }
 
-extension FeedListController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.navigationController?.navigationBar.barStyle = self.themeRepository.barStyle
-        self.navigationController?.navigationBar.titleTextAttributes = [
-            NSAttributedString.Key.foregroundColor: themeRepository.textColor
-        ]
-
-        self.tableView.backgroundColor = self.themeRepository.backgroundColor
-        self.tableView.separatorColor = self.themeRepository.textColor
-        self.tableView.indicatorStyle = self.themeRepository.scrollIndicatorStyle
-
-        self.setNeedsStatusBarAppearanceUpdate()
-    }
-}
-
 extension FeedListController: UITableViewDelegate, UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.feeds.count
@@ -329,7 +312,6 @@ extension FeedListController: UITableViewDelegate, UITableViewDataSource {
 
         if let cell = tableView.dequeueReusableCell(withIdentifier: cellTypeToUse, for: indexPath) as? FeedTableCell {
             cell.feed = feed
-            cell.themeRepository = self.themeRepository
             return cell
         }
         return UITableViewCell()
@@ -368,7 +350,7 @@ extension FeedListController: UITableViewDelegate, UITableViewDataSource {
         let share = UITableViewRowAction(style: .normal, title: shareTitle) {_, _  in
             self.shareFeed(feed: self.feed(indexPath: indexPath))
         }
-        share.backgroundColor = self.themeRepository.highlightColor
+        share.backgroundColor = Theme.highlightColor
         return [delete, markRead, edit, share]
     }
 

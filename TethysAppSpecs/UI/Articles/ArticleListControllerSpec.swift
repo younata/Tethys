@@ -62,7 +62,6 @@ class ArticleListControllerSpec: QuickSpec {
 
         var feedService: FakeFeedService!
         var articleService: FakeArticleService!
-        var themeRepository: ThemeRepository!
         var notificationCenter: NotificationCenter!
         var articleCellController: FakeArticleCellController!
 
@@ -73,8 +72,6 @@ class ArticleListControllerSpec: QuickSpec {
 
             articleUseCase = FakeArticleUseCase()
             articleUseCase.readArticleReturns("hello")
-
-            themeRepository = ThemeRepository(userDefaults: nil)
 
             notificationCenter = NotificationCenter()
 
@@ -96,7 +93,6 @@ class ArticleListControllerSpec: QuickSpec {
                 feed: feed,
                 feedService: feedService,
                 articleService: articleService,
-                themeRepository: themeRepository,
                 notificationCenter: notificationCenter,
                 articleCellController: articleCellController,
                 articleViewController: { article in articleViewControllerFactory(article: article, articleUseCase: articleUseCase) }
@@ -123,24 +119,14 @@ class ArticleListControllerSpec: QuickSpec {
             expect(navigationController.isToolbarHidden).to(beTruthy())
         }
 
-        describe("listening to theme repository updates") {
+        describe("theming") {
             beforeEach {
                 subject.viewWillAppear(false)
-                themeRepository.theme = .dark
             }
 
-            it("should update the tableView") {
-                expect(subject.tableView.backgroundColor).to(equal(themeRepository.backgroundColor))
-                expect(subject.tableView.separatorColor).to(equal(themeRepository.textColor))
-            }
-
-            it("should update the tableView scroll indicator style") {
-                expect(subject.tableView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
-            }
-
-            it("should update the navigation bar") {
-                expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
-                expect(convertFromOptionalNSAttributedStringKeyDictionary(subject.navigationController?.navigationBar.titleTextAttributes) as? [String: UIColor]) == [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): themeRepository.textColor]
+            it("sets the tableView's theme") {
+                expect(subject.tableView.backgroundColor).to(equal(Theme.backgroundColor))
+                expect(subject.tableView.separatorColor).to(equal(Theme.separatorColor))
             }
         }
 
@@ -192,7 +178,6 @@ class ArticleListControllerSpec: QuickSpec {
                                 return
                             }
                             expect(shareSheet.url) == feed.url
-                            expect(shareSheet.themeRepository) == themeRepository
                             expect(shareSheet.activityItems as? [URL]) == [feed.url]
                         }
                     }
@@ -545,10 +530,6 @@ class ArticleListControllerSpec: QuickSpec {
                                 feed.summary = "summary"
                                 cell = subject.tableView.visibleCells.first as? ArticleListHeaderCell
                                 expect(cell).toNot(beNil())
-                            }
-
-                            it("is configured with the theme repository") {
-                                expect(cell?.themeRepository).to(beIdenticalTo(themeRepository))
                             }
 
                             it("configures the image") {

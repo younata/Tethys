@@ -7,29 +7,22 @@ import TethysKit
 class FeedTableCellSpec: QuickSpec {
     override func spec() {
         var subject: FeedTableCell! = nil
-        var themeRepository: ThemeRepository! = nil
         beforeEach {
             subject = FeedTableCell(style: .default, reuseIdentifier: nil)
-            themeRepository = ThemeRepository(userDefaults: nil)
-            subject.themeRepository = themeRepository
         }
 
-        describe("changing the theme") {
-            beforeEach {
-                themeRepository.theme = .dark
+        describe("theming") {
+            it("sets the labels") {
+                expect(subject.nameLabel.textColor).to(equal(Theme.textColor))
+                expect(subject.summaryLabel.textColor).to(equal(Theme.textColor))
             }
 
-            it("updates the labels") {
-                expect(subject.nameLabel.textColor).to(equal(themeRepository.textColor))
-                expect(subject.summaryLabel.textColor).to(equal(themeRepository.textColor))
+            it("sets the background color") {
+                expect(subject.backgroundColor).to(equal(Theme.backgroundColor))
             }
 
-            it("changes the background color") {
-                expect(subject.backgroundColor).to(equal(themeRepository.backgroundColor))
-            }
-
-            it("updates the unreadCounter's colors") {
-                expect(subject.unreadCounter.triangleColor).to(equal(themeRepository.highlightColor))
+            it("sets the unreadCounter's colors") {
+                expect(subject.unreadCounter.triangleColor).to(equal(Theme.highlightColor))
             }
         }
 

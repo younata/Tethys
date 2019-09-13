@@ -9,15 +9,12 @@ import CBGPromise
 class ArticleUseCaseSpec: QuickSpec {
     override func spec() {
         var subject: DefaultArticleUseCase!
-        var themeRepository: ThemeRepository!
         var articleService: FakeArticleService!
 
         beforeEach {
-            themeRepository = ThemeRepository(userDefaults: nil)
             articleService = FakeArticleService()
             subject = DefaultArticleUseCase(
-                articleService: articleService,
-                themeRepository: themeRepository
+                articleService: articleService
             )
         }
 
@@ -50,7 +47,7 @@ class ArticleUseCaseSpec: QuickSpec {
                 }
 
                 it("is prefixed with the proper css") {
-                    let cssURL = Bundle.main.url(forResource: themeRepository.articleCSSFileName, withExtension: "css")!
+                    let cssURL = Bundle.main.url(forResource: Theme.articleCSSFileName, withExtension: "css")!
                     let css = try! String(contentsOf: cssURL)
 
                     let expectedPrefix = "<html><head>" +
@@ -76,7 +73,7 @@ class ArticleUseCaseSpec: QuickSpec {
                 }
 
                 it("is properly structured") {
-                    let cssURL = Bundle.main.url(forResource: themeRepository.articleCSSFileName, withExtension: "css")!
+                    let cssURL = Bundle.main.url(forResource: Theme.articleCSSFileName, withExtension: "css")!
                     let css = try! String(contentsOf: cssURL)
 
                     let expectedPrefix = "<html><head>" +

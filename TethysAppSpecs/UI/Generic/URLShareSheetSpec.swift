@@ -6,15 +6,12 @@ import Nimble
 class URLShareSheetSpec: QuickSpec {
     override func spec() {
         var subject: URLShareSheet!
-        var themeRepository: ThemeRepository!
 
         let url = URL(string: "https://example.com/")!
 
         beforeEach {
-            themeRepository = ThemeRepository(userDefaults: nil)
             subject = URLShareSheet(
                 url: url,
-                themeRepository: themeRepository,
                 activityItems: [],
                 applicationActivities: []
             )
@@ -35,8 +32,8 @@ class URLShareSheetSpec: QuickSpec {
 
                 expect(label.text) == "https://example.com/"
 
-                expect(labelWrapper.backgroundColor) == themeRepository.textColor
-                expect(label.textColor) == themeRepository.backgroundColor
+                expect(labelWrapper.backgroundColor).to(equal(Theme.overlappingBackgroundColor))
+                expect(label.textColor).to(equal(Theme.textColor))
             }
 
             describe("when the view disappears") {

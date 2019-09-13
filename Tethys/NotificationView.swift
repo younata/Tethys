@@ -48,14 +48,12 @@ public final class NotificationView: UIView {
 
     private let maskLayer = CAShapeLayer()
 
-    public override func didMoveToSuperview() {
-        super.didMoveToSuperview()
+    public override init(frame: CGRect) {
+        super.init(frame: frame)
 
         self.clipsToBounds = true
         self.layer.mask = self.maskLayer
 
-        self.titleLabel.removeFromSuperview()
-        self.messageLabel.removeFromSuperview()
         self.addSubview(self.titleLabel)
         self.addSubview(self.messageLabel)
 
@@ -69,6 +67,14 @@ public final class NotificationView: UIView {
 
         self.translatesAutoresizingMaskIntoConstraints = false
         self.heightConstraint = self.autoSetDimension(.height, toSize: 0)
+
+        self.titleLabel.textColor = Theme.antiTextColor
+        self.messageLabel.textColor = Theme.antiTextColor
+        self.backgroundColor = Theme.errorColor
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     private func requiredHeight(_ title: String, message: String) -> CGFloat {
@@ -116,13 +122,5 @@ public final class NotificationView: UIView {
             animations: {
                 self.layoutIfNeeded()
             }, completion: completion)
-    }
-}
-
-extension NotificationView: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.titleLabel.textColor = themeRepository.backgroundColor
-        self.messageLabel.textColor = themeRepository.backgroundColor
-        self.backgroundColor = themeRepository.errorColor
     }
 }

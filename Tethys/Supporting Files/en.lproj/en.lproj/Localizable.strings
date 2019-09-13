@@ -1,7 +1,6 @@
 "NotificationHandler_LocalNotification_MarkRead_Action" = "Mark Read";
 "NotificationHandler_LocalNotification_MarkRead_Title" = "New article in %@: %@";
 
-"SettingsViewController_Table_Header_Theme" = "Theme";
 "SettingsViewController_Table_Header_Refresh" = "Refresh Style";
 "SettingsViewController_Table_Header_Other" = "Other";
 "SettingsViewController_Table_Header_Account" = "Account";
@@ -20,7 +19,6 @@
 "SettingsViewController_Credits_Libraries" = "Libraries";
 "SettingsViewController_Credits_Icons" = "Icons";
 "SettingsViewController_Credits_Version" = "Version";
-"SettingsViewController_Commands_Theme" = "Change Theme to '%@'";
 "SettingsViewController_Commands_Save" = "Save and dismiss";
 "SettingsViewController_Commands_Close" = "Close without saving";
 
@@ -119,11 +117,6 @@
 "Error_Standard_Network" = "Unable to load %@ - %@";
 "Error_Standard_HTTP" = "Error loading resource, received %d";
 "Error_Standard_Unknown" = "Unknown Error - please try again";
-
-// Themes
-
-"Theme_Light" = "Light";
-"Theme_Dark" = "Dark";
 
 // Generic
 

@@ -53,23 +53,10 @@ class NotificationViewSpec: QuickSpec {
             }
         }
 
-        describe("responding to themeRepository updates") {
-            var themeRepository = ThemeRepository(userDefaults: nil)
-
-            beforeEach {
-                themeRepository = ThemeRepository(userDefaults: nil)
-                themeRepository.theme = .dark
-
-                themeRepository.addSubscriber(subject)
-            }
-
-            it("updates the label's textColors") {
-                expect(subject.titleLabel.textColor).to(equalColor(expectedColor: themeRepository.backgroundColor))
-                expect(subject.messageLabel.textColor).to(equalColor(expectedColor: themeRepository.backgroundColor))
-            }
-
-            it("sets the background color to the tintcolor") {
-                expect(subject.backgroundColor).to(equalColor(expectedColor: themeRepository.errorColor))
+        describe("theme") {
+            it("sets the label's textColors") {
+                expect(subject.titleLabel.textColor).to(equal(Theme.antiTextColor))
+                expect(subject.messageLabel.textColor).to(equal(Theme.antiTextColor))
             }
         }
     }

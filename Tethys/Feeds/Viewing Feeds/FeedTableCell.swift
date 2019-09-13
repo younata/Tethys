@@ -29,12 +29,6 @@ public final class FeedTableCell: UITableViewCell {
         }
     }
 
-    public var themeRepository: ThemeRepository? = nil {
-        didSet {
-            self.themeRepository?.addSubscriber(self)
-        }
-    }
-
     public let nameLabel = UILabel(forAutoLayout: ())
     public let summaryLabel = UILabel(forAutoLayout: ())
     public let unreadCounter = UnreadCounter(frame: CGRect.zero)
@@ -89,19 +83,19 @@ public final class FeedTableCell: UITableViewCell {
 
         self.selectedBackgroundView = self.backgroundColorView
         self.isAccessibilityElement = true
+
+        self.applyTheme()
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError() }
-}
 
-extension FeedTableCell: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.nameLabel.textColor = self.themeRepository?.textColor
-        self.summaryLabel.textColor = self.themeRepository?.textColor
+    private func applyTheme() {
+        self.nameLabel.textColor = Theme.textColor
+        self.summaryLabel.textColor = Theme.textColor
 
-        self.backgroundColorView.backgroundColor = themeRepository.textColor.withAlphaComponent(0.3)
-        self.unreadCounter.triangleColor = themeRepository.highlightColor
+        self.backgroundColorView.backgroundColor = Theme.overlappingBackgroundColor
+        self.unreadCounter.triangleColor = Theme.highlightColor
 
-        self.backgroundColor = self.themeRepository?.backgroundColor
+        self.backgroundColor = Theme.backgroundColor
     }
 }

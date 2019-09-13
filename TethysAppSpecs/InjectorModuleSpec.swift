@@ -24,7 +24,6 @@ final class InjectorModuleSpec: QuickSpec {
 
         describe("Repositories") {
             singleton(SettingsRepository.self)
-            singleton(ThemeRepository.self)
         }
 
         describe("Controllers") {
@@ -35,7 +34,7 @@ final class InjectorModuleSpec: QuickSpec {
 
                 beforeEach {
                     let window = UIWindow(frame: CGRect.zero)
-                    let splitController = SplitViewController(themeRepository: ThemeRepository(userDefaults: nil))
+                    let splitController = SplitViewController()
                     bootstrapper = subject.resolve(Bootstrapper.self, arguments: window, splitController)
                 }
 

@@ -6,47 +6,13 @@ import SafariServices
 class SplitViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: SplitViewController! = nil
-        var themeRepository: ThemeRepository! = nil
-
         let master = UINavigationController(rootViewController: UIViewController())
         let detail = UINavigationController(rootViewController: UIViewController())
 
         beforeEach {
-            themeRepository = ThemeRepository(userDefaults: nil)
-
-            subject = SplitViewController(themeRepository: themeRepository)
+            subject = SplitViewController()
             subject.view.layoutIfNeeded()
             subject.viewControllers = [master, detail]
-        }
-
-        describe("when the theme changes") {
-            beforeEach {
-                themeRepository.theme = .dark
-            }
-
-            it("should change the preferred status bar styling") {
-                expect(subject.preferredStatusBarStyle).to(equal(themeRepository.statusBarStyle))
-            }
-
-            context("when an SFSafariViewController is on the master view controller") {
-                beforeEach {
-                    master.topViewController?.present(SFSafariViewController(url: URL(string: "https://example.com")!), animated: false, completion: nil)
-                }
-
-                it("changes the preferredStatusBarStyle to black") {
-                    expect(subject.preferredStatusBarStyle) == UIStatusBarStyle.default
-                }
-            }
-
-            context("when an SFSafariViewController is on the detail view controller") {
-                beforeEach {
-                    detail.topViewController?.present(SFSafariViewController(url: URL(string: "https://example.com")!), animated: false, completion: nil)
-                }
-
-                it("changes the preferredStatusBarStyle to black") {
-                    expect(subject.preferredStatusBarStyle) == UIStatusBarStyle.default
-                }
-            }
         }
 
         it("should hide the detail on startup") {

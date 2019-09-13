@@ -10,11 +10,9 @@ public protocol ArticleUseCase {
 
 public final class DefaultArticleUseCase: NSObject, ArticleUseCase {
     private let articleService: ArticleService
-    private let themeRepository: ThemeRepository
 
-    public init(articleService: ArticleService, themeRepository: ThemeRepository) {
+    public init(articleService: ArticleService) {
         self.articleService = articleService
-        self.themeRepository = themeRepository
         super.init()
     }
 
@@ -37,7 +35,7 @@ public final class DefaultArticleUseCase: NSObject, ArticleUseCase {
 
     private func htmlForArticle(_ article: Article) -> String {
         let prefix: String
-        let cssFileName = self.themeRepository.articleCSSFileName
+        let cssFileName = Theme.articleCSSFileName
         if let cssURL = Bundle.main.url(forResource: cssFileName, withExtension: "css"),
             let css = try? String(contentsOf: cssURL) {
                 prefix = "<html><head>" +

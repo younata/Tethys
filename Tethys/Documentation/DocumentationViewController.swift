@@ -9,14 +9,11 @@ public enum Documentation {
 
 public final class DocumentationViewController: UIViewController {
     public let documentation: Documentation
-    private let themeRepository: ThemeRepository
     private let htmlViewController: HTMLViewController
 
     public init(documentation: Documentation,
-                themeRepository: ThemeRepository,
                 htmlViewController: HTMLViewController) {
         self.documentation = documentation
-        self.themeRepository = themeRepository
         self.htmlViewController = htmlViewController
 
         super.init(nibName: nil, bundle: nil)
@@ -40,7 +37,7 @@ public final class DocumentationViewController: UIViewController {
             self.title = NSLocalizedString("SettingsViewController_Credits_Icons", comment: "")
         }
 
-        themeRepository.addSubscriber(self)
+        self.loadHTML()
     }
 
     fileprivate func loadHTML() {
@@ -56,7 +53,7 @@ public final class DocumentationViewController: UIViewController {
 
     private func htmlFixes(content: String) -> String {
         let prefix: String
-        let cssFileName = self.themeRepository.articleCSSFileName
+        let cssFileName = Theme.articleCSSFileName
         if let cssURL = Bundle.main.url(forResource: cssFileName, withExtension: "css"),
             let css = try? String(contentsOf: cssURL) {
             prefix = "<html><head>" +
@@ -70,16 +67,6 @@ public final class DocumentationViewController: UIViewController {
         let postfix = "</body></html>"
 
         return prefix + content + postfix
-    }
-}
-
-extension DocumentationViewController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
-        self.navigationController?.navigationBar.titleTextAttributes = [
-            NSAttributedString.Key.foregroundColor: themeRepository.textColor
-        ]
-        self.loadHTML()
     }
 }
 

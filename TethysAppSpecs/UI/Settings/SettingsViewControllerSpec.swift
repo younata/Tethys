@@ -9,7 +9,6 @@ class SettingsViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: SettingsViewController!
         var navigationController: UINavigationController!
-        var themeRepository: ThemeRepository!
         var settingsRepository: SettingsRepository!
         var accountService: FakeAccountService!
         var opmlService: FakeOPMLService!
@@ -19,8 +18,6 @@ class SettingsViewControllerSpec: QuickSpec {
         var rootViewController: UIViewController!
 
         beforeEach {
-            themeRepository = ThemeRepository(userDefaults: nil)
-
             settingsRepository = SettingsRepository(userDefaults: nil)
 
             let mainQueue = FakeOperationQueue()
@@ -34,7 +31,6 @@ class SettingsViewControllerSpec: QuickSpec {
             loginController = FakeLoginController()
 
             subject = SettingsViewController(
-                themeRepository: themeRepository,
                 settingsRepository: settingsRepository,
                 opmlService: opmlService,
                 mainQueue: mainQueue,
@@ -52,26 +48,10 @@ class SettingsViewControllerSpec: QuickSpec {
             expect(subject.view).toNot(beNil())
         }
 
-        describe("changing the theme") {
-            beforeEach {
-                themeRepository.theme = .dark
-            }
-
-            it("should restyle the navigation bar") {
-                expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
-                expect(
-                    convertFromOptionalNSAttributedStringKeyDictionary(subject.navigationController?.navigationBar.titleTextAttributes) as? [String: UIColor]
-                ).to(equal([
-                    convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): themeRepository.textColor
-                ]))
-            }
-
-            it("by changing the background color of the tableView") {
-                expect(subject.tableView.backgroundColor).to(equal(UIColor.black))
-            }
-
-            it("should change the background color of the view") {
-                expect(subject.view.backgroundColor).to(equal(themeRepository.backgroundColor))
+        describe("the theme") {
+            it("sets the tableView") {
+                expect(subject.tableView.backgroundColor).to(equal(Theme.backgroundColor))
+                expect(subject.tableView.separatorColor).to(equal(Theme.separatorColor))
             }
         }
 
@@ -130,85 +110,21 @@ class SettingsViewControllerSpec: QuickSpec {
 
         describe("key commands") {
             it("can become first responder") {
-                expect(subject.canBecomeFirstResponder) == true
+                expect(subject.canBecomeFirstResponder).to(beTrue())
             }
 
-            it("has (number of themes - 1) + 2 commands") {
+            it("has 2 commands") {
                 let keyCommands = subject.keyCommands
-                expect(keyCommands?.count) == 3
+                expect(keyCommands?.count).to(equal(2))
             }
 
-            describe("the first (number of themes - 1) commands") {
-                context("when .light is the current theme") {
-                    beforeEach {
-                        themeRepository.theme = .light
-                    }
-
-                    it("lists every other theme but .light") {
-                        let keyCommands = subject.keyCommands
-                        expect(keyCommands).toNot(beNil())
-                        guard let commands = keyCommands else {
-                            return
-                        }
-
-                        let expectedCommands = [
-                            (input: "2", modifierFlags: UIKeyModifierFlags.command)
-                        ]
-                        let expectedDiscoverabilityTitles = [
-                            "Change Theme to 'Dark'",
-                        ]
-
-                        for (idx, expectedCmd) in expectedCommands.enumerated() {
-                            let cmd = commands[idx]
-                            expect(cmd.input) == expectedCmd.input
-                            expect(cmd.modifierFlags) == expectedCmd.modifierFlags
-
-                            let expectedTitle = expectedDiscoverabilityTitles[idx]
-                            expect(cmd.discoverabilityTitle) == expectedTitle
-                        }
-                    }
-                }
-
-                context("when .dark is the current theme") {
-                    beforeEach {
-                        themeRepository.theme = .dark
-                    }
-
-                    it("lists every other theme but .dark") {
-                        let keyCommands = subject.keyCommands
-                        expect(keyCommands).toNot(beNil())
-                        guard let commands = keyCommands else {
-                            return
-                        }
-
-                        let expectedCommands = [
-                            (input: "1", modifierFlags: UIKeyModifierFlags.command),
-                        ]
-                        let expectedDiscoverabilityTitles = [
-                            "Change Theme to 'Light'",
-                        ]
-
-                        for (idx, expectedCmd) in expectedCommands.enumerated() {
-                            let cmd = commands[idx]
-                            expect(cmd.input) == expectedCmd.input
-                            expect(cmd.modifierFlags) == expectedCmd.modifierFlags
-
-                            let expectedTitle = expectedDiscoverabilityTitles[idx]
-                            expect(cmd.discoverabilityTitle) == expectedTitle
-                        }
-                    }
-                }
-            }
-
-            describe("the last two commands") {
+            describe("the commands") {
                 it("it has commands for dismissing/saving") {
                     let keyCommands = subject.keyCommands
                     expect(keyCommands).toNot(beNil())
-                    guard let allCommands = keyCommands else {
+                    guard let commands = keyCommands else {
                         return
                     }
-
-                    let commands = allCommands[allCommands.count - 2..<allCommands.count]
 
                     let expectedCommands = [
                         (input: "s", modifierFlags: UIKeyModifierFlags.command),
@@ -241,9 +157,9 @@ class SettingsViewControllerSpec: QuickSpec {
                 dataSource = subject.tableView.dataSource
             }
 
-            it("has 4 sections") { // until I get accounts working.
-                expect(subject.tableView.numberOfSections).to(equal(4))
-                // expect(subject.tableView.numberOfSections).to(equal(5))
+            it("has 3 sections") { // until I get accounts working.
+                expect(subject.tableView.numberOfSections).to(equal(3))
+                // expect(subject.tableView.numberOfSections).to(equal(4))
             }
 
             xdescribe("the account section") {
@@ -274,10 +190,6 @@ class SettingsViewControllerSpec: QuickSpec {
                         it("it asks the user to log in") {
                             expect(cell?.textLabel?.text).to(equal("Inoreader"))
                             expect(cell?.detailTextLabel?.text).to(equal("Add account"))
-                        }
-
-                        it("has its themeRepository set") {
-                            expect(cell?.themeRepository).to(beIdenticalTo(themeRepository))
                         }
 
                         describe("tapping the cell") {
@@ -411,119 +323,8 @@ class SettingsViewControllerSpec: QuickSpec {
                 }
             }
 
-            describe("the theme section") {
-                let sectionNumber = 0 // 1
-
-                it("is titled 'Theme'") {
-                    let title = dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)
-                    expect(title) == "Theme"
-                }
-
-                it("has 2 cells") {
-                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)) == 2
-                }
-
-                describe("the first cell") {
-                    var cell: TableViewCell! = nil
-                    let indexPath = IndexPath(row: 0, section: sectionNumber)
-
-                    beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
-                    }
-
-                    it("is titled 'Light'") {
-                        expect(cell.textLabel?.text) == "Light"
-                    }
-
-                    it("has its theme repository set") {
-                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
-                    }
-
-                    it("is not selected") { // because it's not the current theme
-                        expect(cell.isSelected) == false
-                    }
-
-                    it("has no edit actions") {
-                        expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
-                    }
-
-                    describe("when tapped") {
-                        beforeEach {
-                            delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
-                        }
-
-                        describe("it previews the change") {
-                            it("by restyling the navigation bar") {
-                                expect(subject.navigationController?.navigationBar.barStyle) == UIBarStyle.default
-                            }
-
-                            it("by changing the background color of the tableView") {
-                                expect(subject.tableView.backgroundColor).to(beNil())
-                            }
-
-                            it("by changing the background color of the view") {
-                                expect(subject.view.backgroundColor) == UIColor.white
-                            }
-                        }
-
-                        itBehavesLike("a changed setting") {
-                            let saveOperation = BlockOperation {
-                                expect(themeRepository.theme).to(equal(ThemeRepository.Theme.light))
-                            }
-                            let dismissOperation = BlockOperation {
-                                expect(themeRepository.theme).to(equal(ThemeRepository.Theme.dark))
-                            }
-                            return ["saveToUserDefaults": saveOperation, "dismissWithoutSaving": dismissOperation]
-                        }
-                    }
-
-                    it("does not respond to 3d touch") {
-                        let viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
-
-                        let rect = subject.tableView.rectForRow(at: indexPath)
-                        let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
-                        let viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
-                        expect(viewController).to(beNil())
-                    }
-                }
-
-                describe("the second cell") {
-                    var cell: TableViewCell! = nil
-                    let indexPath = IndexPath(row: 1, section: sectionNumber)
-
-                    beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
-                    }
-
-                    it("is titled 'Dark (Default)'") {
-                        expect(cell.textLabel?.text) == "Dark"
-                    }
-
-                    it("is selected if it's the current theme") { // which it is
-                        expect(subject.tableView.indexPathsForSelectedRows).to(contain(indexPath))
-                    }
-
-                    it("has its theme repository set") {
-                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
-                    }
-
-                    it("has no edit actions") {
-                        expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
-                    }
-
-                    it("does not respond to 3d touch") {
-                        let viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
-
-                        let rect = subject.tableView.rectForRow(at: indexPath)
-                        let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
-                        let viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
-                        expect(viewController).to(beNil())
-                    }
-                }
-            }
-
             describe("the refresh style section") {
-                let sectionNumber = 1 //2
+                let sectionNumber = 0 //1
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
@@ -554,10 +355,6 @@ class SettingsViewControllerSpec: QuickSpec {
                         expect(cell.isSelected) == false
                     }
 
-                    it("has its theme repository set") {
-                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
-                    }
-
                     it("has no edit actions") {
                         expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
                     }
@@ -584,10 +381,6 @@ class SettingsViewControllerSpec: QuickSpec {
                         expect(cell.textLabel?.text) == "Breakout"
                     }
 
-                    it("has its theme repository set") {
-                        expect(cell.themeRepository).to(beIdenticalTo(themeRepository))
-                    }
-                    
                     it("has no edit actions") {
                         expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
                     }
@@ -619,7 +412,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the other section") {
-                let sectionNumber = 2 // 3
+                let sectionNumber = 1 // 2
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
@@ -640,10 +433,6 @@ class SettingsViewControllerSpec: QuickSpec {
 
                     beforeEach {
                         cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? SwitchTableViewCell
-                    }
-
-                    it("is configured with the theme repository") {
-                        expect(cell.themeRepository) == themeRepository
                     }
 
                     it("is titled 'Show Estimated Reading Times'") {
@@ -687,10 +476,6 @@ class SettingsViewControllerSpec: QuickSpec {
 
                     beforeEach {
                         cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
-                    }
-
-                    it("is configured with the theme repository") {
-                        expect(cell.themeRepository) == themeRepository
                     }
 
                     it("is titled 'Export OPML'") {
@@ -761,10 +546,6 @@ class SettingsViewControllerSpec: QuickSpec {
                         cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
                     }
 
-                    it("is configured with the theme repository") {
-                        expect(cell.themeRepository).to(equal(themeRepository))
-                    }
-
                     it("has 'version'' name as the text") {
                         expect(cell.textLabel?.text).to(equal("Version"))
                     }
@@ -805,7 +586,7 @@ class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the credits section") {
-                let sectionNumber = 3// 4
+                let sectionNumber = 2// 3
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
@@ -838,10 +619,6 @@ class SettingsViewControllerSpec: QuickSpec {
                         indexPath = sharedContext()["indexPath"] as? IndexPath
                         title = sharedContext()["title"] as? String
                         detail = sharedContext()["detail"] as? String
-                    }
-
-                    it("is configured with the theme repository") {
-                        expect(cell.themeRepository) == themeRepository
                     }
 
                     it("has the developer's or library's name as the text") {
@@ -912,10 +689,6 @@ class SettingsViewControllerSpec: QuickSpec {
                         cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
                     }
 
-                    it("is configured with the theme repository") {
-                        expect(cell.themeRepository) == themeRepository
-                    }
-
                     it("has the developer's or library's name as the text") {
                         expect(cell.textLabel?.text) == "Libraries"
                     }
@@ -976,10 +749,6 @@ class SettingsViewControllerSpec: QuickSpec {
 
                     beforeEach {
                         cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
-                    }
-
-                    it("is configured with the theme repository") {
-                        expect(cell.themeRepository) == themeRepository
                     }
 
                     it("has Icons name as the text") {

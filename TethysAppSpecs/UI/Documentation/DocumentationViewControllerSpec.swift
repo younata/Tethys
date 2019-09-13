@@ -8,16 +8,14 @@ class DocumentationViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: DocumentationViewController!
         var htmlViewController: HTMLViewController!
-        var themeRepository: ThemeRepository!
         var navigationController: UINavigationController!
 
         beforeEach {
-            themeRepository = ThemeRepository(userDefaults: nil)
-            htmlViewController = HTMLViewController(themeRepository: themeRepository)
+            htmlViewController = HTMLViewController()
         }
 
         func expectedDocumentationHtml(documentation: Documentation) -> String {
-            let cssURL = Bundle.main.url(forResource: themeRepository.articleCSSFileName, withExtension: "css")!
+            let cssURL = Bundle.main.url(forResource: Theme.articleCSSFileName, withExtension: "css")!
             let css = try! String(contentsOf: cssURL)
 
             let expectedPrefix = "<html><head>" +
@@ -48,21 +46,6 @@ class DocumentationViewControllerSpec: QuickSpec {
 
             it("tells the HTMLViewController to load the html that the documentation use case returns for html") {
                 expect(htmlViewController.htmlString) == expectedDocumentationHtml(documentation: documentation)
-            }
-
-            describe("changing the theme") {
-                beforeEach {
-                    themeRepository.theme = .dark
-                }
-
-                it("updates the navigation bar") {
-                    expect(subject.navigationController?.navigationBar.barStyle) == themeRepository.barStyle
-                    expect(convertFromOptionalNSAttributedStringKeyDictionary(subject.navigationController?.navigationBar.titleTextAttributes) as? [String: UIColor]) == [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): themeRepository.textColor]
-                }
-
-                it("reloads the documentation html") {
-                    expect(htmlViewController.htmlString) == expectedDocumentationHtml(documentation: documentation)
-                }
             }
 
             describe("the HTMLViewController's delegate") {
@@ -100,7 +83,6 @@ class DocumentationViewControllerSpec: QuickSpec {
             beforeEach {
                 subject = DocumentationViewController(
                     documentation: .libraries,
-                    themeRepository: themeRepository,
                     htmlViewController: htmlViewController
                 )
 
@@ -116,7 +98,6 @@ class DocumentationViewControllerSpec: QuickSpec {
             beforeEach {
                 subject = DocumentationViewController(
                     documentation: .icons,
-                    themeRepository: themeRepository,
                     htmlViewController: htmlViewController
                 )
 

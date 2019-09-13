@@ -40,7 +40,6 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
             return window
         }
         let window = UIWindow(frame: UIScreen.main.bounds)
-        window.backgroundColor = UIColor.white
         window.makeKeyAndVisible()
         self.window = window
         return window
@@ -67,8 +66,6 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
                 launchOptions?[UIApplication.LaunchOptionsKey(rawValue: "test")] as? Bool == true) {
             self.analytics.logEvent("SessionBegan", data: nil)
         }
-
-        application.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalNever)
 
         return true
     }

@@ -12,18 +12,14 @@ class FeedViewControllerSpec: QuickSpec {
         var feedService: FakeFeedService!
 
         var rootViewController: UIViewController!
-        var themeRepository: ThemeRepository!
 
         beforeEach {
             feed = Feed(title: "title", url: URL(string: "http://example.com/feed")!, summary: "summary", tags: ["a", "b", "c"], unreadCount: 0, image: nil)
-
-            themeRepository = ThemeRepository(userDefaults: nil)
 
             feedService = FakeFeedService()
             subject = FeedViewController(
                 feed: feed,
                 feedService: feedService,
-                themeRepository: themeRepository,
                 tagEditorViewController: {
                     return tagEditorViewControllerFactory()
                 }
@@ -48,17 +44,6 @@ class FeedViewControllerSpec: QuickSpec {
 
             it("dismisses itself") {
                 expect(navigationController.visibleViewController).to(equal(rootViewController))
-            }
-        }
-
-        describe("changing the theme") {
-            beforeEach {
-                themeRepository.theme = .dark
-            }
-
-            it("updates the navigation bar styling") {
-                expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
-                expect(convertFromOptionalNSAttributedStringKeyDictionary(subject.navigationController?.navigationBar.titleTextAttributes) as? [String: UIColor]) == [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): themeRepository.textColor]
             }
         }
 

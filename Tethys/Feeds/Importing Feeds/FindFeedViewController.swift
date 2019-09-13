@@ -19,7 +19,6 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     public var cancelTextEntry: UIBarButtonItem!
 
     fileprivate let importUseCase: ImportUseCase
-    fileprivate let themeRepository: ThemeRepository
     fileprivate let analytics: Analytics
     fileprivate let notificationCenter: NotificationCenter
 
@@ -30,11 +29,9 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     private var observer: NSKeyValueObservation?
 
     public init(importUseCase: ImportUseCase,
-                themeRepository: ThemeRepository,
                 analytics: Analytics,
                 notificationCenter: NotificationCenter) {
         self.importUseCase = importUseCase
-        self.themeRepository = themeRepository
         self.analytics = analytics
         self.notificationCenter = notificationCenter
         super.init(nibName: nil, bundle: nil)
@@ -108,9 +105,16 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.loadingBar.progress = 0
         self.loadingBar.isHidden = true
 
-        self.themeRepository.addSubscriber(self)
+        self.applyTheme()
 
         self.analytics.logEvent("DidViewWebImport", data: nil)
+    }
+
+    private func applyTheme() {
+        self.webContent.backgroundColor = Theme.backgroundColor
+        self.view.backgroundColor = Theme.backgroundColor
+        self.loadingBar.progressTintColor = Theme.progressTintColor
+        self.loadingBar.trackTintColor = Theme.progressTrackColor
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -218,7 +222,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 
     private func staticHTML(title: String, content: String) -> String {
         let prefix: String
-        let cssFileName = self.themeRepository.articleCSSFileName
+        let cssFileName = Theme.articleCSSFileName
         if let cssURL = Bundle.main.url(forResource: cssFileName, withExtension: "css"),
             let css = try? String(contentsOf: cssURL) {
             prefix = "<html><head>" +
@@ -268,7 +272,6 @@ extension FindFeedViewController: WKUIDelegate {
                         defaultActions previewActions: [WKPreviewActionItem]) -> UIViewController? {
         if let url = elementInfo.linkURL {
             let controller = FindFeedViewController(importUseCase: self.importUseCase,
-                                                    themeRepository: self.themeRepository,
                                                     analytics: self.analytics,
                                                     notificationCenter: self.notificationCenter)
             _ = controller.view
@@ -376,22 +379,5 @@ extension FindFeedViewController {
             success()
         })
         self.present(alert, animated: true, completion: nil)
-    }
-}
-
-extension FindFeedViewController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
-        self.navigationController?.toolbar.barStyle = themeRepository.barStyle
-        self.navigationController?.navigationBar.isTranslucent = false
-        self.navigationController?.toolbar.isTranslucent = false
-        self.navigationController?.navigationBar.titleTextAttributes = [
-            NSAttributedString.Key.foregroundColor: themeRepository.textColor
-        ]
-
-        self.webContent.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
-        self.webContent.backgroundColor = themeRepository.backgroundColor
-        self.view.backgroundColor = themeRepository.backgroundColor
-        self.loadingBar.progressTintColor = themeRepository.highlightColor
     }
 }

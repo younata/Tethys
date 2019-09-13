@@ -26,16 +26,13 @@ public final class ArticleViewController: UIViewController {
 
     private let linkString = NSLocalizedString("ArticleViewController_TabBar_ViewLink", comment: "")
 
-    public let themeRepository: ThemeRepository
     fileprivate let articleUseCase: ArticleUseCase
     fileprivate let htmlViewController: HTMLViewController
 
     public init(article: Article,
-                themeRepository: ThemeRepository,
                 articleUseCase: ArticleUseCase,
                 htmlViewController: @escaping () -> HTMLViewController) {
         self.article = article
-        self.themeRepository = themeRepository
         self.articleUseCase = articleUseCase
         self.htmlViewController = htmlViewController()
 
@@ -63,12 +60,13 @@ public final class ArticleViewController: UIViewController {
 
         self.updateLeftBarButtonItem(self.traitCollection)
 
-        self.themeRepository.addSubscriber(self)
-
         self.toolbarItems = [
             self.spacer(), self.shareButton, self.spacer(), self.openInSafariButton, self.spacer()
         ]
         self.title = self.article.title
+
+        self.view.backgroundColor = Theme.backgroundColor
+        self.showArticle(self.article)
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -141,7 +139,6 @@ public final class ArticleViewController: UIViewController {
 
         let activity = URLShareSheet(
             url: self.article.link,
-            themeRepository: self.themeRepository,
             activityItems: [self.article.link],
             applicationActivities: [safari, chrome]
         )
@@ -183,18 +180,5 @@ extension ArticleViewController: HTMLViewControllerDelegate {
         } else {
             self.navigationController?.pushViewController(viewController, animated: true)
         }
-    }
-}
-
-extension ArticleViewController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.showArticle(article)
-
-        self.view.backgroundColor = themeRepository.backgroundColor
-        self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
-        self.navigationController?.toolbar.barStyle = themeRepository.barStyle
-        self.navigationController?.navigationBar.titleTextAttributes = [
-            NSAttributedString.Key.foregroundColor: themeRepository.textColor
-        ]
     }
 }

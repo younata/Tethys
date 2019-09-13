@@ -13,12 +13,6 @@ public final class ExplanationView: UIView {
         set { self.detailLabel.text = newValue }
     }
 
-    internal var themeRepository: ThemeRepository? = nil {
-        didSet {
-            self.themeRepository?.addSubscriber(self)
-        }
-    }
-
     fileprivate let titleLabel = UILabel(forAutoLayout: ())
     fileprivate let detailLabel = UILabel(forAutoLayout: ())
 
@@ -42,15 +36,15 @@ public final class ExplanationView: UIView {
 
         self.detailLabel.autoPinEdge(.top, to: .bottom, of: self.titleLabel, withOffset: 8)
 
-        self.layer.cornerRadius = 5
+        self.layer.cornerRadius = 4
+
+        self.applyTheme()
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError() }
-}
 
-extension ExplanationView: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.titleLabel.textColor = self.themeRepository?.textColor
-        self.detailLabel.textColor = self.themeRepository?.textColor
+    private func applyTheme() {
+        self.titleLabel.textColor = Theme.textColor
+        self.detailLabel.textColor = Theme.textColor
     }
 }

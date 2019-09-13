@@ -31,9 +31,7 @@ public final class HTMLViewController: UIViewController {
 
     private var observer: NSKeyValueObservation?
 
-    public let themeRepository: ThemeRepository
-    public init(themeRepository: ThemeRepository) {
-        self.themeRepository = themeRepository
+    public init() {
         super.init(nibName: nil, bundle: nil)
 
         self.content.isOpaque = false
@@ -65,9 +63,19 @@ public final class HTMLViewController: UIViewController {
         self.content.navigationDelegate = self
         self.content.uiDelegate = self
         self.content.isOpaque = false
-        self.content.scrollView.scrollIndicatorInsets.bottom = 0
+        self.content.scrollView.verticalScrollIndicatorInsets.bottom = 0
+        self.content.scrollView.horizontalScrollIndicatorInsets.bottom = 0
 
-        self.themeRepository.addSubscriber(self)
+        self.applyTheme()
+    }
+
+    private func applyTheme() {
+        self.content.backgroundColor = Theme.backgroundColor
+        self.content.scrollView.backgroundColor = Theme.backgroundColor
+
+        self.view.backgroundColor = Theme.backgroundColor
+        self.progressIndicator.trackTintColor = Theme.progressTrackColor
+        self.progressIndicator.progressTintColor = Theme.progressTintColor
     }
 }
 
@@ -101,21 +109,5 @@ extension HTMLViewController: WKNavigationDelegate, WKUIDelegate {
     public func webView(_ webView: WKWebView,
                         commitPreviewingViewController previewingViewController: UIViewController) {
         self.delegate?.commitViewController(viewController: previewingViewController)
-    }
-}
-
-extension HTMLViewController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        if let htmlString = self.htmlString {
-            self.configure(html: htmlString)
-        }
-
-        self.content.backgroundColor = themeRepository.backgroundColor
-        self.content.scrollView.backgroundColor = themeRepository.backgroundColor
-        self.content.scrollView.indicatorStyle = themeRepository.scrollIndicatorStyle
-
-        self.view.backgroundColor = themeRepository.backgroundColor
-        self.progressIndicator.trackTintColor = themeRepository.backgroundColor
-        self.progressIndicator.progressTintColor = themeRepository.highlightColor
     }
 }

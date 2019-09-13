@@ -20,7 +20,6 @@ class RefreshControlSpec: QuickSpec {
         var notificationCenter: NotificationCenter!
         var scrollView: UIScrollView!
         var mainQueue: FakeOperationQueue!
-        var themeRepository: ThemeRepository!
         var settingsRepository: SettingsRepository!
         var refresher: FakeRefresher!
         var lowPowerDiviner: FakeLowPowerDiviner!
@@ -30,7 +29,6 @@ class RefreshControlSpec: QuickSpec {
             scrollView = UIScrollView()
             mainQueue = FakeOperationQueue()
             mainQueue.runSynchronously = true
-            themeRepository = ThemeRepository(userDefaults: nil)
             settingsRepository = SettingsRepository(userDefaults: nil)
             settingsRepository.refreshControl = .breakout
             refresher = FakeRefresher()
@@ -40,26 +38,17 @@ class RefreshControlSpec: QuickSpec {
                 notificationCenter: notificationCenter,
                 scrollView: scrollView,
                 mainQueue: mainQueue,
-                themeRepository: themeRepository,
                 settingsRepository: settingsRepository,
                 refresher: refresher,
                 lowPowerDiviner: lowPowerDiviner
             )
         }
 
-        describe("when the theme changes") {
-            beforeEach {
-                themeRepository.theme = .dark
-            }
-
-            it("updates the breakoutView's colors") {
-                expect(subject.breakoutView?.scenebackgroundColor).to(equal(themeRepository.backgroundColor))
-                expect(subject.breakoutView?.textColor).to(equal(themeRepository.textColor))
-                expect(subject.breakoutView?.ballColor).to(equal(themeRepository.highlightColor))
-            }
-
-            it("updates the spinner's colors") {
-                expect(subject.spinner.tintColor).to(equal(themeRepository.textColor))
+        describe("theming") {
+            it("sets the breakoutView's colors") {
+                expect(subject.breakoutView?.scenebackgroundColor).to(equal(Theme.backgroundColor))
+                expect(subject.breakoutView?.textColor).to(equal(Theme.textColor))
+                expect(subject.breakoutView?.ballColor).to(equal(Theme.highlightColor))
             }
         }
 
@@ -94,7 +83,6 @@ class RefreshControlSpec: QuickSpec {
                     notificationCenter: notificationCenter,
                     scrollView: scrollView,
                     mainQueue: mainQueue,
-                    themeRepository: themeRepository,
                     settingsRepository: settingsRepository,
                     refresher: refresher,
                     lowPowerDiviner: lowPowerDiviner
@@ -151,7 +139,6 @@ class RefreshControlSpec: QuickSpec {
                     notificationCenter: notificationCenter,
                     scrollView: scrollView,
                     mainQueue: mainQueue,
-                    themeRepository: themeRepository,
                     settingsRepository: settingsRepository,
                     refresher: refresher,
                     lowPowerDiviner: lowPowerDiviner

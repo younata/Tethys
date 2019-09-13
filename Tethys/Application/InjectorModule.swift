@@ -13,10 +13,6 @@ public func configure(container: Container) {    container.register(TagPickerVie
 
     container.register(Messenger.self) { _ in return SwiftMessenger() }
 
-    container.register(ThemeRepository.self) { r in
-        return ThemeRepository(userDefaults: r.resolve(UserDefaults.self) ?? nil)
-    }.inObjectScope(.container)
-
     container.register(SettingsRepository.self) { r in
         return SettingsRepository(userDefaults: r.resolve(UserDefaults.self) ?? nil)
     }.inObjectScope(.container)
@@ -32,8 +28,7 @@ public func configure(container: Container) {    container.register(TagPickerVie
 
     container.register(ArticleUseCase.self) { r in
         return DefaultArticleUseCase(
-            articleService: r.resolve(ArticleService.self)!,
-            themeRepository: r.resolve(ThemeRepository.self)!
+            articleService: r.resolve(ArticleService.self)!
         )
     }
 
@@ -55,7 +50,6 @@ private func registerViewControllers(container: Container) {
             feed: feed,
             feedService: r.resolve(FeedService.self)!,
             articleService: r.resolve(ArticleService.self)!,
-            themeRepository: r.resolve(ThemeRepository.self)!,
             notificationCenter: .default,
             articleCellController: r.resolve(ArticleCellController.self, argument: false)!,
             articleViewController: { article in r.resolve(ArticleViewController.self, argument: article)! }
@@ -65,20 +59,18 @@ private func registerViewControllers(container: Container) {
     container.register(ArticleViewController.self) { r, article in
         return ArticleViewController(
             article: article,
-            themeRepository: r.resolve(ThemeRepository.self)!,
             articleUseCase: r.resolve(ArticleUseCase.self)!,
             htmlViewController: { r.resolve(HTMLViewController.self)! }
         )
     }
 
-    container.register(BlankViewController.self) { r in
-        return BlankViewController(themeRepository: r.resolve(ThemeRepository.self)!)
+    container.register(BlankViewController.self) { _ in
+        return BlankViewController()
     }
 
     container.register(DocumentationViewController.self) { r, documentation in
         return DocumentationViewController(
             documentation: documentation,
-            themeRepository: r.resolve(ThemeRepository.self)!,
             htmlViewController: r.resolve(HTMLViewController.self)!
         )
     }
@@ -86,7 +78,6 @@ private func registerViewControllers(container: Container) {
     container.register(FeedListController.self) { r in
         return FeedListController(
             feedService: r.resolve(FeedService.self)!,
-            themeRepository: r.resolve(ThemeRepository.self)!,
             settingsRepository: r.resolve(SettingsRepository.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
             notificationCenter: .default,
@@ -101,7 +92,6 @@ private func registerViewControllers(container: Container) {
         return FeedViewController(
             feed: feed,
             feedService: r.resolve(FeedService.self)!,
-            themeRepository: r.resolve(ThemeRepository.self)!,
             tagEditorViewController: { r.resolve(TagEditorViewController.self)! }
         )
     }
@@ -109,14 +99,13 @@ private func registerViewControllers(container: Container) {
     container.register(FindFeedViewController.self) { r in
         return FindFeedViewController(
             importUseCase: r.resolve(ImportUseCase.self)!,
-            themeRepository: r.resolve(ThemeRepository.self)!,
             analytics: r.resolve(Analytics.self)!,
             notificationCenter: .default
         )
     }
 
-    container.register(HTMLViewController.self) { r in
-        return HTMLViewController(themeRepository: r.resolve(ThemeRepository.self)!)
+    container.register(HTMLViewController.self) { _ in
+        return HTMLViewController()
     }
 
     container.register(LoginController.self) { r in
@@ -130,7 +119,6 @@ private func registerViewControllers(container: Container) {
 
     container.register(SettingsViewController.self) { r in
         return SettingsViewController(
-            themeRepository: r.resolve(ThemeRepository.self)!,
             settingsRepository: r.resolve(SettingsRepository.self)!,
             opmlService: r.resolve(OPMLService.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
@@ -143,14 +131,13 @@ private func registerViewControllers(container: Container) {
         )
     }
 
-    container.register(SplitViewController.self) { r in
-        return SplitViewController(themeRepository: r.resolve(ThemeRepository.self)!)
+    container.register(SplitViewController.self) { _ in
+        return SplitViewController()
     }
 
     container.register(TagEditorViewController.self) { r in
         return TagEditorViewController(
-            feedService: r.resolve(FeedService.self)!,
-            themeRepository: r.resolve(ThemeRepository.self)!
+            feedService: r.resolve(FeedService.self)!
         )
     }
 }

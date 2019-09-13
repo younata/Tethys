@@ -37,7 +37,6 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     public let feed: Feed
     fileprivate let feedService: FeedService
     fileprivate let articleService: ArticleService
-    private let themeRepository: ThemeRepository
     private let notificationCenter: NotificationCenter
     private let articleCellController: ArticleCellController
     fileprivate let articleViewController: (Article) -> ArticleViewController
@@ -45,14 +44,12 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     public init(feed: Feed,
                 feedService: FeedService,
                 articleService: ArticleService,
-                themeRepository: ThemeRepository,
                 notificationCenter: NotificationCenter,
                 articleCellController: ArticleCellController,
                 articleViewController: @escaping (Article) -> ArticleViewController) {
         self.feed = feed
         self.feedService = feedService
         self.articleService = articleService
-        self.themeRepository = themeRepository
         self.notificationCenter = notificationCenter
         self.articleCellController = articleCellController
         self.articleViewController = articleViewController
@@ -88,11 +85,9 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         self.registerForPreviewing(with: self, sourceView: self.tableView)
         self.resetArticles()
         self.resetBarItems()
-    }
 
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.themeRepository.addSubscriber(self)
+        self.tableView.backgroundColor = Theme.backgroundColor
+        self.tableView.separatorColor = Theme.separatorColor
     }
 
     var _previewActionItems: [UIPreviewAction] = []
@@ -196,7 +191,6 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
             let cell = tableView.dequeueReusableCell(withIdentifier: "headerCell",
                                                      for: indexPath) as! ArticleListHeaderCell
             cell.configure(summary: self.feed.displaySummary, image: self.feed.image)
-            cell.themeRepository = self.themeRepository
             return cell
         case .articles:
             let article = self.articleForIndexPath(indexPath)
@@ -205,8 +199,6 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
             // on whether article loaded into it is read or not.
             let cell = tableView.dequeueReusableCell(withIdentifier: cellTypeToUse,
                                                      for: indexPath) as! ArticleCell
-
-            cell.themeRepository = self.themeRepository
 
             self.articleCellController.configure(cell: cell, with: article)
 
@@ -300,7 +292,6 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     @objc fileprivate func shareFeed() {
         let shareSheet = URLShareSheet(
             url: self.feed.url,
-            themeRepository: self.themeRepository,
             activityItems: [self.feed.url],
             applicationActivities: nil
         )
@@ -384,17 +375,4 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
 
 extension ArticleListController: SettingsRepositorySubscriber {
     public func didChangeSetting(_: SettingsRepository) { self.tableView.reloadData() }
-}
-
-extension ArticleListController: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.tableView.backgroundColor = themeRepository.backgroundColor
-        self.tableView.separatorColor = themeRepository.textColor
-        self.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
-
-        self.navigationController?.navigationBar.barStyle = themeRepository.barStyle
-        self.navigationController?.navigationBar.titleTextAttributes = [
-            NSAttributedString.Key.foregroundColor: themeRepository.textColor
-        ]
-    }
 }

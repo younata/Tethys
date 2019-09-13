@@ -9,12 +9,6 @@ public final class ArticleListHeaderCell: UITableViewCell {
     public private(set) var iconWidth: NSLayoutConstraint!
     public private(set) var iconHeight: NSLayoutConstraint!
 
-    public var themeRepository: ThemeRepository? = nil {
-        didSet {
-            self.themeRepository?.addSubscriber(self)
-        }
-    }
-
     public func configure(summary: String, image: UIImage?) {
         self.summary.text = summary
         if let image = image {
@@ -56,18 +50,18 @@ public final class ArticleListHeaderCell: UITableViewCell {
         self.footer.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 0, left: 0, bottom: -1, right: 0),
                                                  excludingEdge: .top)
         self.footer.autoSetDimension(.height, toSize: 2)
+
+        self.applyTheme()
     }
 
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-}
 
-extension ArticleListHeaderCell: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.summary.textColor = themeRepository.textColor
-        self.footer.backgroundColor = themeRepository.textColor
+    private func applyTheme() {
+        self.summary.textColor = Theme.textColor
+        self.footer.backgroundColor = Theme.separatorColor
 
-        self.backgroundColor = themeRepository.backgroundColor
+        self.backgroundColor = Theme.backgroundColor
     }
 }

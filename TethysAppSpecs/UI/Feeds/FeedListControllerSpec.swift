@@ -11,7 +11,6 @@ final class FeedListControllerSpec: QuickSpec {
         var subject: FeedListController!
         var feedService: FakeFeedService!
         var navigationController: UINavigationController!
-        var themeRepository: ThemeRepository!
         var settingsRepository: SettingsRepository!
         var mainQueue: FakeOperationQueue!
         var notificationCenter: NotificationCenter!
@@ -29,19 +28,16 @@ final class FeedListControllerSpec: QuickSpec {
             mainQueue = FakeOperationQueue()
             settingsRepository = SettingsRepository(userDefaults: nil)
             settingsRepository.refreshControl = .spinner
-            themeRepository = ThemeRepository(userDefaults: nil)
             notificationCenter = NotificationCenter()
 
             subject = FeedListController(
                 feedService: feedService,
-                themeRepository: themeRepository,
                 settingsRepository: settingsRepository,
                 mainQueue: mainQueue,
                 notificationCenter: notificationCenter,
                 findFeedViewController: {
                     return FindFeedViewController(
                         importUseCase: FakeImportUseCase(),
-                        themeRepository: themeRepository,
                         analytics: FakeAnalytics(),
                         notificationCenter: notificationCenter
                     )
@@ -77,23 +73,10 @@ final class FeedListControllerSpec: QuickSpec {
                 expect(subject.tableView.keyboardDismissMode).to(equal(UIScrollView.KeyboardDismissMode.onDrag))
             }
 
-            describe("listening to theme repository updates") {
-                beforeEach {
-                    themeRepository.theme = .dark
-                }
-
+            describe("theming") {
                 it("updates the tableView") {
-                    expect(subject.tableView.backgroundColor).to(equal(themeRepository.backgroundColor))
-                    expect(subject.tableView.separatorColor).to(equal(themeRepository.textColor))
-                }
-
-                it("updates the tableView scroll indicator style") {
-                    expect(subject.tableView.indicatorStyle).to(equal(themeRepository.scrollIndicatorStyle))
-                }
-
-                it("updates the navigation bar") {
-                    expect(subject.navigationController?.navigationBar.barStyle).to(equal(themeRepository.barStyle))
-                    expect(convertFromOptionalNSAttributedStringKeyDictionary(subject.navigationController?.navigationBar.titleTextAttributes) as? [String: UIColor]) == [convertFromNSAttributedStringKey(NSAttributedString.Key.foregroundColor): themeRepository.textColor]
+                    expect(subject.tableView.backgroundColor).to(equal(Theme.backgroundColor))
+                    expect(subject.tableView.separatorColor).to(equal(Theme.separatorColor))
                 }
             }
 
@@ -240,12 +223,8 @@ final class FeedListControllerSpec: QuickSpec {
                                 expect(cell).to(beAnInstanceOf(FeedTableCell.self))
                             }
 
-                            it("should be configured with the theme repository") {
-                                expect(cell?.themeRepository).to(beIdenticalTo(themeRepository))
-                            }
-
-                            it("should be configured with the feed") {
-                                expect(cell?.feed) == feed
+                            it("is configured with the feed") {
+                                expect(cell?.feed).to(equal(feed))
                             }
 
                             describe("tapping on it") {
@@ -261,7 +240,7 @@ final class FeedListControllerSpec: QuickSpec {
                                 it("should navigate to an ArticleListViewController for that feed") {
                                     expect(navigationController.topViewController).to(beAnInstanceOf(ArticleListController.self))
                                     if let articleList = navigationController.topViewController as? ArticleListController {
-                                        expect(articleList.feed) == feed
+                                        expect(articleList.feed).to(equal(feed))
                                     }
                                 }
                             }
@@ -400,7 +379,6 @@ final class FeedListControllerSpec: QuickSpec {
                                                 expect(navigationController.visibleViewController).to(beAnInstanceOf(URLShareSheet.self))
                                                 if let shareSheet = navigationController.visibleViewController as? URLShareSheet {
                                                     expect(shareSheet.url) == feeds[0].url
-                                                    expect(shareSheet.themeRepository) == themeRepository
                                                     expect(shareSheet.activityItems as? [URL]) == [feeds[0].url]
                                                 }
                                             }
@@ -625,8 +603,8 @@ final class FeedListControllerSpec: QuickSpec {
                                         expect(action?.title).to(equal("Share"))
                                     }
 
-                                    it("colors itself based on the themerepository's highlight color") {
-                                        expect(action?.backgroundColor).to(equal(themeRepository.highlightColor))
+                                    it("colors itself based on the theme's highlight color") {
+                                        expect(action?.backgroundColor).to(equal(Theme.highlightColor))
                                     }
 
                                     describe("tapping it") {
@@ -638,7 +616,6 @@ final class FeedListControllerSpec: QuickSpec {
                                             expect(navigationController.visibleViewController).to(beAnInstanceOf(URLShareSheet.self))
                                             if let shareSheet = navigationController.visibleViewController as? URLShareSheet {
                                                 expect(shareSheet.url) == feeds[0].url
-                                                expect(shareSheet.themeRepository) == themeRepository
                                                 expect(shareSheet.activityItems as? [URL]) == [feeds[0].url]
                                             }
                                         }

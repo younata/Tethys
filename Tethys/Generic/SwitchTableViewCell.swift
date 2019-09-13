@@ -6,12 +6,6 @@ public final class SwitchTableViewCell: UITableViewCell {
 
     public override var detailTextLabel: UILabel? { return nil }
 
-    public var themeRepository: ThemeRepository? = nil {
-        didSet {
-            self.themeRepository?.addSubscriber(self)
-        }
-    }
-
     public let theSwitch: UISwitch = UISwitch(forAutoLayout: ())
     public var onTapSwitch: ((UISwitch) -> Void)?
 
@@ -32,14 +26,10 @@ public final class SwitchTableViewCell: UITableViewCell {
 
         self.theSwitch.addTarget(self, action: #selector(SwitchTableViewCell.didTapSwitch),
                                  for: .valueChanged)
+
+        self.backgroundColor = Theme.backgroundColor
+        self.textLabel?.textColor = Theme.textColor
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError() }
-}
-
-extension SwitchTableViewCell: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.backgroundColor = self.themeRepository?.backgroundColor
-        self.textLabel?.textColor = self.themeRepository?.textColor
-    }
 }

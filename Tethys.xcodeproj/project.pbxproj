@@ -40,10 +40,7 @@
 		891754701C5B449E0036D96D /* RealmObjects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8917546F1C5B449E0036D96D /* RealmObjects.swift */; };
 		8917B7E01E71395700D388A7 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8917B7DF1E71395700D388A7 /* Settings.swift */; };
 		8918D4A41B8115F800DCDE0E /* ExplanationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918D4A31B8115F800DCDE0E /* ExplanationView.swift */; };
-		8918D4D41B84593100DCDE0E /* ClearnessDark.css in Resources */ = {isa = PBXBuildFile; fileRef = 8918D4D31B84593100DCDE0E /* ClearnessDark.css */; };
-		8918D4D91B85887E00DCDE0E /* darkhub2.css in Resources */ = {isa = PBXBuildFile; fileRef = 8918D4D81B85887E00DCDE0E /* darkhub2.css */; };
-		8918D4DB1B8598D100DCDE0E /* ThemeRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918D4DA1B8598D100DCDE0E /* ThemeRepository.swift */; };
-		8918D4DD1B859D3B00DCDE0E /* ThemeRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918D4DC1B859D3B00DCDE0E /* ThemeRepositorySpec.swift */; };
+		8918D4DB1B8598D100DCDE0E /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918D4DA1B8598D100DCDE0E /* Theme.swift */; };
 		8924D8E91A094CF5003B7529 /* github2.css in Resources */ = {isa = PBXBuildFile; fileRef = 8924D8E81A094CF5003B7529 /* github2.css */; };
 		8924FE2E1D6D51DC0060D26D /* Array+TethysKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924FE2D1D6D51DC0060D26D /* Array+TethysKit.swift */; };
 		892CBDEA1C7A27FE0062E578 /* FakeArticleUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892CBDE91C7A27FE0062E578 /* FakeArticleUseCase.swift */; };
@@ -388,10 +385,7 @@
 		8917546F1C5B449E0036D96D /* RealmObjects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmObjects.swift; sourceTree = "<group>"; };
 		8917B7DF1E71395700D388A7 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		8918D4A31B8115F800DCDE0E /* ExplanationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExplanationView.swift; sourceTree = "<group>"; };
-		8918D4D31B84593100DCDE0E /* ClearnessDark.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = ClearnessDark.css; sourceTree = "<group>"; };
-		8918D4D81B85887E00DCDE0E /* darkhub2.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = darkhub2.css; sourceTree = "<group>"; };
-		8918D4DA1B8598D100DCDE0E /* ThemeRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeRepository.swift; sourceTree = "<group>"; };
-		8918D4DC1B859D3B00DCDE0E /* ThemeRepositorySpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThemeRepositorySpec.swift; sourceTree = "<group>"; };
+		8918D4DA1B8598D100DCDE0E /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		8924D8E81A094CF5003B7529 /* github2.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = github2.css; sourceTree = "<group>"; };
 		8924FE2D1D6D51DC0060D26D /* Array+TethysKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+TethysKit.swift"; sourceTree = "<group>"; };
 		892CBDE91C7A27FE0062E578 /* FakeArticleUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeArticleUseCase.swift; sourceTree = "<group>"; };
@@ -908,7 +902,7 @@
 			isa = PBXGroup;
 			children = (
 				89F98BA51BA07DC6005C3CA8 /* SettingsRepository.swift */,
-				8918D4DA1B8598D100DCDE0E /* ThemeRepository.swift */,
+				8918D4DA1B8598D100DCDE0E /* Theme.swift */,
 			);
 			path = Repositories;
 			sourceTree = "<group>";
@@ -1030,6 +1024,13 @@
 			path = Generic;
 			sourceTree = "<group>";
 		};
+		89B0A367232C363400FBCB67 /* Easter Eggs */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Easter Eggs";
+			sourceTree = "<group>";
+		};
 		89C8306A19D730E9009924DA = {
 			isa = PBXGroup;
 			children = (
@@ -1062,6 +1063,7 @@
 				89EF4FE31A97DAD70052A82F /* Application */,
 				89C830B419D7D2D2009924DA /* Articles */,
 				8941AB7E1DC9AEAF00A2CE5F /* Documentation */,
+				89B0A367232C363400FBCB67 /* Easter Eggs */,
 				89C830B119D7D2B7009924DA /* Feeds */,
 				89CB98BB1B13921200C87160 /* Frameworks */,
 				89F98BA21BA079DE005C3CA8 /* Generic */,
@@ -1107,7 +1109,6 @@
 				89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */,
 				89F98BA91BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift */,
 				8957799D19E62C7100548418 /* TethysAppSpecs-Bridging-Header.h */,
-				8918D4DC1B859D3B00DCDE0E /* ThemeRepositorySpec.swift */,
 				893F93E31B237EBC00B52194 /* UnreadCounterSpec.swift */,
 				8978C52A21975A0800D702BB /* InjectorModuleSpec.swift */,
 			);
@@ -1308,8 +1309,6 @@
 			children = (
 				890B78C71C77FD200066E201 /* ArticleUseCase.swift */,
 				89C830B519D7DE97009924DA /* ArticleViewController.swift */,
-				8918D4D31B84593100DCDE0E /* ClearnessDark.css */,
-				8918D4D81B85887E00DCDE0E /* darkhub2.css */,
 				8924D8E81A094CF5003B7529 /* github2.css */,
 				8937F6BD1B7996F50044A442 /* prism.js.html */,
 			);
@@ -1565,10 +1564,9 @@
 			};
 			buildConfigurationList = 89C8306E19D730E9009924DA /* Build configuration list for PBXProject "Tethys" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				Base,
 			);
@@ -1611,8 +1609,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8918D4D41B84593100DCDE0E /* ClearnessDark.css in Resources */,
-				8918D4D91B85887E00DCDE0E /* darkhub2.css in Resources */,
 				8924D8E91A094CF5003B7529 /* github2.css in Resources */,
 				890C8D4F1DE4096C00A037D7 /* icons.html in Resources */,
 				89C8308319D730E9009924DA /* Assets.xcassets in Resources */,
@@ -1912,7 +1908,7 @@
 				89F98BA41BA079EA005C3CA8 /* TableViewCell.swift in Sources */,
 				89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
 				8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */,
-				8918D4DB1B8598D100DCDE0E /* ThemeRepository.swift in Sources */,
+				8918D4DB1B8598D100DCDE0E /* Theme.swift in Sources */,
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
 				899B7DFD1E902B080067ABFF /* URLShareSheet.swift in Sources */,
 				89E9DD4F21D0069900326E2D /* LoginController.swift in Sources */,
@@ -1971,7 +1967,6 @@
 				899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */,
 				8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */,
 				89E9DF0D21D49CDB00326E2D /* OAuthLoginControllerSpec.swift in Sources */,
-				8918D4DD1B859D3B00DCDE0E /* ThemeRepositorySpec.swift in Sources */,
 				89F516571B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m in Sources */,
 				89735ABC1C0694C70032E09C /* UITraitCollection+TethysTests.m in Sources */,
 				8994F0F41C8F899600920E6D /* UIViewController+TethysTests.m in Sources */,
@@ -2224,7 +2219,7 @@
 					"$(SDKROOT)/usr/include/libxml2",
 					"$(SRCROOT)/Library",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-lxml2";
@@ -2281,7 +2276,7 @@
 					"$(SDKROOT)/usr/include/libxml2",
 					"$(SRCROOT)/Library",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "-lxml2";
 				SDKROOT = iphoneos;

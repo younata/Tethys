@@ -35,12 +35,6 @@ public final class TagPickerView: UIView {
         }
     }
 
-    public var themeRepository: ThemeRepository? = nil {
-        didSet {
-            self.themeRepository?.addSubscriber(self)
-        }
-    }
-
     public func configureWithTags(_ tags: [String], onSelect: @escaping (String) -> Void) {
         self.allTags = tags
         self.didSelect = onSelect
@@ -76,9 +70,8 @@ extension TagPickerView: UIPickerViewDataSource, UIPickerViewDelegate {
     public func pickerView(_ pickerView: UIPickerView,
                            attributedTitleForRow row: Int,
                            forComponent component: Int) -> NSAttributedString? {
-        let textColor = self.themeRepository?.textColor ?? UIColor.black
         return NSAttributedString(string: self.existingSolutions[row],
-                                  attributes: [NSAttributedString.Key.foregroundColor: textColor])
+                                  attributes: [NSAttributedString.Key.foregroundColor: Theme.textColor])
     }
 
     public func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
@@ -98,11 +91,5 @@ extension TagPickerView: UITextFieldDelegate {
         }
         let replacedText = (text as NSString).replacingCharacters(in: range, with: string)
         return textFieldDidChange(replacedText)
-    }
-}
-
-extension TagPickerView: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.picker.reloadComponent(0)
     }
 }

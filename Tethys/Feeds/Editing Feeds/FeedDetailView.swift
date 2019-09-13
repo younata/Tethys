@@ -29,12 +29,6 @@ public final class FeedDetailView: UIView {
         set { self.tagsList.maxHeight = newValue }
     }
     public weak var delegate: FeedDetailViewDelegate?
-    public weak var themeRepository: ThemeRepository? {
-        didSet {
-            themeRepository?.addSubscriber(self)
-            self.tagsList.themeRepository = themeRepository
-        }
-    }
 
     public func configure(title: String, url: URL, summary: String, tags: [String]) {
         self.titleLabel.text = title
@@ -94,6 +88,19 @@ public final class FeedDetailView: UIView {
         self.addTagButton.setTitle(NSLocalizedString("FeedViewController_Actions_AddTag", comment: ""), for: .normal)
         self.addTagButton.addTarget(self, action: #selector(FeedDetailView.didTapAddTarget), for: .touchUpInside)
         self.urlField.textColor = UIColor.gray
+
+        self.applyTheme()
+    }
+
+    private func applyTheme() {
+        self.backgroundColor = Theme.backgroundColor
+
+        self.tagsList.tableView.backgroundColor = Theme.backgroundColor
+        self.tagsList.tableView.separatorColor = Theme.separatorColor
+
+        self.titleLabel.textColor = Theme.textColor
+        self.summaryLabel.textColor = Theme.textColor
+        self.addTagButton.setTitleColor(Theme.highlightColor, for: .normal)
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -117,20 +124,6 @@ public final class FeedDetailView: UIView {
     }
 }
 
-extension FeedDetailView: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.backgroundColor = themeRepository.backgroundColor
-
-        self.tagsList.tableView.backgroundColor = themeRepository.backgroundColor
-        self.tagsList.tableView.separatorColor = themeRepository.textColor
-        self.tagsList.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
-
-        self.titleLabel.textColor = themeRepository.textColor
-        self.summaryLabel.textColor = themeRepository.textColor
-        self.addTagButton.setTitleColor(themeRepository.highlightColor, for: .normal)
-    }
-}
-
 extension FeedDetailView: UITextFieldDelegate {
     public func textField(_ textField: UITextField,
                           shouldChangeCharactersIn range: NSRange,
@@ -151,7 +144,6 @@ extension FeedDetailView: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
         cell.textLabel?.text = self.tags[indexPath.row]
-        cell.themeRepository = self.themeRepository
         return cell
     }
 

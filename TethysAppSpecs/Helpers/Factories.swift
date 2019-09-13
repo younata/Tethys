@@ -2,53 +2,44 @@ import Tethys
 import TethysKit
 import AuthenticationServices
 
-//func SettingsViewControllerFactory() -> SettingsViewController {
-//
-//}
-
-// View Controllers
-
-func splitViewControllerFactory(themeRepository: ThemeRepository = themeRepositoryFactory()) -> SplitViewController {
-    return SplitViewController(themeRepository: themeRepository)
+func splitViewControllerFactory() -> SplitViewController {
+    return SplitViewController()
 }
 
 func findFeedViewControllerFactory(
     importUseCase: ImportUseCase = FakeImportUseCase(),
-    themeRepository: ThemeRepository = themeRepositoryFactory(),
     analytics: Analytics = FakeAnalytics(),
     notificationCenter: NotificationCenter = NotificationCenter()
     ) -> FindFeedViewController {
-    return FindFeedViewController(importUseCase: importUseCase, themeRepository: themeRepository, analytics: analytics,
-                                  notificationCenter: notificationCenter)
+    return FindFeedViewController(
+        importUseCase: importUseCase,
+        analytics: analytics,
+        notificationCenter: notificationCenter
+    )
 }
 
 func feedViewControllerFactory(
     feed: Feed = feedFactory(),
     feedService: FeedService = FakeFeedService(),
-    themeRepository: ThemeRepository = themeRepositoryFactory(),
     tagEditorViewController: @escaping () -> TagEditorViewController = { tagEditorViewControllerFactory() }
     ) -> FeedViewController {
     return FeedViewController(
         feed: feed,
         feedService: feedService,
-        themeRepository: themeRepository,
         tagEditorViewController: tagEditorViewController
     )
 }
 
 func tagEditorViewControllerFactory(
-    feedService: FeedService = FakeFeedService(),
-    themeRepository: ThemeRepository = themeRepositoryFactory()
+    feedService: FeedService = FakeFeedService()
     ) -> TagEditorViewController {
     return TagEditorViewController(
-        feedService: feedService,
-        themeRepository: themeRepository
+        feedService: feedService
     )
 }
 
 func feedsTableViewControllerFactory(
     feedService: FeedService = FakeFeedService(),
-    themeRepository: ThemeRepository = themeRepositoryFactory(),
     settingsRepository: SettingsRepository = settingsRepositoryFactory(),
     mainQueue: FakeOperationQueue = FakeOperationQueue(),
     notificationCenter: NotificationCenter = NotificationCenter(),
@@ -59,7 +50,6 @@ func feedsTableViewControllerFactory(
     ) -> FeedListController {
     return FeedListController(
         feedService: feedService,
-        themeRepository: themeRepository,
         settingsRepository: SettingsRepository(userDefaults: nil),
         mainQueue: mainQueue,
         notificationCenter: notificationCenter,
@@ -72,29 +62,24 @@ func feedsTableViewControllerFactory(
 
 func articleViewControllerFactory(
     article: Article = articleFactory(),
-    themeRepository: ThemeRepository = themeRepositoryFactory(),
     articleUseCase: ArticleUseCase = FakeArticleUseCase(),
     htmlViewController: @escaping () -> HTMLViewController = { htmlViewControllerFactory() }
     ) -> ArticleViewController {
     return ArticleViewController(
         article: article,
-        themeRepository: themeRepository,
         articleUseCase: articleUseCase,
         htmlViewController: htmlViewController
     )
 }
 
-func htmlViewControllerFactory(themeRepository: ThemeRepository = themeRepositoryFactory()) -> HTMLViewController {
-    return HTMLViewController(
-        themeRepository: themeRepository
-    )
+func htmlViewControllerFactory() -> HTMLViewController {
+    return HTMLViewController()
 }
 
 func articleListControllerFactory(
     feed: Feed = feedFactory(),
     feedService: FeedService = FakeFeedService(),
     articleService: ArticleService = FakeArticleService(),
-    themeRepository: ThemeRepository = themeRepositoryFactory(),
     notificationCenter: NotificationCenter = NotificationCenter(),
     articleCellController: ArticleCellController = FakeArticleCellController(),
     articleViewController: @escaping (Article) -> ArticleViewController = { article in articleViewControllerFactory(article: article) }
@@ -103,7 +88,6 @@ func articleListControllerFactory(
         feed: feed,
         feedService: feedService,
         articleService: articleService,
-        themeRepository: themeRepository,
         notificationCenter: notificationCenter,
         articleCellController: articleCellController,
         articleViewController: articleViewController
@@ -111,7 +95,6 @@ func articleListControllerFactory(
 }
 
 func settingsViewControllerFactory(
-    themeRepository: ThemeRepository = themeRepositoryFactory(),
     settingsRepository: SettingsRepository = settingsRepositoryFactory(),
     opmlService: OPMLService = FakeOPMLService(),
     mainQueue: FakeOperationQueue = FakeOperationQueue(),
@@ -121,7 +104,6 @@ func settingsViewControllerFactory(
     documentationViewController: @escaping (Documentation) -> DocumentationViewController = { docs in documentationViewControllerFactory(documentation: docs) }
     ) -> SettingsViewController {
     return SettingsViewController(
-        themeRepository: themeRepository,
         settingsRepository: settingsRepository,
         opmlService: opmlService,
         mainQueue: mainQueue,
@@ -134,22 +116,16 @@ func settingsViewControllerFactory(
 
 func documentationViewControllerFactory(
     documentation: Documentation = .libraries,
-    themeRepository: ThemeRepository = themeRepositoryFactory(),
     htmlViewController: HTMLViewController = htmlViewControllerFactory()
     ) -> DocumentationViewController {
     return DocumentationViewController(
         documentation: documentation,
-        themeRepository: themeRepository,
         htmlViewController: htmlViewController
     )
 }
 
-func blankViewControllerFactory(
-    themeRepository: ThemeRepository = themeRepositoryFactory()
-    ) -> BlankViewController {
-    return BlankViewController(
-        themeRepository: themeRepository
-    )
+func blankViewControllerFactory() -> BlankViewController {
+    return BlankViewController()
 }
 
 // Workflows
@@ -169,10 +145,6 @@ func bootstrapWorkFlowFactory(
 }
 
 // Repositories
-
-func themeRepositoryFactory(userDefaults: UserDefaults? = nil) -> ThemeRepository {
-    return ThemeRepository(userDefaults: userDefaults)
-}
 
 func settingsRepositoryFactory(userDefaults: UserDefaults? = nil) -> SettingsRepository {
     return SettingsRepository(userDefaults: userDefaults)

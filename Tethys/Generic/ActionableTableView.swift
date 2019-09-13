@@ -10,12 +10,6 @@ public final class ActionableTableView: UIView {
         didSet { self.recalculateHeightConstraint() }
     }
 
-    public var themeRepository: ThemeRepository? {
-        didSet {
-            themeRepository?.addSubscriber(self)
-        }
-    }
-
     public override init(frame: CGRect) {
         super.init(frame: frame)
 
@@ -34,6 +28,9 @@ public final class ActionableTableView: UIView {
         self.actionsStackView.axis = .horizontal
         self.actionsStackView.distribution = .equalSpacing
         self.actionsStackView.alignment = .center
+
+        self.tableView.backgroundColor = Theme.backgroundColor
+        self.tableView.separatorColor = Theme.separatorColor
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError("init(coder:) has not been implemented") }
@@ -56,14 +53,5 @@ public final class ActionableTableView: UIView {
     public func reloadData() {
         self.tableView.reloadData()
         self.recalculateHeightConstraint()
-    }
-}
-
-extension ActionableTableView: ThemeRepositorySubscriber {
-    public func themeRepositoryDidChangeTheme(_ themeRepository: ThemeRepository) {
-        self.tableView.backgroundColor = themeRepository.backgroundColor
-        self.tableView.separatorColor = themeRepository.textColor
-
-        self.tableView.indicatorStyle = themeRepository.scrollIndicatorStyle
     }
 }

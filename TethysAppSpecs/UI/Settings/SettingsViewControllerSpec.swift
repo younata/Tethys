@@ -355,10 +355,6 @@ class SettingsViewControllerSpec: QuickSpec {
                         expect(cell.isSelected) == false
                     }
 
-                    it("has no edit actions") {
-                        expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
-                    }
-
                     it("does not respond to 3d touch") {
                         let viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
 
@@ -379,10 +375,6 @@ class SettingsViewControllerSpec: QuickSpec {
 
                     it("is titled 'Breakout'") {
                         expect(cell.textLabel?.text) == "Breakout"
-                    }
-
-                    it("has no edit actions") {
-                        expect(delegate.tableView?(subject.tableView, editActionsForRowAt: indexPath)).to(beNil())
                     }
 
                     describe("when tapped") {

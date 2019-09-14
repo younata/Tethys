@@ -280,9 +280,6 @@ extension SettingsViewController: UITableViewDelegate {
 
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { return false }
 
-    public func tableView(_ tableView: UITableView,
-                          editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? { return nil }
-
     @objc(tableView:commitEditingStyle:forRowAtIndexPath:)
     public func tableView(_ tableView: UITableView,
                           commit editingStyle: UITableViewCell.EditingStyle,

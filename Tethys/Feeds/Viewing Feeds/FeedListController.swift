@@ -215,6 +215,7 @@ public final class FeedListController: UIViewController {
             onSuccess(value)
         case .failure(let error):
             self.notificationView.display(errorTitle, message: error.localizedDescription)
+            onError()
         }
     }
 

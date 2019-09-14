@@ -544,8 +544,8 @@ class ArticleListControllerSpec: QuickSpec {
                                 expect(cell?.summary.text) == feed.displaySummary
                             }
 
-                            it("has no edit actions") {
-                                expect(subject.tableView(subject.tableView, editActionsForRowAt: IndexPath(row: 0, section: 0))).to(beNil())
+                            it("has no contextual actions") {
+                                expect(subject.tableView.delegate?.tableView?(subject.tableView, trailingSwipeActionsConfigurationForRowAt: IndexPath(row: 0, section: 0))).to(beNil())
                             }
 
                             it("doesn't allow highlighting") {
@@ -635,17 +635,25 @@ class ArticleListControllerSpec: QuickSpec {
                             }
                         }
 
-                        it("has 2 edit actions") {
+                        it("has 2 contextual actions") {
                             let section = 1
                             for row in 0..<subject.tableView.numberOfRows(inSection: section) {
                                 let indexPath = IndexPath(row: row, section: section)
-                                expect(subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.count).to(equal(2))
+                                let swipeActions = subject.tableView.delegate?.tableView?(subject.tableView, trailingSwipeActionsConfigurationForRowAt: indexPath)
+                                expect(swipeActions).toNot(beNil())
+                                expect(swipeActions?.performsFirstActionWithFullSwipe).to(beTrue())
+                                expect(swipeActions?.actions.count).to(equal(2))
                             }
                         }
 
                         describe("the edit actions") {
+                            var completionHandlerCalls: [Bool] = []
+
+                            beforeEach {
+                                completionHandlerCalls = []
+                            }
                             describe("the first action") {
-                                var action: UITableViewRowAction? = nil
+                                var action: UIContextualAction? = nil
                                 let indexPath = IndexPath(row: 0, section: 1)
 
                                 beforeEach {
@@ -653,7 +661,7 @@ class ArticleListControllerSpec: QuickSpec {
                                         fail("No row for \(indexPath)")
                                         return
                                     }
-                                    action = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.first
+                                    action = subject.tableView.delegate?.tableView?(subject.tableView, trailingSwipeActionsConfigurationForRowAt: indexPath)?.actions.first
                                 }
 
                                 it("states that it deletes the article") {
@@ -662,7 +670,7 @@ class ArticleListControllerSpec: QuickSpec {
 
                                 describe("tapping it") {
                                     beforeEach {
-                                        action?.handler?(action!, indexPath)
+                                        action?.handler(action!, subject.tableView.cellForRow(at: indexPath)!) { completionHandlerCalls.append($0) }
                                     }
 
                                     it("deletes the article") {
@@ -681,6 +689,10 @@ class ArticleListControllerSpec: QuickSpec {
                                         it("removes the article from the list") {
                                             expect(Array(subject.articles)).toNot(contain(articles[0]))
                                         }
+
+                                        it("calls the completion handler") {
+                                            expect(completionHandlerCalls).to(equal([true]))
+                                        }
                                     }
 
                                     context("when the delete operation fails") {
@@ -689,99 +701,115 @@ class ArticleListControllerSpec: QuickSpec {
                                         }
 
                                         itTellsTheUserAboutTheError(title: "Error deleting article", message: "Unknown Database Error")
+
+                                        it("calls the completion handler") {
+                                            expect(completionHandlerCalls).to(equal([false]))
+                                        }
                                     }
                                 }
                             }
 
-                            describe("for an unread article") {
-                                beforeEach {
-                                    let indexPath = IndexPath(row: 0, section: 1)
-                                    guard subject.tableView.numberOfRows(inSection: indexPath.section) > indexPath.row else {
-                                        fail("No row for \(indexPath)")
-                                        return
-                                    }
-                                    guard let markRead = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last else {
-                                        fail("No mark read edit action")
-                                        return
-                                    }
-
-                                    expect(markRead.title).to(equal("Mark\nRead"))
-                                    markRead.handler?(markRead, indexPath)
-                                }
-
-                                it("marks the article as read with the second action item") {
-                                    guard let call = articleService.markArticleAsReadCalls.last else {
-                                        fail("Didn't call ArticleService to mark article as read")
-                                        return
-                                    }
-                                    expect(call.article) == articles.first
-                                    expect(call.read) == true
-                                }
-
-                                context("when the articleService successfully marks the article as read") {
-                                    var updatedArticle: Article!
+                            describe("the second action") {
+                                describe("for an unread article") {
                                     beforeEach {
-                                        updatedArticle = articleFactory()
-                                        articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
+                                        let indexPath = IndexPath(row: 0, section: 1)
+                                        guard subject.tableView.numberOfRows(inSection: indexPath.section) > indexPath.row else {
+                                            fail("No row for \(indexPath)")
+                                            return
+                                        }
+                                        let action = subject.tableView.delegate?.tableView?(subject.tableView, trailingSwipeActionsConfigurationForRowAt: indexPath)?.actions.last
+
+                                        expect(action?.title).to(equal("Mark\nRead"))
+                                        action?.handler(action!, subject.tableView.cellForRow(at: indexPath)!) { completionHandlerCalls.append($0) }
                                     }
 
-                                    it("Updates the articles in the controller to reflect that") {
-                                        expect(subject.articles.first).to(equal(updatedArticle))
+                                    it("marks the article as read with the second action item") {
+                                        guard let call = articleService.markArticleAsReadCalls.last else {
+                                            fail("Didn't call ArticleService to mark article as read")
+                                            return
+                                        }
+                                        expect(call.article) == articles.first
+                                        expect(call.read) == true
+                                    }
+
+                                    context("when the articleService successfully marks the article as read") {
+                                        var updatedArticle: Article!
+                                        beforeEach {
+                                            updatedArticle = articleFactory()
+                                            articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
+                                        }
+
+                                        it("Updates the articles in the controller to reflect that") {
+                                            expect(subject.articles.first).to(equal(updatedArticle))
+                                        }
+
+                                        it("calls the completion handler") {
+                                            expect(completionHandlerCalls).to(equal([true]))
+                                        }
+                                    }
+
+                                    context("when the articleService fails to mark the article as read") {
+                                        beforeEach {
+                                            articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
+                                        }
+
+                                        itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
+
+                                        it("calls the completion handler") {
+                                            expect(completionHandlerCalls).to(equal([false]))
+                                        }
                                     }
                                 }
 
-                                context("when the articleService fails to mark the article as read") {
+                                describe("for a read article") {
                                     beforeEach {
-                                        articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
+                                        let indexPath = IndexPath(row: 2, section: 1)
+                                        guard subject.tableView.numberOfRows(inSection: indexPath.section) > indexPath.row else {
+                                            fail("No row for \(indexPath)")
+                                            return
+                                        }
+                                        let action = subject.tableView.delegate?.tableView?(subject.tableView, trailingSwipeActionsConfigurationForRowAt: indexPath)?.actions.last
+
+                                        expect(action?.title).to(equal("Mark\nUnread"))
+                                        action?.handler(action!, subject.tableView.cellForRow(at: indexPath)!) { completionHandlerCalls.append($0) }
                                     }
 
-                                    itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
-                                }
-                            }
-
-                            describe("for a read article") {
-                                beforeEach {
-                                    let indexPath = IndexPath(row: 2, section: 1)
-                                    guard subject.tableView.numberOfRows(inSection: indexPath.section) > indexPath.row else {
-                                        fail("No row for \(indexPath)")
-                                        return
-                                    }
-                                    guard let markRead = subject.tableView(subject.tableView, editActionsForRowAt: indexPath)?.last else {
-                                        fail("No mark unread edit action")
-                                        return
+                                    it("marks the article as unread with the second action item") {
+                                        guard let call = articleService.markArticleAsReadCalls.last else {
+                                            fail("Didn't call ArticleService to mark article as read")
+                                            return
+                                        }
+                                        expect(call.article) == articles[2]
+                                        expect(call.read) == false
                                     }
 
-                                    expect(markRead.title).to(equal("Mark\nUnread"))
-                                    markRead.handler?(markRead, indexPath)
-                                }
+                                    context("when the articleService successfully marks the article as read") {
+                                        var updatedArticle: Article!
+                                        beforeEach {
+                                            updatedArticle = articleFactory(read: true)
+                                            articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
+                                        }
 
-                                it("marks the article as unread with the second action item") {
-                                    guard let call = articleService.markArticleAsReadCalls.last else {
-                                        fail("Didn't call ArticleService to mark article as read")
-                                        return
-                                    }
-                                    expect(call.article) == articles[2]
-                                    expect(call.read) == false
-                                }
+                                        it("Updates the articles in the controller to reflect that") {
+                                            expect(Array(subject.articles)[2]).to(equal(updatedArticle))
+                                        }
 
-                                context("when the articleService successfully marks the article as read") {
-                                    var updatedArticle: Article!
-                                    beforeEach {
-                                        updatedArticle = articleFactory(read: true)
-                                        articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
+                                        it("calls the completion handler") {
+                                            expect(completionHandlerCalls).to(equal([true]))
+                                        }
                                     }
 
-                                    it("Updates the articles in the controller to reflect that") {
-                                        expect(Array(subject.articles)[2]).to(equal(updatedArticle))
-                                    }
-                                }
+                                    context("when the articleService fails to mark the article as read") {
+                                        beforeEach {
+                                            articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
+                                        }
 
-                                context("when the articleService fails to mark the article as read") {
-                                    beforeEach {
-                                        articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
-                                    }
+                                        itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
 
-                                    itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
+                                        it("calls the completion handler") {
+                                            expect(completionHandlerCalls).to(equal([false]))
+                                        }
+                                    }
                                 }
                             }
                         }

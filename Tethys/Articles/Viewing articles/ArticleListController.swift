@@ -134,21 +134,19 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         }
     }
 
-    fileprivate func toggleRead(article: Article) {
-        self.markRead(article: article, read: !article.read)
-    }
-
-    fileprivate func markRead(article: Article, read: Bool) {
+    fileprivate func markRead(article: Article, read: Bool, completionHandler: ((Bool) -> Void)? = nil) {
         self.articleService.mark(article: article, asRead: read).then { result in
             switch result {
             case .success(let updatedArticle):
                 self.update(article: article, to: updatedArticle)
                 self.notificationCenter.post(name: Notifications.reloadUI, object: self)
+                completionHandler?(true)
             case .failure(let error):
                 self.showAlert(
                     error: error,
                     title: NSLocalizedString("ArticleListController_Action_Save_Error_Title", comment: "")
                 )
+                completionHandler?(false)
             }
         }
     }
@@ -235,30 +233,34 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
                           commit editingStyle: UITableViewCell.EditingStyle,
                           forRowAt indexPath: IndexPath) {}
 
-    public func tableView(_ tableView: UITableView,
-                          editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        if ArticleListSection(rawValue: indexPath.section) != ArticleListSection.articles {
-            return nil
-        }
+    public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt
+                                                    indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        guard ArticleListSection(rawValue: indexPath.section) == .articles else { return nil }
         let article = self.articleForIndexPath(indexPath)
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-        let delete = UITableViewRowAction(style: .default, title: deleteTitle, handler: { _, _  in
-            _ = self.attemptDelete(article: article).then {
-                if $0 {
+        let delete = UIContextualAction(style: .destructive, title: deleteTitle) { _, _, handler in
+            _ = self.attemptDelete(article: article).then { success in
+                if success {
                     tableView.deleteRows(at: [indexPath], with: .automatic)
                 } else {
                     tableView.reloadRows(at: [indexPath], with: .right)
                 }
+                handler(success)
             }
-        })
+
+        }
+
         let unread = NSLocalizedString("ArticleListController_Cell_EditAction_MarkUnread", comment: "")
         let read = NSLocalizedString("ArticleListController_Cell_EditAction_MarkRead", comment: "")
         let toggleText = article.read ? unread : read
-        let toggle = UITableViewRowAction(style: .normal, title: toggleText, handler: { _, _  in
-            self.toggleRead(article: article)
-        })
+        let toggle = UIContextualAction(style: .normal, title: toggleText) { _, _, handler in
+            self.markRead(article: article, read: !article.read, completionHandler: handler)
+        }
 
-        return [delete, toggle]
+        let actions = UISwipeActionsConfiguration(actions: [delete, toggle])
+        actions.performsFirstActionWithFullSwipe = true
+
+        return actions
     }
 
     // MARK: Private
@@ -355,7 +357,7 @@ extension ArticleListController: UIViewControllerPreviewingDelegate {
             toggleReadTitle = NSLocalizedString("ArticleListController_Action_MarkRead", comment: "")
         }
         let toggleRead = UIPreviewAction(title: toggleReadTitle, style: .default) { _, _  in
-            self.toggleRead(article: article)
+            self.markRead(article: article, read: !article.read)
         }
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
         let delete = UIPreviewAction(title: deleteTitle, style: .destructive) { _, _  in

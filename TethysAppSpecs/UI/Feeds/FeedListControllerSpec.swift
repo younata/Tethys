@@ -447,22 +447,24 @@ final class FeedListControllerSpec: QuickSpec {
                                 }
                             }
 
-                            describe("edit actions") {
-                                var editActions: [UITableViewRowAction] = []
+                            describe("contextual actions") {
+                                var contextualActions: [UIContextualAction] = []
 
-                                var action: UITableViewRowAction?
+                                var action: UIContextualAction?
 
                                 beforeEach {
-                                    editActions = subject.tableView.delegate?.tableView?(subject.tableView, editActionsForRowAt: indexPath) ?? []
+                                    let swipeActions = subject.tableView.delegate?.tableView?(subject.tableView, trailingSwipeActionsConfigurationForRowAt: indexPath)
+                                    expect(swipeActions?.performsFirstActionWithFullSwipe).to(beTrue())
+                                    contextualActions = swipeActions?.actions ?? []
                                 }
 
                                 it("has 4 edit actions") {
-                                    expect(editActions).to(haveCount(4))
+                                    expect(contextualActions).to(haveCount(4))
                                 }
 
                                 describe("the first one") {
                                     beforeEach {
-                                        action = editActions.first
+                                        action = contextualActions.first
                                     }
 
                                     it("states it deletes the feed") {
@@ -470,8 +472,10 @@ final class FeedListControllerSpec: QuickSpec {
                                     }
 
                                     describe("tapping it") {
+                                        var completionHandlerCalls: [Bool] = []
                                         beforeEach {
-                                            action?.handler?(action!, indexPath)
+                                            completionHandlerCalls = []
+                                            action?.handler(action!, subject.tableView.cellForRow(at: indexPath)!) { completionHandlerCalls.append($0) }
                                         }
 
                                         it("deletes the feed from the data store") {
@@ -485,6 +489,10 @@ final class FeedListControllerSpec: QuickSpec {
 
                                             it("removes the feed from the list of cells") {
                                                 expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(2))
+                                            }
+
+                                            it("calls the completion handler") {
+                                                expect(completionHandlerCalls).to(equal([true]))
                                             }
                                         }
 
@@ -507,14 +515,18 @@ final class FeedListControllerSpec: QuickSpec {
                                             it("does not remove the feed from the list of cells") {
                                                 expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(3))
                                             }
+
+                                            it("calls the completion handler") {
+                                                expect(completionHandlerCalls).to(equal([false]))
+                                            }
                                         }
                                     }
                                 }
 
                                 describe("the second one") {
                                     beforeEach {
-                                        guard editActions.count > 1 else { return }
-                                        action = editActions[1]
+                                        guard contextualActions.count > 1 else { return }
+                                        action = contextualActions[1]
                                     }
 
                                     it("states it marks all items in the feed as read") {
@@ -522,8 +534,10 @@ final class FeedListControllerSpec: QuickSpec {
                                     }
 
                                     describe("tapping it") {
+                                        var completionHandlerCalls: [Bool] = []
                                         beforeEach {
-                                            action?.handler?(action!, indexPath)
+                                            completionHandlerCalls = []
+                                            action?.handler(action!, subject.tableView.cellForRow(at: indexPath)!) { completionHandlerCalls.append($0) }
                                         }
 
                                         it("marks all articles of that feed as read") {
@@ -547,6 +561,10 @@ final class FeedListControllerSpec: QuickSpec {
                                             it("does not tell the feedService to fetch new feeds") {
                                                 expect(feedService.feedsPromises).to(haveCount(1))
                                             }
+
+                                            it("calls the completion handler") {
+                                                expect(completionHandlerCalls).to(equal([true]))
+                                            }
                                         }
 
                                         describe("when the feed service fails") {
@@ -568,14 +586,18 @@ final class FeedListControllerSpec: QuickSpec {
                                             it("doesn't post a notification") {
                                                 expect(recorder.notifications).to(beEmpty())
                                             }
+
+                                            it("calls the completion handler") {
+                                                expect(completionHandlerCalls).to(equal([false]))
+                                            }
                                         }
                                     }
                                 }
 
                                 describe("the third one") {
                                     beforeEach {
-                                        guard editActions.count > 2 else { return }
-                                        action = editActions[2]
+                                        guard contextualActions.count > 2 else { return }
+                                        action = contextualActions[2]
                                     }
 
                                     it("states it edits the feed") {
@@ -583,20 +605,26 @@ final class FeedListControllerSpec: QuickSpec {
                                     }
 
                                     describe("tapping it") {
+                                        var completionHandlerCalls: [Bool] = []
                                         beforeEach {
-                                            action?.handler?(action!, indexPath)
+                                            completionHandlerCalls = []
+                                            action?.handler(action!, subject.tableView.cellForRow(at: indexPath)!) { completionHandlerCalls.append($0) }
                                         }
 
                                         it("brings up a feed edit screen") {
                                             expect(navigationController.visibleViewController).to(beAnInstanceOf(FeedViewController.self))
+                                        }
+
+                                        it("calls the completion handler") {
+                                            expect(completionHandlerCalls).to(equal([true]))
                                         }
                                     }
                                 }
 
                                 describe("the fourth one") {
                                     beforeEach {
-                                        guard editActions.count > 3 else { return }
-                                        action = editActions[3]
+                                        guard contextualActions.count > 3 else { return }
+                                        action = contextualActions[3]
                                     }
 
                                     it("states it opens a share sheet") {
@@ -608,8 +636,10 @@ final class FeedListControllerSpec: QuickSpec {
                                     }
 
                                     describe("tapping it") {
+                                        var completionHandlerCalls: [Bool] = []
                                         beforeEach {
-                                            action?.handler?(action!, indexPath)
+                                            completionHandlerCalls = []
+                                            action?.handler(action!, subject.tableView.cellForRow(at: indexPath)!) { completionHandlerCalls.append($0) }
                                         }
 
                                         it("brings up a share sheet") {
@@ -618,6 +648,10 @@ final class FeedListControllerSpec: QuickSpec {
                                                 expect(shareSheet.url) == feeds[0].url
                                                 expect(shareSheet.activityItems as? [URL]) == [feeds[0].url]
                                             }
+                                        }
+
+                                        it("calls the completion handler") {
+                                            expect(completionHandlerCalls).to(equal([true]))
                                         }
                                     }
                                 }

@@ -181,7 +181,12 @@ public final class FeedListController: UIViewController {
 
         self.feedService.feeds().then {
             let errorTitle = NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Title", comment: "")
-            self.unwrap(result: $0, errorTitle: errorTitle) { reloadWithFeeds(Array($0)) }
+            self.unwrap(
+                result: $0,
+                errorTitle: errorTitle,
+                onSuccess: { reloadWithFeeds(Array($0)) },
+                onError: { }
+            )
         }
     }
 
@@ -203,7 +208,8 @@ public final class FeedListController: UIViewController {
         return articleListController
     }
 
-    fileprivate func unwrap<T>(result: Result<T, TethysError>, errorTitle: String, onSuccess: (T) -> Void) {
+    fileprivate func unwrap<T>(result: Result<T, TethysError>, errorTitle: String,
+                               onSuccess: (T) -> Void, onError: () -> Void) {
         switch result {
         case .success(let value):
             onSuccess(value)
@@ -212,24 +218,35 @@ public final class FeedListController: UIViewController {
         }
     }
 
-    fileprivate func deleteFeed(feed: Feed, indexPath: IndexPath?) {
+    fileprivate func deleteFeed(feed: Feed, indexPath: IndexPath?, completionHandler: @escaping (Bool) -> Void) {
         self.feedService.remove(feed: feed).then { result in
             let errorTitle = NSLocalizedString("FeedsTableViewController_Loading_Deleting_Feed_Error", comment: "")
-            self.unwrap(result: result, errorTitle: errorTitle) {
-                self.feeds = self.feeds.filter { $0 != feed }
-                if let indexPath = indexPath {
-                    self.tableView.deleteRows(at: [indexPath], with: .automatic)
-                } else {
-                    self.tableView.reloadData()
+            self.unwrap(
+                result: result,
+                errorTitle: errorTitle,
+                onSuccess: {
+                    self.feeds = self.feeds.filter { $0 != feed }
+                    if let indexPath = indexPath {
+                        self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                    } else {
+                        self.tableView.reloadData()
+                    }
+                    completionHandler(true)
+                },
+                onError: {
+                    completionHandler(false)
                 }
-            }
+            )
         }
     }
 
-    fileprivate func markRead(feed: Feed, indexPath: IndexPath?) {
+    fileprivate func markRead(feed: Feed, indexPath: IndexPath?, completionHandler: @escaping (Bool) -> Void) {
         self.feedService.readAll(of: feed).then { result in
             let errorTitle = NSLocalizedString("FeedsTableViewController_Loading_Marking_Feed_Error", comment: "")
-            self.unwrap(result: result, errorTitle: errorTitle) {
+            self.unwrap(
+                result: result,
+                errorTitle: errorTitle,
+                onSuccess: {
                 if let indexPath = indexPath {
                     self.tableView.reloadRows(at: [indexPath], with: .automatic)
                 } else {
@@ -237,7 +254,12 @@ public final class FeedListController: UIViewController {
                 }
 
                 self.notificationCenter.post(name: Notifications.reloadUI, object: self)
-            }
+                    completionHandler(true)
+                },
+                onError: {
+                    completionHandler(false)
+                }
+            )
         }
     }
 
@@ -246,12 +268,13 @@ public final class FeedListController: UIViewController {
         self.navigationController?.pushViewController(controller, animated: true)
     }
 
-    fileprivate func shareFeed(feed: Feed) {
+    fileprivate func shareFeed(feed: Feed, view: UIView?) {
         let shareSheet = URLShareSheet(
             url: feed.url,
             activityItems: [feed.url],
             applicationActivities: nil
         )
+        shareSheet.popoverPresentationController?.sourceView = view ?? self.navigationController?.navigationBar
         self.present(shareSheet, animated: true, completion: nil)
     }
 
@@ -271,7 +294,7 @@ extension FeedListController: UIViewControllerPreviewingDelegate {
     private func articleListPreviewItems(feed: Feed) -> [UIPreviewAction] {
         let readTitle = NSLocalizedString("FeedsTableViewController_PreviewItem_MarkRead", comment: "")
         let markRead = UIPreviewAction(title: readTitle, style: .default) { _, _  in
-            self.markRead(feed: feed, indexPath: nil)
+            self.markRead(feed: feed, indexPath: nil, completionHandler: { _ in })
         }
         let editTitle = NSLocalizedString("Generic_Edit", comment: "")
         let edit = UIPreviewAction(title: editTitle, style: .default) { _, _  in
@@ -279,11 +302,11 @@ extension FeedListController: UIViewControllerPreviewingDelegate {
         }
         let shareTitle = NSLocalizedString("Generic_Share", comment: "")
         let share = UIPreviewAction(title: shareTitle, style: .default) { _, _  in
-            self.shareFeed(feed: feed)
+            self.shareFeed(feed: feed, view: nil)
         }
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
         let delete = UIPreviewAction(title: deleteTitle, style: .destructive) { _, _  in
-            self.deleteFeed(feed: feed, indexPath: nil)
+            self.deleteFeed(feed: feed, indexPath: nil, completionHandler: { _ in })
         }
         return [markRead, edit, share, delete]
     }
@@ -329,29 +352,33 @@ extension FeedListController: UITableViewDelegate, UITableViewDataSource {
                           commit editingStyle: UITableViewCell.EditingStyle,
                           forRowAt indexPath: IndexPath) {}
 
-    public func tableView(_ tableView: UITableView,
-                          editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+    public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt
+                                                    indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-        let delete = UITableViewRowAction(style: .default, title: deleteTitle) {(_, indexPath: IndexPath!) in
-            self.deleteFeed(feed: self.feed(indexPath: indexPath), indexPath: indexPath)
-        }
-
+        let delete = UIContextualAction(style: .destructive, title: deleteTitle, handler: { (_, _, handler) in
+            self.deleteFeed(feed: self.feed(indexPath: indexPath), indexPath: indexPath, completionHandler: handler)
+        })
         let readTitle = NSLocalizedString("FeedsTableViewController_Table_EditAction_MarkRead", comment: "")
-        let markRead = UITableViewRowAction(style: .normal, title: readTitle) {_, indexPath in
-            self.markRead(feed: self.feed(indexPath: indexPath), indexPath: indexPath)
+        let markRead = UIContextualAction(style: .normal, title: readTitle) { (_, _, handler) in
+            self.markRead(feed: self.feed(indexPath: indexPath), indexPath: indexPath, completionHandler: handler)
         }
-
         let editTitle = NSLocalizedString("Generic_Edit", comment: "")
-        let edit = UITableViewRowAction(style: .normal, title: editTitle) {_, indexPath in
-            self.editFeed(feed: self.feed(indexPath: indexPath), view: tableView.cellForRow(at: indexPath))
+        let edit = UIContextualAction(style: .normal, title: editTitle) { (_, view, handler) in
+            self.editFeed(feed: self.feed(indexPath: indexPath), view: view)
+            handler(true)
         }
-        edit.backgroundColor = UIColor.blue
+        edit.backgroundColor = UIColor.systemBlue
         let shareTitle = NSLocalizedString("Generic_Share", comment: "")
-        let share = UITableViewRowAction(style: .normal, title: shareTitle) {_, _  in
-            self.shareFeed(feed: self.feed(indexPath: indexPath))
+        let share = UIContextualAction(style: .normal, title: shareTitle) { _, view, handler in
+            self.shareFeed(feed: self.feed(indexPath: indexPath), view: view)
+            handler(true)
         }
         share.backgroundColor = Theme.highlightColor
-        return [delete, markRead, edit, share]
+        let configuration = UISwipeActionsConfiguration(actions: [
+            delete, markRead, edit, share
+        ])
+        configuration.performsFirstActionWithFullSwipe = true
+        return configuration
     }
 
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {

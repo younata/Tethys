@@ -154,25 +154,31 @@ extension FeedDetailView: UITableViewDataSource {
 }
 
 extension FeedDetailView: UITableViewDelegate {
-    public func tableView(_ tableView: UITableView,
-                          editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+    public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt
+                                                    indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-        let delete = UITableViewRowAction(style: .default, title: deleteTitle, handler: {(_, indexPath) in
+        let delete = UIContextualAction(style: .destructive, title: deleteTitle) { _, _, handler in
             self.tags.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
             self.delegate?.feedDetailView(self, tagsDidChange: self.tags)
-        })
+            handler(true)
+        }
         let editTitle = NSLocalizedString("Generic_Edit", comment: "")
-        let edit = UITableViewRowAction(style: .normal, title: editTitle, handler: {(_, indexPath) in
+        let edit = UIContextualAction(style: .normal, title: editTitle) { _, _, handler in
             let tag = self.tags[indexPath.row]
 
             self.delegate?.feedDetailView(self, editTag: tag) { newTag in
                 self.tags[indexPath.row] = newTag
                 tableView.reloadRows(at: [indexPath], with: .automatic)
                 self.delegate?.feedDetailView(self, tagsDidChange: self.tags)
+
+                handler(true)
             }
-        })
-        return [delete, edit]
+        }
+
+        let swipeActions = UISwipeActionsConfiguration(actions: [delete, edit])
+        swipeActions.performsFirstActionWithFullSwipe = true
+        return swipeActions
     }
 
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

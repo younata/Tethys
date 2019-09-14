@@ -133,62 +133,74 @@ class FeedDetailViewSpec: QuickSpec {
             describe("a cell") {
                 let indexPath = IndexPath(row: 0, section: 0)
 
-                describe("the edit actions") {
-                    var editActions: [UITableViewRowAction]?
+                describe("the contextual actions") {
+                    var swipeActions: UISwipeActionsConfiguration? = nil
+                    var completionHandlerCalls: [Bool] = []
 
                     beforeEach {
-                        editActions = tableView.delegate?.tableView?(tableView, editActionsForRowAt: indexPath)
+                        completionHandlerCalls = []
+                        swipeActions = tableView.delegate?.tableView?(tableView, trailingSwipeActionsConfigurationForRowAt: indexPath)
                     }
 
-                    it("has two edit actions") {
-                        expect(editActions).to(haveCount(2))
+                    it("automatically performs the first action if full swipe") {
+                        expect(swipeActions?.performsFirstActionWithFullSwipe).to(beTrue())
                     }
 
-                    describe("the first edit action") {
-                        var editAction: UITableViewRowAction?
+                    it("has two actions") {
+                        expect(swipeActions?.actions).to(haveCount(2))
+                    }
+
+                    describe("the first action") {
+                        var action: UIContextualAction?
 
                         beforeEach {
-                            editAction = editActions?.first
+                            action = swipeActions?.actions.first
                         }
 
                         it("is titled 'Delete'") {
-                            expect(editAction?.title) == "Delete"
-                        }
-
-                        it("deletes the cell from the tags list when tapped") {
-                            editAction?.handler?(editAction!, indexPath)
-
-                            expect(tableView.numberOfRows(inSection: 0)) == (tags.count - 1)
-                            let newCell = tableView.dataSource?.tableView(tableView, cellForRowAt: indexPath)
-                            expect(newCell?.textLabel?.text) == tags[1]
-                        }
-
-                        it("informs the delegate that the tags changed when tapped") {
-                            editAction?.handler?(editAction!, indexPath)
-
-                            expect(delegate.tagsDidChangeCallCount) == 1
-                            guard delegate.tagsDidChangeCallCount == 1 else { return }
-
-                            let args = delegate.tagsDidChangeArgsForCall(0)
-                            expect(args.0) === subject
-                            expect(args.1) == ["goodbye"]
-                        }
-                    }
-
-                    describe("the second edit action") {
-                        var editAction: UITableViewRowAction?
-
-                        beforeEach {
-                            editAction = editActions?.last
-                        }
-
-                        it("is titled 'Edit'") {
-                            expect(editAction?.title) == "Edit"
+                            expect(action?.title) == "Delete"
                         }
 
                         describe("when tapped") {
                             beforeEach {
-                                editAction?.handler?(editAction!, indexPath)
+                                action?.handler(action!, subject, { completionHandlerCalls.append($0) })
+                            }
+
+                            it("deletes the cell from the tags list") {
+                                expect(tableView.numberOfRows(inSection: 0)) == (tags.count - 1)
+                                let newCell = tableView.dataSource?.tableView(tableView, cellForRowAt: indexPath)
+                                expect(newCell?.textLabel?.text) == tags[1]
+                            }
+
+                            it("informs the delegate that the tags changed") {
+                                expect(delegate.tagsDidChangeCallCount) == 1
+                                guard delegate.tagsDidChangeCallCount == 1 else { return }
+
+                                let args = delegate.tagsDidChangeArgsForCall(0)
+                                expect(args.0) === subject
+                                expect(args.1) == ["goodbye"]
+                            }
+
+                            it("calls the completion handler") {
+                                expect(completionHandlerCalls).to(equal([true]))
+                            }
+                        }
+                    }
+
+                    describe("the second edit action") {
+                        var action: UIContextualAction?
+
+                        beforeEach {
+                            action = swipeActions?.actions.last
+                        }
+
+                        it("is titled 'Edit'") {
+                            expect(action?.title) == "Edit"
+                        }
+
+                        describe("when tapped") {
+                            beforeEach {
+                                action?.handler(action!, subject, { completionHandlerCalls.append($0) })
                             }
 
                             it("informs its delegate when tapped") {
@@ -199,6 +211,10 @@ class FeedDetailViewSpec: QuickSpec {
                                 let args = delegate.editTagArgsForCall(0)
                                 expect(args.0) === subject
                                 expect(args.1) == tags[0]
+                            }
+
+                            it("does not yet call the completion handler") {
+                                expect(completionHandlerCalls).to(beEmpty())
                             }
 
                             describe("when the delegate calls the callback") {
@@ -229,6 +245,10 @@ class FeedDetailViewSpec: QuickSpec {
                                     let args = delegate.tagsDidChangeArgsForCall(0)
                                     expect(args.0) === subject
                                     expect(args.1) == ["callback string", "goodbye"]
+                                }
+
+                                it("calls the completion handler") {
+                                    expect(completionHandlerCalls).to(equal([true]))
                                 }
                             }
                         }

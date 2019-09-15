@@ -65,8 +65,6 @@ public final class SettingsViewController: UIViewController {
         self.tableView.dataSource = self
         self.tableView.allowsMultipleSelection = true
 
-        self.registerForPreviewing(with: self, sourceView: self.tableView)
-
         self.accountService.accounts().then { results in
             self.mainQueue.addOperation {
                 self.accounts = results.compactMap { $0.value }
@@ -129,36 +127,6 @@ public final class SettingsViewController: UIViewController {
         let currentRefreshStyleIndexPath = IndexPath(row: self.refreshControlStyle.rawValue,
                                                      section: SettingsSection.refresh.rawValue)
         self.tableView.selectRow(at: currentRefreshStyleIndexPath, animated: false, scrollPosition: .none)
-    }
-}
-
-extension SettingsViewController: UIViewControllerPreviewingDelegate {
-    public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
-                                  viewControllerForLocation location: CGPoint) -> UIViewController? {
-        guard let indexPath = self.tableView.indexPathForRow(at: location),
-            let section = SettingsSection(rawValue: indexPath.section) else {
-                return nil
-        }
-        switch section {
-        case .credits:
-            if indexPath.row == 0 {
-                guard let url = URL(string: "https://twitter.com/younata") else { return nil }
-                return SFSafariViewController(url: url)
-            } else if indexPath.row == 1 {
-                return self.documentationViewController(.libraries)
-            } else if indexPath.row == 2 {
-                return self.documentationViewController(.icons)
-            } else {
-                return nil
-            }
-        default:
-            return nil
-        }
-    }
-
-    public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
-                                  commit viewControllerToCommit: UIViewController) {
-        self.navigationController?.pushViewController(viewControllerToCommit, animated: true)
     }
 }
 
@@ -284,6 +252,39 @@ extension SettingsViewController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView,
                           commit editingStyle: UITableViewCell.EditingStyle,
                           forRowAt indexPath: IndexPath) {}
+
+    public func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath,
+                          point: CGPoint) -> UIContextMenuConfiguration? {
+        guard SettingsSection(rawValue: indexPath.section) == .credits else {
+            return nil
+        }
+        return UIContextMenuConfiguration(
+            identifier: indexPath as NSIndexPath,
+            previewProvider: { [weak self] in
+                if indexPath.row == 0 {
+                    guard let url = URL(string: "https://twitter.com/younata") else { return nil }
+                    return SFSafariViewController(url: url)
+                } else if indexPath.row == 1 {
+                    return self?.documentationViewController(.libraries)
+                } else if indexPath.row == 2 {
+                    return self?.documentationViewController(.icons)
+                } else {
+                    return nil
+                }
+            },
+            actionProvider: { elements in
+                return UIMenu(title: "", children: elements)
+        })
+    }
+
+    public func tableView(_ tableView: UITableView,
+                          willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration,
+                          animator: UIContextMenuInteractionCommitAnimating) {
+        animator.addCompletion { [weak self] in
+            guard let viewController = animator.previewViewController else { return }
+            self?.navigationController?.pushViewController(viewController, animated: true)
+        }
+    }
 
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let section = SettingsSection(rawValue: indexPath.section) else { return }

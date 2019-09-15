@@ -355,13 +355,8 @@ class SettingsViewControllerSpec: QuickSpec {
                         expect(cell.isSelected) == false
                     }
 
-                    it("does not respond to 3d touch") {
-                        let viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
-
-                        let rect = subject.tableView.rectForRow(at: indexPath)
-                        let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
-                        let viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
-                        expect(viewController).to(beNil())
+                    it("has no context menu") {
+                        expect(subject.tableView.delegate?.tableView?(subject.tableView, contextMenuConfigurationForRowAt: indexPath, point: .zero)).to(beNil())
                     }
                 }
 
@@ -392,13 +387,8 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    it("does not respond to 3d touch") {
-                        let viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
-
-                        let rect = subject.tableView.rectForRow(at: indexPath)
-                        let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
-                        let viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
-                        expect(viewController).to(beNil())
+                    it("has no context menu") {
+                        expect(subject.tableView.delegate?.tableView?(subject.tableView, contextMenuConfigurationForRowAt: indexPath, point: .zero)).to(beNil())
                     }
                 }
             }
@@ -452,13 +442,8 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    it("does not respond to 3d touch") {
-                        let viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
-
-                        let rect = subject.tableView.rectForRow(at: indexPath)
-                        let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
-                        let viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
-                        expect(viewController).to(beNil())
+                    it("has no context menu") {
+                        expect(subject.tableView.delegate?.tableView?(subject.tableView, contextMenuConfigurationForRowAt: indexPath, point: .zero)).to(beNil())
                     }
                 }
 
@@ -520,13 +505,8 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    it("does not respond to 3d touch") {
-                        let viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
-
-                        let rect = subject.tableView.rectForRow(at: indexPath)
-                        let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
-                        let viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
-                        expect(viewController).to(beNil())
+                    it("has no context menu") {
+                        expect(subject.tableView.delegate?.tableView?(subject.tableView, contextMenuConfigurationForRowAt: indexPath, point: .zero)).to(beNil())
                     }
                 }
 
@@ -557,22 +537,8 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    describe("3d touching the cell") {
-                        var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
-                        var viewController: UIViewController? = nil
-
-                        beforeEach {
-                            subject.tableView.frame = CGRect(x: 0, y: 0, width: 320, height: 480)
-                            viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
-
-                            let rect = subject.tableView.rectForRow(at: indexPath)
-                            let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
-                            viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
-                        }
-
-                        it("does nothing") {
-                            expect(viewController).to(beNil())
-                        }
+                    it("has no context menu") {
+                        expect(subject.tableView.delegate?.tableView?(subject.tableView, contextMenuConfigurationForRowAt: indexPath, point: .zero)).to(beNil())
                     }
                 }
             }
@@ -631,27 +597,41 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    describe("3d touching the cell") {
-                        var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
-                        var viewController: UIViewController? = nil
+                    describe("the context menu") {
+                        var menuConfiguration: UIContextMenuConfiguration?
 
                         beforeEach {
-                            subject.tableView.frame = CGRect(x: 0, y: 0, width: 320, height: 480)
-                            viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
-
-                            let rect = subject.tableView.rectForRow(at: indexPath)
-                            let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
-                            viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                            menuConfiguration = subject.tableView.delegate?.tableView?(
+                                subject.tableView,
+                                contextMenuConfigurationForRowAt: indexPath,
+                                point: .zero
+                            )
                         }
 
-                        it("returns an SFSafariViewController") {
+                        it("shows a menu and a safari view controller") {
+                            expect(menuConfiguration).toNot(beNil())
+                            let viewController = menuConfiguration?.previewProvider?()
                             expect(viewController).to(beAnInstanceOf(SFSafariViewController.self))
                         }
 
-                        it("pushes the login controller if the user commits the touch") {
-                            guard let vc = viewController else { fail(); return }
-                            subject.previewingContext(viewControllerPreviewing, commit: vc)
-                            expect(navigationController.visibleViewController) == vc
+                        it("has no additional menu actions") {
+                            expect(menuConfiguration?.actionProvider?([])?.children).to(beEmpty())
+                        }
+
+                        describe("committing the view controller (tapping on it again)") {
+                            beforeEach {
+                                guard let config = menuConfiguration else { return }
+                                let animator = FakeContextMenuAnimator(commitStyle: .pop, viewController: menuConfiguration?.previewProvider?())
+                                subject.tableView.delegate?.tableView?(subject.tableView, willPerformPreviewActionForMenuWith: config, animator: animator)
+
+                                expect(animator.addAnimationsCalls).to(beEmpty())
+                                expect(animator.addCompletionCalls).to(haveCount(1))
+                                animator.addCompletionCalls.last?()
+                            }
+
+                            it("navigates to the view controller") {
+                                expect(navigationController.topViewController).to(beAnInstanceOf(SFSafariViewController.self))
+                            }
                         }
                     }
                 }
@@ -703,34 +683,47 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    describe("3d touching the cell") {
-                        var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
-                        var viewController: UIViewController? = nil
+                    describe("context menus") {
+                        var menuConfiguration: UIContextMenuConfiguration?
 
                         beforeEach {
-                            subject.tableView.frame = CGRect(x: 0, y: 0, width: 320, height: 480)
-                            viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
-
-                            let rect = subject.tableView.rectForRow(at: indexPath)
-                            let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
-                            viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                            menuConfiguration = subject.tableView.delegate?.tableView?(
+                                subject.tableView,
+                                contextMenuConfigurationForRowAt: indexPath,
+                                point: .zero
+                            )
                         }
 
-                        it("returns a DocumentationViewController") {
+                        it("shows a menu and a documentation view controller") {
+                            expect(menuConfiguration).toNot(beNil())
+                            let viewController = menuConfiguration?.previewProvider?()
                             expect(viewController).to(beAnInstanceOf(DocumentationViewController.self))
                             if let documentationViewController = viewController as? DocumentationViewController {
                                 expect(documentationViewController.documentation) == Documentation.libraries
                             }
                         }
 
-                        it("has no preview actions") {
-                            expect(viewController?.previewActionItems.count) == 0
+                        it("has no menu actions") {
+                            expect(menuConfiguration?.actionProvider?([])?.children).to(beEmpty())
                         }
 
-                        it("pushes the login controller if the user commits the touch") {
-                            guard let vc = viewController else { fail(); return }
-                            subject.previewingContext(viewControllerPreviewing, commit: vc)
-                            expect(navigationController.visibleViewController) == vc
+                        describe("committing the view controller (tapping on it again)") {
+                            beforeEach {
+                                guard let config = menuConfiguration else { return }
+                                let animator = FakeContextMenuAnimator(commitStyle: .pop, viewController: menuConfiguration?.previewProvider?())
+                                subject.tableView.delegate?.tableView?(subject.tableView, willPerformPreviewActionForMenuWith: config, animator: animator)
+
+                                expect(animator.addAnimationsCalls).to(beEmpty())
+                                expect(animator.addCompletionCalls).to(haveCount(1))
+                                animator.addCompletionCalls.last?()
+                            }
+
+                            it("navigates to the view controller") {
+                                expect(navigationController.topViewController).to(beAnInstanceOf(DocumentationViewController.self))
+                                if let documentationViewController = navigationController.topViewController as? DocumentationViewController {
+                                    expect(documentationViewController.documentation) == Documentation.libraries
+                                }
+                            }
                         }
                     }
                 }
@@ -765,34 +758,47 @@ class SettingsViewControllerSpec: QuickSpec {
                         }
                     }
 
-                    describe("3d touching the cell") {
-                        var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
-                        var viewController: UIViewController? = nil
+                    describe("context menus") {
+                        var menuConfiguration: UIContextMenuConfiguration?
 
                         beforeEach {
-                            subject.tableView.frame = CGRect(x: 0, y: 0, width: 320, height: 480)
-                            viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
-
-                            let rect = subject.tableView.rectForRow(at: indexPath)
-                            let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
-                            viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                            menuConfiguration = subject.tableView.delegate?.tableView?(
+                                subject.tableView,
+                                contextMenuConfigurationForRowAt: indexPath,
+                                point: .zero
+                            )
                         }
 
-                        it("returns a DocumentationViewController") {
+                        it("shows a menu and a DocumentationViewController") {
+                            expect(menuConfiguration).toNot(beNil())
+                            let viewController = menuConfiguration?.previewProvider?()
                             expect(viewController).to(beAnInstanceOf(DocumentationViewController.self))
                             if let documentationViewController = viewController as? DocumentationViewController {
                                 expect(documentationViewController.documentation) == Documentation.icons
                             }
                         }
 
-                        it("has no preview actions") {
-                            expect(viewController?.previewActionItems.count) == 0
+                        it("has no menu actions") {
+                            expect(menuConfiguration?.actionProvider?([])?.children).to(beEmpty())
                         }
 
-                        it("pushes the login controller if the user commits the touch") {
-                            guard let vc = viewController else { fail(); return }
-                            subject.previewingContext(viewControllerPreviewing, commit: vc)
-                            expect(navigationController.visibleViewController) == vc
+                        describe("committing the view controller (tapping on it again)") {
+                            beforeEach {
+                                guard let config = menuConfiguration else { return }
+                                let animator = FakeContextMenuAnimator(commitStyle: .pop, viewController: menuConfiguration?.previewProvider?())
+                                subject.tableView.delegate?.tableView?(subject.tableView, willPerformPreviewActionForMenuWith: config, animator: animator)
+
+                                expect(animator.addAnimationsCalls).to(beEmpty())
+                                expect(animator.addCompletionCalls).to(haveCount(1))
+                                animator.addCompletionCalls.last?()
+                            }
+
+                            it("navigates to the view controller") {
+                                expect(navigationController.topViewController).to(beAnInstanceOf(DocumentationViewController.self))
+                                if let documentationViewController = navigationController.topViewController as? DocumentationViewController {
+                                    expect(documentationViewController.documentation) == Documentation.icons
+                                }
+                            }
                         }
                     }
                 }

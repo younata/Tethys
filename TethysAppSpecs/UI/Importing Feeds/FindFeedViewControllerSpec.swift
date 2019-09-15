@@ -243,25 +243,46 @@ class FindFeedViewControllerSpec: QuickSpec {
                 expect(subject.addFeedButton.isEnabled) == false
             }
 
-            describe("3d touch events") {
+            describe("context menu events") {
                 describe("when the user tries to peek on a link") {
-                    var viewController: UIViewController?
-                    let element = FakeWKPreviewItem(link: URL(string: "https://example.com/foo"))
+                    let element = FakeWKContentMenuElementInfo.new(linkURL: URL(string: "https://example.com/foo")!)
+                    var contextMenuCalls: [UIContextMenuConfiguration?] = []
 
                     beforeEach {
-                        viewController = subject.webContent.uiDelegate?.webView?(subject.webContent,
-                                                                                 previewingViewControllerForElement: element,
-                                                                                 defaultActions: [])
+                        contextMenuCalls = []
+
+                        subject.webContent.uiDelegate?.webView?(
+                            subject.webContent,
+                            contextMenuConfigurationForElement: element,
+                            completionHandler: { contextMenuCalls.append($0) }
+                        )
                     }
 
                     it("presents another FindFeedViewController configured with that link") {
-                        expect(viewController).to(beAnInstanceOf(FindFeedViewController.self))
-                        expect(viewController).toNot(equal(subject))
+                        expect(contextMenuCalls).to(haveCount(1))
+                        guard let contextMenu = contextMenuCalls.last else {
+                            return expect(contextMenuCalls.last).toNot(beNil())
+                        }
+                        expect(contextMenu?.identifier as? NSURL).to(equal(URL(string: "https://example.com/foo")! as NSURL))
+//                        let viewController = contextMenu?.previewProvider?()
+//                        expect(viewController).to(beAnInstanceOf(FindFeedViewController.self))
+//                        expect(viewController).toNot(equal(subject))
                     }
 
                     it("replaces the navigation controller's view controller stack with just that view controller") {
-                        subject.webContent.uiDelegate?.webView?(subject.webContent,
-                                                                commitPreviewingViewController: viewController!)
+                        let viewController = UIViewController()
+
+                        let animator = FakeContextMenuAnimator(commitStyle: .pop, viewController: viewController)
+
+                        subject.webContent.uiDelegate?.webView?(
+                            subject.webContent,
+                            contextMenuForElement: element,
+                            willCommitWithAnimator: animator
+                        )
+
+                        expect(animator.addAnimationsCalls).to(beEmpty())
+                        expect(animator.addCompletionCalls).to(haveCount(1))
+                        animator.addCompletionCalls.last?()
 
                         expect(navController.viewControllers).to(equal([viewController]))
                     }

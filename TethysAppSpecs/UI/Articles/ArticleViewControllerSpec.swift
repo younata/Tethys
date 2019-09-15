@@ -151,22 +151,25 @@ class ArticleViewControllerSpec: QuickSpec {
                 }
             }
 
-            context("3d touching a link") {
-                describe("3d touching a standard link") {
+            context("HTMLViewControllerDelegate.peekURL") {
+                describe("for a standard link") {
                     var viewController: UIViewController?
 
                     beforeEach {
                         viewController = htmlViewController.delegate?.peekURL(url: URL(string: "https://example.com/foo")!)
                     }
 
-                    it("presents an SFSafariViewController configured with that link") {
+                    it("returns an SFSafariViewController") {
                         expect(viewController).to(beAnInstanceOf(SFSafariViewController.self))
+                        guard let safariController = viewController as? SFSafariViewController else { return }
+                        expect(safariController.preferredControlTintColor).to(equal(Theme.highlightColor))
                     }
 
                     it("replaces the navigation controller's view controller stack with just that view controller") {
-                        htmlViewController.delegate?.commitViewController(viewController: viewController!)
+                        let viewController = UIViewController()
+                        htmlViewController.delegate?.commitViewController(viewController: viewController)
 
-                        expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
+                        expect(navigationController.visibleViewController).to(be(viewController))
                     }
                 }
             }

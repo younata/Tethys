@@ -99,15 +99,29 @@ extension HTMLViewController: WKNavigationDelegate, WKUIDelegate {
         self.progressIndicator.isHidden = self.htmlString != nil
     }
 
-    public func webView(_ webView: WKWebView,
-                        previewingViewControllerForElement elementInfo: WKPreviewElementInfo,
-                        defaultActions previewActions: [WKPreviewActionItem]) -> UIViewController? {
-        guard let url = elementInfo.linkURL else { return nil }
-        return self.delegate?.peekURL(url: url)
+    public func webView(_ webView: WKWebView, contextMenuConfigurationForElement elementInfo: WKContextMenuElementInfo,
+                        completionHandler: @escaping (UIContextMenuConfiguration?) -> Void) {
+        guard let url = elementInfo.linkURL,
+            let viewController = self.delegate?.peekURL(url: url) else {
+                return completionHandler(nil)
+        }
+
+        let configuration = UIContextMenuConfiguration(
+            identifier: url as NSURL,
+            previewProvider: { return viewController },
+            actionProvider: { elements in
+                guard elements.isEmpty == false else { return nil }
+                return UIMenu(title: "", image: nil, identifier: nil, options: [], children: elements)
+            }
+        )
+        completionHandler(configuration)
     }
 
-    public func webView(_ webView: WKWebView,
-                        commitPreviewingViewController previewingViewController: UIViewController) {
-        self.delegate?.commitViewController(viewController: previewingViewController)
+    public func webView(_ webView: WKWebView, contextMenuForElement elementInfo: WKContextMenuElementInfo,
+                        willCommitWithAnimator animator: UIContextMenuInteractionCommitAnimating) {
+        guard let viewController = animator.previewViewController else { return }
+        animator.addCompletion {
+            self.delegate?.commitViewController(viewController: viewController)
+        }
     }
 }

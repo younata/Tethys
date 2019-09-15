@@ -171,11 +171,14 @@ extension ArticleViewController: HTMLViewControllerDelegate {
     }
 
     public func peekURL(url: URL) -> UIViewController? {
-        return SFSafariViewController(url: url)
+        let vc = SFSafariViewController(url: url)
+        vc.preferredControlTintColor = Theme.highlightColor
+        return vc
     }
 
     public func commitViewController(viewController: UIViewController) {
         if viewController is SFSafariViewController {
+            viewController.popoverPresentationController?.sourceView = self.htmlViewController.view
             self.present(viewController, animated: true, completion: nil)
         } else {
             self.navigationController?.pushViewController(viewController, animated: true)

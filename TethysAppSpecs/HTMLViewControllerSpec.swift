@@ -1,6 +1,7 @@
 import Quick
 import Nimble
 import Tethys
+import SafariServices
 
 class FakeHTMLViewControllerDelegate: HTMLViewControllerDelegate {
     var openURLReturns = false
@@ -111,31 +112,89 @@ class HTMLViewControllerSpec: QuickSpec {
                 }
             }
 
-            context("3d touching a link") {
-                var receivedViewController: UIViewController?
-                let element = FakeWKPreviewItem(link: URL(string: "https://example.com/foo"))
-                let viewController = UIViewController()
+            describe("link context menus") {
+                let element = FakeWKContentMenuElementInfo.new(linkURL: URL(string: "https://example.com/foo")!)
                 var delegate: FakeHTMLViewControllerDelegate!
+                var contextMenuCalls: [UIContextMenuConfiguration?] = []
+
+                var viewController: UIViewController!
 
                 beforeEach {
                     delegate = FakeHTMLViewControllerDelegate()
                     subject.delegate = delegate
-                    delegate.peekURLReturns = viewController
-                    receivedViewController = subject.content.uiDelegate?.webView?(subject.content,
-                                                                          previewingViewControllerForElement: element,
-                                                                          defaultActions: [])
+
+                    contextMenuCalls = []
                 }
 
-                it("returns whatever the delegate says") {
-                    expect(delegate.peekURLArgs.last) == URL(string: "https://example.com/foo")!
-                    expect(receivedViewController).to(beIdenticalTo(viewController))
+                context("if delegate.peekURL returns nil") {
+                    beforeEach {
+                        viewController = UIViewController()
+                        delegate.peekURLReturns = nil
+                        subject.content.uiDelegate?.webView?(
+                            subject.content,
+                            contextMenuConfigurationForElement: element,
+                            completionHandler: { contextMenuCalls.append($0) }
+                        )
+                    }
+
+                    it("calls the callback with nil") {
+                        expect(delegate.peekURLArgs.last).to(equal(URL(string: "https://example.com/foo")!))
+                        expect(contextMenuCalls).to(haveCount(1))
+                        expect(contextMenuCalls.last!).to(beNil())
+                    }
+
+                    it("replaces the navigation controller's view controller stack with just that view controller") {
+                        let animator = FakeContextMenuAnimator(commitStyle: .pop, viewController: viewController)
+
+                        subject.content.uiDelegate?.webView?(
+                            subject.content,
+                            contextMenuForElement: element,
+                            willCommitWithAnimator: animator
+                        )
+
+                        expect(animator.addAnimationsCalls).to(beEmpty())
+                        expect(animator.addCompletionCalls).to(haveCount(1))
+                        animator.addCompletionCalls.last?()
+                        expect(delegate.commitViewControllerArgs.last).to(equal(viewController))
+                    }
                 }
 
-                it("replaces the navigation controller's view controller stack with just that view controller") {
-                    subject.content.uiDelegate?.webView?(subject.content,
-                                                         commitPreviewingViewController: receivedViewController!)
+                context("if delegate.peekURL returns a different kind of view controller") {
+                    beforeEach {
+                        viewController = UIViewController()
+                        delegate.peekURLReturns = viewController
+                        subject.content.uiDelegate?.webView?(
+                            subject.content,
+                            contextMenuConfigurationForElement: element,
+                            completionHandler: { contextMenuCalls.append($0) }
+                        )
+                    }
 
-                    expect(delegate.commitViewControllerArgs.last) == receivedViewController
+                    it("returns context menu configured to show the view controller") {
+                        expect(delegate.peekURLArgs.last).to(equal(URL(string: "https://example.com/foo")))
+                        expect(contextMenuCalls).to(haveCount(1))
+                        guard let contextMenu = contextMenuCalls.last else {
+                            return expect(contextMenuCalls.last).toNot(beNil())
+                        }
+                        expect(contextMenu?.identifier as? NSURL).to(equal(URL(string: "https://example.com/foo")! as NSURL))
+//                        expect(contextMenu?.previewProvider?()).to(equal(viewController))
+//                        expect(contextMenu?.actionProvider?()).to(beNil())
+                    }
+
+                    it("replaces the navigation controller's view controller stack with just that view controller") {
+                        let animator = FakeContextMenuAnimator(commitStyle: .pop, viewController: viewController)
+
+                        subject.content.uiDelegate?.webView?(
+                            subject.content,
+                            contextMenuForElement: element,
+                            willCommitWithAnimator: animator
+                        )
+
+                        expect(animator.addAnimationsCalls).to(beEmpty())
+                        expect(animator.addCompletionCalls).to(haveCount(1))
+                        animator.addCompletionCalls.last?()
+                        expect(delegate.commitViewControllerArgs.last).to(equal(viewController))
+                    }
                 }
             }
         }

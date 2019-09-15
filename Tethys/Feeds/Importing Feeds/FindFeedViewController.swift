@@ -267,23 +267,30 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 }
 
 extension FindFeedViewController: WKUIDelegate {
-    public func webView(_ webView: WKWebView,
-                        previewingViewControllerForElement elementInfo: WKPreviewElementInfo,
-                        defaultActions previewActions: [WKPreviewActionItem]) -> UIViewController? {
-        if let url = elementInfo.linkURL {
-            let controller = FindFeedViewController(importUseCase: self.importUseCase,
-                                                    analytics: self.analytics,
-                                                    notificationCenter: self.notificationCenter)
-            _ = controller.view
-            controller.webContent.load(URLRequest(url: url))
-            return controller
+    public func webView(_ webView: WKWebView, contextMenuConfigurationForElement elementInfo: WKContextMenuElementInfo,
+                        completionHandler: @escaping (UIContextMenuConfiguration?) -> Void) {
+        guard let url = elementInfo.linkURL else {
+            return completionHandler(nil)
         }
-        return nil
+
+        completionHandler(UIContextMenuConfiguration(
+            identifier: url as NSURL,
+            previewProvider: {
+                let controller = FindFeedViewController(importUseCase: self.importUseCase,
+                                                        analytics: self.analytics,
+                                                        notificationCenter: self.notificationCenter)
+                _ = controller.view
+                controller.webContent.load(URLRequest(url: url))
+                return controller
+        }, actionProvider: nil))
     }
 
-    public func webView(_ webView: WKWebView,
-                        commitPreviewingViewController previewingViewController: UIViewController) {
-        self.navigationController?.setViewControllers([previewingViewController], animated: true)
+    public func webView(_ webView: WKWebView, contextMenuForElement elementInfo: WKContextMenuElementInfo,
+                        willCommitWithAnimator animator: UIContextMenuInteractionCommitAnimating) {
+        guard let viewController = animator.previewViewController else { return }
+        animator.addCompletion {
+            self.navigationController?.setViewControllers([viewController], animated: true)
+        }
     }
 }
 

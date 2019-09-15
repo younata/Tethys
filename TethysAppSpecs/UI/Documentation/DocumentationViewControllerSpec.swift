@@ -58,22 +58,24 @@ class DocumentationViewControllerSpec: QuickSpec {
                     }
                 }
 
-                context("3d touching a link") {
+                context("context menus a link") {
                     var viewController: UIViewController?
 
                     beforeEach {
                         viewController = htmlViewController.delegate?.peekURL(url: URL(string: "https://example.com/foo")!)
                     }
 
-                    it("presents another FindFeedViewController configured with that link") {
+                    it("return an SFSafariViewController") {
                         expect(viewController).to(beAnInstanceOf(SFSafariViewController.self))
+                        guard let safariController = viewController as? SFSafariViewController else { return }
+                        expect(safariController.preferredControlTintColor).to(equal(Theme.highlightColor))
                     }
 
                     it("replaces the navigation controller's view controller stack with just that view controller") {
-                        guard let viewController = viewController else { fail(); return }
+                        let viewController = UIViewController()
                         htmlViewController.delegate?.commitViewController(viewController: viewController)
 
-                        expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
+                        expect(navigationController.visibleViewController).to(be(viewController))
                     }
                 }
             }

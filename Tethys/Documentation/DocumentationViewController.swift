@@ -77,7 +77,9 @@ extension DocumentationViewController: HTMLViewControllerDelegate {
     }
 
     public func peekURL(url: URL) -> UIViewController? {
-        return SFSafariViewController(url: url)
+        let vc = SFSafariViewController(url: url)
+        vc.preferredControlTintColor = Theme.highlightColor
+        return vc
     }
 
     public func commitViewController(viewController: UIViewController) {

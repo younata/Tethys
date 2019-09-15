@@ -43,6 +43,9 @@
 		8918D4DB1B8598D100DCDE0E /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918D4DA1B8598D100DCDE0E /* Theme.swift */; };
 		8924D8E91A094CF5003B7529 /* github2.css in Resources */ = {isa = PBXBuildFile; fileRef = 8924D8E81A094CF5003B7529 /* github2.css */; };
 		8924FE2E1D6D51DC0060D26D /* Array+TethysKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924FE2D1D6D51DC0060D26D /* Array+TethysKit.swift */; };
+		892AF319232D896C0018B19C /* FakeWKContentMenuElementInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 892AF318232D896C0018B19C /* FakeWKContentMenuElementInfo.m */; };
+		892AF31B232DB5930018B19C /* FakeContextMenuAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892AF31A232DB5930018B19C /* FakeContextMenuAnimator.swift */; };
+		892AF31E232DC5960018B19C /* UIContextMenuConfiguration+Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 892AF31D232DC5960018B19C /* UIContextMenuConfiguration+Tests.m */; };
 		892CBDEA1C7A27FE0062E578 /* FakeArticleUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892CBDE91C7A27FE0062E578 /* FakeArticleUseCase.swift */; };
 		892E30F71CF4011F00E327A0 /* Future+when.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E30F61CF4011F00E327A0 /* Future+when.swift */; };
 		892E76BC1E0197DF00866336 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 892E76BB1E0197DF00866336 /* libxml2.tbd */; };
@@ -91,7 +94,6 @@
 		8948B8BC222CD89600E1BFBC /* NetworkPagedCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8948B8BA222CD5DD00E1BFBC /* NetworkPagedCollection.swift */; };
 		8948B8BE222CD8A900E1BFBC /* NetworkPagedCollectionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8948B8BD222CD8A900E1BFBC /* NetworkPagedCollectionSpec.swift */; };
 		8949698D1C72FAEB00A91986 /* Kanna.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8903EB141C72F8A7001C0189 /* Kanna.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		894CEAA21DAE7C7500E8BDEB /* FakeWKPreviewItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894CEAA11DAE7C7500E8BDEB /* FakeWKPreviewItem.swift */; };
 		894D1AEB1DB0971E00E70B1A /* FakeWKNavigationAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894D1AEA1DB0971E00E70B1A /* FakeWKNavigationAction.swift */; };
 		894D1AF31DB1EF2500E70B1A /* RefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894D1AF21DB1EF2500E70B1A /* RefreshControl.swift */; };
 		894D1AF51DB28B8E00E70B1A /* RefreshControlSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894D1AF41DB28B8E00E70B1A /* RefreshControlSpec.swift */; };
@@ -388,6 +390,11 @@
 		8918D4DA1B8598D100DCDE0E /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		8924D8E81A094CF5003B7529 /* github2.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = github2.css; sourceTree = "<group>"; };
 		8924FE2D1D6D51DC0060D26D /* Array+TethysKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+TethysKit.swift"; sourceTree = "<group>"; };
+		892AF317232D896C0018B19C /* FakeWKContentMenuElementInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FakeWKContentMenuElementInfo.h; sourceTree = "<group>"; };
+		892AF318232D896C0018B19C /* FakeWKContentMenuElementInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FakeWKContentMenuElementInfo.m; sourceTree = "<group>"; };
+		892AF31A232DB5930018B19C /* FakeContextMenuAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeContextMenuAnimator.swift; sourceTree = "<group>"; };
+		892AF31C232DC5960018B19C /* UIContextMenuConfiguration+Tests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIContextMenuConfiguration+Tests.h"; sourceTree = "<group>"; };
+		892AF31D232DC5960018B19C /* UIContextMenuConfiguration+Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIContextMenuConfiguration+Tests.m"; sourceTree = "<group>"; };
 		892CBDE91C7A27FE0062E578 /* FakeArticleUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeArticleUseCase.swift; sourceTree = "<group>"; };
 		892E30F61CF4011F00E327A0 /* Future+when.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Future+when.swift"; sourceTree = "<group>"; };
 		892E76BB1E0197DF00866336 /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
@@ -422,7 +429,6 @@
 		894644D821AB8FEB00153308 /* RealmFeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmFeedService.swift; sourceTree = "<group>"; };
 		8948B8BA222CD5DD00E1BFBC /* NetworkPagedCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkPagedCollection.swift; sourceTree = "<group>"; };
 		8948B8BD222CD8A900E1BFBC /* NetworkPagedCollectionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkPagedCollectionSpec.swift; sourceTree = "<group>"; };
-		894CEAA11DAE7C7500E8BDEB /* FakeWKPreviewItem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeWKPreviewItem.swift; sourceTree = "<group>"; };
 		894D1AEA1DB0971E00E70B1A /* FakeWKNavigationAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeWKNavigationAction.swift; sourceTree = "<group>"; };
 		894D1AF21DB1EF2500E70B1A /* RefreshControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefreshControl.swift; sourceTree = "<group>"; };
 		894D1AF41DB28B8E00E70B1A /* RefreshControlSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefreshControlSpec.swift; sourceTree = "<group>"; };
@@ -1375,7 +1381,11 @@
 				89C676531BA264F40037A224 /* FakeUserDefaults.swift */,
 				8997C7F41B248D5A00972930 /* FakeWebView.swift */,
 				894D1AEA1DB0971E00E70B1A /* FakeWKNavigationAction.swift */,
-				894CEAA11DAE7C7500E8BDEB /* FakeWKPreviewItem.swift */,
+				892AF31A232DB5930018B19C /* FakeContextMenuAnimator.swift */,
+				892AF317232D896C0018B19C /* FakeWKContentMenuElementInfo.h */,
+				892AF318232D896C0018B19C /* FakeWKContentMenuElementInfo.m */,
+				892AF31C232DC5960018B19C /* UIContextMenuConfiguration+Tests.h */,
+				892AF31D232DC5960018B19C /* UIContextMenuConfiguration+Tests.m */,
 				89E9DF0E21D49DF000326E2D /* ASWebAuthenticationSession+TethysTests.h */,
 				89E9DF0F21D49DF000326E2D /* ASWebAuthenticationSession+TethysTests.m */,
 				89DFAA5D1B75CE65004CD9CA /* PCKMethodRedirector.h */,
@@ -1930,9 +1940,11 @@
 				890B78CA1C78E8650066E201 /* ArticleUseCaseSpec.swift in Sources */,
 				899823AE1B30B64000818755 /* ArticleViewControllerSpec.swift in Sources */,
 				89CBDC2C1C7E60B7006B70F5 /* BootstrapWorkFlowSpec.swift in Sources */,
+				892AF319232D896C0018B19C /* FakeWKContentMenuElementInfo.m in Sources */,
 				89BFAC101C4C66AE007B3415 /* CustomMatchers.swift in Sources */,
 				895B9A1F21AA66AB003FFE46 /* FakeFeedService.swift in Sources */,
 				8958EC3A1DCABDA60000159B /* DocumentationViewControllerSpec.swift in Sources */,
+				892AF31E232DC5960018B19C /* UIContextMenuConfiguration+Tests.m in Sources */,
 				89E186921D136C38005C5880 /* FakeAnalytics.swift in Sources */,
 				892CBDEA1C7A27FE0062E578 /* FakeArticleUseCase.swift in Sources */,
 				89C676561BA28FE60037A224 /* FakeFileManager.swift in Sources */,
@@ -1947,7 +1959,6 @@
 				8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */,
 				894D1AEB1DB0971E00E70B1A /* FakeWKNavigationAction.swift in Sources */,
 				8978C52B21975A0800D702BB /* InjectorModuleSpec.swift in Sources */,
-				894CEAA21DAE7C7500E8BDEB /* FakeWKPreviewItem.swift in Sources */,
 				89C5E5721DECA8E30078633C /* FeedDetailViewSpec.swift in Sources */,
 				898ECDE11B197C0D00E4D7F6 /* FeedListControllerSpec.swift in Sources */,
 				89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */,
@@ -1967,6 +1978,7 @@
 				899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */,
 				8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */,
 				89E9DF0D21D49CDB00326E2D /* OAuthLoginControllerSpec.swift in Sources */,
+				892AF31B232DB5930018B19C /* FakeContextMenuAnimator.swift in Sources */,
 				89F516571B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m in Sources */,
 				89735ABC1C0694C70032E09C /* UITraitCollection+TethysTests.m in Sources */,
 				8994F0F41C8F899600920E6D /* UIViewController+TethysTests.m in Sources */,

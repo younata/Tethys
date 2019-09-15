@@ -17,10 +17,10 @@ public final class SwitchTableViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         self.contentView.addSubview(self._textLabel)
-        self._textLabel.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 4, left: 15, bottom: 4, right: 0),
+        self._textLabel.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 4, left: 20, bottom: 4, right: 0),
             excludingEdge: .trailing)
         self.contentView.addSubview(self.theSwitch)
-        self.theSwitch.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 5, left: 0, bottom: 4, right: 15),
+        self.theSwitch.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 5, left: 0, bottom: 4, right: 20),
             excludingEdge: .leading)
         self.theSwitch.autoPinEdge(.leading, to: .trailing, of: self._textLabel)
 

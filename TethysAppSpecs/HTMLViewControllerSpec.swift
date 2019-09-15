@@ -177,8 +177,7 @@ class HTMLViewControllerSpec: QuickSpec {
                             return expect(contextMenuCalls.last).toNot(beNil())
                         }
                         expect(contextMenu?.identifier as? NSURL).to(equal(URL(string: "https://example.com/foo")! as NSURL))
-//                        expect(contextMenu?.previewProvider?()).to(equal(viewController))
-//                        expect(contextMenu?.actionProvider?()).to(beNil())
+                        expect(contextMenu?.previewProvider?()).to(equal(viewController))
                     }
 
                     it("replaces the navigation controller's view controller stack with just that view controller") {

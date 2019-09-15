@@ -82,16 +82,12 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
 
         self.tableView.allowsMultipleSelection = false
 
-        self.registerForPreviewing(with: self, sourceView: self.tableView)
         self.resetArticles()
         self.resetBarItems()
 
         self.tableView.backgroundColor = Theme.backgroundColor
         self.tableView.separatorColor = Theme.separatorColor
     }
-
-    var _previewActionItems: [UIPreviewAction] = []
-    public override var previewActionItems: [UIPreviewActionItem] { return self._previewActionItems }
 
     fileprivate func articleForIndexPath(_ indexPath: IndexPath) -> Article {
         let index = self.articles.index(self.articles.startIndex, offsetBy: indexPath.row)
@@ -263,7 +259,51 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         return actions
     }
 
+    public func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath,
+                          point: CGPoint) -> UIContextMenuConfiguration? {
+        guard ArticleListSection(rawValue: indexPath.section) == .articles else { return nil }
+
+        let article = self.articleForIndexPath(indexPath)
+        return UIContextMenuConfiguration(
+            identifier: article.link as NSURL,
+            previewProvider: { return self.articleViewController(article) },
+            actionProvider: { elements in
+                return UIMenu(title: article.title, image: nil, identifier: nil, options: [],
+                              children: elements + self.menuActions(for: article))
+        })
+    }
+
+    public func tableView(_ tableView: UITableView,
+                          willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration,
+                          animator: UIContextMenuInteractionCommitAnimating) {
+        guard let articleController = animator.previewViewController as? ArticleViewController else { return }
+        animator.addCompletion {
+            self.markRead(article: articleController.article, read: true)
+            self.showArticleController(articleController, animated: true)
+        }
+    }
+
     // MARK: Private
+
+    private func menuActions(for article: Article) -> [UIAction] {
+        let toggleReadTitle: String
+        if article.read {
+            toggleReadTitle = NSLocalizedString("ArticleListController_Action_MarkUnread", comment: "")
+
+        } else {
+            toggleReadTitle = NSLocalizedString("ArticleListController_Action_MarkRead", comment: "")
+        }
+        let toggleRead = UIAction(title: toggleReadTitle, image: UIImage(named: "MarkRead"),
+                                  identifier: UIAction.Identifier("MarkRead")) { _ in
+                                    self.markRead(article: article, read: !article.read)
+        }
+        let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
+        let delete = UIAction(title: deleteTitle, image: UIImage(systemName: "trash"),
+                              identifier: UIAction.Identifier("Delete"), attributes: [.destructive]) { _ in
+                                _ = self.attemptDelete(article: article)
+        }
+        return [toggleRead, delete]
+    }
 
     fileprivate func resetArticles() {
         self.feedService.articles(of: self.feed).then { result in
@@ -333,45 +373,6 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
                                         self.dismiss(animated: true, completion: nil)
         })
         self.present(alert, animated: true, completion: nil)
-    }
-}
-
-extension ArticleListController: UIViewControllerPreviewingDelegate {
-    public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
-                                  viewControllerForLocation location: CGPoint) -> UIViewController? {
-        if let indexPath = self.tableView.indexPathForRow(at: location),
-            ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles {
-                let article = self.articleForIndexPath(indexPath)
-                let articleController = self.articleViewController(article)
-                articleController._previewActionItems = self.previewItems(article: article)
-                return articleController
-        }
-        return nil
-    }
-
-    private func previewItems(article: Article) -> [UIPreviewAction] {
-        let toggleReadTitle: String
-        if article.read {
-            toggleReadTitle = NSLocalizedString("ArticleListController_Action_MarkUnread", comment: "")
-        } else {
-            toggleReadTitle = NSLocalizedString("ArticleListController_Action_MarkRead", comment: "")
-        }
-        let toggleRead = UIPreviewAction(title: toggleReadTitle, style: .default) { _, _  in
-            self.markRead(article: article, read: !article.read)
-        }
-        let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-        let delete = UIPreviewAction(title: deleteTitle, style: .destructive) { _, _  in
-            _ = self.attemptDelete(article: article)
-        }
-        return [toggleRead, delete]
-    }
-
-    public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
-                                  commit viewControllerToCommit: UIViewController) {
-        if let articleController = viewControllerToCommit as? ArticleViewController {
-            self.markRead(article: articleController.article, read: true)
-            self.showArticleController(articleController, animated: true)
-        }
     }
 }
 

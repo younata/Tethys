@@ -288,7 +288,6 @@ extension FeedListController: UIViewControllerPreviewingDelegate {
         guard let indexPath = self.tableView.indexPathForRow(at: location) else { return nil }
         let feed = self.feeds[indexPath.row]
         let articleListController = self.articleListController(feed)
-        articleListController._previewActionItems = self.articleListPreviewItems(feed: feed)
         return articleListController
     }
 

@@ -124,11 +124,6 @@ public final class ArticleViewController: UIViewController {
         return commands
     }
 
-    var _previewActionItems: [UIPreviewAction] = []
-    public override var previewActionItems: [UIPreviewActionItem] {
-        return self._previewActionItems
-    }
-
     @objc fileprivate func toggleArticleRead() {
         self.articleUseCase.toggleArticleRead(self.article)
     }

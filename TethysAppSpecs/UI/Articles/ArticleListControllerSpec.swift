@@ -272,242 +272,6 @@ class ArticleListControllerSpec: QuickSpec {
                 }
             }
 
-            describe("force pressing an article cell") {
-                var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
-                let indexPath = IndexPath(row: 0, section: 1)
-                var viewController: UIViewController? = nil
-
-                beforeEach {
-                    viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
-
-                    let rect = subject.tableView.rectForRow(at: indexPath)
-                    let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
-                    viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
-                }
-
-                it("returns an ArticleViewController configured with the article to present to the user") {
-                    expect(viewController).to(beAKindOf(ArticleViewController.self))
-                    if let articleVC = viewController as? ArticleViewController {
-                        expect(articleVC.article).to(equal(articles[0]))
-                    }
-                }
-
-                it("does not mark the article as read") {
-                    expect(articleService.markArticleAsReadCalls).to(haveCount(0))
-                    expect(articles[0].read) == false
-                }
-
-                describe("the preview actions") {
-                    var previewActions: [UIPreviewActionItem]?
-                    var action: UIPreviewAction?
-
-                    beforeEach {
-                        previewActions = viewController?.previewActionItems
-                        expect(previewActions).toNot(beNil())
-                    }
-
-                    it("has 2 preview actions") {
-                        expect(previewActions?.count) == 2
-                    }
-
-                    describe("the first action") {
-                        describe("for an unread article") {
-                            beforeEach {
-                                action = previewActions?.first as? UIPreviewAction
-
-                                expect(action?.title).to(equal("Mark Read"))
-                                action?.handler(action!, viewController!)
-                            }
-
-                            it("marks the article as read") {
-                                guard let call = articleService.markArticleAsReadCalls.last else {
-                                    fail("Didn't call ArticleService to mark article as read")
-                                    return
-                                }
-                                expect(call.article) == articles.first
-                                expect(call.read) == true
-                            }
-
-                            context("when the articleService successfully marks the article as read") {
-                                var updatedArticle: Article!
-                                beforeEach {
-                                    updatedArticle = articleFactory()
-                                    articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
-                                }
-
-                                it("Updates the articles in the controller to reflect that") {
-                                    expect(subject.articles.first).to(equal(updatedArticle))
-                                }
-
-                                it("posts a notification telling other things to reload") {
-                                    expect(recorder.notifications).to(haveCount(1))
-                                    expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
-                                }
-                            }
-
-                            context("when the articleService fails to mark the article as read") {
-                                beforeEach {
-                                    articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
-                                }
-
-                                itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
-
-                                it("doesn't post a notification") {
-                                    expect(recorder.notifications).to(beEmpty())
-                                }
-                            }
-                        }
-
-                        describe("for a read article") {
-                            beforeEach {
-                                let rect = subject.tableView.rectForRow(at: IndexPath(row: 2, section: 1))
-                                let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
-                                viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
-                                previewActions = viewController?.previewActionItems
-                                action = previewActions?.first as? UIPreviewAction
-
-                                expect(action?.title).to(equal("Mark Unread"))
-                                action?.handler(action!, viewController!)
-                            }
-
-                            it("marks the article as unread") {
-                                guard let call = articleService.markArticleAsReadCalls.last else {
-                                    fail("Didn't call ArticleService to mark article as read/unread")
-                                    return
-                                }
-                                expect(call.article) == articles[2]
-                                expect(call.read) == false
-                            }
-
-                            context("when the articleService successfully marks the article as read") {
-                                var updatedArticle: Article!
-                                beforeEach {
-                                    updatedArticle = articleFactory()
-                                    articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
-                                }
-
-                                it("Updates the articles in the controller to reflect that") {
-                                    expect(Array(subject.articles)[2]).to(equal(updatedArticle))
-                                }
-
-                                it("posts a notification telling other things to reload") {
-                                    expect(recorder.notifications).to(haveCount(1))
-                                    expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
-                                }
-                            }
-
-                            context("when the articleService fails to mark the article as read") {
-                                beforeEach {
-                                    articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
-                                }
-
-                                itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
-
-                                it("doesn't post a notification") {
-                                    expect(recorder.notifications).to(beEmpty())
-                                }
-                            }
-                        }
-                    }
-
-                    describe("the last action") {
-                        beforeEach {
-                            action = previewActions?.last as? UIPreviewAction
-                        }
-
-                        it("states that it deletes the article") {
-                            expect(action?.title) == "Delete"
-                        }
-
-                        describe("tapping it") {
-                            beforeEach {
-                                action?.handler(action!, viewController!)
-                            }
-
-                            it("deletes the article") {
-                                expect(articleService.removeArticleCalls.last).to(equal(articles.first))
-                            }
-
-                            xit("shows a spinner while we wait to delete the article") {
-                                fail("Implement me!")
-                            }
-
-                            context("when the delete operation succeeds") {
-                                beforeEach {
-                                    articleService.removeArticlePromises.last?.resolve(.success(()))
-                                }
-
-                                it("removes the article from the list") {
-                                    expect(Array(subject.articles)).toNot(contain(articles[0]))
-                                }
-                            }
-
-                            context("when the delete operation fails") {
-                                beforeEach {
-                                    articleService.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
-                                }
-
-                                itTellsTheUserAboutTheError(title: "Error deleting article", message: "Unknown Database Error")
-
-                                it("keeps the article from the list") {
-                                    expect(Array(subject.articles)).to(contain(articles[0]))
-                                }
-                            }
-                        }
-                    }
-                }
-
-                describe("committing that view controller") {
-                    beforeEach {
-                        if let vc = viewController {
-                            subject.previewingContext(viewControllerPreviewing, commit: vc)
-                        }
-                    }
-
-                    it("pushes the view controller") {
-                        expect(navigationController.topViewController).to(beIdenticalTo(viewController))
-                    }
-
-                    it("marks the article as read") {
-                        guard let call = articleService.markArticleAsReadCalls.last else {
-                            fail("Didn't call ArticleService to mark article as read")
-                            return
-                        }
-                        expect(call.article) == articles[0]
-                        expect(call.read) == true
-                    }
-
-                    context("when the articleService successfully marks the article as read") {
-                        var updatedArticle: Article!
-                        beforeEach {
-                            updatedArticle = articleFactory()
-                            articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
-                        }
-
-                        it("Updates the articles in the controller to reflect that") {
-                            expect(subject.articles.first).to(equal(updatedArticle))
-                        }
-
-                        it("posts a notification telling other things to reload") {
-                            expect(recorder.notifications).to(haveCount(1))
-                            expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
-                        }
-                    }
-
-                    context("when the articleService fails to mark the article as read") {
-                        beforeEach {
-                            articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
-                        }
-
-                        itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
-
-                        it("doesn't post a notification") {
-                            expect(recorder.notifications).to(beEmpty())
-                        }
-                    }
-                }
-            }
-
             describe("the table") {
                 it("has 2 sections") {
                     expect(subject.tableView.numberOfSections) == 2
@@ -546,6 +310,10 @@ class ArticleListControllerSpec: QuickSpec {
 
                             it("has no contextual actions") {
                                 expect(subject.tableView.delegate?.tableView?(subject.tableView, trailingSwipeActionsConfigurationForRowAt: IndexPath(row: 0, section: 0))).to(beNil())
+                            }
+
+                            it("has no menu") {
+                                expect(subject.tableView.delegate?.tableView?(subject.tableView, contextMenuConfigurationForRowAt: IndexPath(row: 0, section: 0), point: .zero)).to(beNil())
                             }
 
                             it("doesn't allow highlighting") {
@@ -646,7 +414,7 @@ class ArticleListControllerSpec: QuickSpec {
                             }
                         }
 
-                        describe("the edit actions") {
+                        describe("the contextual actions") {
                             var completionHandlerCalls: [Bool] = []
 
                             beforeEach {
@@ -814,9 +582,200 @@ class ArticleListControllerSpec: QuickSpec {
                             }
                         }
 
+                        describe("long/force pressing on a cell") {
+                            var menuConfiguration: UIContextMenuConfiguration?
+                            let indexPath = IndexPath(row: 0, section: 1)
+
+                            beforeEach {
+                                menuConfiguration = subject.tableView.delegate?.tableView?(subject.tableView, contextMenuConfigurationForRowAt: indexPath, point: .zero)
+                            }
+
+                            it("returns a menu configured to show an article") {
+                                expect(menuConfiguration).toNot(beNil())
+                                let viewController = menuConfiguration?.previewProvider?()
+                                expect(viewController).to(beAKindOf(ArticleViewController.self))
+                                if let articleController = viewController as? ArticleViewController {
+                                    expect(articleController.article).to(equal(articles[0]))
+                                }
+                            }
+
+                            describe("the menu items") {
+                                var menu: UIMenu?
+
+                                beforeEach {
+                                    menu = menuConfiguration?.actionProvider?([])
+                                }
+
+                                it("has two children, both of which are actions") {
+                                    expect(menu?.children).to(haveCount(2))
+
+                                    expect(menu?.children.compactMap { $0 as? UIAction }).to(haveCount(2))
+                                }
+
+                                describe("the first action") {
+                                    var action: UIAction?
+                                    beforeEach {
+                                        action = menu?.children.first as? UIAction
+
+                                    }
+
+                                    it("is titled to mark the article as read") {
+                                        expect(action?.title).to(equal("Mark Read"))
+                                    }
+
+                                    it("uses the mark read image") {
+                                        expect(action?.image).to(equal(UIImage(named: "MarkRead")))
+                                    }
+
+                                    describe("when selected") {
+                                        beforeEach {
+                                            action?.handler(action!)
+                                        }
+
+                                        it("marks the article as read") {
+                                            guard let call = articleService.markArticleAsReadCalls.last else {
+                                                fail("Didn't call ArticleService to mark article as read")
+                                                return
+                                            }
+                                            expect(call.article) == articles.first
+                                            expect(call.read) == true
+                                        }
+
+                                        context("when the articleService successfully marks the article as read") {
+                                            var updatedArticle: Article!
+                                            beforeEach {
+                                                updatedArticle = articleFactory()
+                                                articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
+                                            }
+
+                                            it("Updates the articles in the controller to reflect that") {
+                                                expect(subject.articles.first).to(equal(updatedArticle))
+                                            }
+
+                                            it("posts a notification telling other things to reload") {
+                                                expect(recorder.notifications).to(haveCount(1))
+                                                expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
+                                            }
+                                        }
+
+                                        context("when the articleService fails to mark the article as read") {
+                                            beforeEach {
+                                                articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
+                                            }
+
+                                            itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
+
+                                            it("doesn't post a notification") {
+                                                expect(recorder.notifications).to(beEmpty())
+                                            }
+                                        }
+                                    }
+                                }
+
+                                describe("the second action") {
+                                    var action: UIAction?
+                                    beforeEach {
+                                        action = menu?.children.last as? UIAction
+                                    }
+
+                                    it("states that it deletes the article") {
+                                        expect(action?.title) == "Delete"
+                                    }
+
+                                    describe("when selected") {
+                                        beforeEach {
+                                            action?.handler(action!)
+                                        }
+
+                                        it("deletes the article") {
+                                            expect(articleService.removeArticleCalls.last).to(equal(articles.first))
+                                        }
+
+                                        xit("shows a spinner while we wait to delete the article") {
+                                            fail("Implement me!")
+                                        }
+
+                                        context("when the delete operation succeeds") {
+                                            beforeEach {
+                                                articleService.removeArticlePromises.last?.resolve(.success(()))
+                                            }
+
+                                            it("removes the article from the list") {
+                                                expect(Array(subject.articles)).toNot(contain(articles[0]))
+                                            }
+                                        }
+
+                                        context("when the delete operation fails") {
+                                            beforeEach {
+                                                articleService.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
+                                            }
+
+                                            itTellsTheUserAboutTheError(title: "Error deleting article", message: "Unknown Database Error")
+
+                                            it("keeps the article in the list") {
+                                                expect(Array(subject.articles)).to(contain(articles[0]))
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            describe("committing the view controller (tapping on it again)") {
+                                beforeEach {
+                                    guard let config = menuConfiguration else { return }
+                                    let animator = FakeContextMenuAnimator(commitStyle: .pop, viewController: menuConfiguration?.previewProvider?())
+                                    subject.tableView.delegate?.tableView?(subject.tableView, willPerformPreviewActionForMenuWith: config, animator: animator)
+
+                                    expect(animator.addAnimationsCalls).to(beEmpty())
+                                    expect(animator.addCompletionCalls).to(haveCount(1))
+                                    animator.addCompletionCalls.last?()
+                                }
+
+                                it("navigates to the ArticleViewController") {
+                                    expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
+                                    if let articleController = navigationController.topViewController as? ArticleViewController {
+                                        expect(articleController.article).to(equal(articles[0]))
+                                    }
+                                }
+
+                                it("marks the article as read") {
+                                    expect(articleService.markArticleAsReadCalls.last?.article).to(equal(articles[0]))
+                                }
+
+                                context("if the mark article as read call succeeds") {
+                                    var updatedArticle: Article!
+                                    beforeEach {
+                                        updatedArticle = articleFactory()
+                                        articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
+                                    }
+
+                                    it("Updates the articles in the controller to reflect that") {
+                                        expect(subject.articles.first).to(equal(updatedArticle))
+                                    }
+
+                                    it("posts a notification telling other things to reload") {
+                                        expect(recorder.notifications).to(haveCount(1))
+                                        expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
+                                    }
+                                }
+
+                                context("if the mark article as read call fails") {
+                                    beforeEach {
+                                        articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
+                                    }
+
+                                    itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
+
+                                    it("doesn't post a notification") {
+                                        expect(recorder.notifications).to(beEmpty())
+                                    }
+                                }
+                            }
+                        }
+
                         describe("when tapped") {
                             beforeEach {
-                                let indexPath = IndexPath(row: 1, section: 1)
+                                let indexPath = IndexPath(row: 0, section: 1)
                                 guard subject.tableView.numberOfRows(inSection: indexPath.section) > indexPath.row else {
                                     fail("No row for \(indexPath)")
                                     return
@@ -824,23 +783,44 @@ class ArticleListControllerSpec: QuickSpec {
                                 subject.tableView(subject.tableView, didSelectRowAt: indexPath)
                             }
 
-                            it("should navigate to an ArticleViewController") {
+                            it("navigates to an ArticleViewController") {
                                 expect(navigationController.topViewController).to(beAnInstanceOf(ArticleViewController.self))
                                 if let articleController = navigationController.topViewController as? ArticleViewController {
-                                    expect(articleController.article).to(equal(articles[1]))
+                                    expect(articleController.article).to(equal(articles[0]))
                                 }
                             }
 
                             it("marks the article as read") {
-                                expect(articleService.markArticleAsReadCalls.last?.article).to(equal(articles[1]))
+                                expect(articleService.markArticleAsReadCalls.last?.article).to(equal(articles[0]))
                             }
 
-                            describe("if the mark article as read call fails") {
+                            context("if the mark article as read call succeeds") {
+                                var updatedArticle: Article!
+                                beforeEach {
+                                    updatedArticle = articleFactory()
+                                    articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
+                                }
+
+                                it("Updates the articles in the controller to reflect that") {
+                                    expect(subject.articles.first).to(equal(updatedArticle))
+                                }
+
+                                it("posts a notification telling other things to reload") {
+                                    expect(recorder.notifications).to(haveCount(1))
+                                    expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
+                                }
+                            }
+
+                            context("if the mark article as read call fails") {
                                 beforeEach {
                                     articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
                                 }
 
                                 itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
+
+                                it("doesn't post a notification") {
+                                    expect(recorder.notifications).to(beEmpty())
+                                }
                             }
                         }
                     }

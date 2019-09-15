@@ -264,9 +264,9 @@ class FindFeedViewControllerSpec: QuickSpec {
                             return expect(contextMenuCalls.last).toNot(beNil())
                         }
                         expect(contextMenu?.identifier as? NSURL).to(equal(URL(string: "https://example.com/foo")! as NSURL))
-//                        let viewController = contextMenu?.previewProvider?()
-//                        expect(viewController).to(beAnInstanceOf(FindFeedViewController.self))
-//                        expect(viewController).toNot(equal(subject))
+                        let viewController = contextMenu?.previewProvider?()
+                        expect(viewController).to(beAnInstanceOf(FindFeedViewController.self))
+                        expect(viewController).toNot(equal(subject))
                     }
 
                     it("replaces the navigation controller's view controller stack with just that view controller") {

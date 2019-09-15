@@ -245,50 +245,51 @@ final class FeedListControllerSpec: QuickSpec {
                                 }
                             }
 
-                            describe("force pressing it") {
-                                var viewControllerPreviewing: FakeUIViewControllerPreviewing! = nil
-                                var viewController: UIViewController? = nil
+                            describe("contextual menus") {
+                                var menuConfiguration: UIContextMenuConfiguration?
 
                                 beforeEach {
-                                    viewControllerPreviewing = FakeUIViewControllerPreviewing(sourceView: subject.tableView, sourceRect: CGRect.zero, delegate: subject)
-
-                                    let rect = subject.tableView.rectForRow(at: IndexPath(row: 0, section: 0))
-                                    let point = CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height / 2.0)
-                                    viewController = subject.previewingContext(viewControllerPreviewing, viewControllerForLocation: point)
+                                    menuConfiguration = subject.tableView.delegate?.tableView?(subject.tableView, contextMenuConfigurationForRowAt: indexPath, point: .zero)
                                 }
 
-                                it("returns an ArticleListController configured with the feed's articles to present to the user") {
+                                it("shows a menu configured to show a set of articles") {
+                                    expect(menuConfiguration).toNot(beNil())
+                                    let viewController = menuConfiguration?.previewProvider?()
                                     expect(viewController).to(beAKindOf(ArticleListController.self))
                                     if let articleVC = viewController as? ArticleListController {
                                         expect(articleVC.feed) == feed
                                     }
                                 }
 
-                                describe("preview actions") {
-                                    var previewActions: [UIPreviewActionItem]?
-                                    var action: UIPreviewAction?
+                                describe("the menu items") {
+                                    var menu: UIMenu?
+                                    var action: UIAction?
+
                                     beforeEach {
-                                        expect(viewController).to(beAKindOf(ArticleListController.self))
-                                        previewActions = viewController?.previewActionItems
-                                        expect(previewActions).toNot(beNil())
+                                        menu = menuConfiguration?.actionProvider?([])
                                     }
 
-                                    it("has 4 preview actions") {
-                                        expect(previewActions?.count) == 4
+                                    it("has 4 children actions") {
+                                        expect(menu?.children).to(haveCount(4))
+                                        expect(menu?.children.compactMap { $0 as? UIAction }).to(haveCount(4))
                                     }
 
                                     describe("the first action") {
                                         beforeEach {
-                                            action = previewActions?.first as? UIPreviewAction
+                                            action = menu?.children.first as? UIAction
                                         }
 
                                         it("states it marks all items in the feed as read") {
                                             expect(action?.title).to(equal("Mark Read"))
                                         }
 
+                                        it("uses the mark read image") {
+                                            expect(action?.image).to(equal(UIImage(named: "MarkRead")))
+                                        }
+
                                         describe("tapping it") {
                                             beforeEach {
-                                                action?.handler(action!, viewController!)
+                                                action?.handler(action!)
                                             }
 
                                             it("marks all articles of that feed as read") {
@@ -339,9 +340,8 @@ final class FeedListControllerSpec: QuickSpec {
 
                                     describe("the second action") {
                                         beforeEach {
-                                            if previewActions!.count > 1 {
-                                                action = previewActions?[1] as? UIPreviewAction
-                                            }
+                                            guard let menu = menu, menu.children.count > 1 else { return }
+                                            action = menu.children[1] as? UIAction
                                         }
 
                                         it("states it edits the feed") {
@@ -350,7 +350,7 @@ final class FeedListControllerSpec: QuickSpec {
 
                                         describe("tapping it") {
                                             beforeEach {
-                                                action?.handler(action!, viewController!)
+                                                action?.handler(action!)
                                             }
 
                                             it("brings up a feed edit screen") {
@@ -361,18 +361,21 @@ final class FeedListControllerSpec: QuickSpec {
 
                                     describe("the third action") {
                                         beforeEach {
-                                            if previewActions!.count > 2 {
-                                                action = previewActions?[2] as? UIPreviewAction
-                                            }
+                                            guard let menu = menu, menu.children.count > 2 else { return }
+                                            action = menu.children[2] as? UIAction
                                         }
 
                                         it("states it opens a share sheet") {
                                             expect(action?.title).to(equal("Share"))
                                         }
 
+                                        it("uses the share icon") {
+                                            expect(action?.image).to(equal(UIImage(systemName: "square.and.arrow.up")))
+                                        }
+
                                         describe("tapping it") {
                                             beforeEach {
-                                                action?.handler(action!, viewController!)
+                                                action?.handler(action!)
                                             }
 
                                             it("brings up a share sheet") {
@@ -387,18 +390,21 @@ final class FeedListControllerSpec: QuickSpec {
 
                                     describe("the fourth action") {
                                         beforeEach {
-                                            if previewActions!.count > 3 {
-                                                action = previewActions?[3] as? UIPreviewAction
-                                            }
+                                            guard let menu = menu, menu.children.count > 3 else { return }
+                                            action = menu.children[3] as? UIAction
                                         }
 
                                         it("states it deletes the feed") {
                                             expect(action?.title).to(equal("Delete"))
                                         }
 
+                                        it("uses a trash can icon") {
+                                            expect(action?.image).to(equal(UIImage(systemName: "trash")))
+                                        }
+
                                         describe("tapping it") {
                                             beforeEach {
-                                                action?.handler(action!, viewController!)
+                                                action?.handler(action!)
                                             }
 
                                             it("deletes the feed from the data store") {
@@ -439,10 +445,22 @@ final class FeedListControllerSpec: QuickSpec {
                                     }
                                 }
 
-                                it("pushes the view controller when commited") {
-                                    if let vc = viewController {
-                                        subject.previewingContext(viewControllerPreviewing, commit: vc)
-                                        expect(navigationController.topViewController) === viewController
+                                describe("committing the view controller (tapping on it again)") {
+                                    beforeEach {
+                                        guard let config = menuConfiguration else { return }
+                                        let animator = FakeContextMenuAnimator(commitStyle: .pop, viewController: menuConfiguration?.previewProvider?())
+                                        subject.tableView.delegate?.tableView?(subject.tableView, willPerformPreviewActionForMenuWith: config, animator: animator)
+
+                                        expect(animator.addAnimationsCalls).to(beEmpty())
+                                        expect(animator.addCompletionCalls).to(haveCount(1))
+                                        animator.addCompletionCalls.last?()
+                                    }
+
+                                    it("navigates to the view controller") {
+                                        expect(navigationController.topViewController).to(beAnInstanceOf(ArticleListController.self))
+                                        if let articleVC = navigationController.topViewController as? ArticleListController {
+                                            expect(articleVC.feed) == feed
+                                        }
                                     }
                                 }
                             }

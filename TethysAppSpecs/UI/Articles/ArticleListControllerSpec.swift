@@ -679,7 +679,11 @@ class ArticleListControllerSpec: QuickSpec {
                                     }
 
                                     it("states that it deletes the article") {
-                                        expect(action?.title) == "Delete"
+                                        expect(action?.title).to(equal("Delete"))
+                                    }
+
+                                    it("shows a trash can icon") {
+                                        expect(action?.image).to(equal(UIImage(systemName: "trash")))
                                     }
 
                                     describe("when selected") {

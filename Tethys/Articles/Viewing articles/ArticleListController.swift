@@ -276,10 +276,10 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     public func tableView(_ tableView: UITableView,
                           willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration,
                           animator: UIContextMenuInteractionCommitAnimating) {
-        guard let articleController = animator.previewViewController as? ArticleViewController else { return }
-        animator.addCompletion {
-            self.markRead(article: articleController.article, read: true)
-            self.showArticleController(articleController, animated: true)
+        animator.addCompletion { [weak self] in
+            guard let articleController = animator.previewViewController as? ArticleViewController else { return }
+            self?.markRead(article: articleController.article, read: true)
+            self?.showArticleController(articleController, animated: true)
         }
     }
 

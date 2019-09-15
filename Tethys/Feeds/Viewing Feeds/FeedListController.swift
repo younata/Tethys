@@ -94,7 +94,6 @@ public final class FeedListController: UIViewController {
                                                               comment: "")
         self.navigationItem.leftBarButtonItem = settingsButton
         self.navigationItem.title = NSLocalizedString("FeedsTableViewController_Title", comment: "")
-        self.registerForPreviewing(with: self, sourceView: self.tableView)
 
         self.applyTheme()
 
@@ -219,7 +218,7 @@ public final class FeedListController: UIViewController {
         }
     }
 
-    fileprivate func deleteFeed(feed: Feed, indexPath: IndexPath?, completionHandler: @escaping (Bool) -> Void) {
+    fileprivate func deleteFeed(feed: Feed, indexPath: IndexPath?, completionHandler: ((Bool) -> Void)? = nil) {
         self.feedService.remove(feed: feed).then { result in
             let errorTitle = NSLocalizedString("FeedsTableViewController_Loading_Deleting_Feed_Error", comment: "")
             self.unwrap(
@@ -232,34 +231,32 @@ public final class FeedListController: UIViewController {
                     } else {
                         self.tableView.reloadData()
                     }
-                    completionHandler(true)
+                    completionHandler?(true)
                 },
                 onError: {
-                    completionHandler(false)
+                    completionHandler?(false)
                 }
             )
         }
     }
 
-    fileprivate func markRead(feed: Feed, indexPath: IndexPath?, completionHandler: @escaping (Bool) -> Void) {
+    fileprivate func markRead(feed: Feed, indexPath: IndexPath?, completionHandler: ((Bool) -> Void)? = nil) {
         self.feedService.readAll(of: feed).then { result in
             let errorTitle = NSLocalizedString("FeedsTableViewController_Loading_Marking_Feed_Error", comment: "")
             self.unwrap(
                 result: result,
                 errorTitle: errorTitle,
                 onSuccess: {
-                if let indexPath = indexPath {
-                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
-                } else {
-                    self.tableView.reloadData()
-                }
+                    if let indexPath = indexPath {
+                        self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                    } else {
+                        self.tableView.reloadData()
+                    }
 
-                self.notificationCenter.post(name: Notifications.reloadUI, object: self)
-                    completionHandler(true)
-                },
-                onError: {
-                    completionHandler(false)
-                }
+                    self.notificationCenter.post(name: Notifications.reloadUI, object: self)
+                    completionHandler?(true)
+            },
+                onError: { completionHandler?(false) }
             )
         }
     }
@@ -280,42 +277,6 @@ public final class FeedListController: UIViewController {
     }
 
     fileprivate func feed(indexPath: IndexPath) -> Feed { return self.feeds[indexPath.row] }
-}
-
-extension FeedListController: UIViewControllerPreviewingDelegate {
-    public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
-                                  viewControllerForLocation location: CGPoint) -> UIViewController? {
-        guard let indexPath = self.tableView.indexPathForRow(at: location) else { return nil }
-        let feed = self.feeds[indexPath.row]
-        let articleListController = self.articleListController(feed)
-        return articleListController
-    }
-
-    private func articleListPreviewItems(feed: Feed) -> [UIPreviewAction] {
-        let readTitle = NSLocalizedString("FeedsTableViewController_PreviewItem_MarkRead", comment: "")
-        let markRead = UIPreviewAction(title: readTitle, style: .default) { _, _  in
-            self.markRead(feed: feed, indexPath: nil, completionHandler: { _ in })
-        }
-        let editTitle = NSLocalizedString("Generic_Edit", comment: "")
-        let edit = UIPreviewAction(title: editTitle, style: .default) { _, _  in
-            self.editFeed(feed: feed, view: nil)
-        }
-        let shareTitle = NSLocalizedString("Generic_Share", comment: "")
-        let share = UIPreviewAction(title: shareTitle, style: .default) { _, _  in
-            self.shareFeed(feed: feed, view: nil)
-        }
-        let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
-        let delete = UIPreviewAction(title: deleteTitle, style: .destructive) { _, _  in
-            self.deleteFeed(feed: feed, indexPath: nil, completionHandler: { _ in })
-        }
-        return [markRead, edit, share, delete]
-    }
-
-    public func previewingContext(_ previewingContext: UIViewControllerPreviewing,
-                                  commit viewControllerToCommit: UIViewController) {
-        guard let articleController = viewControllerToCommit as? ArticleListController else { return }
-        self.navigationController?.pushViewController(articleController, animated: true)
-    }
 }
 
 extension FeedListController: Refresher {
@@ -379,6 +340,48 @@ extension FeedListController: UITableViewDelegate, UITableViewDataSource {
         ])
         configuration.performsFirstActionWithFullSwipe = true
         return configuration
+    }
+
+    public func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath,
+                          point: CGPoint) -> UIContextMenuConfiguration? {
+        let feed = self.feed(indexPath: indexPath)
+        return UIContextMenuConfiguration(
+            identifier: feed.url as NSURL,
+            previewProvider: { [weak self] in return self?.articleListController(feed) },
+            actionProvider: { [weak self] elements in
+                guard let theSelf = self else { return nil }
+                return UIMenu(title: feed.displayTitle, image: feed.image, identifier: nil, options: [],
+                              children: elements + theSelf.menuActions(for: feed))
+        })
+    }
+
+    private func menuActions(for feed: Feed) -> [UIAction] {
+        let readTitle = NSLocalizedString("FeedsTableViewController_PreviewItem_MarkRead", comment: "")
+        let markRead = UIAction(title: readTitle, image: UIImage(named: "MarkRead")) { [weak self] _ in
+            self?.markRead(feed: feed, indexPath: nil)
+        }
+        let editTitle = NSLocalizedString("Generic_Edit", comment: "")
+        let edit = UIAction(title: editTitle) { [weak self] _ in
+            self?.editFeed(feed: feed, view: nil)
+        }
+        let shareTitle = NSLocalizedString("Generic_Share", comment: "")
+        let share = UIAction(title: shareTitle, image: UIImage(systemName: "square.and.arrow.up")) { [weak self] _ in
+            self?.shareFeed(feed: feed, view: nil)
+        }
+        let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
+        let delete = UIAction(title: deleteTitle, image: UIImage(systemName: "trash")) { [weak self] _ in
+            self?.deleteFeed(feed: feed, indexPath: nil)
+        }
+        return [markRead, edit, share, delete]
+    }
+
+    public func tableView(_ tableView: UITableView,
+                          willPerformPreviewActionForMenuWith configuration: UIContextMenuConfiguration,
+                          animator: UIContextMenuInteractionCommitAnimating) {
+        animator.addCompletion { [weak self] in
+            guard let viewController = animator.previewViewController else { return }
+            self?.navigationController?.pushViewController(viewController, animated: true)
+        }
     }
 
     public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {

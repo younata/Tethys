@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Feeds-->
+        <scene sceneID="jZ5-2b-kRB">
+            <objects>
+                <viewController id="9Fs-li-njp" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="6IV-2f-8Cz">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="PQo-YP-b9i"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Feeds" id="ddd-eF-6lf">
+                        <barButtonItem key="leftBarButtonItem" title="settings" image="settings" id="oFl-D6-w3b"/>
+                        <rightBarButtonItems>
+                            <barButtonItem systemItem="add" id="eUc-eo-g5F"/>
+                            <barButtonItem systemItem="edit" id="m8N-z7-ZVb"/>
+                        </rightBarButtonItems>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5yx-9i-L0a" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="415.94202898550731" y="171.42857142857142"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="kYx-0G-L9Y">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="440-BD-h9M" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="2cZ-oR-PVT">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" name="highlight"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="9Fs-li-njp" kind="relationship" relationship="rootViewController" id="xUJ-3s-BdF"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Dtv-W6-nrc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-494.20289855072468" y="171.42857142857142"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="settings" width="24" height="24"/>
+        <namedColor name="highlight">
+            <color red="0.0" green="0.75" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

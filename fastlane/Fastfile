@@ -64,13 +64,13 @@ platform :ios do
 
   desc 'Runs all the tests'
   lane :test do
-    scan(project: 'Tethys.xcodeproj', scheme: 'Tethys', devices: ['iPhone 8', 'iPad Air 2'], disable_concurrent_testing: true)
+    scan(project: 'Tethys.xcodeproj', scheme: 'Tethys', devices: ['iPhone 8', 'iPad Air (3rd generation)'], disable_concurrent_testing: true)
   end
 
   desc 'Runs acceptance tests'
   lane :acceptance_test do
     reset_simulator_contents
-    scan(project: 'Tethys.xcodeproj', scheme: 'TethysAcceptanceSpecs', devices: ['iPhone 8', 'iPad Air 2'], disable_concurrent_testing: true)
+    scan(project: 'Tethys.xcodeproj', scheme: 'TethysAcceptanceSpecs', devices: ['iPhone 8', 'iPad Air (3rd generation)'], disable_concurrent_testing: true)
   end
 
   desc 'Deploy a new version to TestFlight'

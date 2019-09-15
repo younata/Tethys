@@ -282,7 +282,13 @@ extension SettingsViewController: UITableViewDelegate {
                           animator: UIContextMenuInteractionCommitAnimating) {
         animator.addCompletion { [weak self] in
             guard let viewController = animator.previewViewController else { return }
-            self?.navigationController?.pushViewController(viewController, animated: true)
+            if viewController.isKind(of: SFSafariViewController.self) {
+                let indexPath = IndexPath(row: SettingsSection.credits.rawValue, section: 0)
+                viewController.popoverPresentationController?.sourceView = tableView.cellForRow(at: indexPath)
+                self?.present(viewController, animated: true, completion: nil)
+            } else {
+                self?.navigationController?.pushViewController(viewController, animated: true)
+            }
         }
     }
 
@@ -368,6 +374,7 @@ extension SettingsViewController: UITableViewDelegate {
         if indexPath.row == 0 {
             guard let url = URL(string: "https://twitter.com/younata") else { return }
             let viewController = SFSafariViewController(url: url)
+            viewController.popoverPresentationController?.sourceView = tableView.cellForRow(at: indexPath)
             self.present(viewController, animated: true, completion: nil)
         } else if indexPath.row == 1 {
             let viewController = self.documentationViewController(.libraries)

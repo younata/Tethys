@@ -630,7 +630,7 @@ class SettingsViewControllerSpec: QuickSpec {
                             }
 
                             it("navigates to the view controller") {
-                                expect(navigationController.topViewController).to(beAnInstanceOf(SFSafariViewController.self))
+                                expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
                             }
                         }
                     }

@@ -14,6 +14,7 @@ public final class SettingsViewController: UIViewController {
     fileprivate let messenger: Messenger
     fileprivate let loginController: LoginController
     fileprivate let documentationViewController: (Documentation) -> DocumentationViewController
+    fileprivate let arViewController: () -> AugmentedRealityEasterEggViewController
 
     fileprivate lazy var showReadingTimes: Bool = { return self.settingsRepository.showEstimatedReadingLabel }()
     fileprivate lazy var refreshControlStyle: RefreshControlStyle = { return self.settingsRepository.refreshControl }()
@@ -26,7 +27,8 @@ public final class SettingsViewController: UIViewController {
                 accountService: AccountService,
                 messenger: Messenger,
                 loginController: LoginController,
-                documentationViewController: @escaping (Documentation) -> DocumentationViewController) {
+                documentationViewController: @escaping (Documentation) -> DocumentationViewController,
+                arViewController: @escaping () -> AugmentedRealityEasterEggViewController) {
         self.settingsRepository = settingsRepository
         self.opmlService = opmlService
         self.mainQueue = mainQueue
@@ -34,6 +36,7 @@ public final class SettingsViewController: UIViewController {
         self.messenger = messenger
         self.loginController = loginController
         self.documentationViewController = documentationViewController
+        self.arViewController = arViewController
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -364,6 +367,10 @@ extension SettingsViewController: UITableViewDelegate {
                     }
                 }
             }
+        case .gitVersion:
+            let viewController = self.arViewController()
+            viewController.modalPresentationStyle = .fullScreen
+            self.present(viewController, animated: true, completion: nil)
         default:
             break
         }

@@ -27,13 +27,13 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         self.container.resolve(ImportUseCase.self)!
     }()
 
-    internal lazy var splitView: SplitViewController = {
+    private func splitView() -> SplitViewController {
         self.container.resolve(SplitViewController.self)!
-    }()
+    }
 
-    private lazy var bootstrapper: Bootstrapper = {
-        self.container.resolve(Bootstrapper.self, arguments: self.getWindow(), self.splitView)!
-    }()
+    private func feedListController() -> FeedListController {
+        return self.container.resolve(FeedListController.self)!
+    }
 
     private func getWindow() -> UIWindow {
         if let window = self.window {
@@ -45,10 +45,9 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
         return window
     }
 
-    public func application(
-        _ application: UIApplication,
-        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
-        ) -> Bool {
+    public func application(_ application: UIApplication,
+                            didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
         UINavigationBar.appearance().tintColor = UIColor(named: "highlight")
         UIBarButtonItem.appearance().tintColor = UIColor(named: "highlight")
         UITabBar.appearance().tintColor = UIColor(named: "highlight")
@@ -83,7 +82,6 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: Quick Actions
 
-    @available(iOS 9, *)
     public func application(_ application: UIApplication,
                             performActionFor shortcutItem: UIApplicationShortcutItem,
                             completionHandler: @escaping (Bool) -> Void) {
@@ -115,12 +113,26 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Private
 
     private func createControllerHierarchy(_ feed: Feed? = nil, article: Article? = nil) {
-        let feedAndArticle: (Feed, Article)?
-        if let feed = feed, let article = article {
-            feedAndArticle = (feed, article)
-        } else {
-            feedAndArticle = nil
+        let feedListController = self.feedListController()
+        let splitView = self.splitView()
+        splitView.masterNavigationController.viewControllers = [
+            feedListController
+        ]
+        splitView.detailNavigationController.viewControllers = [
+            UIViewController()
+        ]
+        splitView.viewControllers = [
+            splitView.masterNavigationController,
+            splitView.detailNavigationController
+        ]
+
+        if let feed = feed {
+            let articleListController = feedListController.showFeed(feed, animated: false)
+            if let article = article {
+                _ = articleListController.showArticle(article, animated: false)
+            }
         }
-        self.bootstrapper.begin(feedAndArticle)
+
+        self.getWindow().rootViewController = splitView
     }
 }

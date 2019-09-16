@@ -17,15 +17,6 @@ public func configure(container: Container) {    container.register(TagPickerVie
         return SettingsRepository(userDefaults: r.resolve(UserDefaults.self) ?? nil)
     }.inObjectScope(.container)
 
-    container.register(Bootstrapper.self) { r, window, splitController in
-        return BootstrapWorkFlow(
-            window: window,
-            splitViewController: splitController,
-            feedsTableViewController: { r.resolve(FeedListController.self)! },
-            blankViewController: { r.resolve(BlankViewController.self)! }
-        )
-    }
-
     container.register(ArticleUseCase.self) { r in
         return DefaultArticleUseCase(
             articleService: r.resolve(ArticleService.self)!
@@ -43,7 +34,6 @@ public func configure(container: Container) {    container.register(TagPickerVie
     registerViewControllers(container: container)
 }
 
-// swiftlint:disable function_body_length
 private func registerViewControllers(container: Container) {
     container.register(ArticleListController.self) { r, feed in
         return ArticleListController(
@@ -64,8 +54,10 @@ private func registerViewControllers(container: Container) {
         )
     }
 
-    container.register(BlankViewController.self) { _ in
-        return BlankViewController()
+    container.register(AugmentedRealityEasterEggViewController.self) { r in
+        return AugmentedRealityEasterEggViewController(
+            feedListControllerFactory: { r.resolve(FeedListController.self)! }
+        )
     }
 
     container.register(DocumentationViewController.self) { r, documentation in
@@ -127,7 +119,8 @@ private func registerViewControllers(container: Container) {
             loginController: r.resolve(LoginController.self)!,
             documentationViewController: { documentation in
                 return r.resolve(DocumentationViewController.self, argument: documentation)!
-            }
+            },
+            arViewController: { r.resolve(AugmentedRealityEasterEggViewController.self)! }
         )
     }
 
@@ -141,4 +134,3 @@ private func registerViewControllers(container: Container) {
         )
     }
 }
-// swiftlint: enable=function_body_length

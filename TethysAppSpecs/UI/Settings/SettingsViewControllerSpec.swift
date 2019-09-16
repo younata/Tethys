@@ -37,7 +37,8 @@ class SettingsViewControllerSpec: QuickSpec {
                 accountService: accountService,
                 messenger: messenger,
                 loginController: loginController,
-                documentationViewController: { documentation in documentationViewControllerFactory(documentation: documentation) }
+                documentationViewController: { documentation in documentationViewControllerFactory(documentation: documentation) },
+                arViewController: { augmentedRealityViewControllerFactory() }
             )
 
             rootViewController = UIViewController()
@@ -532,8 +533,8 @@ class SettingsViewControllerSpec: QuickSpec {
                             delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
                         }
 
-                        it("does nothing") {
-                            expect(navigationController.visibleViewController).to(be(subject))
+                        it("shows an AugmentedRealityEasterEggViewController") {
+                            expect(navigationController.visibleViewController).to(beAKindOf(AugmentedRealityEasterEggViewController.self))
                         }
                     }
 

@@ -38,7 +38,7 @@ func tagEditorViewControllerFactory(
     )
 }
 
-func feedsTableViewControllerFactory(
+func feedListControllerFactory(
     feedService: FeedService = FakeFeedService(),
     settingsRepository: SettingsRepository = settingsRepositoryFactory(),
     mainQueue: FakeOperationQueue = FakeOperationQueue(),
@@ -101,7 +101,8 @@ func settingsViewControllerFactory(
     accountService: AccountService = FakeAccountService(),
     messenger: Messenger = FakeMessenger(),
     loginController: LoginController = FakeLoginController(),
-    documentationViewController: @escaping (Documentation) -> DocumentationViewController = { docs in documentationViewControllerFactory(documentation: docs) }
+    documentationViewController: @escaping (Documentation) -> DocumentationViewController = { docs in documentationViewControllerFactory(documentation: docs) },
+    arViewController: @escaping () -> AugmentedRealityEasterEggViewController = { augmentedRealityViewControllerFactory() }
     ) -> SettingsViewController {
     return SettingsViewController(
         settingsRepository: settingsRepository,
@@ -110,7 +111,8 @@ func settingsViewControllerFactory(
         accountService: accountService,
         messenger: messenger,
         loginController: loginController,
-        documentationViewController: documentationViewController
+        documentationViewController: documentationViewController,
+        arViewController: arViewController
     )
 }
 
@@ -124,24 +126,10 @@ func documentationViewControllerFactory(
     )
 }
 
-func blankViewControllerFactory() -> BlankViewController {
-    return BlankViewController()
-}
-
-// Workflows
-
-func bootstrapWorkFlowFactory(
-    window: UIWindow = UIWindow(),
-    splitViewController: SplitViewController = splitViewControllerFactory(),
-    feedsTableViewController: @escaping () -> FeedListController = { feedsTableViewControllerFactory() },
-    blankViewController: @escaping () -> BlankViewController = { blankViewControllerFactory() }
-    ) -> BootstrapWorkFlow {
-    return BootstrapWorkFlow(
-        window: window,
-        splitViewController: splitViewController,
-        feedsTableViewController: feedsTableViewController,
-        blankViewController: blankViewController
-    )
+func augmentedRealityViewControllerFactory(
+    feedListController: @escaping () -> FeedListController = { return feedListControllerFactory() }
+) -> AugmentedRealityEasterEggViewController {
+    return AugmentedRealityEasterEggViewController(feedListControllerFactory: feedListController)
 }
 
 // Repositories

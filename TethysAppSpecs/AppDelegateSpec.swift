@@ -37,9 +37,7 @@ class AppDelegateSpec: QuickSpec {
             container.register(ImportUseCase.self) { _ in importUseCase }
 
             container.register(SplitViewController.self) { _ in splitViewControllerFactory() }
-            container.register(Bootstrapper.self) { _, window, splitView in
-                bootstrapWorkFlowFactory(window: window, splitViewController: splitView)
-            }
+            container.register(FeedListController.self) { _ in feedListControllerFactory() }
 
             subject.window = UIWindow(frame: CGRect(x: 0, y: 0, width: 320, height: 480))
 
@@ -79,13 +77,20 @@ class AppDelegateSpec: QuickSpec {
                         vc = splitViewController.viewControllers[0] as UIViewController
                     }
 
-                    it("should be an instance of UINavigationController") {
+                    it("is an instance of UINavigationController") {
                         expect(vc).to(beAnInstanceOf(UINavigationController.self))
                     }
 
-                    it("should have a FeedsTableViewController as the root controller") {
+                    it("has a FeedListController as the root controller") {
                         let nc = vc as! UINavigationController
                         expect(nc.viewControllers.first).to(beAnInstanceOf(FeedListController.self))
+                    }
+                }
+
+                describe("the detail view controller") {
+                    it("shows a regular view controller inside of a navigation controller") {
+                        expect(splitViewController.viewControllers[1]).to(beAKindOf(UINavigationController.self))
+                        expect((splitViewController.viewControllers[1] as? UINavigationController)?.viewControllers).to(haveCount(1))
                     }
                 }
             }

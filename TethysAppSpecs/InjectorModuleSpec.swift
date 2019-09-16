@@ -29,24 +29,6 @@ final class InjectorModuleSpec: QuickSpec {
         describe("Controllers") {
             isA(ArticleUseCase.self, kindOf: DefaultArticleUseCase.self)
 
-            describe("Bootstrapper") {
-                var bootstrapper: Bootstrapper?
-
-                beforeEach {
-                    let window = UIWindow(frame: CGRect.zero)
-                    let splitController = SplitViewController()
-                    bootstrapper = subject.resolve(Bootstrapper.self, arguments: window, splitController)
-                }
-
-                it("exists") {
-                    expect(bootstrapper).toNot(beNil())
-                }
-
-                it("is a BootstrapWorkFlow") {
-                    expect(bootstrapper).to(beAKindOf(BootstrapWorkFlow.self))
-                }
-            }
-
             describe("ArticleCellController") {
                 it("requires a bool argument") {
                     expect(subject.resolve(ArticleCellController.self)).to(beNil())
@@ -100,7 +82,7 @@ final class InjectorModuleSpec: QuickSpec {
                 }
             }
 
-            exists(BlankViewController.self)
+            exists(AugmentedRealityEasterEggViewController.self)
 
             describe("DocumentationViewController") {
                 it("returns nil without an argument") {

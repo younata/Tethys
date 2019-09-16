@@ -102,9 +102,8 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     }
 
     fileprivate func showArticleController(_ avc: ArticleViewController, animated: Bool) {
-        if let splitView = self.splitViewController {
-            let delegate = UIApplication.shared.delegate as? AppDelegate
-            delegate?.splitView.collapseDetailViewController = false
+        if let splitView = self.splitViewController as? SplitViewController {
+            splitView.collapseDetailViewController = false
             splitView.showDetailViewController(UINavigationController(rootViewController: avc),
                 sender: self)
         } else {

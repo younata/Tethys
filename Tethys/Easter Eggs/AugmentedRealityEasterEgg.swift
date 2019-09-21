@@ -102,6 +102,7 @@ public final class AugmentedRealityEasterEggViewController: UIViewController {
 
     @objc private func didTapView(gestureRecognizer: UITapGestureRecognizer) {
         guard gestureRecognizer.state == .ended else { return }
+        guard self.arView.hitTest(gestureRecognizer.location(in: self.arView), options: nil).isEmpty else { return }
         guard let camera = self.arView.session.currentFrame?.camera else { return }
 
         var translation = matrix_identity_float4x4

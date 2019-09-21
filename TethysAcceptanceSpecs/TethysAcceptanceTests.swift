@@ -75,7 +75,7 @@ class TethysAcceptanceTests: XCTestCase {
 
         snapshot("02-articlesList", waitForLoadingIndicator: false)
 
-//        self.assertShareShows(shareButtonName: "ArticleListController_ShareFeed", app: app)
+        self.assertShareShows(shareButtonName: "ArticleListController_ShareFeed", app: app)
 
         app.staticTexts["Homemade thermostat for my apartment"].tap()
 
@@ -83,6 +83,6 @@ class TethysAcceptanceTests: XCTestCase {
 
         snapshot("03-article", waitForLoadingIndicator: false)
 
-//        self.assertShareShows(shareButtonName: "ArticleViewController_ShareArticle", app: app)
+        self.assertShareShows(shareButtonName: "ArticleViewController_ShareArticle", app: app)
     }
 }

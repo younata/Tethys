@@ -100,6 +100,13 @@
 "RefreshControlStyle_Spinner" = "Spinner";
 "RefreshControlStyle_Breakout" = "Breakout";
 
+"AREasterEgg_Tracking_NotAvailable" = "Camera tracking not available";
+"AREasterEgg_Tracking_Initializing" = "ARKit initializing, move device around to gather data";
+"AREasterEgg_Tracking_ExcessiveMotion" = "Device being moved too quickly";
+"AREasterEgg_Tracking_InsufficientFeatures" = "There's not enough light for ARKit to make things out, turn on a light to improve tracking";
+"AREasterEgg_Tracking_Relocalizing" = "Relocalizing after restarting AR session";
+"AREasterEgg_Tracking_Unknown" = "Unhandled reason: %@";
+
 // Errors
 
 "Error_Network_BadResponse" = "Bad Server Response";

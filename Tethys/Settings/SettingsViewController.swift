@@ -3,6 +3,9 @@ import PureLayout
 import SafariServices
 import Result
 import TethysKit
+import SwiftUI
+
+// swiftlint:disable file_length
 
 public final class SettingsViewController: UIViewController {
     public let tableView = UITableView(frame: CGRect.zero, style: .grouped)
@@ -12,8 +15,10 @@ public final class SettingsViewController: UIViewController {
     fileprivate let mainQueue: OperationQueue
     fileprivate let accountService: AccountService
     fileprivate let messenger: Messenger
+    fileprivate let appIconChanger: AppIconChanger
     fileprivate let loginController: LoginController
     fileprivate let documentationViewController: (Documentation) -> DocumentationViewController
+    fileprivate let appIconChangeController: () -> UIViewController
     fileprivate let arViewController: () -> AugmentedRealityEasterEggViewController
 
     fileprivate lazy var showReadingTimes: Bool = { return self.settingsRepository.showEstimatedReadingLabel }()
@@ -26,16 +31,20 @@ public final class SettingsViewController: UIViewController {
                 mainQueue: OperationQueue,
                 accountService: AccountService,
                 messenger: Messenger,
+                appIconChanger: AppIconChanger,
                 loginController: LoginController,
                 documentationViewController: @escaping (Documentation) -> DocumentationViewController,
+                appIconChangeController: @escaping () -> UIViewController,
                 arViewController: @escaping () -> AugmentedRealityEasterEggViewController) {
         self.settingsRepository = settingsRepository
         self.opmlService = opmlService
         self.mainQueue = mainQueue
         self.accountService = accountService
         self.messenger = messenger
+        self.appIconChanger = appIconChanger
         self.loginController = loginController
         self.documentationViewController = documentationViewController
+        self.appIconChangeController = appIconChangeController
         self.arViewController = arViewController
 
         super.init(nibName: nil, bundle: nil)
@@ -148,7 +157,7 @@ extension SettingsViewController: UITableViewDataSource {
         case .refresh:
             return 2
         case .other:
-            return OtherSection.numberOfOptions
+            return OtherSection.numberOfOptions(appIconChanger: self.appIconChanger)
         case .credits:
             return 3
         }
@@ -190,11 +199,12 @@ extension SettingsViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
         guard let refreshStyle = RefreshControlStyle(rawValue: indexPath.row) else { return cell }
         cell.textLabel?.text = refreshStyle.description
+        cell.accessibilityLabel = refreshStyle.description
         return cell
     }
 
     private func otherCell(indexPath: IndexPath) -> UITableViewCell {
-        let row = OtherSection(rawValue: indexPath.row)!
+        let row = OtherSection(rowIndex: indexPath.row, appIconChanger: self.appIconChanger)!
         var tableCell: UITableViewCell
         switch row {
         case .showReadingTimes:
@@ -205,9 +215,18 @@ extension SettingsViewController: UITableViewDataSource {
             cell.onTapSwitch = {aSwitch in
                 self.showReadingTimes = aSwitch.isOn
                 self.navigationItem.rightBarButtonItem?.isEnabled = true
+                self.accessibilityValue = self.showReadingTimes ?
+                    NSLocalizedString("Generic_Enabled", comment: "") :
+                    NSLocalizedString("Generic_Disabled", comment: "")
             }
             tableCell = cell
+            self.accessibilityValue = self.showReadingTimes ?
+                NSLocalizedString("Generic_Enabled", comment: "") :
+                NSLocalizedString("Generic_Disabled", comment: "")
         case .exportOPML:
+            let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+            tableCell = cell
+        case .appIcon:
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
             tableCell = cell
         case .gitVersion:
@@ -217,21 +236,26 @@ extension SettingsViewController: UITableViewDataSource {
             cell.detailTextLabel?.text = Bundle.main.infoDictionary?["CurrentGitVersion"] as? String
         }
         tableCell.textLabel?.text = row.description
+        tableCell.accessibilityLabel = row.description
         return tableCell
     }
 
     private func creditCell(indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
         if indexPath.row == 0 {
-            cell.textLabel?.text = NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Name", comment: "")
-            cell.detailTextLabel?.text = NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Detail",
-                                                           comment: "")
+            let text = NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Name", comment: "")
+            let detailText = NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Detail", comment: "")
+            cell.textLabel?.text = text
+            cell.detailTextLabel?.text = detailText
+            cell.accessibilityLabel = "\(detailText) - \(text)"
         } else if indexPath.row == 1 {
             cell.textLabel?.text = NSLocalizedString("SettingsViewController_Credits_Libraries", comment: "")
             cell.detailTextLabel?.text = ""
+            cell.accessibilityLabel = cell.textLabel?.text
         } else if indexPath.row == 2 {
             cell.textLabel?.text = NSLocalizedString("SettingsViewController_Credits_Icons", comment: "")
             cell.detailTextLabel?.text = ""
+            cell.accessibilityLabel = cell.textLabel?.text
         }
         return cell
     }
@@ -337,7 +361,9 @@ extension SettingsViewController: UITableViewDelegate {
 
     private func didTapOtherCell(tableView: UITableView, indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
-        guard let otherSection = OtherSection(rawValue: indexPath.row) else { return }
+        guard let otherSection = OtherSection(rowIndex: indexPath.row, appIconChanger: self.appIconChanger) else {
+            return
+        }
 
         switch otherSection {
         case .exportOPML:
@@ -367,6 +393,8 @@ extension SettingsViewController: UITableViewDelegate {
                     }
                 }
             }
+        case .appIcon:
+            self.navigationController?.pushViewController(self.appIconChangeController(), animated: true)
         case .gitVersion:
             let viewController = self.arViewController()
             viewController.modalPresentationStyle = .fullScreen

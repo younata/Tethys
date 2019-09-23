@@ -34,10 +34,11 @@ enum SettingsSection: Int, CustomStringConvertible {
     }
 }
 
-enum OtherSection: Int, CustomStringConvertible {
-    case showReadingTimes = 0
-    case exportOPML = 1
-    case gitVersion = 2
+enum OtherSection: CustomStringConvertible {
+    case showReadingTimes
+    case exportOPML
+    case appIcon
+    case gitVersion
 
     var description: String {
         switch self {
@@ -45,11 +46,47 @@ enum OtherSection: Int, CustomStringConvertible {
             return NSLocalizedString("SettingsViewController_Other_ShowReadingTimes", comment: "")
         case .exportOPML:
             return NSLocalizedString("SettingsViewController_Other_ExportOPML", comment: "")
+        case .appIcon:
+            return NSLocalizedString("SettingsViewController_AlternateIcons_Title", comment: "")
         case .gitVersion:
             return NSLocalizedString("SettingsViewController_Credits_Version", comment: "")
         }
-
     }
 
-    static let numberOfOptions = 3
+    init?(rowIndex: Int, appIconChanger: AppIconChanger) {
+        switch rowIndex {
+        case 0: self = .showReadingTimes
+        case 1: self = .exportOPML
+        case 2:
+            if appIconChanger.supportsAlternateIcons {
+                self = .appIcon
+            } else {
+                self = .gitVersion
+            }
+        case 3:
+            if appIconChanger.supportsAlternateIcons {
+                self = .gitVersion
+            } else {
+                return nil
+            }
+        default:
+            return nil
+        }
+    }
+
+    func rowIndex(appIconChanger: AppIconChanger) -> Int {
+        switch self {
+        case .showReadingTimes: return 0
+        case .exportOPML: return 1
+        case .appIcon: return 2
+        case .gitVersion: return appIconChanger.supportsAlternateIcons ? 3 : 2
+        }
+    }
+
+    static func numberOfOptions(appIconChanger: AppIconChanger) -> Int {
+        guard appIconChanger.supportsAlternateIcons else {
+            return 3
+        }
+        return 4
+    }
 }

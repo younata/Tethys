@@ -1,11 +1,11 @@
 import Quick
 import Nimble
-import TethysKit
+import SwiftUI
 import SafariServices
 @testable import TethysKit
 @testable import Tethys
 
-class SettingsViewControllerSpec: QuickSpec {
+final class SettingsViewControllerSpec: QuickSpec {
     override func spec() {
         var subject: SettingsViewController!
         var navigationController: UINavigationController!
@@ -14,8 +14,11 @@ class SettingsViewControllerSpec: QuickSpec {
         var opmlService: FakeOPMLService!
         var messenger: FakeMessenger!
         var loginController: FakeLoginController!
+        var appIconChanger: FakeAppIconChanger!
 
         var rootViewController: UIViewController!
+
+        var appIconChangeController: UIViewController!
 
         beforeEach {
             settingsRepository = SettingsRepository(userDefaults: nil)
@@ -30,14 +33,20 @@ class SettingsViewControllerSpec: QuickSpec {
 
             loginController = FakeLoginController()
 
+            appIconChanger = FakeAppIconChanger()
+
+            appIconChangeController = UIViewController()
+
             subject = SettingsViewController(
                 settingsRepository: settingsRepository,
                 opmlService: opmlService,
                 mainQueue: mainQueue,
                 accountService: accountService,
                 messenger: messenger,
+                appIconChanger: appIconChanger,
                 loginController: loginController,
                 documentationViewController: { documentation in documentationViewControllerFactory(documentation: documentation) },
+                appIconChangeController: { return appIconChangeController },
                 arViewController: { augmentedRealityViewControllerFactory() }
             )
 
@@ -410,6 +419,12 @@ class SettingsViewControllerSpec: QuickSpec {
                     expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(3))
                 }
 
+                it("has four cells if alternate app icons are enabled") {
+                    appIconChanger.supportsAlternateIcons = true
+                    subject.tableView.reloadData()
+                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(4))
+                }
+
                 describe("the estimated reading times cell") {
                     var cell: SwitchTableViewCell! = nil
                     let indexPath = IndexPath(row: 0, section: sectionNumber)
@@ -511,11 +526,47 @@ class SettingsViewControllerSpec: QuickSpec {
                     }
                 }
 
-                describe("the version cell") {
+                describe("the app icons cell") {
                     var cell: TableViewCell!
                     let indexPath = IndexPath(row: 2, section: sectionNumber)
 
                     beforeEach {
+                        appIconChanger.supportsAlternateIcons = true
+                        subject.tableView.reloadData()
+
+                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
+                    }
+
+                    it("has 'App Icon' name as the text") {
+                        expect(cell.textLabel?.text).to(equal("App Icon"))
+                    }
+
+                    it("has nothing in the detail text") {
+                        expect(cell.detailTextLabel?.text).to(beNil())
+                    }
+
+                    describe("tapping it") {
+                        beforeEach {
+                            delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
+                        }
+
+                        it("shows the app icon configuration screen") {
+                            expect(navigationController.visibleViewController).to(be(appIconChangeController))
+                        }
+                    }
+
+                    it("has no context menu") {
+                        expect(subject.tableView.delegate?.tableView?(subject.tableView, contextMenuConfigurationForRowAt: indexPath, point: .zero)).to(beNil())
+                    }
+                }
+
+                describe("the version cell") {
+                    var cell: TableViewCell!
+                    let indexPath = IndexPath(row: 3, section: sectionNumber)
+
+                    beforeEach {
+                        appIconChanger.supportsAlternateIcons = true
+                        subject.tableView.reloadData()
                         cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
                     }
 

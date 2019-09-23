@@ -26,7 +26,10 @@ EOF
 
 function app_icon {
     export ASSET_PATH="../$APP_NAME/Assets.xcassets/AppIcon.appiconset"
+    export ICON_ASSET_PATH="../$APP_NAME/Assets.xcassets/App\ Icons/DefaultAppIcon.imageset"
     parallel --progress -j 0 << EOF
+svgexport AppIcon.xml $ICON_ASSET_PATH/DefaultAppIcon@2x.png 120:120
+svgexport AppIcon.xml $ICON_ASSET_PATH/DefaultAppIcon@3x.png 180:180
 svgexport AppIcon.xml $ASSET_PATH/Icon@2x.png 120:120
 svgexport AppIcon.xml $ASSET_PATH/Icon@3x.png 180:180
 svgexport AppIcon.xml $ASSET_PATH/Icon-iPadPro@2x.png 167:167
@@ -35,6 +38,8 @@ svgexport AppIcon.xml $ASSET_PATH/Icon-iPad@2x.png 152:152
 svgexport AppIcon.xml $ASSET_PATH/Icon-AppStore.png 1024:1024
 EOF
     parallel --progress -j 0 << EOF
+convert $ICON_ASSET_PATH/DefaultAppIcon@2x.png -background white -alpha remove $ICON_ASSET_PATH/DefaultAppIcon@2x.png
+convert $ICON_ASSET_PATH/DefaultAppIcon@3x.png -background white -alpha remove $ICON_ASSET_PATH/DefaultAppIcon@3x.png
 convert $ASSET_PATH/Icon@2x.png -background white -alpha remove $ASSET_PATH/Icon@2x.png
 convert $ASSET_PATH/Icon@3x.png -background white -alpha remove $ASSET_PATH/Icon@3x.png
 convert $ASSET_PATH/Icon-iPadPro@2x.png -background white -alpha remove $ASSET_PATH/Icon-iPadPro@2x.png
@@ -45,22 +50,19 @@ EOF
 }
 
 function app_icon_black {
-    export ASSET_PATH="../$APP_NAME/Assets.xcassets/AppIcon-Black.appiconset"
+    export ASSET_PATH="../$APP_NAME/AlternateIcons"
+    export ICON_ASSET_PATH="../$APP_NAME/Assets.xcassets/App\ Icons/BlackAppIcon.imageset"
     parallel --progress -j 0 << EOF
+svgexport AppIcon.xml $ICON_ASSET_PATH/BlackAppIcon@2x.png 120:120
+svgexport AppIcon.xml $ICON_ASSET_PATH/BlackAppIcon@3x.png 180:180
 svgexport AppIcon.xml $ASSET_PATH/AppIcon-Black@2x.png 120:120
 svgexport AppIcon.xml $ASSET_PATH/AppIcon-Black@3x.png 180:180
-svgexport AppIcon.xml $ASSET_PATH/AppIcon-Black-iPadPro@2x.png 167:167
-svgexport AppIcon.xml $ASSET_PATH/AppIcon-Black-iPad.png 76:76
-svgexport AppIcon.xml $ASSET_PATH/AppIcon-Black-iPad@2x.png 152:152
-svgexport AppIcon.xml $ASSET_PATH/AppIcon-Black-AppStore.png 1024:1024
 EOF
     parallel --progress -j 0 << EOF
+convert $ICON_ASSET_PATH/BlackAppIcon@2x.png -background black -alpha remove $ICON_ASSET_PATH/BlackAppIcon@2x.png
+convert $ICON_ASSET_PATH/BlackAppIcon@3x.png -background black -alpha remove $ICON_ASSET_PATH/BlackAppIcon@3x.png
 convert $ASSET_PATH/AppIcon-Black@2x.png -background black -alpha remove $ASSET_PATH/AppIcon-Black@2x.png
 convert $ASSET_PATH/AppIcon-Black@3x.png -background black -alpha remove $ASSET_PATH/AppIcon-Black@3x.png
-convert $ASSET_PATH/AppIcon-Black-iPadPro@2x.png -background black -alpha remove $ASSET_PATH/AppIcon-Black-iPadPro@2x.png
-convert $ASSET_PATH/AppIcon-Black-iPad.png -background black -alpha remove $ASSET_PATH/AppIcon-Black-iPad.png
-convert $ASSET_PATH/AppIcon-Black-iPad@2x.png -background black -alpha remove $ASSET_PATH/AppIcon-Black-iPad@2x.png
-convert $ASSET_PATH/AppIcon-Black-AppStore.png -background black -alpha remove $ASSET_PATH/AppIcon-Black-AppStore.png
 EOF
 }
 
@@ -83,15 +85,24 @@ svgexport MarkUnread.xml ../$APP_NAME/Assets.xcassets/MarkUnread.imageset/MarkUn
 EOF
 }
 
+function checkmark_icon {
+    parallel --progress -j 0 << EOF
+svgexport Checkmark.xml ../$APP_NAME/Assets.xcassets/Checkmark.imageset/Checkmark.png 25:25
+svgexport Checkmark.xml ../$APP_NAME/Assets.xcassets/Checkmark.imageset/Checkmark@2x.png 50:50
+svgexport Checkmark.xml ../$APP_NAME/Assets.xcassets/Checkmark.imageset/Checkmark@3x.png 75:75
+EOF
+}
+
 if [ $# -eq 1 ]; then
     case "$1" in
         "app") app_icon; app_icon_black ;;
         "chevron") chevron_icons ;;
+        "checkmark") checkmark_icon ;;
         "gray") gray_icon ;;
-        "settings") settings_icon ;;
         "markread") markread_icons ;;
+        "settings") settings_icon ;;
         *)
-            echo "Usage: $0 [app, chevron, markread, settings]"
+            echo "Usage: $0 [app, chevron, checkmark, gray, markread, settings]"
             echo "No arguments will recreate all icons."
             ;;
     esac
@@ -99,6 +110,7 @@ else
     export -f app_icon
     export -f app_icon_black
     export -f chevron_icons
+    export -f checkmark_icon
     export -f gray_icon
     export -f settings_icon
     export -f markread_icons 
@@ -107,6 +119,7 @@ else
 app_icon
 app_icon_black
 chevron_icons
+checkmark_icon
 gray_icon
 settings_icon
 markread_icons

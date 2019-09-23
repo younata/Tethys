@@ -100,8 +100,10 @@ func settingsViewControllerFactory(
     mainQueue: FakeOperationQueue = FakeOperationQueue(),
     accountService: AccountService = FakeAccountService(),
     messenger: Messenger = FakeMessenger(),
+    appIconChanger: AppIconChanger = FakeAppIconChanger(),
     loginController: LoginController = FakeLoginController(),
     documentationViewController: @escaping (Documentation) -> DocumentationViewController = { docs in documentationViewControllerFactory(documentation: docs) },
+    appIconChangeController: @escaping () -> UIViewController = { UIViewController() },
     arViewController: @escaping () -> AugmentedRealityEasterEggViewController = { augmentedRealityViewControllerFactory() }
     ) -> SettingsViewController {
     return SettingsViewController(
@@ -110,8 +112,10 @@ func settingsViewControllerFactory(
         mainQueue: mainQueue,
         accountService: accountService,
         messenger: messenger,
+        appIconChanger: appIconChanger,
         loginController: loginController,
         documentationViewController: documentationViewController,
+        appIconChangeController: appIconChangeController,
         arViewController: arViewController
     )
 }
@@ -127,9 +131,13 @@ func documentationViewControllerFactory(
 }
 
 func augmentedRealityViewControllerFactory(
+    mainQueue: OperationQueue = FakeOperationQueue(),
     feedListController: @escaping () -> FeedListController = { return feedListControllerFactory() }
 ) -> AugmentedRealityEasterEggViewController {
-    return AugmentedRealityEasterEggViewController(feedListControllerFactory: feedListController)
+    return AugmentedRealityEasterEggViewController(
+        mainQueue: mainQueue,
+        feedListControllerFactory: feedListController
+    )
 }
 
 // Repositories

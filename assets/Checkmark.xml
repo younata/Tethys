@@ -1,0 +1,12 @@
+<?xml version="1.0" standalone="yes"?>
+<svg width="50" height="50" xmlns="http://www.w3.org/2000/svg">
+    <rect width="100%" height="100%" fill="transparent"/>
+
+    <!-- lines meant to represent text -->
+    <g fill="transparent" stroke-linecap="round">
+        <path stroke="#007700" stroke-width="6"
+              d="M 6,30
+                 L 18,42
+                 L 38,12"/>
+    </g>
+</svg>

@@ -33,6 +33,7 @@ private class ARViewLabel: UIView {
 }
 
 public final class AugmentedRealityEasterEggViewController: UIViewController {
+    private let mainQueue: OperationQueue
     private let feedListControllerFactory: () -> FeedListController
 
     private let arView = ARSCNView()
@@ -42,7 +43,8 @@ public final class AugmentedRealityEasterEggViewController: UIViewController {
 
     private var shownControllers: [SCNNode: UIViewController] = [:]
 
-    public init(feedListControllerFactory: @escaping () -> FeedListController) {
+    public init(mainQueue: OperationQueue, feedListControllerFactory: @escaping () -> FeedListController) {
+        self.mainQueue = mainQueue
         self.feedListControllerFactory = feedListControllerFactory
         super.init(nibName: nil, bundle: nil)
     }
@@ -139,37 +141,40 @@ extension AugmentedRealityEasterEggViewController: UIGestureRecognizerDelegate {
 
 extension AugmentedRealityEasterEggViewController: ARSCNViewDelegate {
     public func renderer(_ renderer: SCNSceneRenderer, didRemove node: SCNNode, for anchor: ARAnchor) {
-        self.shownControllers.removeValue(forKey: node)
+        self.mainQueue.addOperation {
+            self.shownControllers.removeValue(forKey: node)
+        }
     }
 
     public func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {
-        switch camera.trackingState {
-        case .normal:
-            self.arView.debugOptions = []
-            self.explanationView.hide()
-        case .notAvailable:
-            self.arView.debugOptions = .showFeaturePoints
-            self.explanationView.show(text: NSLocalizedString("AREasterEgg_Tracking_NotAvailable", comment: ""))
-        case .limited(let reason):
-            self.arView.debugOptions = .showFeaturePoints
-            let message: String
-            switch reason {
-            case .excessiveMotion:
-                message = NSLocalizedString("AREasterEgg_Tracking_ExcessiveMotion", comment: "")
-            case .initializing:
-                message = NSLocalizedString("AREasterEgg_Tracking_Initializing", comment: "")
-            case .insufficientFeatures:
-                message = NSLocalizedString("AREasterEgg_Tracking_InsufficientFeatures", comment: "")
-            case .relocalizing:
-                message = NSLocalizedString("AREasterEgg_Tracking_Relocalizing", comment: "")
-            default:
-                message = String.localizedStringWithFormat(
-                    NSLocalizedString("AREasterEgg_Tracking_Unknown", comment: ""),
-                    "\(reason)"
-                )
+        self.mainQueue.addOperation {
+            switch camera.trackingState {
+            case .normal:
+                self.arView.debugOptions = []
+                self.explanationView.hide()
+            case .notAvailable:
+                self.arView.debugOptions = .showFeaturePoints
+                self.explanationView.show(text: NSLocalizedString("AREasterEgg_Tracking_NotAvailable", comment: ""))
+            case .limited(let reason):
+                self.arView.debugOptions = .showFeaturePoints
+                let message: String
+                switch reason {
+                case .excessiveMotion:
+                    message = NSLocalizedString("AREasterEgg_Tracking_ExcessiveMotion", comment: "")
+                case .initializing:
+                    message = NSLocalizedString("AREasterEgg_Tracking_Initializing", comment: "")
+                case .insufficientFeatures:
+                    message = NSLocalizedString("AREasterEgg_Tracking_InsufficientFeatures", comment: "")
+                case .relocalizing:
+                    message = NSLocalizedString("AREasterEgg_Tracking_Relocalizing", comment: "")
+                default:
+                    message = String.localizedStringWithFormat(
+                        NSLocalizedString("AREasterEgg_Tracking_Unknown", comment: ""),
+                        "\(reason)"
+                    )
+                }
+                self.explanationView.show(text: message)
             }
-            self.explanationView.show(text: message)
-
         }
     }
 }

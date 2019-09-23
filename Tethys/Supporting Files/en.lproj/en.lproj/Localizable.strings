@@ -21,6 +21,9 @@
 "SettingsViewController_Credits_Version" = "Version";
 "SettingsViewController_Commands_Save" = "Save and dismiss";
 "SettingsViewController_Commands_Close" = "Close without saving";
+"SettingsViewController_AlternateIcons_Title" = "App Icon";
+"SettingsViewController_AlternateIcons_Primary" = "White";
+"SettingsViewController_AlternateIcons_Black" = "Black";
 
 "FeedsTableViewController_SearchBar_Placeholder" = "Filter by Tag";
 "FeedsTableViewController_Onboarding_Title" = "Welcome to Tethys!";
@@ -137,3 +140,6 @@
 "Generic_Cancel" = "Cancel";
 "Generic_ConfirmDelete" = "Delete %@?";
 "Generic_Done" = "Done";
+
+"Generic_Enabled" = "Enabled";
+"Generic_Disabled" = "Disabled";

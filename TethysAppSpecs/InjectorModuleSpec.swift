@@ -20,6 +20,8 @@ final class InjectorModuleSpec: QuickSpec {
             alwaysIs(UserDefaults.self, a: UserDefaults.standard)
 
             exists(Messenger.self)
+
+            exists(AppIconChanger.self)
         }
 
         describe("Repositories") {

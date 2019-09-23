@@ -13,6 +13,13 @@ public final class SwitchTableViewCell: UITableViewCell {
         self.onTapSwitch?(self.theSwitch)
     }
 
+    public override func prepareForReuse() {
+        super.prepareForReuse()
+
+        self.accessibilityLabel = nil
+        self.accessibilityValue = nil
+    }
+
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
@@ -29,6 +36,8 @@ public final class SwitchTableViewCell: UITableViewCell {
 
         self.backgroundColor = Theme.backgroundColor
         self.textLabel?.textColor = Theme.textColor
+
+        self.isAccessibilityElement = true
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError() }

@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 import Swinject
 import TethysKit
 import AuthenticationServices
@@ -12,6 +13,8 @@ public func configure(container: Container) {    container.register(TagPickerVie
     container.register(UserDefaults.self) { _ in return UserDefaults.standard }
 
     container.register(Messenger.self) { _ in return SwiftMessenger() }
+
+    container.register(AppIconChanger.self) { _ in return UIApplication.shared }
 
     container.register(SettingsRepository.self) { r in
         return SettingsRepository(userDefaults: r.resolve(UserDefaults.self) ?? nil)
@@ -34,6 +37,7 @@ public func configure(container: Container) {    container.register(TagPickerVie
     registerViewControllers(container: container)
 }
 
+// swiftlint:disable function_body_length
 private func registerViewControllers(container: Container) {
     container.register(ArticleListController.self) { r, feed in
         return ArticleListController(
@@ -56,6 +60,7 @@ private func registerViewControllers(container: Container) {
 
     container.register(AugmentedRealityEasterEggViewController.self) { r in
         return AugmentedRealityEasterEggViewController(
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
             feedListControllerFactory: { r.resolve(FeedListController.self)! }
         )
     }
@@ -116,9 +121,13 @@ private func registerViewControllers(container: Container) {
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
             accountService: r.resolve(AccountService.self)!,
             messenger: r.resolve(Messenger.self)!,
+            appIconChanger: r.resolve(AppIconChanger.self)!,
             loginController: r.resolve(LoginController.self)!,
             documentationViewController: { documentation in
                 return r.resolve(DocumentationViewController.self, argument: documentation)!
+            },
+            appIconChangeController: {
+                return UIHostingController(rootView: AppIconView(iconChanger: r.resolve(AppIconChanger.self)!))
             },
             arViewController: { r.resolve(AugmentedRealityEasterEggViewController.self)! }
         )

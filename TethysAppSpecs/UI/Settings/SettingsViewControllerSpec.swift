@@ -19,6 +19,7 @@ final class SettingsViewControllerSpec: QuickSpec {
         var rootViewController: UIViewController!
 
         var appIconChangeController: UIViewController!
+        var arViewController: UIViewController!
 
         beforeEach {
             settingsRepository = SettingsRepository(userDefaults: nil)
@@ -36,6 +37,7 @@ final class SettingsViewControllerSpec: QuickSpec {
             appIconChanger = FakeAppIconChanger()
 
             appIconChangeController = UIViewController()
+            arViewController = UIViewController()
 
             subject = SettingsViewController(
                 settingsRepository: settingsRepository,
@@ -47,7 +49,7 @@ final class SettingsViewControllerSpec: QuickSpec {
                 loginController: loginController,
                 documentationViewController: { documentation in documentationViewControllerFactory(documentation: documentation) },
                 appIconChangeController: { return appIconChangeController },
-                arViewController: { augmentedRealityViewControllerFactory() }
+                arViewController: { return arViewController }
             )
 
             rootViewController = UIViewController()
@@ -584,8 +586,8 @@ final class SettingsViewControllerSpec: QuickSpec {
                             delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
                         }
 
-                        it("shows an AugmentedRealityEasterEggViewController") {
-                            expect(navigationController.visibleViewController).to(beAKindOf(AugmentedRealityEasterEggViewController.self))
+                        it("shows whatever the arViewController factory returns") {
+                            expect(navigationController.visibleViewController).to(be(arViewController))
                         }
                     }
 

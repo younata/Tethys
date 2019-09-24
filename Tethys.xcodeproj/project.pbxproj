@@ -186,9 +186,11 @@
 		89AFF9FF1D4870F7002255E8 /* FakeImportables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */; };
 		89BF424523372F0000C790A8 /* AppIconChanger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BF424423372EFF00C790A8 /* AppIconChanger.swift */; };
 		89BF42472337312500C790A8 /* FakeAppIconChanger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BF42462337312500C790A8 /* FakeAppIconChanger.swift */; };
-		89BF424923373A7500C790A8 /* AppIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BF424823373A7500C790A8 /* AppIconView.swift */; };
 		89BF42512338605F00C790A8 /* AppIcon-Black@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89BF424F2338605F00C790A8 /* AppIcon-Black@3x.png */; };
 		89BF42522338605F00C790A8 /* AppIcon-Black@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89BF42502338605F00C790A8 /* AppIcon-Black@2x.png */; };
+		89BF42562339AE9B00C790A8 /* AppIconSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BF42552339AE9B00C790A8 /* AppIconSelectionViewController.swift */; };
+		89BF42582339B1D900C790A8 /* AppIconSelectionViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BF42572339B1D900C790A8 /* AppIconSelectionViewControllerSpec.swift */; };
+		89BF425A2339CFCF00C790A8 /* AppIcon-Black.png in Resources */ = {isa = PBXBuildFile; fileRef = 89BF42592339CFCE00C790A8 /* AppIcon-Black.png */; };
 		89BFAC101C4C66AE007B3415 /* CustomMatchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BFAC0F1C4C66AE007B3415 /* CustomMatchers.swift */; };
 		89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204B41A73811000C792D2 /* AppDelegateSpec.swift */; };
 		89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204BC1A73F72800C792D2 /* SplitViewController.swift */; };
@@ -513,9 +515,11 @@
 		89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeImportables.swift; sourceTree = "<group>"; };
 		89BF424423372EFF00C790A8 /* AppIconChanger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconChanger.swift; sourceTree = "<group>"; };
 		89BF42462337312500C790A8 /* FakeAppIconChanger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeAppIconChanger.swift; sourceTree = "<group>"; };
-		89BF424823373A7500C790A8 /* AppIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconView.swift; sourceTree = "<group>"; };
 		89BF424F2338605F00C790A8 /* AppIcon-Black@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-Black@3x.png"; sourceTree = "<group>"; };
 		89BF42502338605F00C790A8 /* AppIcon-Black@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-Black@2x.png"; sourceTree = "<group>"; };
+		89BF42552339AE9B00C790A8 /* AppIconSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconSelectionViewController.swift; sourceTree = "<group>"; };
+		89BF42572339B1D900C790A8 /* AppIconSelectionViewControllerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconSelectionViewControllerSpec.swift; sourceTree = "<group>"; };
+		89BF42592339CFCE00C790A8 /* AppIcon-Black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-Black.png"; sourceTree = "<group>"; };
 		89BFAC0F1C4C66AE007B3415 /* CustomMatchers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomMatchers.swift; sourceTree = "<group>"; };
 		89C204B41A73811000C792D2 /* AppDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateSpec.swift; sourceTree = "<group>"; };
 		89C204BC1A73F72800C792D2 /* SplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
@@ -868,6 +872,7 @@
 			isa = PBXGroup;
 			children = (
 				89E2A33E1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift */,
+				89BF42572339B1D900C790A8 /* AppIconSelectionViewControllerSpec.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -906,7 +911,7 @@
 				8958EC3E1DCBB2B20000159B /* SettingsSection.swift */,
 				89E2A33C1B6A856900A40D4E /* SettingsViewController.swift */,
 				89BF424423372EFF00C790A8 /* AppIconChanger.swift */,
-				89BF424823373A7500C790A8 /* AppIconView.swift */,
+				89BF42552339AE9B00C790A8 /* AppIconSelectionViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1047,6 +1052,7 @@
 		89BF424A23385FE500C790A8 /* AlternateIcons */ = {
 			isa = PBXGroup;
 			children = (
+				89BF42592339CFCE00C790A8 /* AppIcon-Black.png */,
 				89BF42502338605F00C790A8 /* AppIcon-Black@2x.png */,
 				89BF424F2338605F00C790A8 /* AppIcon-Black@3x.png */,
 			);
@@ -1640,6 +1646,7 @@
 				89BF42512338605F00C790A8 /* AppIcon-Black@3x.png in Resources */,
 				8924D8E91A094CF5003B7529 /* github2.css in Resources */,
 				890C8D4F1DE4096C00A037D7 /* icons.html in Resources */,
+				89BF425A2339CFCF00C790A8 /* AppIcon-Black.png in Resources */,
 				89C8308319D730E9009924DA /* Assets.xcassets in Resources */,
 				892AF321232ED4680018B19C /* Launch.storyboard in Resources */,
 				899C6A9F1DCAACF800E0A61C /* libraries.html in Resources */,
@@ -1918,13 +1925,13 @@
 				8918D4A41B8115F800DCDE0E /* ExplanationView.swift in Sources */,
 				89C5E5701DECA2AB0078633C /* FeedDetailView.swift in Sources */,
 				89C830C819DA2FEF009924DA /* FeedListController.swift in Sources */,
+				89BF42562339AE9B00C790A8 /* AppIconSelectionViewController.swift in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89BF424523372F0000C790A8 /* AppIconChanger.swift in Sources */,
 				89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				454A2E732316DFC300022660 /* BreakoutToRefreshView.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
 				456300A323236C6F008D0401 /* Notifications.swift in Sources */,
-				89BF424923373A7500C790A8 /* AppIconView.swift in Sources */,
 				8941AB7B1DC9207200A2CE5F /* HTMLViewController.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
 				8903A6251C4AB17C00E896BF /* NotificationView.swift in Sources */,
@@ -1955,6 +1962,7 @@
 				89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */,
 				89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */,
 				8997C8531B2566A600972930 /* ArticleCellSpec.swift in Sources */,
+				89BF42582339B1D900C790A8 /* AppIconSelectionViewControllerSpec.swift in Sources */,
 				899823AC1B2C883B00818755 /* ArticleListControllerSpec.swift in Sources */,
 				89831FEC1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift in Sources */,
 				890B78CA1C78E8650066E201 /* ArticleUseCaseSpec.swift in Sources */,

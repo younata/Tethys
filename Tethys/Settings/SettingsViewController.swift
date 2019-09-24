@@ -19,7 +19,7 @@ public final class SettingsViewController: UIViewController {
     fileprivate let loginController: LoginController
     fileprivate let documentationViewController: (Documentation) -> DocumentationViewController
     fileprivate let appIconChangeController: () -> UIViewController
-    fileprivate let arViewController: () -> AugmentedRealityEasterEggViewController
+    fileprivate let arViewController: () -> UIViewController
 
     fileprivate lazy var showReadingTimes: Bool = { return self.settingsRepository.showEstimatedReadingLabel }()
     fileprivate lazy var refreshControlStyle: RefreshControlStyle = { return self.settingsRepository.refreshControl }()
@@ -35,7 +35,7 @@ public final class SettingsViewController: UIViewController {
                 loginController: LoginController,
                 documentationViewController: @escaping (Documentation) -> DocumentationViewController,
                 appIconChangeController: @escaping () -> UIViewController,
-                arViewController: @escaping () -> AugmentedRealityEasterEggViewController) {
+                arViewController: @escaping () -> UIViewController) {
         self.settingsRepository = settingsRepository
         self.opmlService = opmlService
         self.mainQueue = mainQueue

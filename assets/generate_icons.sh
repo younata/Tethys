@@ -28,7 +28,8 @@ function app_icon {
     export ASSET_PATH="../$APP_NAME/Assets.xcassets/AppIcon.appiconset"
     export ICON_ASSET_PATH="../$APP_NAME/Assets.xcassets/App\ Icons/DefaultAppIcon.imageset"
     parallel --progress -j 0 << EOF
-svgexport AppIcon.xml $ICON_ASSET_PATH/DefaultAppIcon@2x.png 120:120
+svgexport AppIcon.xml $ICON_ASSET_PATH/DefaultAppIcon.png 60:60
+svgexport AppIcon.xml $ICON_ASSET_PATH/DefaultAppIcon.png 120:120
 svgexport AppIcon.xml $ICON_ASSET_PATH/DefaultAppIcon@3x.png 180:180
 svgexport AppIcon.xml $ASSET_PATH/Icon@2x.png 120:120
 svgexport AppIcon.xml $ASSET_PATH/Icon@3x.png 180:180
@@ -38,6 +39,7 @@ svgexport AppIcon.xml $ASSET_PATH/Icon-iPad@2x.png 152:152
 svgexport AppIcon.xml $ASSET_PATH/Icon-AppStore.png 1024:1024
 EOF
     parallel --progress -j 0 << EOF
+convert $ICON_ASSET_PATH/DefaultAppIcon.png -background white -alpha remove $ICON_ASSET_PATH/DefaultAppIcon.png
 convert $ICON_ASSET_PATH/DefaultAppIcon@2x.png -background white -alpha remove $ICON_ASSET_PATH/DefaultAppIcon@2x.png
 convert $ICON_ASSET_PATH/DefaultAppIcon@3x.png -background white -alpha remove $ICON_ASSET_PATH/DefaultAppIcon@3x.png
 convert $ASSET_PATH/Icon@2x.png -background white -alpha remove $ASSET_PATH/Icon@2x.png
@@ -53,14 +55,18 @@ function app_icon_black {
     export ASSET_PATH="../$APP_NAME/AlternateIcons"
     export ICON_ASSET_PATH="../$APP_NAME/Assets.xcassets/App\ Icons/BlackAppIcon.imageset"
     parallel --progress -j 0 << EOF
+svgexport AppIcon.xml $ICON_ASSET_PATH/BlackAppIcon.png 60:60
 svgexport AppIcon.xml $ICON_ASSET_PATH/BlackAppIcon@2x.png 120:120
 svgexport AppIcon.xml $ICON_ASSET_PATH/BlackAppIcon@3x.png 180:180
+svgexport AppIcon.xml $ASSET_PATH/AppIcon-Black.png 60:60
 svgexport AppIcon.xml $ASSET_PATH/AppIcon-Black@2x.png 120:120
 svgexport AppIcon.xml $ASSET_PATH/AppIcon-Black@3x.png 180:180
 EOF
     parallel --progress -j 0 << EOF
+convert $ICON_ASSET_PATH/BlackAppIcon.png -background black -alpha remove $ICON_ASSET_PATH/BlackAppIcon.png
 convert $ICON_ASSET_PATH/BlackAppIcon@2x.png -background black -alpha remove $ICON_ASSET_PATH/BlackAppIcon@2x.png
 convert $ICON_ASSET_PATH/BlackAppIcon@3x.png -background black -alpha remove $ICON_ASSET_PATH/BlackAppIcon@3x.png
+convert $ASSET_PATH/AppIcon-Black.png -background black -alpha remove $ASSET_PATH/AppIcon-Black.png
 convert $ASSET_PATH/AppIcon-Black@2x.png -background black -alpha remove $ASSET_PATH/AppIcon-Black@2x.png
 convert $ASSET_PATH/AppIcon-Black@3x.png -background black -alpha remove $ASSET_PATH/AppIcon-Black@3x.png
 EOF

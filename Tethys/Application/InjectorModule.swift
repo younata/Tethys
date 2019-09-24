@@ -127,7 +127,7 @@ private func registerViewControllers(container: Container) {
                 return r.resolve(DocumentationViewController.self, argument: documentation)!
             },
             appIconChangeController: {
-                return UIHostingController(rootView: AppIconView(iconChanger: r.resolve(AppIconChanger.self)!))
+                return AppIconSelectionViewController(appIconChanger: r.resolve(AppIconChanger.self)!)
             },
             arViewController: { r.resolve(AugmentedRealityEasterEggViewController.self)! }
         )

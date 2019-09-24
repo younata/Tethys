@@ -58,4 +58,18 @@ public enum AppIcon: Int, Identifiable {
     }
 }
 
+extension AppIconChanger {
+    var selectedIcon: AppIcon {
+        get {
+            return AppIcon(name: self.alternateIconName)!
+        }
+        set {
+            self.setAlternateIconName(newValue.internalName) { error in
+                guard let receivedError = error else { return }
+                print("Error: \(receivedError)")
+            }
+        }
+    }
+}
+
 extension UIApplication: AppIconChanger {}

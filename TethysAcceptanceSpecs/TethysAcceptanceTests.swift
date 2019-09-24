@@ -85,32 +85,4 @@ class TethysAcceptanceTests: XCTestCase {
 
         self.assertShareShows(shareButtonName: "ArticleViewController_ShareArticle", app: app)
     }
-
-    func testAppIconView() {
-        let app = XCUIApplication()
-
-        self.waitForThingToExist(app.navigationBars["Feeds"])
-
-        app.buttons["Settings"].tap()
-
-        self.waitForThingToExist(app.navigationBars["Settings"])
-
-        app.cells["App Icon"].tap()
-
-        self.waitForThingToExist(app.navigationBars["App Icon"])
-
-        expect(app.buttons["AppIcon Default"].isSelected).toEventually(beTrue())
-        expect(app.buttons["AppIcon Black"].isSelected).to(beFalse())
-
-        expect(app.buttons["AppIcon Default"].isEnabled).to(beFalse())
-        expect(app.buttons["AppIcon Black"].isEnabled).to(beTrue())
-
-        app.buttons["AppIcon Black"].tap()
-
-        expect(app.buttons["AppIcon Default"].isSelected).toEventually(beFalse())
-        expect(app.buttons["AppIcon Black"].isSelected).to(beTrue())
-
-        expect(app.buttons["AppIcon Default"].isEnabled).to(beTrue())
-        expect(app.buttons["AppIcon Black"].isEnabled).to(beFalse())
-    }
 }

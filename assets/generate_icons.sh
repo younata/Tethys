@@ -99,6 +99,12 @@ svgexport Checkmark.xml ../$APP_NAME/Assets.xcassets/Checkmark.imageset/Checkmar
 EOF
 }
 
+if [ ! command -v convert >/dev/null 2>&1 ]; then
+    echo "Error: required command 'convert' not found." >&2
+    echo "On macOS, install with 'brew install imagemagick" >&2
+    exit -1
+fi
+
 if [ $# -eq 1 ]; then
     case "$1" in
         "app") app_icon; app_icon_black ;;

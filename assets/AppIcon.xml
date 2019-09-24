@@ -2,10 +2,10 @@
 <svg width="128" height="128" xmlns="http://www.w3.org/2000/svg">
     <rect width="100%" height="100%" fill="transparent"/>
 
-    <g stroke="#007700" stroke-width="16" fill="transparent" stroke-linecap="round">
+    <g stroke="#00bf00" stroke-width="16" fill="transparent" stroke-linecap="round">
         <path d="M 74,90 Q 68,60 42,54"/>
         <path d="M 100,86 Q 90,36 46,26"/>
     </g>
 
-    <circle cx="40" cy="88" r="16" fill="#007700" />
+    <circle cx="40" cy="88" r="16" fill="#00bf00" />
 </svg>

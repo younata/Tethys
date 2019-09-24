@@ -4,7 +4,7 @@
 
     <!-- lines meant to represent text -->
     <g fill="transparent" stroke-linecap="round">
-        <path stroke="#007700" stroke-width="6"
+        <path stroke="#00bf00" stroke-width="6"
               d="M 6,30
                  L 18,42
                  L 38,12"/>

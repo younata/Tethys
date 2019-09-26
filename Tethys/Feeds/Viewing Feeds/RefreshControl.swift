@@ -84,7 +84,8 @@ public final class RefreshControl: NSObject {
     }
 
     public var isRefreshing: Bool {
-        return self.breakoutView?.isRefreshing == true || self.spinner.isRefreshing
+        return self.breakoutView?.isRefreshing == true ||
+            self.spinner.isRefreshing
     }
 
     public func updateSize(_ size: CGSize) {

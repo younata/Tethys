@@ -99,6 +99,11 @@ public final class FeedListController: UIViewController {
 
         self.notificationCenter.addObserver(self, selector: #selector(FeedListController.reloadFrom(notification:)),
                                             name: Notifications.reloadUI, object: nil)
+
+        self.mainQueue.addOperation {
+            self.refreshControl.beginRefreshing()
+            self.reload()
+        }
     }
 
     private func applyTheme() {
@@ -110,8 +115,6 @@ public final class FeedListController: UIViewController {
         super.viewWillAppear(animated)
         self.refreshControl.updateSize(self.view.bounds.size)
         self.navigationController?.setToolbarHidden(true, animated: true)
-        self.refreshControl.beginRefreshing()
-        self.reload()
     }
 
     public override func viewWillTransition(

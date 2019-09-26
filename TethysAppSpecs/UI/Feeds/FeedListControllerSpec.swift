@@ -63,7 +63,16 @@ final class FeedListControllerSpec: QuickSpec {
                 // Make sure the refresh control has set the refresh control style.
                 // Which requires running an operation on the main queue.
                 expect(subject.refreshControl).toNot(beNil())
+                expect(mainQueue.operationCount).to(equal(3))
                 mainQueue.runNextOperation()
+
+                expect(mainQueue.operationCount).to(equal(2))
+                mainQueue.runNextOperation()
+
+                expect(mainQueue.operationCount).to(equal(1))
+                mainQueue.runNextOperation()
+
+                expect(mainQueue.operationCount).to(equal(0))
 
                 subject.viewWillAppear(false)
             }

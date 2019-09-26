@@ -22,7 +22,7 @@ class TethysAcceptanceTests: XCTestCase {
 
     func waitForPredicate(_ predicate: NSPredicate, object: AnyObject) {
         self.expectation(for: predicate, evaluatedWith: object, handler: nil)
-        self.waitForExpectations(timeout: 10, handler: nil)
+        self.waitForExpectations(timeout: 30, handler: nil)
     }
 
     func loadWebFeed() {
@@ -40,6 +40,8 @@ class TethysAcceptanceTests: XCTestCase {
 
         let addFeedButton = app.toolbars.buttons["Add Feed"]
         self.waitForThingToExist(addFeedButton)
+        waitForPredicate(NSPredicate(format: "enabled == true"), object: addFeedButton)
+        expect(addFeedButton.isHittable).to(beTrue())
         addFeedButton.tap()
 
         self.waitForThingToExist(app.cells["Rachel Brindle"])

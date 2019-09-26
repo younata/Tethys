@@ -142,6 +142,7 @@ public class BreakOutToRefreshView: SKView {
             self.breakOutScene.start()
         }
         self.isVisible = true
+        self.isHidden = false
         UIView.animate(withDuration: 0.4, delay: 0, options: [], animations: { () -> Void in
             if #available(iOS 11.0, *) {
                 self.scrollView.contentInset.top += self.sceneHeight + self.scrollView.safeAreaInsets.top
@@ -163,6 +164,7 @@ public class BreakOutToRefreshView: SKView {
             }, completion: { (_) -> Void in
                 self.isRefreshing = false
                 self.presentScene(self.startScene, transition: .doorsCloseVertical(withDuration: 0.3))
+                self.isHidden = true
             })
         } else {
             self.breakOutScene.updateLabel("Loading Finished")
@@ -197,6 +199,9 @@ extension BreakOutToRefreshView: UIScrollViewDelegate {
         let yPosition = self.sceneHeight - (-scrollView.contentInset.top-scrollView.contentOffset.y)*2
 
         self.breakOutScene.moveHandle(yPosition)
+        if scrollView.contentInset.top <= 0 {
+            self.isHidden = false
+        }
     }
 }
 

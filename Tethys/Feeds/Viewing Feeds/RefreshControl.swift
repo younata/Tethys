@@ -94,6 +94,12 @@ public final class RefreshControl: NSObject {
         self.breakoutView?.layoutSubviews()
     }
 
+    public func updateTheme() {
+        guard let breakoutView = self.breakoutView else { return }
+
+        self.applyTheme(to: breakoutView)
+    }
+
     @objc private func powerStateDidChange() {
         self.mainQueue.addOperation {
             let forcedStyle: RefreshControlStyle?
@@ -156,11 +162,14 @@ public final class RefreshControl: NSObject {
         refreshView.paddleColor = UIColor.blue
         refreshView.blockColors = [UIColor.darkGray, UIColor.gray, UIColor.lightGray]
 
-        refreshView.scenebackgroundColor = Theme.backgroundColor
-        refreshView.textColor = Theme.textColor
-        refreshView.ballColor = Theme.highlightColor
-
+        self.applyTheme(to: refreshView)
         return refreshView
+    }
+
+    private func applyTheme(to view: BreakOutToRefreshView) {
+        view.scenebackgroundColor = Theme.backgroundColor
+        view.textColor = Theme.textColor
+        view.ballColor = Theme.highlightColor
     }
 }
 

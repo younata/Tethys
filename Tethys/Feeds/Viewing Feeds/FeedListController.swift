@@ -126,6 +126,10 @@ public final class FeedListController: UIViewController {
         self.refreshControl.endRefreshing()
     }
 
+    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        self.refreshControl.updateTheme()
+    }
+
     public override var canBecomeFirstResponder: Bool { return true }
     public override var keyCommands: [UIKeyCommand]? {
         let commands = [

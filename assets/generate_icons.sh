@@ -61,6 +61,9 @@ svgexport AppIcon.xml $ICON_ASSET_PATH/BlackAppIcon@3x.png 180:180
 svgexport AppIcon.xml $ASSET_PATH/AppIcon-Black.png 60:60
 svgexport AppIcon.xml $ASSET_PATH/AppIcon-Black@2x.png 120:120
 svgexport AppIcon.xml $ASSET_PATH/AppIcon-Black@3x.png 180:180
+svgexport AppIcon.xml $ASSET_PATH/AppIcon-Black-iPad.png 76:76
+svgexport AppIcon.xml $ASSET_PATH/AppIcon-Black-iPad@2x.png 152:152
+svgexport AppIcon.xml $ASSET_PATH/AppIcon-Black-iPadPro@2x.png 167:167
 EOF
     parallel --progress -j 0 << EOF
 convert $ICON_ASSET_PATH/BlackAppIcon.png -background black -alpha remove $ICON_ASSET_PATH/BlackAppIcon.png
@@ -69,6 +72,9 @@ convert $ICON_ASSET_PATH/BlackAppIcon@3x.png -background black -alpha remove $IC
 convert $ASSET_PATH/AppIcon-Black.png -background black -alpha remove $ASSET_PATH/AppIcon-Black.png
 convert $ASSET_PATH/AppIcon-Black@2x.png -background black -alpha remove $ASSET_PATH/AppIcon-Black@2x.png
 convert $ASSET_PATH/AppIcon-Black@3x.png -background black -alpha remove $ASSET_PATH/AppIcon-Black@3x.png
+convert $ASSET_PATH/AppIcon-Black-iPad.png -background black -alpha remove $ASSET_PATH/AppIcon-Black-iPad.png
+convert $ASSET_PATH/AppIcon-Black-iPad@2x.png -background black -alpha remove $ASSET_PATH/AppIcon-Black-iPad@2x.png
+convert $ASSET_PATH/AppIcon-Black-iPadPro@2x.png -background black -alpha remove $ASSET_PATH/AppIcon-Black-iPadPro@2x.png
 EOF
 }
 

@@ -191,6 +191,9 @@
 		89BF42562339AE9B00C790A8 /* AppIconSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BF42552339AE9B00C790A8 /* AppIconSelectionViewController.swift */; };
 		89BF42582339B1D900C790A8 /* AppIconSelectionViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BF42572339B1D900C790A8 /* AppIconSelectionViewControllerSpec.swift */; };
 		89BF425A2339CFCF00C790A8 /* AppIcon-Black.png in Resources */ = {isa = PBXBuildFile; fileRef = 89BF42592339CFCE00C790A8 /* AppIcon-Black.png */; };
+		89BF425E233F127D00C790A8 /* AppIcon-Black-iPad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89BF425B233F127D00C790A8 /* AppIcon-Black-iPad@2x.png */; };
+		89BF425F233F127D00C790A8 /* AppIcon-Black-iPadPro@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89BF425C233F127D00C790A8 /* AppIcon-Black-iPadPro@2x.png */; };
+		89BF4260233F127D00C790A8 /* AppIcon-Black-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 89BF425D233F127D00C790A8 /* AppIcon-Black-iPad.png */; };
 		89BFAC101C4C66AE007B3415 /* CustomMatchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BFAC0F1C4C66AE007B3415 /* CustomMatchers.swift */; };
 		89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204B41A73811000C792D2 /* AppDelegateSpec.swift */; };
 		89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204BC1A73F72800C792D2 /* SplitViewController.swift */; };
@@ -520,6 +523,9 @@
 		89BF42552339AE9B00C790A8 /* AppIconSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconSelectionViewController.swift; sourceTree = "<group>"; };
 		89BF42572339B1D900C790A8 /* AppIconSelectionViewControllerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconSelectionViewControllerSpec.swift; sourceTree = "<group>"; };
 		89BF42592339CFCE00C790A8 /* AppIcon-Black.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-Black.png"; sourceTree = "<group>"; };
+		89BF425B233F127D00C790A8 /* AppIcon-Black-iPad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-Black-iPad@2x.png"; sourceTree = "<group>"; };
+		89BF425C233F127D00C790A8 /* AppIcon-Black-iPadPro@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-Black-iPadPro@2x.png"; sourceTree = "<group>"; };
+		89BF425D233F127D00C790A8 /* AppIcon-Black-iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-Black-iPad.png"; sourceTree = "<group>"; };
 		89BFAC0F1C4C66AE007B3415 /* CustomMatchers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomMatchers.swift; sourceTree = "<group>"; };
 		89C204B41A73811000C792D2 /* AppDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateSpec.swift; sourceTree = "<group>"; };
 		89C204BC1A73F72800C792D2 /* SplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
@@ -1052,6 +1058,9 @@
 		89BF424A23385FE500C790A8 /* AlternateIcons */ = {
 			isa = PBXGroup;
 			children = (
+				89BF425D233F127D00C790A8 /* AppIcon-Black-iPad.png */,
+				89BF425B233F127D00C790A8 /* AppIcon-Black-iPad@2x.png */,
+				89BF425C233F127D00C790A8 /* AppIcon-Black-iPadPro@2x.png */,
 				89BF42592339CFCE00C790A8 /* AppIcon-Black.png */,
 				89BF42502338605F00C790A8 /* AppIcon-Black@2x.png */,
 				89BF424F2338605F00C790A8 /* AppIcon-Black@3x.png */,
@@ -1643,8 +1652,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				89BF42522338605F00C790A8 /* AppIcon-Black@2x.png in Resources */,
+				89BF425F233F127D00C790A8 /* AppIcon-Black-iPadPro@2x.png in Resources */,
 				89BF42512338605F00C790A8 /* AppIcon-Black@3x.png in Resources */,
 				8924D8E91A094CF5003B7529 /* github2.css in Resources */,
+				89BF425E233F127D00C790A8 /* AppIcon-Black-iPad@2x.png in Resources */,
 				890C8D4F1DE4096C00A037D7 /* icons.html in Resources */,
 				89BF425A2339CFCF00C790A8 /* AppIcon-Black.png in Resources */,
 				89C8308319D730E9009924DA /* Assets.xcassets in Resources */,
@@ -1652,6 +1663,7 @@
 				899C6A9F1DCAACF800E0A61C /* libraries.html in Resources */,
 				895901B31A32B61A002E2C62 /* Localizable.strings in Resources */,
 				8937F6BE1B7996F50044A442 /* prism.js.html in Resources */,
+				89BF4260233F127D00C790A8 /* AppIcon-Black-iPad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

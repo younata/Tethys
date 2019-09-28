@@ -111,13 +111,7 @@ final class LeptonOPMLService: NSObject, OPMLService {
             switch result {
             case let .success(feeds):
                 let opmlString = self.generateOPMLContents(feeds)
-                let url: URL
-                if #available(iOS 10.0, *) {
-                    url = FileManager.default.temporaryDirectory.appendingPathComponent("Export OPML.opml")
-                } else {
-                    url = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
-                        .appendingPathComponent("Export OPML.opml")
-                }
+                let url = FileManager.default.temporaryDirectory.appendingPathComponent("Export OPML.opml")
                 do {
                     try opmlString.write(to: url, atomically: true, encoding: String.Encoding.utf8)
                     return Result<URL, TethysError>.success(url)

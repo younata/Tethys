@@ -23,7 +23,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     fileprivate let notificationCenter: NotificationCenter
 
     private let placeholderAttributes: [NSAttributedString.Key: AnyObject] = [
-        NSAttributedString.Key.foregroundColor: UIColor.black
+        NSAttributedString.Key.foregroundColor: Theme.textColor
     ]
 
     private var observer: NSKeyValueObservation?
@@ -88,15 +88,12 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         let urlPlaceholder = NSLocalizedString("FindFeedViewController_URLBar_Placeholder", comment: "")
         self.navField.attributedPlaceholder = NSAttributedString(string: urlPlaceholder,
                                                                  attributes: self.placeholderAttributes)
-        self.navField.backgroundColor = UIColor(white: 0.8, alpha: 0.75)
-        self.navField.layer.cornerRadius = 5
+        self.navField.layer.cornerRadius = 4
         self.navField.autocorrectionType = .no
         self.navField.autocapitalizationType = .none
         self.navField.keyboardType = .URL
         self.navField.clearsOnBeginEditing = true
-        if #available(iOS 10.0, *) {
-            self.navField.textContentType = .URL
-        }
+        self.navField.textContentType = .URL
 
         self.loadingBar.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.loadingBar)
@@ -115,6 +112,9 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.view.backgroundColor = Theme.backgroundColor
         self.loadingBar.progressTintColor = Theme.progressTintColor
         self.loadingBar.trackTintColor = Theme.progressTrackColor
+
+        self.navField.backgroundColor = Theme.overlappingBackgroundColor
+        self.navField.textColor = Theme.textColor
     }
 
     public override func viewDidAppear(_ animated: Bool) {

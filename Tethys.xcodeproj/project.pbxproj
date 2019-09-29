@@ -194,6 +194,7 @@
 		89BF425E233F127D00C790A8 /* AppIcon-Black-iPad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89BF425B233F127D00C790A8 /* AppIcon-Black-iPad@2x.png */; };
 		89BF425F233F127D00C790A8 /* AppIcon-Black-iPadPro@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89BF425C233F127D00C790A8 /* AppIcon-Black-iPadPro@2x.png */; };
 		89BF4260233F127D00C790A8 /* AppIcon-Black-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 89BF425D233F127D00C790A8 /* AppIcon-Black-iPad.png */; };
+		89BF4262234006AB00C790A8 /* Breakout3DEasterEgg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BF4261234006AB00C790A8 /* Breakout3DEasterEgg.swift */; };
 		89BFAC101C4C66AE007B3415 /* CustomMatchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BFAC0F1C4C66AE007B3415 /* CustomMatchers.swift */; };
 		89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204B41A73811000C792D2 /* AppDelegateSpec.swift */; };
 		89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204BC1A73F72800C792D2 /* SplitViewController.swift */; };
@@ -526,6 +527,7 @@
 		89BF425B233F127D00C790A8 /* AppIcon-Black-iPad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-Black-iPad@2x.png"; sourceTree = "<group>"; };
 		89BF425C233F127D00C790A8 /* AppIcon-Black-iPadPro@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-Black-iPadPro@2x.png"; sourceTree = "<group>"; };
 		89BF425D233F127D00C790A8 /* AppIcon-Black-iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-Black-iPad.png"; sourceTree = "<group>"; };
+		89BF4261234006AB00C790A8 /* Breakout3DEasterEgg.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Breakout3DEasterEgg.swift; sourceTree = "<group>"; };
 		89BFAC0F1C4C66AE007B3415 /* CustomMatchers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomMatchers.swift; sourceTree = "<group>"; };
 		89C204B41A73811000C792D2 /* AppDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateSpec.swift; sourceTree = "<group>"; };
 		89C204BC1A73F72800C792D2 /* SplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
@@ -1051,6 +1053,7 @@
 			isa = PBXGroup;
 			children = (
 				892AF329232F22E60018B19C /* AugmentedRealityEasterEgg.swift */,
+				89BF4261234006AB00C790A8 /* Breakout3DEasterEgg.swift */,
 			);
 			path = "Easter Eggs";
 			sourceTree = "<group>";
@@ -1962,6 +1965,7 @@
 				892AF323232EFA270018B19C /* SceneDelegate.swift in Sources */,
 				899B7DFD1E902B080067ABFF /* URLShareSheet.swift in Sources */,
 				89E9DD4F21D0069900326E2D /* LoginController.swift in Sources */,
+				89BF4262234006AB00C790A8 /* Breakout3DEasterEgg.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

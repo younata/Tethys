@@ -58,13 +58,6 @@ private func registerViewControllers(container: Container) {
         )
     }
 
-    container.register(AugmentedRealityEasterEggViewController.self) { r in
-        return AugmentedRealityEasterEggViewController(
-            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
-            feedListControllerFactory: { r.resolve(FeedListController.self)! }
-        )
-    }
-
     container.register(DocumentationViewController.self) { r, documentation in
         return DocumentationViewController(
             documentation: documentation,
@@ -129,7 +122,17 @@ private func registerViewControllers(container: Container) {
             appIconChangeController: {
                 return AppIconSelectionViewController(appIconChanger: r.resolve(AppIconChanger.self)!)
             },
-            arViewController: { r.resolve(AugmentedRealityEasterEggViewController.self)! }
+            arViewController: {
+                Breakout3DEasterEggViewController()
+//                r.resolve(AugmentedRealityEasterEggViewController.self)!
+            }
+        )
+    }
+
+    container.register(AugmentedRealityEasterEggViewController.self) { r in
+        return AugmentedRealityEasterEggViewController(
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            feedListControllerFactory: { r.resolve(FeedListController.self)! }
         )
     }
 

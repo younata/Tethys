@@ -124,7 +124,6 @@ private func registerViewControllers(container: Container) {
             },
             arViewController: {
                 Breakout3DEasterEggViewController()
-//                r.resolve(AugmentedRealityEasterEggViewController.self)!
             }
         )
     }

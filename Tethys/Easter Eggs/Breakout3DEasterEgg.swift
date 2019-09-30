@@ -53,6 +53,7 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
         let scene = SCNScene()
         self.scnView.scene = scene
         self.scnView.showsStatistics = true
+        self.scnView.autoenablesDefaultLighting = false
 
         self.breakoutView = Breakout3D(scene: scene)
         self.breakoutView?.delegate = self
@@ -143,6 +144,9 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
     private let ballCategory =     0b00010
     private let paddleCategory =   0b00001
 
+    private let impactGenerator = UIImpactFeedbackGenerator(style: .rigid)
+    private let gameEventFeedbackGenerator = UINotificationFeedbackGenerator()
+
     init(scene: SCNScene) {
         self.scene = scene
         super.init()
@@ -150,7 +154,7 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
         let camera = SCNCamera()
         camera.zFar = 10000
         self.scene.rootNode.addChildNode(self.cameraNode)
-        self.scene.background.contents = UIColor.systemBackground
+        self.scene.background.contents = UIColor.black
         self.cameraNode.camera = camera
         self.cameraNode.position = SCNVector3(0, 0, 50)
 
@@ -204,7 +208,11 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
     func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact) {
         let nodeA = contact.nodeA
         let nodeB = contact.nodeB
-        if ((nodeA.categoryBitMask | nodeB.categoryBitMask) & (self.ballCategory | self.brickCategory)) != 0 {
+        guard nodeA.categoryBitMask == self.ballCategory || nodeB.categoryBitMask == self.ballCategory else { return }
+
+        self.impactGenerator.impactOccurred()
+
+        if ((nodeA.categoryBitMask | nodeB.categoryBitMask) & self.brickCategory) != 0 {
             // remove whichever is the brick.
             let node: SCNNode
             if nodeA.categoryBitMask == self.brickCategory {
@@ -225,15 +233,18 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
                 return false
             }).isEmpty {
                 self.delegate?.breakout3d(self, didEndGame: true)
+                self.gameEventFeedbackGenerator.notificationOccurred(.success)
             }
             self.delegate?.breakout3dDidUpdateScore(self)
             return
         }
-        if ((nodeA.categoryBitMask | nodeB.categoryBitMask) & (self.ballCategory | self.rearWallCategory)) != 0 {
-            self.delegate?.breakout3d(self, didEndGame: false)
-            self.scene.isPaused = true
-            return
-        }
+//        if ((nodeA.categoryBitMask | nodeB.categoryBitMask) & self.rearWallCategory) != 0 {
+//            self.delegate?.breakout3d(self, didEndGame: false)
+//            print("Game over?")
+//            self.scene.isPaused = true
+//            self.gameEventFeedbackGenerator.notificationOccurred(.error)
+//            return
+//        }
     }
 
     private func ballNode() -> SCNNode {
@@ -242,6 +253,7 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
         node.categoryBitMask = self.ballCategory
         let sphere = SCNSphere(radius: 1)
         node.geometry = sphere
+        node.geometry?.firstMaterial?.emission.contents = UIColor.white
         node.worldPosition = SCNVector3(0, 0, -15)
 
         let physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: sphere, options: nil))
@@ -257,9 +269,10 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
 
         let light = SCNLight()
         light.type = .omni
-        light.color = UIColor.systemTeal
-        light.intensity = 1000
+        light.color = UIColor.white
+        light.intensity = 2000
         light.castsShadow = true
+        node.light = light
 
         return node
     }
@@ -331,53 +344,43 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
         let backNode = SCNNode()
         backNode.geometry = SCNPlane(width: self.width, height: self.height)
         backNode.position = SCNVector3(0, 0, -BreakoutLength)
-        backNode.name = "rear wall"
 
         let topNode = SCNNode()
         topNode.geometry = SCNPlane(width: self.width, height: BreakoutLength)
         topNode.eulerAngles = SCNVector3(CGFloat.pi / 2, 0, 0)
         topNode.position = SCNVector3(0, self.height / 2, -BreakoutLength / 2)
-        topNode.name = "roof"
 
         let bottomNode = SCNNode()
         bottomNode.geometry = SCNPlane(width: self.width, height: BreakoutLength)
         bottomNode.eulerAngles = SCNVector3(-CGFloat.pi / 2, 0, 0)
         bottomNode.position = SCNVector3(0, -self.height / 2, -BreakoutLength / 2)
-        bottomNode.name = "floor"
 
         let leftNode = SCNNode()
         leftNode.geometry = SCNPlane(width: BreakoutLength, height: self.height)
         leftNode.eulerAngles = SCNVector3(0, CGFloat.pi / 2, 0)
         leftNode.position = SCNVector3(self.width / 2, 0, -BreakoutLength / 2)
-        leftNode.name = "left wall"
 
         let rightNode = SCNNode()
         rightNode.geometry = SCNPlane(width: BreakoutLength, height: self.height)
         rightNode.eulerAngles = SCNVector3(0, -CGFloat.pi / 2, 0)
         rightNode.position = SCNVector3(-self.width / 2, 0, -BreakoutLength / 2)
-        rightNode.name = "right wall"
 
         let resetNode = SCNNode()
         resetNode.geometry = SCNPlane(width: self.width, height: self.height)
         resetNode.categoryBitMask = self.rearWallCategory
-        resetNode.name = "reset wall"
 
         let nodes = [backNode, topNode, bottomNode, leftNode, rightNode, resetNode]
 
         nodes.forEach { node in
-            node.geometry?.firstMaterial?.diffuse.contents = UIColor.systemGray6
+            node.geometry?.firstMaterial?.diffuse.contents = UIColor(white: 0.1, alpha: 1.0)
             node.geometry?.firstMaterial?.isDoubleSided = true
 
-            guard let geometry = node.geometry else {
-                print("node \(String(describing: node.name)) does not have a geometry")
-                return
-            }
             self.addKinematicPhysics(to: node)
             node.physicsBody?.categoryBitMask = node.categoryBitMask | self.wallCategory
         }
 
         resetNode.geometry?.firstMaterial?.diffuse.contents = UIColor.clear
-        backNode.geometry?.firstMaterial?.diffuse.contents = UIColor.systemGray5
+        backNode.geometry?.firstMaterial?.diffuse.contents = UIColor(white: 0.3, alpha: 1.0)
 
         return nodes
     }

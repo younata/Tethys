@@ -1,6 +1,3 @@
-"NotificationHandler_LocalNotification_MarkRead_Action" = "Mark Read";
-"NotificationHandler_LocalNotification_MarkRead_Title" = "New article in %@: %@";
-
 "SettingsViewController_Table_Header_Refresh" = "Refresh Style";
 "SettingsViewController_Table_Header_Other" = "Other";
 "SettingsViewController_Table_Header_Account" = "Account";

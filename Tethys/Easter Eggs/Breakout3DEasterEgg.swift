@@ -44,11 +44,11 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
         self.scoreLabel.autoCenterInSuperview()
         self.scoreLabel.autoPinEdge(toSuperviewEdge: .top, withInset: 8)
         self.scoreLabel.autoPinEdge(toSuperviewEdge: .bottom, withInset: 8)
-        exitButton.autoPinEdge(.leading, to: .trailing, of: self.scoreLabel, withOffset: 8,
+        self.scoreLabel.autoPinEdge(.leading, to: .trailing, of: exitButton, withOffset: 8,
                                relation: .greaterThanOrEqual)
         exitButton.autoPinEdge(.top, to: .top, of: self.scoreLabel)
         exitButton.autoPinEdge(.bottom, to: .bottom, of: self.scoreLabel)
-        exitButton.autoPinEdge(toSuperviewEdge: .trailing, withInset: 8)
+        exitButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 16)
 
         let scene = SCNScene()
         self.scnView.scene = scene

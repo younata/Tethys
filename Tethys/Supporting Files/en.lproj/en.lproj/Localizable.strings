@@ -110,6 +110,8 @@
 "AREasterEgg_Tracking_Relocalizing" = "Relocalizing after restarting AR session";
 "AREasterEgg_Tracking_Unknown" = "Unhandled reason: %@";
 
+"Breakout3D_Points" = "%lu points";
+
 // Errors
 
 "Error_Network_BadResponse" = "Bad Server Response";

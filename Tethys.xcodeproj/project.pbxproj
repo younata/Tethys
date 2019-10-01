@@ -11,6 +11,7 @@
 		4563009123202CD5008D0401 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; };
 		4563009323202CE4008D0401 /* Nimble.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		456300A323236C6F008D0401 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456300A223236C6F008D0401 /* Notifications.swift */; };
+		45FE744A23431BC100193955 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 45FE744823431BC100193955 /* Localizable.stringsdict */; };
 		8902D5461BB07389003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; };
 		8902D5471BB0753E003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; };
 		8902D54A1BB075D6003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; };
@@ -374,6 +375,7 @@
 /* Begin PBXFileReference section */
 		454A2E722316DFC300022660 /* BreakoutToRefreshView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakoutToRefreshView.swift; sourceTree = "<group>"; };
 		456300A223236C6F008D0401 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
+		45FE744923431BC100193955 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		8902D5451BB07389003D7C22 /* Lepton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lepton.framework; path = ../Carthage/Build/iOS/Lepton.framework; sourceTree = "<group>"; };
 		8903A6241C4AB17C00E896BF /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationViewSpec.swift; sourceTree = "<group>"; };
@@ -847,6 +849,7 @@
 			isa = PBXGroup;
 			children = (
 				895901AF1A32B61A002E2C62 /* Localizable.strings */,
+				45FE744823431BC100193955 /* Localizable.stringsdict */,
 			);
 			path = en.lproj;
 			sourceTree = "<group>";
@@ -1667,6 +1670,7 @@
 				895901B31A32B61A002E2C62 /* Localizable.strings in Resources */,
 				8937F6BE1B7996F50044A442 /* prism.js.html in Resources */,
 				89BF4260233F127D00C790A8 /* AppIcon-Black-iPad.png in Resources */,
+				45FE744A23431BC100193955 /* Localizable.stringsdict in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2063,6 +2067,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		45FE744823431BC100193955 /* Localizable.stringsdict */ = {
+			isa = PBXVariantGroup;
+			children = (
+				45FE744923431BC100193955 /* en */,
+			);
+			name = Localizable.stringsdict;
+			sourceTree = "<group>";
+		};
 		892AF31F232ED4680018B19C /* Launch.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

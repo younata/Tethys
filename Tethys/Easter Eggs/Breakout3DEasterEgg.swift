@@ -31,16 +31,14 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
         scoreContainer.addSubview(exitButton)
 
         exitButton.addTarget(self, action: #selector(exit), for: .touchUpInside)
-        exitButton.layer.cornerRadius = 4
         exitButton.setTitle(NSLocalizedString("Generic_Close", comment: ""), for: .normal)
         exitButton.setContentCompressionResistancePriority(.required, for: .horizontal)
         exitButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
-        exitButton.backgroundColor = UIColor.tertiarySystemFill
         exitButton.setTitleColor(Theme.textColor, for: .normal)
 
         scoreContainer.addSubview(self.scoreLabel)
         self.scoreLabel.font = UIFont.preferredFont(forTextStyle: .body)
-        self.scoreLabel.text = "0 Points"
+        self.scoreDidUpdate(to: 0)
         self.scoreLabel.textColor = Theme.textColor
 
         self.scoreLabel.autoCenterInSuperview()
@@ -111,8 +109,12 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
 
     func breakout3dDidUpdateScore(_ breakout3d: Breakout3D) {
         self.mainQueue.addOperation {
-            self.scoreLabel.text = "\(breakout3d.score) points"
+            self.scoreDidUpdate(to: breakout3d.score)
         }
+    }
+
+    private func scoreDidUpdate(to score: Int) {
+        self.scoreLabel.text = String.localizedStringWithFormat(NSLocalizedString("Breakout3D_Points", comment: ""), score)
     }
 }
 

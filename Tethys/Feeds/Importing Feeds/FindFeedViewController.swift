@@ -113,7 +113,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.loadingBar.progressTintColor = Theme.progressTintColor
         self.loadingBar.trackTintColor = Theme.progressTrackColor
 
-        self.navField.backgroundColor = Theme.overlappingBackgroundColor
+        self.navField.backgroundColor = UIColor.secondarySystemFill
         self.navField.textColor = Theme.textColor
     }
 

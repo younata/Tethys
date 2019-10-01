@@ -14,6 +14,8 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.overrideUserInterfaceStyle = .dark
+
         self.scnView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.scnView)
         self.scnView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
@@ -52,7 +54,6 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
 
         let scene = SCNScene()
         self.scnView.scene = scene
-        self.scnView.showsStatistics = true
         self.scnView.autoenablesDefaultLighting = false
 
         self.breakoutView = Breakout3D(scene: scene)
@@ -292,10 +293,10 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
     }
 
     private func generateBricks() -> [SCNNode] {
-        let rows = 4
-        let cols = 4
+        let rows = 6
+        let cols = 6
 
-        let distanceBetweenNodes: CGFloat = 4
+        let distanceBetweenNodes: CGFloat = 1
         let nodeWidth = (self.width - (CGFloat(rows + 1) * distanceBetweenNodes)) / CGFloat(rows)
         let nodeHeight = (self.height - (CGFloat(cols + 1) * distanceBetweenNodes)) / CGFloat(cols)
         let nodeDepth: CGFloat = 2

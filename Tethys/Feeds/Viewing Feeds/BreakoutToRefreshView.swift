@@ -188,7 +188,7 @@ extension BreakOutToRefreshView: UIScrollViewDelegate {
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let yPosition = self.sceneHeight - (-scrollView.contentInset.top-scrollView.contentOffset.y)*2
+        let yPosition = self.sceneHeight - (-scrollView.adjustedContentInset.top-scrollView.contentOffset.y)*2
 
         self.breakOutScene.moveHandle(yPosition)
         if scrollView.contentInset.top <= 0 {

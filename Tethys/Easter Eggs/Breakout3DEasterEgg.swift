@@ -213,7 +213,15 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
         let nodeB = contact.nodeB
         guard nodeA.categoryBitMask == self.ballCategory || nodeB.categoryBitMask == self.ballCategory else { return }
 
-        self.impactGenerator.impactOccurred()
+        let ballNode: SCNNode
+        if nodeA.categoryBitMask == self.ballCategory {
+            ballNode = nodeA
+        } else {
+            ballNode = nodeB
+        }
+        let distanceToRear = 1 - (abs(CGFloat(ballNode.position.z)) / BreakoutLength)
+        let impactIntensity = (distanceToRear / 1.2) + 0.15
+        self.impactGenerator.impactOccurred(intensity: impactIntensity)
 
         if ((nodeA.categoryBitMask | nodeB.categoryBitMask) & self.brickCategory) != 0 {
             // remove whichever is the brick.
@@ -257,7 +265,7 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
         let sphere = SCNSphere(radius: 1)
         node.geometry = sphere
         node.geometry?.firstMaterial?.emission.contents = UIColor.white
-        node.worldPosition = SCNVector3(0, 0, -15)
+        node.worldPosition = SCNVector3(0, 0, -60)
 
         let physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: sphere, options: nil))
         physicsBody.restitution = 1.0
@@ -295,10 +303,10 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
     }
 
     private func generateBricks() -> [SCNNode] {
-        let rows = 6
-        let cols = 6
+        let rows = 5
+        let cols = 5
 
-        let distanceBetweenNodes: CGFloat = 1
+        let distanceBetweenNodes: CGFloat = 3
         let nodeWidth = (self.width - (CGFloat(rows + 1) * distanceBetweenNodes)) / CGFloat(rows)
         let nodeHeight = (self.height - (CGFloat(cols + 1) * distanceBetweenNodes)) / CGFloat(cols)
         let nodeDepth: CGFloat = 2

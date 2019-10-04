@@ -229,6 +229,9 @@ private class BreakOutScene: SKScene, SKPhysicsContactDelegate {
     var ballColor: UIColor!
     var blockColors: [UIColor]!
 
+    private let impactGenerator = UIImpactFeedbackGenerator(style: .rigid)
+    private let gameEventFeedbackGenerator = UINotificationFeedbackGenerator()
+
     override func didMove(to view: SKView) {
         super.didMove(to: view)
         if !self.contentCreated {
@@ -396,8 +399,8 @@ private class BreakOutScene: SKScene, SKPhysicsContactDelegate {
     }
 
     func didEnd(_ contact: SKPhysicsContact) {
-        var ballBody: SKPhysicsBody?
-        var otherBody: SKPhysicsBody?
+        let ballBody: SKPhysicsBody
+        let otherBody: SKPhysicsBody
 
         if contact.bodyA.categoryBitMask < contact.bodyB.categoryBitMask {
             ballBody = contact.bodyA
@@ -407,13 +410,15 @@ private class BreakOutScene: SKScene, SKPhysicsContactDelegate {
             otherBody = contact.bodyA
         }
 
-        if (otherBody?.categoryBitMask ?? 0) == self.backCategory {
+        if otherBody.categoryBitMask == self.backCategory {
+            self.gameEventFeedbackGenerator.notificationOccurred(.error)
             self.reset()
             self.start()
-        } else if ballBody!.categoryBitMask & self.ballCategory != 0 {
+            return
+        } else if ballBody.categoryBitMask & self.ballCategory != 0 {
             let minimalXVelocity = CGFloat(20.0)
             let minimalYVelocity = CGFloat(20.0)
-            var velocity = ballBody!.velocity as CGVector
+            var velocity = ballBody.velocity as CGVector
             if velocity.dx > -minimalXVelocity && velocity.dx <= 0 {
                 velocity.dx = -minimalXVelocity-1
             } else if velocity.dx > 0 && velocity.dx < minimalXVelocity {
@@ -424,16 +429,20 @@ private class BreakOutScene: SKScene, SKPhysicsContactDelegate {
             } else if velocity.dy > 0 && velocity.dy < minimalYVelocity {
                 velocity.dy = minimalYVelocity+1
             }
-            ballBody?.velocity = velocity
+            ballBody.velocity = velocity
         }
 
-        guard let body = otherBody else { return }
-        if (body.categoryBitMask & self.blockCategory != 0) && body.categoryBitMask == self.blockCategory {
-            body.node?.removeFromParent()
+        if (otherBody.categoryBitMask & self.blockCategory != 0) && otherBody.categoryBitMask == self.blockCategory {
+            otherBody.node?.removeFromParent()
             if self.isGameWon() {
+                self.gameEventFeedbackGenerator.notificationOccurred(.success)
                 self.reset()
                 self.start()
+            } else {
+                self.impactGenerator.impactOccurred()
             }
+        } else {
+            self.impactGenerator.impactOccurred()
         }
     }
 

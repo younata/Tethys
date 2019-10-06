@@ -35,19 +35,21 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     public let tableView = UITableView(forAutoLayout: ())
 
     public let feed: Feed
+    private let messenger: Messenger
     fileprivate let feedService: FeedService
     fileprivate let articleService: ArticleService
     private let notificationCenter: NotificationCenter
     private let articleCellController: ArticleCellController
     fileprivate let articleViewController: (Article) -> ArticleViewController
-
     public init(feed: Feed,
+                messenger: Messenger,
                 feedService: FeedService,
                 articleService: ArticleService,
                 notificationCenter: NotificationCenter,
                 articleCellController: ArticleCellController,
                 articleViewController: @escaping (Article) -> ArticleViewController) {
         self.feed = feed
+        self.messenger = messenger
         self.feedService = feedService
         self.articleService = articleService
         self.notificationCenter = notificationCenter
@@ -364,14 +366,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     }
 
     private func showAlert(error: TethysError, title: String) {
-        let alert = UIAlertController(title: title,
-                                      message: error.localizedDescription,
-                                      preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Generic_Ok", comment: ""),
-                                      style: .default) { _ in
-                                        self.dismiss(animated: true, completion: nil)
-        })
-        self.present(alert, animated: true, completion: nil)
+        self.messenger.error(title: title, message: error.localizedDescription)
     }
 }
 

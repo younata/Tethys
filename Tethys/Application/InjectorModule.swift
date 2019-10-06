@@ -42,6 +42,7 @@ private func registerViewControllers(container: Container) {
     container.register(ArticleListController.self) { r, feed in
         return ArticleListController(
             feed: feed,
+            messenger: r.resolve(Messenger.self)!,
             feedService: r.resolve(FeedService.self)!,
             articleService: r.resolve(ArticleService.self)!,
             notificationCenter: .default,

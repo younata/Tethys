@@ -64,6 +64,7 @@ class ArticleListControllerSpec: QuickSpec {
         var articleService: FakeArticleService!
         var notificationCenter: NotificationCenter!
         var articleCellController: FakeArticleCellController!
+        var messenger: FakeMessenger!
 
         var recorder: NotificationRecorder!
 
@@ -89,8 +90,11 @@ class ArticleListControllerSpec: QuickSpec {
             articleService = FakeArticleService()
             articleCellController = FakeArticleCellController()
 
+            messenger = FakeMessenger()
+
             subject = ArticleListController(
                 feed: feed,
+                messenger: messenger,
                 feedService: feedService,
                 articleService: articleService,
                 notificationCenter: notificationCenter,
@@ -132,17 +136,11 @@ class ArticleListControllerSpec: QuickSpec {
 
         func itTellsTheUserAboutTheError(title: String, message: String) {
             it("shows an alert") {
-                expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
-                if let alert = subject.presentedViewController as? UIAlertController {
-                    expect(alert.title) == title
-                    expect(alert.message) == message
-                    expect(alert.actions.count) == 1
-                    if let action = alert.actions.first {
-                        expect(action.title) == "Ok"
-                        action.handler?(action)
-                        expect(subject.presentedViewController).to(beNil())
-                    }
+                guard let error = messenger.errorCalls.last else {
+                    return expect(messenger.errorCalls).to(haveCount(1))
                 }
+                expect(error.title).to(equal(title))
+                expect(error.message).to(equal(message))
             }
         }
 

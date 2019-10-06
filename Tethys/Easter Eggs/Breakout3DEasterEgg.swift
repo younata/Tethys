@@ -64,8 +64,8 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
         super.viewDidAppear(animated)
 
         self.breakoutView?.resetGame(
-            width: self.view.bounds.size.width / 10,
-            height: self.view.bounds.size.height / 10
+            width: self.scnView.bounds.size.width / 10,
+            height: self.scnView.bounds.size.height / 10
         )
     }
 
@@ -292,7 +292,7 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
         node.name = self.paddleNodeName
         node.categoryBitMask = self.paddleCategory
         node.position = SCNVector3(0, 0, -1)
-        let plane = SCNPlane(width: self.width / 10, height: self.height / 10)
+        let plane = SCNPlane(width: self.width / 5, height: self.height / 5)
         plane.firstMaterial?.diffuse.contents = UIColor.systemIndigo.withAlphaComponent(0.7)
         plane.firstMaterial?.isDoubleSided = true
         node.geometry = plane

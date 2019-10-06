@@ -320,7 +320,12 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                         "crawTimeMsec": "1234567880123",
                         "timestampUsec": " 1234567880123456",
                         "id": "whatever",
-                        "categories": ["foo", "bar", "baz"],
+                        "categories": [
+                            "user/1337/state/com.google/read",
+                            "user/1337/label/foo",
+                            "user/1337/label/bar",
+                            "user/1337/label/baz"
+                        ],
                         "title": "Article 1 - Title",
                         "published": 123456787,
                         "updated": 123456789,
@@ -343,9 +348,9 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                         "timestampUsec": "1422263983452401",
                         "id": "whatever2",
                         "categories": [
-                            "abc",
-                            "def",
-                            "hij"
+                            "user/1337/label/abc",
+                            "user/1337/label/def",
+                            "user/1337/label/hij"
                         ],
                         "title": "Article 2",
                         "published": 1422262271,
@@ -373,9 +378,9 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                         "timestampUsec": "1422283522173992",
                         "id": "whatever3",
                         "categories": [
-                            "aoeu",
-                            "snth",
-                            ";qjk"
+                            "user/1337/label/aoeu",
+                            "user/1337/label/snth",
+                            "user/1337/label/;qjk"
                         ],
                         "title": "Article 3",
                         "published": 1422283440,
@@ -428,7 +433,7 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                         authors: [Author("Foo Bar")],
                         identifier: "whatever",
                         content: "this is my article summary",
-                        read: false
+                        read: true
 
                     )))
                     expect(articles[AnyIndex(1)]).to(equal(Article(
@@ -589,17 +594,17 @@ final class InoreaderFeedServiceSpec: QuickSpec {
             itBehavesLikeTheRequestFailed(url: url, future: { future })
         }
 
-        xdescribe("set(tags:of:)") {
+        describe("set(tags:of:)") {
             var future: Future<Result<Feed, TethysError>>!
 
             let feed = Feed(title: "Whatever", url: URL(string: "http://www.example.com/feed1/")!,
                             summary: "", tags: [])
 
             beforeEach {
-                subject.set(tags: ["a", "b", "c"], of: feed)
+                future = subject.set(tags: ["a", "b", "c"], of: feed)
             }
 
-            it("asks inoreader to modify the tags with the feed") {
+            xit("asks inoreader to modify the tags with the feed") {
                 expect(httpClient.requests).to(haveCount(1))
                 expect(httpClient.requests.last?.url).to(equal(
                     URL(string: "https://example.com/dunno")!
@@ -607,8 +612,9 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                 expect(httpClient.requests.last?.httpMethod).to(equal("GET"))
             }
 
-            it("needs to be implemented") {
-                fail("Implement me!")
+            it("immediately resolves with a notSupported url") {
+                expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                expect(future.value?.error).to(equal(TethysError.notSupported))
             }
         }
 

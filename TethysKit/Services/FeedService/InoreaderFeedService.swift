@@ -60,7 +60,7 @@ struct InoreaderFeedService: FeedService {
                         authors: [Author($0.author)],
                         identifier: $0.id,
                         content: $0.summary.content,
-                        read: false
+                        read: InoreaderTags(tags: $0.categories.map { InoreaderTag(id: $0) }).containsRead
                     )
                 }
                 return (articles, parsedArticlesResponse.continuation)
@@ -279,6 +279,10 @@ private struct InoreaderSubscribeResponse: Codable {
 
 private struct InoreaderTags: Codable {
     let tags: [InoreaderTag]
+
+    var containsRead: Bool {
+        return self.tags.contains(where: { $0.isRead })
+    }
 }
 
 private struct InoreaderTag: Codable {
@@ -290,5 +294,16 @@ private struct InoreaderTag: Codable {
         guard components.count >= 4 else { return nil }
         guard components[2] == "label" else { return nil }
         return components[3..<(components.count)].joined(separator: "/")
+    }
+
+    var state: String? {
+        let components = self.id.components(separatedBy: "/")
+        guard components.count >= 5 else { return nil }
+        guard components[2] == "state" else { return nil }
+        return components[3..<(components.count)].joined(separator: "/")
+    }
+
+    var isRead: Bool {
+        return self.state == "com.google/read"
     }
 }

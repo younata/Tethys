@@ -169,12 +169,11 @@ final class SettingsViewControllerSpec: QuickSpec {
                 dataSource = subject.tableView.dataSource
             }
 
-            it("has 3 sections") { // until I get accounts working.
-                expect(subject.tableView.numberOfSections).to(equal(3))
-                // expect(subject.tableView.numberOfSections).to(equal(4))
+            it("has 4 sections") {
+                 expect(subject.tableView.numberOfSections).to(equal(4))
             }
 
-            xdescribe("the account section") {
+            describe("the account section") {
                 let sectionNumber = 0
 
                 it("is titled 'Account'") {
@@ -336,7 +335,7 @@ final class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the refresh style section") {
-                let sectionNumber = 0 //1
+                let sectionNumber = 1
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
@@ -406,7 +405,7 @@ final class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the other section") {
-                let sectionNumber = 1 // 2
+                let sectionNumber = 2
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable
@@ -591,7 +590,7 @@ final class SettingsViewControllerSpec: QuickSpec {
             }
 
             describe("the credits section") {
-                let sectionNumber = 2// 3
+                let sectionNumber = 3
 
                 beforeEach {
                     subject.traitCollection.forceTouchCapability = UIForceTouchCapability.unavailable

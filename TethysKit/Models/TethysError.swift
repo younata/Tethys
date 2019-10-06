@@ -84,6 +84,7 @@ public enum TethysError: Error, Equatable {
     case database(DatabaseError)
     case feed(FeedParserError)
     case multiple([TethysError])
+    case notSupported
     case unknown
 
     public var localizedDescription: String {
@@ -100,6 +101,8 @@ public enum TethysError: Error, Equatable {
             return errors.map { $0.localizedDescription }.joined(separator: ", ")
         case let .database(error):
             return error.localizedDescription
+        case .notSupported:
+            return NSLocalizedString("Error_NotSupported", comment: "")
         case .unknown:
             return NSLocalizedString("Error_Standard_Unknown", comment: "")
         }

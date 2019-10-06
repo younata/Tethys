@@ -127,6 +127,8 @@
 "Error_Standard_HTTP" = "Error loading resource, received %d";
 "Error_Standard_Unknown" = "Unknown Error - please try again";
 
+"Error_NotSupported" = "Not supported by backend";
+
 // Generic
 
 "Generic_Dismiss" = "Dismiss";

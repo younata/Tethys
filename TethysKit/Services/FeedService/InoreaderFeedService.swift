@@ -116,7 +116,7 @@ struct InoreaderFeedService: FeedService {
             switch requestResult {
             case .success(let response):
                 return self.parse(response: response).map { (parsed: InoreaderTags) -> [String] in
-                    return parsed.tags.map { $0.tagName }
+                    return parsed.tags.compactMap { $0.tagName }
                 }
             case .failure(let clientError):
                 return .failure(NetworkError(httpClientError: clientError))
@@ -127,19 +127,62 @@ struct InoreaderFeedService: FeedService {
     }
 
     func set(tags: [String], of feed: Feed) -> Future<Result<Feed, TethysError>> {
-        return Promise<Result<Feed, TethysError>>().future
+        return Promise<Result<Feed, TethysError>>.resolved(.failure(.notSupported))
     }
 
     func set(url: URL, on feed: Feed) -> Future<Result<Feed, TethysError>> {
-        return Promise<Result<Feed, TethysError>>().future
+        return Promise<Result<Feed, TethysError>>.resolved(.failure(.notSupported))
     }
 
     func readAll(of feed: Feed) -> Future<Result<Void, TethysError>> {
-        return Promise<Result<Void, TethysError>>().future
+        var urlComponents = URLComponents(url: self.baseURL.appendingPathComponent("reader/api/0/mark-all-as-read"), resolvingAgainstBaseURL: false)!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "s", value: "feed/\(feed.url.absoluteString)")
+        ]
+        let url = urlComponents.url!
+        let request = URLRequest(url: url)
+        return self.httpClient.request(request).map { requestResult -> Result<Void, NetworkError> in
+            switch requestResult {
+            case .success(let response):
+                guard response.status == .ok else {
+                    guard let receivedStatus = response.status, let status = HTTPError(status: receivedStatus) else {
+                        return .failure(.unknown)
+                    }
+                    return .failure(.http(status))
+                }
+                return .success(Void())
+            case .failure(let error):
+                return .failure(NetworkError(httpClientError: error))
+            }
+        }.map { result -> Result<Void, TethysError> in
+            return result.mapError { return TethysError.network(url, $0) }
+        }
     }
 
     func remove(feed: Feed) -> Future<Result<Void, TethysError>> {
-        return Promise<Result<Void, TethysError>>().future
+        var urlComponents = URLComponents(url: self.baseURL.appendingPathComponent("reader/api/0/subscription/edit"), resolvingAgainstBaseURL: false)!
+        urlComponents.queryItems = [
+            URLQueryItem(name: "ac", value: "unsubscribe"),
+            URLQueryItem(name: "s", value: "feed/\(feed.url.absoluteString)")
+        ]
+        let url = urlComponents.url!
+        let request = URLRequest(url: url)
+        return self.httpClient.request(request).map { requestResult -> Result<Void, NetworkError> in
+            switch requestResult {
+            case .success(let response):
+                guard response.status == .ok else {
+                    guard let receivedStatus = response.status, let status = HTTPError(status: receivedStatus) else {
+                        return .failure(.unknown)
+                    }
+                    return .failure(.http(status))
+                }
+                return .success(Void())
+            case .failure(let error):
+                return .failure(NetworkError(httpClientError: error))
+            }
+        }.map { result -> Result<Void, TethysError> in
+            return result.mapError { return TethysError.network(url, $0) }
+        }
     }
 
     // MARK: Private
@@ -241,7 +284,11 @@ private struct InoreaderTags: Codable {
 private struct InoreaderTag: Codable {
     let id: String
 
-    var tagName: String {
-        return self.id.components(separatedBy: "/").last ?? ""
+    var tagName: String? {
+        // user/-/label/Tech, only if "label" in the preceeding.
+        let components = self.id.components(separatedBy: "/")
+        guard components.count >= 4 else { return nil }
+        guard components[2] == "label" else { return nil }
+        return components[3..<(components.count)].joined(separator: "/")
     }
 }

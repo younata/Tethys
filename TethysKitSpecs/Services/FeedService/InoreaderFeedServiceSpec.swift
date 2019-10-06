@@ -21,24 +21,26 @@ final class InoreaderFeedServiceSpec: QuickSpec {
         }
 
         func itBehavesLikeTheRequestFailed<T>(url: URL, future: @escaping () -> Future<Result<T, TethysError>>) {
-            describe("when the request succeeds") {
-                context("and the data is not valid") {
-                    beforeEach {
-                        guard httpClient.requestPromises.last?.future.value == nil else {
-                            fail("most recent promise was already resolved")
-                            return
+            if T.self != Void.self {
+                describe("when the request succeeds") {
+                    context("and the data is not valid") {
+                        beforeEach {
+                            guard httpClient.requestPromises.last?.future.value == nil else {
+                                fail("most recent promise was already resolved")
+                                return
+                            }
+                            httpClient.requestPromises.last?.resolve(.success(HTTPResponse(
+                                body: "[\"bad\": \"data\"]".data(using: .utf8)!,
+                                status: .ok,
+                                mimeType: "Application/JSON",
+                                headers: [:]
+                            )))
                         }
-                        httpClient.requestPromises.last?.resolve(.success(HTTPResponse(
-                            body: "[\"bad\": \"data\"]".data(using: .utf8)!,
-                            status: .ok,
-                            mimeType: "Application/JSON",
-                            headers: [:]
-                        )))
-                    }
 
-                    it("resolves the future with a bad response error") {
-                        expect(future().value).toNot(beNil(), description: "Expected future to be resolved")
-                        expect(future().value?.error).to(equal(TethysError.network(url, .badResponse)))
+                        it("resolves the future with a bad response error") {
+                            expect(future().value).toNot(beNil(), description: "Expected future to be resolved")
+                            expect(future().value?.error).to(equal(TethysError.network(url, .badResponse)))
+                        }
                     }
                 }
             }
@@ -571,15 +573,12 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                     )))
                 }
 
-                it("resolves the promise with the names of the ids") {
+                it("resolves the promise with the names of the ids under labels") {
                     expect(future.value).toNot(beNil(), description: "Expected the future to be resolved")
                     expect(future.value?.value).toNot(beNil(), description: "Expected request to succeed")
 
                     guard let value = future.value?.value else { return }
                     expect(Array(value)).to(equal([
-                        "starred",
-                        "broadcast",
-                        "blogger-following",
                         "Google",
                         "DIY",
                         "Feedly active search"
@@ -591,27 +590,114 @@ final class InoreaderFeedServiceSpec: QuickSpec {
         }
 
         xdescribe("set(tags:of:)") {
+            var future: Future<Result<Feed, TethysError>>!
+
+            let feed = Feed(title: "Whatever", url: URL(string: "http://www.example.com/feed1/")!,
+                            summary: "", tags: [])
+
+            beforeEach {
+                subject.set(tags: ["a", "b", "c"], of: feed)
+            }
+
+            it("asks inoreader to modify the tags with the feed") {
+                expect(httpClient.requests).to(haveCount(1))
+                expect(httpClient.requests.last?.url).to(equal(
+                    URL(string: "https://example.com/dunno")!
+                ))
+                expect(httpClient.requests.last?.httpMethod).to(equal("GET"))
+            }
+
             it("needs to be implemented") {
                 fail("Implement me!")
             }
         }
 
-        xdescribe("set(url:on:)") {
-            it("needs to be implemented") {
-                fail("Implement me!")
+        describe("set(url:on:)") {
+            let feed = Feed(title: "Whatever", url: URL(string: "http://www.example.com/feed1/")!,
+                            summary: "", tags: [])
+
+            it("immediately resolves with a notSupported url") {
+                let future = subject.set(url: URL(string: "https://example.com/feed2/")!, on: feed)
+
+                expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                expect(future.value?.error).to(equal(TethysError.notSupported))
             }
         }
 
-        xdescribe("readAll(of:)") {
-            it("needs to be implemented") {
-                fail("Implement me!")
+        describe("readAll(of:)") {
+            var future: Future<Result<Void, TethysError>>!
+            let feed = Feed(title: "Whatever", url: URL(string: "http://www.example.com/feed1/")!,
+                            summary: "", tags: [])
+
+            let url = URL(string: "https://example.com/reader/api/0/mark-all-as-read?s=feed/http://www.example.com/feed1/")!
+
+            beforeEach {
+                future = subject.readAll(of: feed)
             }
+
+            it("asks inoreader to mark all articles in the feed as read") {
+                expect(httpClient.requests).to(haveCount(1))
+                expect(httpClient.requests.last?.url).to(equal(
+                    url
+                ))
+                expect(httpClient.requests.last?.httpMethod).to(equal("GET"))
+            }
+
+            describe("when the request succeeds") {
+                beforeEach {
+                    httpClient.requestPromises.last?.resolve(.success(HTTPResponse(
+                        body: Data(),
+                        status: .ok,
+                        mimeType: "",
+                        headers: [:]
+                    )))
+                }
+
+                it("resolves the promise with the names of the ids under labels") {
+                    expect(future.value).toNot(beNil(), description: "Expected the future to be resolved")
+                    expect(future.value?.value).to(beVoid(), description: "Expected request to succeed")
+                }
+            }
+
+            itBehavesLikeTheRequestFailed(url: url, future: { future })
         }
 
-        xdescribe("remove(feed:)") {
-            it("needs to be implemented") {
-                fail("Implement me!")
+        describe("remove(feed:)") {
+            var future: Future<Result<Void, TethysError>>!
+            let feed = Feed(title: "Whatever", url: URL(string: "http://www.example.com/feed1/")!,
+                            summary: "", tags: [])
+
+            let url = URL(string: "https://example.com/reader/api/0/subscription/edit?ac=unsubscribe&s=feed/http://www.example.com/feed1/")!
+
+            beforeEach {
+                future = subject.remove(feed: feed)
             }
+
+            it("asks inoreader to unsubscribe from the feed") {
+                expect(httpClient.requests).to(haveCount(1))
+                expect(httpClient.requests.last?.url).to(equal(
+                    url
+                ))
+                expect(httpClient.requests.last?.httpMethod).to(equal("GET"))
+            }
+
+            describe("when the request succeeds") {
+                beforeEach {
+                    httpClient.requestPromises.last?.resolve(.success(HTTPResponse(
+                        body: Data(),
+                        status: .ok,
+                        mimeType: "",
+                        headers: [:]
+                    )))
+                }
+
+                it("resolves the promise with the names of the ids under labels") {
+                    expect(future.value).toNot(beNil(), description: "Expected the future to be resolved")
+                    expect(future.value?.value).to(beVoid(), description: "Expected request to succeed")
+                }
+            }
+
+            itBehavesLikeTheRequestFailed(url: url, future: { future })
         }
     }
 }

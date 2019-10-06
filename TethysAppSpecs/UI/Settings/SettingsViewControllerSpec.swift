@@ -506,19 +506,12 @@ final class SettingsViewControllerSpec: QuickSpec {
                             }
 
                             it("notifies the user of the failure") {
-                                expect(navigationController.visibleViewController).to(beAnInstanceOf(UIAlertController.self))
-                                if let alert = navigationController.visibleViewController as? UIAlertController {
-                                    expect(alert.title) == "Error Exporting OPML"
-                                    expect(alert.message) == "Please Try Again"
-                                    expect(alert.actions.count) == 1
-                                    if let action = alert.actions.first {
-                                        expect(action.title) == "Ok"
-                                        expect(action.style) == UIAlertAction.Style.default
-
-                                        action.handler?(action)
-                                        expect(navigationController.visibleViewController) == subject
-                                    }
+                                guard let error = messenger.errorCalls.last else {
+                                    return expect(messenger.errorCalls).to(haveCount(1))
                                 }
+
+                                expect(error.title) == "Error Exporting OPML"
+                                expect(error.message) == "Please Try Again"
                             }
                         }
                     }

@@ -7,4 +7,9 @@ final class FakeMessenger: Messenger {
     func warning(title: String, message: String) {
         self.warningCalls.append((title, message))
     }
+
+    private(set) var errorCalls: [(title: String, message: String)] = []
+    func error(title: String, message: String) {
+        self.errorCalls.append((title, message))
+    }
 }

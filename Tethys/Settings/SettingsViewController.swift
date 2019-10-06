@@ -378,18 +378,12 @@ extension SettingsViewController: UITableViewDelegate {
                     }
                 case .failure:
                     self.mainQueue.addOperation {
-                        let alertTitle = NSLocalizedString("SettingsViewController_Other_ExportOPML_Error_Title",
-                                                           comment: "")
-                        let alertMsg = NSLocalizedString("SettingsViewController_Other_ExportOPML_Error_Message",
-                                                         comment: "")
-                        let alert = UIAlertController(title: alertTitle,
-                                                      message: alertMsg,
-                                                      preferredStyle: .alert)
-                        let dismissTitle = NSLocalizedString("Generic_Ok", comment: "")
-                        alert.addAction(UIAlertAction(title: dismissTitle, style: .default) { _ in
-                            self.dismiss(animated: true, completion: nil)
-                        })
-                        self.present(alert, animated: true, completion: nil)
+                        self.messenger.error(
+                            title: NSLocalizedString("SettingsViewController_Other_ExportOPML_Error_Title",
+                                                     comment: ""),
+                            message: NSLocalizedString("SettingsViewController_Other_ExportOPML_Error_Message",
+                                                       comment: "")
+                        )
                     }
                 }
             }

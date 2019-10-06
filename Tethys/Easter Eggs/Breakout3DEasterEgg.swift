@@ -219,9 +219,8 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
         } else {
             ballNode = nodeB
         }
-        let distanceToRear = 1 - (abs(CGFloat(ballNode.position.z)) / BreakoutLength)
-        let impactIntensity = (distanceToRear / 1.2) + 0.15
-        self.impactGenerator.impactOccurred(intensity: impactIntensity)
+        let intensity = min(1, 1 / pow((CGFloat(ballNode.position.z) / (BreakoutLength / 2)) + 1, 2))
+        self.impactGenerator.impactOccurred(intensity: intensity)
 
         if ((nodeA.categoryBitMask | nodeB.categoryBitMask) & self.brickCategory) != 0 {
             // remove whichever is the brick.

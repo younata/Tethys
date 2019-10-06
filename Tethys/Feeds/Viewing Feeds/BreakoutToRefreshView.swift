@@ -144,7 +144,7 @@ public class BreakOutToRefreshView: SKView {
         self.isVisible = true
         self.isHidden = false
         UIView.animate(withDuration: 0.4, delay: 0, options: [], animations: { () -> Void in
-            self.scrollView.contentInset.top += self.sceneHeight
+            self.scrollView.contentInset.top = self.sceneHeight + self.scrollView.safeAreaInsets.top
         })
     }
 
@@ -152,7 +152,7 @@ public class BreakOutToRefreshView: SKView {
         if (!self.isDragging || self.forceEnd) && self.isVisible {
             self.isVisible = false
             UIView.animate(withDuration: 0.4, delay: 0, options: [], animations: { () -> Void in
-                self.scrollView.contentInset.top -= self.sceneHeight
+                self.scrollView.contentInset.top = self.scrollView.safeAreaInsets.top
             }, completion: { (_) -> Void in
                 self.isRefreshing = false
                 self.presentScene(self.startScene, transition: .doorsCloseVertical(withDuration: 0.3))
@@ -439,10 +439,10 @@ private class BreakOutScene: SKScene, SKPhysicsContactDelegate {
                 self.reset()
                 self.start()
             } else {
-                self.impactGenerator.impactOccurred()
+                self.impactGenerator.impactOccurred(intensity: 0.5)
             }
         } else {
-            self.impactGenerator.impactOccurred()
+            self.impactGenerator.impactOccurred(intensity: 0.5)
         }
     }
 

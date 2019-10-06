@@ -115,11 +115,13 @@ public final class AppDelegate: UIResponder, UIApplicationDelegate {
     private func createControllerHierarchy(_ feed: Feed? = nil, article: Article? = nil) {
         let feedListController = self.feedListController()
         let splitView = self.splitView()
+        let detailVC = UIViewController()
+        detailVC.view.backgroundColor = Theme.backgroundColor
         splitView.masterNavigationController.viewControllers = [
             feedListController
         ]
         splitView.detailNavigationController.viewControllers = [
-            UIViewController()
+            detailVC
         ]
         splitView.viewControllers = [
             splitView.masterNavigationController,

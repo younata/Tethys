@@ -4,7 +4,8 @@ import TethysKit
 import CBGPromise
 import AuthenticationServices
 
-public protocol LoginController {
+public protocol LoginController: class {
+    var window: UIWindow? { get set }
     func begin() -> Future<Result<Account, TethysError>>
 }
 
@@ -12,13 +13,15 @@ public typealias AuthSessionOracle = (
     URL, String?, @escaping ASWebAuthenticationSession.CompletionHandler
     ) -> ASWebAuthenticationSession
 
-public final class OAuthLoginController: LoginController {
+public final class OAuthLoginController: NSObject, LoginController {
     private let accountService: AccountService
     private let mainQueue: OperationQueue
     private let clientId: String
     private let authenticationSessionFactory: AuthSessionOracle
 
     private var session: ASWebAuthenticationSession?
+
+    public var window: UIWindow?
 
     public init(accountService: AccountService,
                 mainQueue: OperationQueue,
@@ -28,6 +31,7 @@ public final class OAuthLoginController: LoginController {
         self.mainQueue = mainQueue
         self.clientId = clientId
         self.authenticationSessionFactory = authenticationSessionFactory
+        super.init()
     }
 
     public func begin() -> Future<Result<Account, TethysError>> {
@@ -86,8 +90,15 @@ public final class OAuthLoginController: LoginController {
                 }
             }
         }
+        self.session?.presentationContextProvider = self
         self.session?.start()
 
         return promise.future
+    }
+}
+
+extension OAuthLoginController: ASWebAuthenticationPresentationContextProviding {
+    public func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        return self.window!
     }
 }

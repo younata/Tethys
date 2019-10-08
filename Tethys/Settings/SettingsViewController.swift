@@ -336,6 +336,7 @@ extension SettingsViewController: UITableViewDelegate {
     private func didTapAccountCell(indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
 
+        self.loginController.window = self.view.window
         self.loginController.begin().then { result in
             switch result {
             case .success(let account):

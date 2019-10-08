@@ -36,7 +36,11 @@ final class OAuthLoginControllerSpec: QuickSpec {
 
         describe("-begin()") {
             var future: Future<Result<Account, TethysError>>!
+            var window: UIWindow!
+
             beforeEach {
+                window = UIWindow()
+                subject.window = window
                 future = subject.begin()
             }
 
@@ -46,6 +50,13 @@ final class OAuthLoginControllerSpec: QuickSpec {
 
             it("starts the created authentication session") {
                 expect(authenticationSessions.last?.began).to(beTrue())
+            }
+
+            it("sets the session's presentationContextProvider") {
+                expect(authenticationSessions.last?.presentationContextProvider).toNot(beNil())
+                let provider = authenticationSessions.last?.presentationContextProvider
+
+                expect(provider?.presentationAnchor(for: authenticationSessions.last!)).to(be(window))
             }
 
             it("configures the authentication session for inoreader with a custom redirect") {

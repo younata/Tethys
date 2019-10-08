@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4515FDB5234C4A0D0032A165 /* Breakout3DSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4515FDB4234C4A0D0032A165 /* Breakout3DSpec.swift */; };
+		4515FDB7234CECB80032A165 /* ExplanationViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4515FDB6234CECB80032A165 /* ExplanationViewSpec.swift */; };
 		454A2E732316DFC300022660 /* BreakoutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454A2E722316DFC300022660 /* BreakoutToRefreshView.swift */; };
 		4563009123202CD5008D0401 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; };
 		4563009323202CE4008D0401 /* Nimble.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -375,6 +376,7 @@
 
 /* Begin PBXFileReference section */
 		4515FDB4234C4A0D0032A165 /* Breakout3DSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Breakout3DSpec.swift; sourceTree = "<group>"; };
+		4515FDB6234CECB80032A165 /* ExplanationViewSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplanationViewSpec.swift; sourceTree = "<group>"; };
 		454A2E722316DFC300022660 /* BreakoutToRefreshView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakoutToRefreshView.swift; sourceTree = "<group>"; };
 		456300A223236C6F008D0401 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		45FE744923431BC100193955 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
@@ -1157,6 +1159,7 @@
 				89CB98491B12C50000C87160 /* ActivityIndicatorSpec.swift */,
 				89C204B41A73811000C792D2 /* AppDelegateSpec.swift */,
 				89BFAC0F1C4C66AE007B3415 /* CustomMatchers.swift */,
+				4515FDB6234CECB80032A165 /* ExplanationViewSpec.swift */,
 				8941AB7C1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift */,
 				8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */,
 				89F98BA71BA07E50005C3CA8 /* SettingsRepositorySpec.swift */,
@@ -1989,6 +1992,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				89A3A8C91DEF942F002AF9B5 /* ActionableTableViewSpec.swift in Sources */,
+				4515FDB7234CECB80032A165 /* ExplanationViewSpec.swift in Sources */,
 				893694FF21E30F30002C3A09 /* FakeAccountService.swift in Sources */,
 				89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */,
 				89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */,

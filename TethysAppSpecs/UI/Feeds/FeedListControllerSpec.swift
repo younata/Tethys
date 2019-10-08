@@ -126,44 +126,62 @@ final class FeedListControllerSpec: QuickSpec {
             }
 
             describe("the navigation bar items") {
-                it("has one item on the right side") {
-                    expect(subject.navigationItem.leftBarButtonItems ?? []).to(haveCount(1))
-                }
-
                 describe("the left bar button items") {
                     it("has one item on the left side") {
                         expect(subject.navigationItem.leftBarButtonItems ?? []).to(haveCount(1))
                     }
 
-                    describe("tapping the settings button") {
-                        beforeEach {
-                            subject.navigationItem.leftBarButtonItem?.tap()
+                    describe("the settings button") {
+                        it("is enabled for accessibility") {
+                            expect(subject.navigationItem.leftBarButtonItem?.isAccessibilityElement).to(beTrue())
+                            expect(subject.navigationItem.leftBarButtonItem?.accessibilityLabel).to(equal("Settings"))
+                            expect(subject.navigationItem.leftBarButtonItem?.accessibilityTraits).to(equal([.button]))
                         }
 
-                        it("presents a settings page") {
-                            expect(subject.presentedViewController).to(beAnInstanceOf(UINavigationController.self))
-                            expect((subject.presentedViewController as? UINavigationController)?.visibleViewController).to(beAnInstanceOf(SettingsViewController.self))
+                        describe("tapping it") {
+                            beforeEach {
+                                subject.navigationItem.leftBarButtonItem?.tap()
+                            }
+
+                            it("presents a settings page") {
+                                expect(subject.presentedViewController).to(beAnInstanceOf(UINavigationController.self))
+                                expect((subject.presentedViewController as? UINavigationController)?.visibleViewController).to(beAnInstanceOf(SettingsViewController.self))
+                            }
                         }
                     }
                 }
 
                 describe("the right bar button items") {
-                    it("has one item on the right side") {
+                    it("has two items on the right side") {
                         expect(subject.navigationItem.rightBarButtonItems ?? []).to(haveCount(2))
                     }
 
-                    describe("tapping the add feed button") {
+                    describe("the add feed button") {
+                        var addFeedButton: UIBarButtonItem?
+
                         beforeEach {
-                            subject.navigationItem.rightBarButtonItems?.first?.tap()
+                            addFeedButton = subject.navigationItem.rightBarButtonItems?.first
                         }
 
-                        afterEach {
-                            navigationController.popToRootViewController(animated: false)
+                        it("is enabled for accessibility") {
+                            expect(addFeedButton?.isAccessibilityElement).to(beTrue())
+                            expect(addFeedButton?.accessibilityLabel).to(equal("Add feed"))
+                            expect(addFeedButton?.accessibilityTraits).to(equal([.button]))
                         }
 
-                        it("presents a FindFeedViewController") {
-                            expect(subject.presentedViewController).to(beAnInstanceOf(UINavigationController.self))
-                            expect((subject.presentedViewController as? UINavigationController)?.visibleViewController).to(beAnInstanceOf(FindFeedViewController.self))
+                        describe("tapping it") {
+                            beforeEach {
+                                addFeedButton?.tap()
+                            }
+
+                            afterEach {
+                                navigationController.popToRootViewController(animated: false)
+                            }
+
+                            it("presents a FindFeedViewController") {
+                                expect(subject.presentedViewController).to(beAnInstanceOf(UINavigationController.self))
+                                expect((subject.presentedViewController as? UINavigationController)?.visibleViewController).to(beAnInstanceOf(FindFeedViewController.self))
+                            }
                         }
                     }
 
@@ -704,6 +722,11 @@ final class FeedListControllerSpec: QuickSpec {
 
                     it("shows the onboarding view") {
                         expect(subject.onboardingView.superview).toNot(beNil())
+                    }
+
+                    it("gives the onboarding view accessibility information") {
+                        expect(subject.onboardingView.accessibilityLabel).to(equal("Usage"))
+                        expect(subject.onboardingView.accessibilityValue).to(equal("Welcome to Tethys! Use the add button to search for feeds to follow"))
                     }
                 }
             }

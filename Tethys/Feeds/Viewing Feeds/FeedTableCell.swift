@@ -10,7 +10,11 @@ public final class FeedTableCell: UITableViewCell {
                 self.summaryLabel.text = f.displaySummary
                 self.unreadCounter.unread = f.unreadCount
 
-                self.accessibilityLabel = f.displayTitle
+                let unreadCountString = String.localizedStringWithFormat(NSLocalizedString(
+                    "FeedsTableViewController_Accessibility_Cell_UnreadArticles",
+                    comment: ""
+                ), f.unreadCount)
+                self.accessibilityValue = "\(f.displayTitle). \(unreadCountString)"
             } else {
                 self.nameLabel.text = ""
                 self.summaryLabel.text = ""
@@ -83,6 +87,8 @@ public final class FeedTableCell: UITableViewCell {
 
         self.selectedBackgroundView = self.backgroundColorView
         self.isAccessibilityElement = true
+        self.accessibilityLabel = NSLocalizedString("FeedsTableViewController_Accessibility_Cell_Label", comment: "")
+        self.accessibilityTraits = [.button]
 
         self.applyTheme()
     }
@@ -97,5 +103,17 @@ public final class FeedTableCell: UITableViewCell {
         self.unreadCounter.triangleColor = Theme.highlightColor
 
         self.backgroundColor = Theme.backgroundColor
+    }
+
+    public override func prepareForReuse() {
+        super.prepareForReuse()
+
+        self.nameLabel.text = ""
+        self.summaryLabel.text = ""
+        self.unreadCounter.unread = 0
+
+        self.iconView.image = nil
+
+        self.accessibilityValue = nil
     }
 }

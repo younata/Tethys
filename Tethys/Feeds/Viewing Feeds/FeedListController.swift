@@ -17,6 +17,10 @@ public final class FeedListController: UIViewController {
         let view = ExplanationView(frame: .zero)
         view.title = NSLocalizedString("FeedsTableViewController_Onboarding_Title", comment: "")
         view.detail = NSLocalizedString("FeedsTableViewController_Onboarding_Detail", comment: "")
+        view.accessibilityLabel = NSLocalizedString("FeedsTableViewController_Onboarding_AccessibilityLabel",
+                                                    comment: "")
+        view.accessibilityValue = NSLocalizedString("FeedsTableViewController_Onboarding_AccessibilityValue",
+                                                    comment: "")
         return view
     }()
 
@@ -86,6 +90,7 @@ public final class FeedListController: UIViewController {
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self,
                                         action: #selector(FeedListController.didTapAddFeed))
+        addButton.accessibilityLabel = NSLocalizedString("FeedsTableViewController_Accessibility_AddFeed", comment: "")
         self.navigationItem.rightBarButtonItems = [addButton, self.editButtonItem]
 
         let settingsButton = UIBarButtonItem(image: Image(named: "settings"), style: .plain,

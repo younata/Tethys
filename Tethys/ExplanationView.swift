@@ -1,20 +1,19 @@
 import UIKit
 import PureLayout
 
-@IBDesignable
 public final class ExplanationView: UIView {
-    @IBInspectable public var title: String {
+    public var title: String {
         get { return self.titleLabel.text ?? "" }
         set { self.titleLabel.text = newValue }
     }
 
-    @IBInspectable public var detail: String {
+    public var detail: String {
         get { return self.detailLabel.text ?? "" }
         set { self.detailLabel.text = newValue }
     }
 
-    fileprivate let titleLabel = UILabel(forAutoLayout: ())
-    fileprivate let detailLabel = UILabel(forAutoLayout: ())
+    private let titleLabel = UILabel(forAutoLayout: ())
+    private let detailLabel = UILabel(forAutoLayout: ())
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -37,6 +36,10 @@ public final class ExplanationView: UIView {
         self.detailLabel.autoPinEdge(.top, to: .bottom, of: self.titleLabel, withOffset: 8)
 
         self.layer.cornerRadius = 4
+
+        self.isAccessibilityElement = true
+        self.isUserInteractionEnabled = false
+        self.accessibilityTraits = [.staticText]
 
         self.applyTheme()
     }

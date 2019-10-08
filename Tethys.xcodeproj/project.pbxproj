@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4515FDB5234C4A0D0032A165 /* Breakout3DSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4515FDB4234C4A0D0032A165 /* Breakout3DSpec.swift */; };
 		454A2E732316DFC300022660 /* BreakoutToRefreshView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454A2E722316DFC300022660 /* BreakoutToRefreshView.swift */; };
 		4563009123202CD5008D0401 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; };
 		4563009323202CE4008D0401 /* Nimble.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -373,6 +374,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4515FDB4234C4A0D0032A165 /* Breakout3DSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Breakout3DSpec.swift; sourceTree = "<group>"; };
 		454A2E722316DFC300022660 /* BreakoutToRefreshView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakoutToRefreshView.swift; sourceTree = "<group>"; };
 		456300A223236C6F008D0401 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		45FE744923431BC100193955 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
@@ -682,6 +684,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4515FDB3234C49FE0032A165 /* Easter Eggs */ = {
+			isa = PBXGroup;
+			children = (
+				4515FDB4234C4A0D0032A165 /* Breakout3DSpec.swift */,
+			);
+			path = "Easter Eggs";
+			sourceTree = "<group>";
+		};
 		89146E3D1C88C59C00EC8F10 /* Use Cases */ = {
 			isa = PBXGroup;
 			children = (
@@ -1139,6 +1149,7 @@
 		89C8308E19D730E9009924DA /* TethysAppSpecs */ = {
 			isa = PBXGroup;
 			children = (
+				4515FDB3234C49FE0032A165 /* Easter Eggs */,
 				8978C52D219917F100D702BB /* Helpers */,
 				89CB98BC1B13941200C87160 /* Frameworks */,
 				89C8308F19D730E9009924DA /* Supporting Files */,
@@ -2025,6 +2036,7 @@
 				899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */,
 				8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */,
 				89E9DF0D21D49CDB00326E2D /* OAuthLoginControllerSpec.swift in Sources */,
+				4515FDB5234C4A0D0032A165 /* Breakout3DSpec.swift in Sources */,
 				892AF31B232DB5930018B19C /* FakeContextMenuAnimator.swift in Sources */,
 				89BF42472337312500C790A8 /* FakeAppIconChanger.swift in Sources */,
 				89F516571B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m in Sources */,

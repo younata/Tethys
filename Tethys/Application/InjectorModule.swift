@@ -34,7 +34,23 @@ public func configure(container: Container) {    container.register(TagPickerVie
         )
     }
 
+    registerEasterEggs(container: container)
     registerViewControllers(container: container)
+}
+
+private func registerEasterEggs(container: Container) {
+    container.register(AugmentedRealityEasterEggViewController.self) { r in
+        return AugmentedRealityEasterEggViewController(
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            feedListControllerFactory: { r.resolve(FeedListController.self)! }
+        )
+    }
+
+    container.register(Breakout3DEasterEggViewController.self) { r in
+        return Breakout3DEasterEggViewController(
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!
+        )
+    }
 }
 
 // swiftlint:disable function_body_length
@@ -124,15 +140,8 @@ private func registerViewControllers(container: Container) {
                 return AppIconSelectionViewController(appIconChanger: r.resolve(AppIconChanger.self)!)
             },
             arViewController: {
-                Breakout3DEasterEggViewController()
+                return r.resolve(Breakout3DEasterEggViewController.self)!
             }
-        )
-    }
-
-    container.register(AugmentedRealityEasterEggViewController.self) { r in
-        return AugmentedRealityEasterEggViewController(
-            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
-            feedListControllerFactory: { r.resolve(FeedListController.self)! }
         )
     }
 

@@ -46,6 +46,11 @@ final class InjectorModuleSpec: QuickSpec {
             exists(TagPickerView.self)
         }
 
+        describe("Easter Eggs") {
+            exists(AugmentedRealityEasterEggViewController.self)
+            exists(Breakout3DEasterEggViewController.self)
+        }
+
         describe("View Controllers") {
             describe("ArticleListController") {
                 it("returns nil without an argument") {
@@ -83,8 +88,6 @@ final class InjectorModuleSpec: QuickSpec {
                     }
                 }
             }
-
-            exists(AugmentedRealityEasterEggViewController.self)
 
             describe("DocumentationViewController") {
                 it("returns nil without an argument") {

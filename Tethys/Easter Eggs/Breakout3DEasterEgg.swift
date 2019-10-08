@@ -5,11 +5,20 @@ private let BreakoutLength: CGFloat = 100
 
 final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDelegate {
     private let scnView = SCNView()
-    private var breakoutView: Breakout3D?
+    private(set) var breakoutGame: Breakout3D?
 
-    private let scoreLabel = UILabel(forAutoLayout: ())
+    let scoreLabel = UILabel(forAutoLayout: ())
 
-    private let mainQueue: OperationQueue = .main
+    private let mainQueue: OperationQueue
+
+    init(mainQueue: OperationQueue) {
+        self.mainQueue = mainQueue
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,8 +63,8 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
         self.scnView.scene = scene
         self.scnView.autoenablesDefaultLighting = false
 
-        self.breakoutView = Breakout3D(scene: scene)
-        self.breakoutView?.delegate = self
+        self.breakoutGame = Breakout3D(scene: scene)
+        self.breakoutGame?.delegate = self
 
         self.view.backgroundColor = Theme.backgroundColor
     }
@@ -63,7 +72,7 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        self.breakoutView?.resetGame(
+        self.breakoutGame?.resetGame(
             width: self.scnView.bounds.size.width / 10,
             height: self.scnView.bounds.size.height / 10
         )
@@ -94,7 +103,7 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
         let x = (location.x / 10) - (width / 2)
         let y = (location.y / 10) - (height / 2)
 
-        self.breakoutView?.movePaddle(x: x, y: -y)
+        self.breakoutGame?.movePaddle(x: x, y: -y)
     }
 
     @objc private func exit() {
@@ -114,7 +123,10 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
     }
 
     private func scoreDidUpdate(to score: Int) {
-        self.scoreLabel.text = String.localizedStringWithFormat(NSLocalizedString("Breakout3D_Points", comment: ""), score)
+        self.scoreLabel.text = String.localizedStringWithFormat(
+            NSLocalizedString("Breakout3D_Points", comment: ""),
+            score
+        )
     }
 }
 
@@ -132,20 +144,20 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
 
     weak var delegate: Breakout3DDelegate?
 
-    private let scene: SCNScene
+    let scene: SCNScene
     private var physicsWorld: SCNPhysicsWorld { return self.scene.physicsWorld }
 
     private var width: CGFloat = 32
     private var height: CGFloat = 48
 
-    private let ballNodeName = "ball"
-    private let paddleNodeName = "paddle"
+    let ballNodeName = "ball"
+    let paddleNodeName = "paddle"
 
-    private let wallCategory =    0b10000
-    private let rearWallCategory = 0b01000
-    private let brickCategory =    0b00100
-    private let ballCategory =     0b00010
-    private let paddleCategory =   0b00001
+    let wallCategory =     0b10000
+    let rearWallCategory = 0b01000
+    let brickCategory =    0b00100
+    let ballCategory =     0b00010
+    let paddleCategory =   0b00001
 
     private let impactGenerator = UIImpactFeedbackGenerator(style: .rigid)
     private let gameEventFeedbackGenerator = UINotificationFeedbackGenerator()

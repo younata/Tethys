@@ -7,18 +7,24 @@
 "SettingsViewController_Account_Add" = "Add account";
 "SettingsViewController_Account_Error_Title" = "Unable to Authenticate";
 "SettingsViewController_Account_Error_Message" = "Please try again";
+"SettingsViewController_Account_Accessibility_InoreaderExists" = "Existing inoreader account";
 "SettingsViewController_Other_ShowReadingTimes" = "Show Estimated Reading Times";
-"SettingsViewController_Other_ExportOPML" = "Export OPML";
+"SettingsViewController_Other_Accessibility_ShowReadingTimes" = "Estimated reading times";
+"SettingsViewController_Other_ExportOPML" = "Share Feeds List";
+"SettingsViewController_Other_ExportOPML_Accessibility" = "Share feeds list";
 "SettingsViewController_Other_ExportOPML_Error_Title" = "Error Exporting OPML";
 "SettingsViewController_Other_ExportOPML_Error_Message" = "Please Try Again";
+"SettingsViewController_Credits_Accessibility_Credit" = "Credit";
 "SettingsViewController_Credits_MainDeveloper_Name" = "Rachel Brindle"; // My name
 "SettingsViewController_Credits_MainDeveloper_Detail" = "Developer";
 "SettingsViewController_Credits_Libraries" = "Libraries";
 "SettingsViewController_Credits_Icons" = "Icons";
 "SettingsViewController_Credits_Version" = "Version";
+"SettingsviewController_Credits_Version_AccessibilityHint" = "Tap for easter eggs";
 "SettingsViewController_Commands_Save" = "Save and dismiss";
 "SettingsViewController_Commands_Close" = "Close without saving";
 "SettingsViewController_AlternateIcons_Title" = "App Icon";
+"SettingsViewController_AlternateIcons_Accessibility_Title" = "Alternate app icons";
 "SettingsViewController_AlternateIcons_Primary" = "White";
 "SettingsViewController_AlternateIcons_Black" = "Black";
 

@@ -198,6 +198,13 @@ final class SettingsViewControllerSpec: QuickSpec {
                             cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
                         }
 
+                        it("is configured for accessibility") {
+                            expect(cell?.isAccessibilityElement).to(beTrue())
+                            expect(cell?.accessibilityTraits).to(equal([.button]))
+                            expect(cell?.accessibilityLabel).to(equal("Add account"))
+                            expect(cell?.accessibilityValue).to(equal("Inoreader"))
+                        }
+
                         it("it asks the user to log in") {
                             expect(cell?.textLabel?.text).to(equal("Inoreader"))
                             expect(cell?.detailTextLabel?.text).to(equal("Add account"))
@@ -318,18 +325,46 @@ final class SettingsViewControllerSpec: QuickSpec {
                         expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(2))
                     }
 
-                    it("the first cell states the account type and username") {
+                    describe("the first cell") {
+                        var cell: TableViewCell?
                         let indexPath = IndexPath(row: 0, section: sectionNumber)
-                        let cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
-                        expect(cell?.textLabel?.text).to(equal("Inoreader"))
-                        expect(cell?.detailTextLabel?.text).to(equal("username"))
+
+                        beforeEach {
+                            cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
+                        }
+
+                        it("is configured for accessibility") {
+                            expect(cell?.isAccessibilityElement).to(beTrue())
+                            expect(cell?.accessibilityTraits).to(equal([.button]))
+                            expect(cell?.accessibilityLabel).to(equal("Existing inoreader account"))
+                            expect(cell?.accessibilityValue).to(equal("username"))
+                        }
+
+                        it("states the account type and username") {
+                            expect(cell?.textLabel?.text).to(equal("Inoreader"))
+                            expect(cell?.detailTextLabel?.text).to(equal("username"))
+                        }
                     }
 
-                    it("the second cell shows the add account in the table") {
-                        let addIndexPath = IndexPath(row: 1, section: sectionNumber)
-                        let addCell = dataSource.tableView(subject.tableView, cellForRowAt: addIndexPath) as? TableViewCell
-                        expect(addCell?.textLabel?.text).to(equal("Inoreader"))
-                        expect(addCell?.detailTextLabel?.text).to(equal("Add account"))
+                    describe("the second cell") {
+                        var cell: TableViewCell?
+                        let indexPath = IndexPath(row: 1, section: sectionNumber)
+
+                        beforeEach {
+                            cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
+                        }
+
+                        it("is configured for accessibility") {
+                            expect(cell?.isAccessibilityElement).to(beTrue())
+                            expect(cell?.accessibilityTraits).to(equal([.button]))
+                            expect(cell?.accessibilityLabel).to(equal("Add account"))
+                            expect(cell?.accessibilityValue).to(equal("Inoreader"))
+                        }
+
+                        it("it asks the user to log in") {
+                            expect(cell?.textLabel?.text).to(equal("Inoreader"))
+                            expect(cell?.detailTextLabel?.text).to(equal("Add account"))
+                        }
                     }
                 }
             }
@@ -362,6 +397,12 @@ final class SettingsViewControllerSpec: QuickSpec {
                         expect(cell.textLabel?.text) == "Spinner"
                     }
 
+                    it("is configured for accessibility") {
+                        expect(cell?.isAccessibilityElement).to(beTrue())
+                        expect(cell?.accessibilityTraits).to(equal([.button]))
+                        expect(cell?.accessibilityLabel).to(equal("Spinner"))
+                    }
+
                     it("is selected if it's the current refresh control style") { // which it is not
                         expect(cell.isSelected) == false
                     }
@@ -381,6 +422,12 @@ final class SettingsViewControllerSpec: QuickSpec {
 
                     it("is titled 'Breakout'") {
                         expect(cell.textLabel?.text) == "Breakout"
+                    }
+
+                    it("is configured for accessibility") {
+                        expect(cell?.isAccessibilityElement).to(beTrue())
+                        expect(cell?.accessibilityTraits).to(equal([.button]))
+                        expect(cell?.accessibilityLabel).to(equal("Breakout"))
                     }
 
                     describe("when tapped") {
@@ -427,7 +474,7 @@ final class SettingsViewControllerSpec: QuickSpec {
                 }
 
                 describe("the estimated reading times cell") {
-                    var cell: SwitchTableViewCell! = nil
+                    var cell: SwitchTableViewCell?
                     let indexPath = IndexPath(row: 0, section: sectionNumber)
 
                     beforeEach {
@@ -435,17 +482,27 @@ final class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("is titled 'Show Estimated Reading Times'") {
-                        expect(cell.textLabel?.text) == "Show Estimated Reading Times"
+                        expect(cell?.textLabel?.text) == "Show Estimated Reading Times"
+                    }
+
+                    it("is configured for accessibility") {
+                        expect(cell?.isAccessibilityElement).to(beTrue())
+                        expect(cell?.accessibilityLabel).to(equal("Estimated reading times"))
+                        expect(cell?.accessibilityValue).to(equal("Enabled"))
                     }
 
                     describe("tapping the switch on the cell") {
                         beforeEach {
-                            cell.theSwitch.isOn = false
-                            cell.onTapSwitch?(cell.theSwitch)
+                            cell?.theSwitch.isOn = false
+                            cell?.onTapSwitch?(cell!.theSwitch)
                         }
 
                         it("does not yet change the settings repository") {
                             expect(settingsRepository.showEstimatedReadingLabel).to(equal(true))
+                        }
+
+                        it("adjusts the accessibility value") {
+                            expect(cell?.accessibilityValue).to(equal("Disabled"))
                         }
 
                         itBehavesLike("a changed setting") {
@@ -472,8 +529,14 @@ final class SettingsViewControllerSpec: QuickSpec {
                         cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
                     }
 
-                    it("is titled 'Export OPML'") {
-                        expect(cell.textLabel?.text) == "Export OPML"
+                    it("is titled 'Share Feeds List'") {
+                        expect(cell.textLabel?.text) == "Share Feeds List"
+                    }
+
+                    it("is configured for accessibility") {
+                        expect(cell?.isAccessibilityElement).to(beTrue())
+                        expect(cell?.accessibilityTraits).to(equal([.button]))
+                        expect(cell?.accessibilityLabel).to(equal("Share feeds list"))
                     }
 
                     describe("tapping it") {
@@ -494,7 +557,7 @@ final class SettingsViewControllerSpec: QuickSpec {
                             it("brings up a share sheet with the opml text as the content") {
                                 expect(navigationController.visibleViewController).to(beAnInstanceOf(UIActivityViewController.self))
                                 if let shareSheet = navigationController.visibleViewController as? UIActivityViewController {
-                                    expect(shareSheet.activityItems as? [URL]) == [url]
+                                    expect(shareSheet.activityItems as? [URL]).to(equal([url]))
                                 }
                             }
                         }
@@ -509,8 +572,8 @@ final class SettingsViewControllerSpec: QuickSpec {
                                     return expect(messenger.errorCalls).to(haveCount(1))
                                 }
 
-                                expect(error.title) == "Error Exporting OPML"
-                                expect(error.message) == "Please Try Again"
+                                expect(error.title).to(equal("Error Exporting OPML"))
+                                expect(error.message).to(equal("Please Try Again"))
                             }
                         }
                     }
@@ -537,6 +600,12 @@ final class SettingsViewControllerSpec: QuickSpec {
 
                     it("has nothing in the detail text") {
                         expect(cell.detailTextLabel?.text).to(beNil())
+                    }
+
+                    it("is configured for accessibility") {
+                        expect(cell?.isAccessibilityElement).to(beTrue())
+                        expect(cell?.accessibilityTraits).to(equal([.button]))
+                        expect(cell?.accessibilityLabel).to(equal("Alternate app icons"))
                     }
 
                     describe("tapping it") {
@@ -571,6 +640,14 @@ final class SettingsViewControllerSpec: QuickSpec {
                     it("has the git version as the detail text") {
                         let gitVersion = Bundle.main.infoDictionary?["CurrentGitVersion"] as? String
                         expect(cell.detailTextLabel?.text).to(equal(gitVersion))
+                        expect(cell?.accessibilityValue).to(equal(gitVersion))
+                    }
+
+                    it("is configured for accessibility") {
+                        expect(cell?.isAccessibilityElement).to(beTrue())
+                        expect(cell?.accessibilityTraits).to(equal([.button]))
+                        expect(cell?.accessibilityLabel).to(equal("Version"))
+                        expect(cell?.accessibilityHint).to(equal("Tap for easter eggs"))
                     }
 
                     describe("tapping it") {
@@ -631,6 +708,15 @@ final class SettingsViewControllerSpec: QuickSpec {
 
                     it("has either 'developer' as the detail") {
                         expect(cell.detailTextLabel?.text) == detail
+                    }
+
+                    it("is configured for accessibility") {
+                        expect(cell?.isAccessibilityElement).to(beTrue())
+                        expect(cell?.accessibilityTraits).to(equal([.button]))
+                        expect(cell?.accessibilityLabel).to(equal("Credit"))
+                        let titleString: String = title
+                        let detailString: String = detail
+                        expect(cell?.accessibilityValue).to(equal("\(titleString), \(detailString)"))
                     }
 
                     describe("tapping it") {
@@ -715,6 +801,12 @@ final class SettingsViewControllerSpec: QuickSpec {
                         expect(cell.detailTextLabel?.text) == ""
                     }
 
+                    it("is configured for accessibility") {
+                        expect(cell?.isAccessibilityElement).to(beTrue())
+                        expect(cell?.accessibilityTraits).to(equal([.button]))
+                        expect(cell?.accessibilityLabel).to(equal("Libraries"))
+                    }
+
                     describe("tapping it") {
                         beforeEach {
                             delegate.tableView?(subject.tableView, didSelectRowAt: indexPath)
@@ -788,6 +880,12 @@ final class SettingsViewControllerSpec: QuickSpec {
 
                     it("has no detail") {
                         expect(cell.detailTextLabel?.text) == ""
+                    }
+
+                    it("is configured for accessibility") {
+                        expect(cell?.isAccessibilityElement).to(beTrue())
+                        expect(cell?.accessibilityTraits).to(equal([.button]))
+                        expect(cell?.accessibilityLabel).to(equal("Icons"))
                     }
 
                     describe("tapping it") {

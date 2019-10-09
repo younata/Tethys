@@ -187,10 +187,18 @@ extension SettingsViewController: UITableViewDataSource {
     private func accountCell(indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
         cell.textLabel?.text = NSLocalizedString("SettingsViewController_Account_Inoreader", comment: "")
+        cell.accessibilityTraits = [.button]
         if indexPath.row < self.accounts.count {
             cell.detailTextLabel?.text = self.accounts[indexPath.row].username
+            cell.accessibilityLabel = NSLocalizedString(
+                "SettingsViewController_Account_Accessibility_InoreaderExists",
+                comment: ""
+            )
+            cell.accessibilityValue = self.accounts[indexPath.row].username
         } else {
             cell.detailTextLabel?.text = NSLocalizedString("SettingsViewController_Account_Add", comment: "")
+            cell.accessibilityLabel = NSLocalizedString("SettingsViewController_Account_Add", comment: "")
+            cell.accessibilityValue = NSLocalizedString("SettingsViewController_Account_Inoreader", comment: "")
         }
         return cell
     }
@@ -200,6 +208,7 @@ extension SettingsViewController: UITableViewDataSource {
         guard let refreshStyle = RefreshControlStyle(rawValue: indexPath.row) else { return cell }
         cell.textLabel?.text = refreshStyle.description
         cell.accessibilityLabel = refreshStyle.description
+        cell.accessibilityTraits = [.button]
         return cell
     }
 
@@ -212,42 +221,58 @@ extension SettingsViewController: UITableViewDataSource {
                                                      for: indexPath) as! SwitchTableViewCell
             cell.onTapSwitch = {_ in }
             cell.theSwitch.isOn = self.showReadingTimes
+            cell.accessibilityLabel = NSLocalizedString("SettingsViewController_Other_Accessibility_ShowReadingTimes",
+                                                        comment: "")
             cell.onTapSwitch = {aSwitch in
                 self.showReadingTimes = aSwitch.isOn
                 self.navigationItem.rightBarButtonItem?.isEnabled = true
-                self.accessibilityValue = self.showReadingTimes ?
+                cell.accessibilityValue = aSwitch.isOn ?
                     NSLocalizedString("Generic_Enabled", comment: "") :
                     NSLocalizedString("Generic_Disabled", comment: "")
             }
             tableCell = cell
-            self.accessibilityValue = self.showReadingTimes ?
+            cell.accessibilityValue = self.showReadingTimes ?
                 NSLocalizedString("Generic_Enabled", comment: "") :
                 NSLocalizedString("Generic_Disabled", comment: "")
         case .exportOPML:
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+            cell.accessibilityTraits = [.button]
+            cell.accessibilityLabel = NSLocalizedString("SettingsViewController_Other_ExportOPML_Accessibility",
+                                                        comment: "")
             tableCell = cell
         case .appIcon:
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+            cell.accessibilityTraits = [.button]
+            cell.accessibilityLabel = NSLocalizedString("SettingsViewController_AlternateIcons_Accessibility_Title",
+                                                        comment: "")
             tableCell = cell
         case .gitVersion:
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
             tableCell = cell
 
-            cell.detailTextLabel?.text = Bundle.main.infoDictionary?["CurrentGitVersion"] as? String
+            let versionText = Bundle.main.infoDictionary?["CurrentGitVersion"] as? String
+            cell.detailTextLabel?.text = versionText
+            cell.accessibilityValue = versionText
+            cell.accessibilityTraits = [.button]
+            cell.accessibilityLabel = row.description
+            cell.accessibilityHint = NSLocalizedString("SettingsviewController_Credits_Version_AccessibilityHint",
+                                                       comment: "")
         }
         tableCell.textLabel?.text = row.description
-        tableCell.accessibilityLabel = row.description
         return tableCell
     }
 
     private func creditCell(indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
+        cell.accessibilityTraits = [.button]
         if indexPath.row == 0 {
-            let text = NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Name", comment: "")
-            let detailText = NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Detail", comment: "")
-            cell.textLabel?.text = text
-            cell.detailTextLabel?.text = detailText
-            cell.accessibilityLabel = "\(detailText) - \(text)"
+            let name = NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Name", comment: "")
+            let title = NSLocalizedString("SettingsViewController_Credits_MainDeveloper_Detail", comment: "")
+            cell.textLabel?.text = name
+            cell.detailTextLabel?.text = title
+            cell.accessibilityLabel = NSLocalizedString("SettingsViewController_Credits_Accessibility_Credit",
+                                                        comment: "")
+            cell.accessibilityValue = "\(name), \(title)"
         } else if indexPath.row == 1 {
             cell.textLabel?.text = NSLocalizedString("SettingsViewController_Credits_Libraries", comment: "")
             cell.detailTextLabel?.text = ""

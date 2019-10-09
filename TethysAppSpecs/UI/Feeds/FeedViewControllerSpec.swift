@@ -32,27 +32,35 @@ class FeedViewControllerSpec: QuickSpec {
             subject.view.layoutIfNeeded()
         }
 
-        it("has a save button") {
-            expect(subject.navigationItem.rightBarButtonItem?.title) == "Save"
-        }
-
-        describe("tapping 'save' without making any changes") {
-            beforeEach {
-                let saveButton = subject.navigationItem.rightBarButtonItem
-                saveButton?.tap()
+        describe("the save button") {
+            it("is the right button") {
+                expect(subject.navigationItem.rightBarButtonItem?.title).to(equal("Save"))
             }
 
-            it("dismisses itself") {
-                expect(navigationController.visibleViewController).to(equal(rootViewController))
+            it("is configured for accessibility") {
+                expect(subject.navigationItem.rightBarButtonItem?.isAccessibilityElement).to(beTrue())
+                expect(subject.navigationItem.rightBarButtonItem?.accessibilityTraits).to(equal([.button]))
+                expect(subject.navigationItem.rightBarButtonItem?.accessibilityLabel).to(equal("Save"))
+            }
+
+            describe("tapping 'save' without making any changes") {
+                beforeEach {
+                    let saveButton = subject.navigationItem.rightBarButtonItem
+                    saveButton?.tap()
+                }
+
+                it("dismisses itself") {
+                    expect(navigationController.visibleViewController).to(equal(rootViewController))
+                }
             }
         }
 
         describe("the feedDetailView") {
             it("is configured with the feed's title, url, summary, and tags") {
-                expect(subject.feedDetailView.title) == "title"
-                expect(subject.feedDetailView.url) == URL(string: "http://example.com/feed")
-                expect(subject.feedDetailView.summary) == "summary"
-                expect(subject.feedDetailView.tags) == ["a", "b", "c"]
+                expect(subject.feedDetailView.title).to(equal("title"))
+                expect(subject.feedDetailView.url).to(equal(URL(string: "http://example.com/feed")))
+                expect(subject.feedDetailView.summary).to(equal("summary"))
+                expect(subject.feedDetailView.tags).to(equal(["a", "b", "c"]))
             }
         }
 
@@ -65,7 +73,7 @@ class FeedViewControllerSpec: QuickSpec {
                 }
 
                 it("does not yet set the feed url to the new url") {
-                    expect(feed.url) == URL(string: "http://example.com/feed")
+                    expect(feed.url).to(equal(URL(string: "http://example.com/feed")))
                 }
 
                 describe("tapping 'save'") {
@@ -112,7 +120,7 @@ class FeedViewControllerSpec: QuickSpec {
                 }
 
                 it("does not yet set the feed tags to the new tags") {
-                    expect(feed.tags) == ["a", "b", "c"]
+                    expect(feed.tags).to(equal(["a", "b", "c"]))
                 }
 
                 describe("tapping 'save'") {
@@ -215,8 +223,8 @@ class FeedViewControllerSpec: QuickSpec {
                         if let tagEditor = navigationController.topViewController as? TagEditorViewController {
                             tagEditor.onSave?("newTag")
 
-                            expect(tagCompletionCallCount) == 1
-                            expect(newTag) == "newTag"
+                            expect(tagCompletionCallCount).to(equal(1))
+                            expect(newTag).to(equal("newTag"))
                         }
                     }
                 }
@@ -235,7 +243,7 @@ class FeedViewControllerSpec: QuickSpec {
                     it("shows a tag editor controller to add the tag") {
                         expect(navigationController.topViewController).to(beAnInstanceOf(TagEditorViewController.self))
                         if let tagEditor = navigationController.topViewController as? TagEditorViewController {
-                            expect(tagEditor.tag) == "hello"
+                            expect(tagEditor.tag).to(equal("hello"))
                         }
                     }
 
@@ -244,8 +252,8 @@ class FeedViewControllerSpec: QuickSpec {
                         if let tagEditor = navigationController.topViewController as? TagEditorViewController {
                             tagEditor.onSave?("newTag")
 
-                            expect(tagCompletionCallCount) == 1
-                            expect(newTag) == "newTag"
+                            expect(tagCompletionCallCount).to(equal(1))
+                            expect(newTag).to(equal("newTag"))
                         }
                     }
                 }

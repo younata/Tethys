@@ -73,6 +73,10 @@
 "FeedViewController_Table_Header_URL" = "URL";
 "FeedViewController_Table_Header_Summary" = "Summary";
 "FeedViewController_Table_Header_Tags" = "Tags";
+"FeedViewController_Accessibility_TableHeader_Title_Label" = "Feed title";
+"FeedViewController_Accessibility_TableHeader_Summary_Label" = "Feed summary";
+"FeedViewController_Accessibility_TableHeader_URL_Label" = "Feed URL";
+"FeedViewController_Accessibility_Cell_Label" = "Tag";
 "FeedViewController_Cell_Summary_Placeholder" = "No Summary Available";
 "FeedViewController_Actions_AddTag" = "Add Tag";
 

@@ -39,6 +39,16 @@ public final class FeedDetailView: UIView {
         self.urlField.text = url.absoluteString
         self.delegate = delegate
 
+        self.titleLabel.accessibilityLabel = NSLocalizedString(
+            "FeedViewController_Accessibility_TableHeader_Title_Label", comment: ""
+        )
+        self.titleLabel.accessibilityValue = title
+
+        self.summaryLabel.accessibilityLabel = NSLocalizedString(
+            "FeedViewController_Accessibility_TableHeader_Summary_Label", comment: ""
+        )
+        self.summaryLabel.accessibilityValue = summary
+
         self.tags = tags
         self.tagsList.reloadData()
     }
@@ -88,6 +98,13 @@ public final class FeedDetailView: UIView {
         self.addTagButton.setTitle(NSLocalizedString("FeedViewController_Actions_AddTag", comment: ""), for: .normal)
         self.addTagButton.addTarget(self, action: #selector(FeedDetailView.didTapAddTarget), for: .touchUpInside)
         self.urlField.textColor = UIColor.gray
+
+        [self.titleLabel, self.urlField, self.summaryLabel, self.addTagButton].forEach { view in
+            view.isAccessibilityElement = true
+        }
+
+        self.urlField.accessibilityLabel = NSLocalizedString("FeedViewController_Accessibility_TableHeader_URL_Label",
+                                                             comment: "")
 
         self.applyTheme()
     }
@@ -144,6 +161,9 @@ extension FeedDetailView: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
         cell.textLabel?.text = self.tags[indexPath.row]
+        cell.accessibilityTraits = [.button]
+        cell.accessibilityLabel = NSLocalizedString("FeedViewController_Accessibility_Cell_Label", comment: "")
+        cell.accessibilityValue = self.tags[indexPath.row]
         return cell
     }
 

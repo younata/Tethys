@@ -67,6 +67,20 @@ class FeedDetailViewSpec: QuickSpec {
             }
         }
 
+        it("is configured for accessibility") {
+            expect(subject.isAccessibilityElement).to(beFalse())
+            expect(subject.titleLabel.isAccessibilityElement).to(beTrue())
+            expect(subject.urlField.isAccessibilityElement).to(beTrue())
+            expect(subject.summaryLabel.isAccessibilityElement).to(beTrue())
+            expect(subject.addTagButton.isAccessibilityElement).to(beTrue())
+
+            expect(subject.titleLabel.accessibilityTraits).to(equal([.staticText]))
+            expect(subject.summaryLabel.accessibilityTraits).to(equal([.staticText]))
+            expect(subject.addTagButton.accessibilityTraits).to(equal([.button]))
+
+            expect(subject.addTagButton.accessibilityLabel).to(equal("Add Tag"))
+        }
+
         describe("configure(title:url:summary:tags:)") {
             let tags = ["hello", "goodbye"]
             beforeEach {
@@ -74,15 +88,21 @@ class FeedDetailViewSpec: QuickSpec {
             }
 
             it("sets the titleLabel's text") {
-                expect(subject.titleLabel.text) == "title"
+                expect(subject.titleLabel.text).to(equal("title"))
+                expect(subject.titleLabel.accessibilityLabel).to(equal("Feed title"))
+                expect(subject.titleLabel.accessibilityValue).to(equal("title"))
             }
 
             it("sets the urlField's text") {
-                expect(subject.urlField.text) == "https://example.com"
+                expect(subject.urlField.text).to(equal("https://example.com"))
+                expect(subject.urlField.accessibilityLabel).to(equal("Feed URL"))
+                expect(subject.urlField.accessibilityValue).to(equal("https://example.com"))
             }
 
             it("sets the summaryLabel's text") {
-                expect(subject.summaryLabel.text) == "summary"
+                expect(subject.summaryLabel.text).to(equal("summary"))
+                expect(subject.summaryLabel.accessibilityLabel).to(equal("Feed summary"))
+                expect(subject.summaryLabel.accessibilityValue).to(equal("summary"))
             }
 
             it("sets the tagsList's cells") {
@@ -132,6 +152,22 @@ class FeedDetailViewSpec: QuickSpec {
 
             describe("a cell") {
                 let indexPath = IndexPath(row: 0, section: 0)
+                var cell: TableViewCell?
+
+                beforeEach {
+                    cell = tableView.cellForRow(at: indexPath) as? TableViewCell
+                }
+
+                it("titles the cell for the tag") {
+                    expect(cell?.textLabel?.text).to(equal("hello"))
+                }
+
+                it("configures the cell for accessibility") {
+                    expect(cell?.isAccessibilityElement).to(beTrue())
+                    expect(cell?.accessibilityTraits).to(equal([.button]))
+                    expect(cell?.accessibilityLabel).to(equal("Tag"))
+                    expect(cell?.accessibilityValue).to(equal("hello"))
+                }
 
                 describe("the contextual actions") {
                     var swipeActions: UISwipeActionsConfiguration? = nil

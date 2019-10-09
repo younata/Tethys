@@ -55,6 +55,11 @@
 "FindFeedViewController_AddFeed" = "Add Feed";
 "FindFeedViewController_Commands_OpenURL" = "Open URL";
 "FindFeedViewController_Commands_Reload" = "Reload";
+"FindFeedViewController_Accessibility_URLBar_Label" = "Navigate and search";
+"FindFeedViewController_Accessibility_AddFeed_Label" = "Subscribe";
+"FindFeedViewController_Accessibility_Back_Label" = "Previous page";
+"FindFeedViewController_Accessibility_Next_Label" = "Next page";
+"FindFeedViewController_Accessibility_Reload_Label" = "Reload";
 "FindFeedViewController_URLBar_Placeholder" = "Enter URL";
 "FindFeedViewController_Save_Feed" = "Loading feed at %@";
 "FindFeedViewController_Save_Feed_List" = "Loading feed list at %@";

@@ -55,15 +55,24 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.addFeedButton = UIBarButtonItem(title: NSLocalizedString("FindFeedViewController_AddFeed", comment: ""),
                                              style: .plain, target: self, action: save)
         self.addFeedButton.isEnabled = false
+        self.addFeedButton.accessibilityLabel = NSLocalizedString("FindFeedViewController_Accessibility_AddFeed_Label",
+                                                                  comment: "")
+
         self.back = UIBarButtonItem(image: Image(named: "LeftChevron"), style: .plain, target: self.webContent,
                                     action: #selector(WKWebView.goBack))
+        self.back.isEnabled = false
+        self.back.accessibilityLabel = NSLocalizedString("FindFeedViewController_Accessibility_Back_Label", comment: "")
+
         self.forward = UIBarButtonItem(image: Image(named: "RightChevron"), style: .plain, target: self.webContent,
                                        action: #selector(WKWebView.goForward))
-        self.back.isEnabled = false
         self.forward.isEnabled = false
+        self.forward.accessibilityLabel = NSLocalizedString("FindFeedViewController_Accessibility_Next_Label",
+                                                            comment: "")
 
         self.reload = UIBarButtonItem(barButtonSystemItem: .refresh, target: self,
                                       action: #selector(FindFeedViewController.reloadWebPage))
+        self.reload.accessibilityLabel = NSLocalizedString("FindFeedViewController_Accessibility_Reload_Label",
+                                                           comment: "")
 
         let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
         self.cancelTextEntry = UIBarButtonItem(title: cancelTitle, style: .plain,
@@ -94,6 +103,9 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.navField.keyboardType = .URL
         self.navField.clearsOnBeginEditing = true
         self.navField.textContentType = .URL
+        self.navField.isAccessibilityElement = true
+        self.navField.accessibilityLabel = NSLocalizedString("FindFeedViewController_Accessibility_URLBar_Label",
+                                                             comment: "")
 
         self.loadingBar.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.loadingBar)
@@ -178,6 +190,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
             self.webContent.load(URLRequest(url: url))
         } else if let url = URL(string: "https://duckduckgo.com/?q=" +
             originalText.replacingOccurrences(of: " ", with: "+")) {
+            textField.accessibilityValue = originalText
             self.webContent.load(URLRequest(url: url))
         }
         let urlLoading = NSLocalizedString("FindFeedViewController_URLBar_Loading", comment: "")

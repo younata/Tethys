@@ -64,9 +64,46 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
         }
 
+        describe("accessibility") {
+            it("configures the navField for accessibility") {
+                expect(subject.navField.isAccessibilityElement).to(beTrue())
+                expect(subject.navField.accessibilityLabel).to(equal("Navigate and search"))
+            }
+
+            it("configures the add feed button for accessibility") {
+                expect(subject.addFeedButton.isAccessibilityElement).to(beTrue())
+                expect(subject.addFeedButton.accessibilityLabel).to(equal("Subscribe"))
+                expect(subject.addFeedButton.accessibilityTraits).to(equal([.button]))
+            }
+
+            it("configures the back and forward buttons for accessibility") {
+                expect(subject.back.isAccessibilityElement).to(beTrue())
+                expect(subject.back.accessibilityLabel).to(equal("Previous page"))
+                expect(subject.back.accessibilityTraits).to(equal([.button]))
+
+                expect(subject.forward.isAccessibilityElement).to(beTrue())
+                expect(subject.forward.accessibilityLabel).to(equal("Next page"))
+                expect(subject.forward.accessibilityTraits).to(equal([.button]))
+            }
+
+            it("configures the reload button for accessibility") {
+                expect(subject.reload.isAccessibilityElement).to(beTrue())
+                expect(subject.reload.accessibilityLabel).to(equal("Reload"))
+                expect(subject.reload.accessibilityTraits).to(equal([.button]))
+            }
+        }
+
         describe("the left bar button item") {
             it("indicates it'll close the controller") {
                 expect(subject.navigationItem.leftBarButtonItem?.title).to(equal("Close"))
+            }
+
+            it("is configured for accessibility") {
+                let button = subject.navigationItem.leftBarButtonItem
+
+                expect(button?.isAccessibilityElement).to(beTrue())
+                expect(button?.accessibilityTraits).to(equal([.button]))
+                expect(button?.accessibilityLabel).to(equal("Close"))
             }
 
             describe("when tapped") {
@@ -90,26 +127,51 @@ class FindFeedViewControllerSpec: QuickSpec {
                 _ = subject.textFieldShouldReturn(subject.navField)
             }
 
-            it("should auto-prepend 'https://' if it's not already there") {
-                expect(subject.navField.text) == "https://example.com"
+            it("prepends 'https://' if it's not already there") {
+                expect(subject.navField.text).to(equal("https://example.com"))
             }
 
-            it("should navigate the webview that url") {
-                expect(webView.lastRequestLoaded?.url) == URL(string: "https://example.com")
+            it("navigates the webview that url") {
+                expect(webView.lastRequestLoaded?.url).to(equal(URL(string: "https://example.com")))
+            }
+
+            it("sets the navField's accessibility value to that url") {
+                expect(subject.navField.accessibilityLabel).to(equal("Navigate and search"))
+                expect(subject.navField.accessibilityValue).to(equal("https://example.com"))
             }
         }
 
         describe("Entering an invalid url") {
-            it("searches duckduckgo for that text when given a string with a single word") {
-                subject.navField.text = "notaurl"
-                _ = subject.textFieldShouldReturn(subject.navField)
-                expect(webView.lastRequestLoaded?.url) == URL(string: "https://duckduckgo.com/?q=notaurl")
+            describe("when given a string with a single word") {
+                beforeEach {
+                    subject.navField.text = "notaurl"
+                    _ = subject.textFieldShouldReturn(subject.navField)
+                }
+
+                it("searches duckduckgo for that text") {
+                    expect(webView.lastRequestLoaded?.url) == URL(string: "https://duckduckgo.com/?q=notaurl")
+                }
+
+                it("sets the navField's accessibility values") {
+                    expect(subject.navField.accessibilityLabel).to(equal("Navigate and search"))
+                    expect(subject.navField.accessibilityValue).to(equal("notaurl"))
+                }
             }
 
-            it("searches duckduckgo for that text when given a string with multiple words") {
-                subject.navField.text = "not a url"
-                _ = subject.textFieldShouldReturn(subject.navField)
-                expect(webView.lastRequestLoaded?.url) == URL(string: "https://duckduckgo.com/?q=not+a+url")
+            describe("when given a string with multiple words") {
+                beforeEach {
+                    subject.navField.text = "not a url"
+                    _ = subject.textFieldShouldReturn(subject.navField)
+                }
+
+                it("searches duckduckgo for that text") {
+                    expect(webView.lastRequestLoaded?.url) == URL(string: "https://duckduckgo.com/?q=not+a+url")
+                }
+
+                it("sets the navField's accessibility values") {
+                    expect(subject.navField.accessibilityLabel).to(equal("Navigate and search"))
+                    expect(subject.navField.accessibilityValue).to(equal("not a url"))
+                }
             }
         }
 
@@ -301,12 +363,12 @@ class FindFeedViewControllerSpec: QuickSpec {
                 it("goes back to the webView's title when loaded cancel is tapped") {
                     subject.cancelTextEntry.tap()
 
-                    expect(subject.navField.text) == ""
+                    expect(subject.navField.text).to(beEmpty())
                 }
             }
 
             it("asks the import use case to check if the page at the url has a feed") {
-                expect(importUseCase.scanForImportableCalls.last) == URL(string: "https://example.com/feed.xml")
+                expect(importUseCase.scanForImportableCalls.last).to(equal(URL(string: "https://example.com/feed.xml")))
             }
 
             context("when the use case finds a feed") {
@@ -318,15 +380,15 @@ class FindFeedViewControllerSpec: QuickSpec {
                 it("presents an alert") {
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                     if let alert = subject.presentedViewController as? UIAlertController {
-                        expect(alert.title) == "Feed Detected"
-                        expect(alert.message) == "Import feed?"
+                        expect(alert.title).to(equal("Feed Detected"))
+                        expect(alert.message).to(equal("Import feed?"))
 
                         expect(alert.actions.count) == 2
                         if let dontsave = alert.actions.first {
-                            expect(dontsave.title) == "Don't Import"
+                            expect(dontsave.title).to(equal("Don't Import"))
                         }
                         if let save = alert.actions.last {
-                            expect(save.title) == "Import"
+                            expect(save.title).to(equal("Import"))
                         }
                     }
                 }
@@ -377,15 +439,15 @@ class FindFeedViewControllerSpec: QuickSpec {
                 it("presents an alert") {
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                     if let alert = subject.presentedViewController as? UIAlertController {
-                        expect(alert.title) == "Feed List Detected"
-                        expect(alert.message) == "Import?"
+                        expect(alert.title).to(equal("Feed List Detected"))
+                        expect(alert.message).to(equal("Import?"))
 
                         expect(alert.actions.count) == 2
                         if let dontsave = alert.actions.first {
-                            expect(dontsave.title) == "Don't Import"
+                            expect(dontsave.title).to(equal("Don't Import"))
                         }
                         if let save = alert.actions.last {
-                            expect(save.title) == "Import"
+                            expect(save.title).to(equal("Import"))
                         }
                     }
                 }
@@ -427,11 +489,11 @@ class FindFeedViewControllerSpec: QuickSpec {
                         let indicator = subject.view.subviews.filter {
                             return $0.isKind(of: ActivityIndicator.classForCoder())
                         }.first as? ActivityIndicator
-                        expect(indicator?.message) == "Loading feed list at https://example.com/feed"
+                        expect(indicator?.message).to(equal("Loading feed list at https://example.com/feed"))
                     }
 
                     it("asks the import use case to import the feed at the url") {
-                        expect(importUseCase.importItemCalls.last) == url
+                        expect(importUseCase.importItemCalls.last).to(equal(url))
                     }
 
                     describe("when the use case is finished") {
@@ -466,8 +528,8 @@ class FindFeedViewControllerSpec: QuickSpec {
                     importUseCase.scanForImportablePromises[0].resolve(.webPage(url, [feedURL]))
                 }
 
-                it("should enable the addFeedButton") {
-                    expect(subject.addFeedButton.isEnabled) == true
+                it("enables the addFeedButton") {
+                    expect(subject.addFeedButton.isEnabled).to(beTrue())
                 }
 
                 describe("tapping on the addFeedButton") {
@@ -490,8 +552,8 @@ class FindFeedViewControllerSpec: QuickSpec {
                     importUseCase.scanForImportablePromises[0].resolve(.webPage(url, [feedURL1, feedURL2]))
                 }
 
-                it("should enable the addFeedButton") {
-                    expect(subject.addFeedButton.isEnabled) == true
+                it("enables the addFeedButton") {
+                    expect(subject.addFeedButton.isEnabled).to(beTrue())
                 }
 
                 describe("tapping on the addFeedButton") {
@@ -499,7 +561,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                         subject.addFeedButton.tap()
                     }
 
-                    it("should bring up a list of available feeds to import") {
+                    it("brings up a list of available feeds to import") {
                         expect(subject.presentedViewController).to(beAKindOf(UIAlertController.self))
                         if let alertController = subject.presentedViewController as? UIAlertController {
                             expect(alertController.preferredStyle).to(equal(UIAlertController.Style.actionSheet))
@@ -542,7 +604,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     importUseCase.scanForImportablePromises[0].resolve(.webPage(url, []))
                 }
 
-                it("should do nothing") {
+                it("does nothing") {
                     expect(subject.presentedViewController).to(beNil())
                 }
             }
@@ -553,7 +615,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     importUseCase.scanForImportablePromises[0].resolve(.none(url))
                 }
 
-                it("should do nothing") {
+                it("does nothing") {
                     expect(subject.presentedViewController).to(beNil())
                 }
             }
@@ -566,8 +628,8 @@ class FindFeedViewControllerSpec: QuickSpec {
                         subject.webView(subject.webContent, didFailProvisionalNavigation: nil, withError: err)
                     }
 
-                    it("should hide the loading bar") {
-                        expect(subject.loadingBar.isHidden) == true
+                    it("hides the loading bar") {
+                        expect(subject.loadingBar.isHidden).to(beTrue())
                     }
 
                     it("tells the user that we were unable to load the page") {
@@ -581,8 +643,8 @@ class FindFeedViewControllerSpec: QuickSpec {
                         subject.webView(subject.webContent, didFail: nil, withError: err)
                     }
 
-                    it("should hide the webview") {
-                        expect(subject.loadingBar.isHidden) == true
+                    it("hides the webview") {
+                        expect(subject.loadingBar.isHidden).to(beTrue())
                     }
 
                     it("tells the user that we were unable to load the page") {
@@ -597,12 +659,12 @@ class FindFeedViewControllerSpec: QuickSpec {
                     subject.webView(subject.webContent, didFinish: nil)
                 }
 
-                it("should hide the loadingBar") {
-                    expect(subject.loadingBar.isHidden) == true
+                it("hides the loadingBar") {
+                    expect(subject.loadingBar.isHidden).to(beTrue())
                 }
 
-                it("should allow the user to reload the page") {
-                    expect(subject.navigationItem.rightBarButtonItem) == subject.reload
+                it("allows the user to reload the page") {
+                    expect(subject.navigationItem.rightBarButtonItem).to(be(subject.reload))
                 }
             }
         }

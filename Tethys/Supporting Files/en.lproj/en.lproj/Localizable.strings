@@ -85,6 +85,7 @@
 
 "ArticleListController_Cell_EditAction_MarkRead" = "Mark\nRead";
 "ArticleListController_Cell_EditAction_MarkUnread" = "Mark\nUnread";
+"ArticleListController_HeaderCell_Accessibility_Label" = "Feed summary";
 "ArticleListController_Search" = "Search Articles";
 "ArticleListController_Action_MarkRead" = "Mark Read";
 "ArticleListController_Action_MarkUnread" = "Mark Unread";
@@ -93,10 +94,13 @@
 "ArticleListController_Action_Save_Error_Title" = "Error saving article";
 "ArticleListController_Action_Delete_Error_Title" = "Error deleting article";
 "ArticleListController_Retrieving_Error_Title" = "Unable to retrieve articles";
-"ArticleListController_Action_Accessibility_ShareFeed" = "Share %@";
-"ArticleListController_Action_Accessibility_MarkFeedAsRead" = "Mark %@ as read";
+"ArticleListController_Action_Accessibility_ShareFeed" = "Share feed";
+"ArticleListController_Action_Accessibility_MarkFeedAsRead" = "Mark feed as read";
 
 "ArticleCell_EstimatedReadingTime" = "%@ to read";
+"ArticleCell_Accessibility_Label" = "Article";
+"ArticleCell_Accessibility_Value_Read" = "read";
+"ArticleCell_Accessibility_Value_Unread" = "unread";
 
 "ArticleViewController_TabBar_ViewLink" = "Open Link";
 "ArticleViewController_Command_ViewPreviousArticle" = "Previous Article";
@@ -119,6 +123,9 @@
 "AREasterEgg_Tracking_Unknown" = "Unhandled reason: %@";
 
 "Breakout3D_Points" = "%lu points";
+"Breakout3D_Title" = "3D Breakout";
+"Breakout3D_Accessibility_ScoreLabel" = "Score";
+"Breakout3D_Accessibility_SceneView_Hint" = "Moves the paddle in the game";
 
 // Errors
 

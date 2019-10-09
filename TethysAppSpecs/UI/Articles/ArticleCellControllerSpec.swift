@@ -20,7 +20,7 @@ final class ArticleCellControllerSpec: QuickSpec {
             cell = ArticleCell(frame: .zero)
         }
 
-        func itBehavesLikeShowing(title: String, date: String, author: String) {
+        func itShowsAnArticle(title: String, date: String, author: String) {
             describe("Showing an Article") {
                 it("sets the title label") {
                     expect(cell.title.text) == title
@@ -36,7 +36,7 @@ final class ArticleCellControllerSpec: QuickSpec {
             }
         }
 
-        func itBehavesLikeDisplaysUnreadStatus() {
+        func itShowsAnUnreadArticle() {
             describe("Display an unread article") {
                 it("shows the unread counter") {
                     expect(cell.unread.isHidden) == false
@@ -52,7 +52,7 @@ final class ArticleCellControllerSpec: QuickSpec {
             }
         }
 
-        func itBehavesLikeDisplaysReadStatus() {
+        func itShowsAReadArticle() {
             describe("Display an unread article") {
                 it("hides the unread counter") {
                     expect(cell.unread.isHidden) == true
@@ -91,9 +91,16 @@ final class ArticleCellControllerSpec: QuickSpec {
                     subject.configure(cell: cell, with: article)
                 }
 
-                itBehavesLikeShowing(title: "my title", date: "12/31/00", author: "A Few Authors")
+                itShowsAnArticle(title: "my title", date: "12/31/00", author: "A Few Authors")
 
-                itBehavesLikeDisplaysUnreadStatus()
+                itShowsAnUnreadArticle()
+
+                it("is configured for accessibility") {
+                    expect(cell.isAccessibilityElement).to(beTrue())
+                    expect(cell.accessibilityTraits).to(equal([.button]))
+                    expect(cell.accessibilityLabel).to(equal("Article"))
+                    expect(cell.accessibilityValue).to(equal("my title, unread"))
+                }
             }
 
             context("with an article that has been read") {
@@ -109,9 +116,16 @@ final class ArticleCellControllerSpec: QuickSpec {
                     subject.configure(cell: cell, with: article)
                 }
 
-                itBehavesLikeShowing(title: "my title", date: "12/31/00", author: "A Few Authors")
+                itShowsAnArticle(title: "my title", date: "12/31/00", author: "A Few Authors")
 
-                itBehavesLikeDisplaysReadStatus()
+                itShowsAReadArticle()
+
+                it("is configured for accessibility") {
+                    expect(cell.isAccessibilityElement).to(beTrue())
+                    expect(cell.accessibilityTraits).to(equal([.button]))
+                    expect(cell.accessibilityLabel).to(equal("Article"))
+                    expect(cell.accessibilityValue).to(equal("my title, read"))
+                }
             }
         }
 
@@ -138,9 +152,16 @@ final class ArticleCellControllerSpec: QuickSpec {
                     subject.configure(cell: cell, with: article)
                 }
 
-                itBehavesLikeShowing(title: "my title", date: "12/31/00", author: "A Few Authors")
+                itShowsAnArticle(title: "my title", date: "12/31/00", author: "A Few Authors")
 
-                itBehavesLikeDisplaysReadStatus()
+                itShowsAReadArticle()
+
+                it("is configured for accessibility") {
+                    expect(cell.isAccessibilityElement).to(beTrue())
+                    expect(cell.accessibilityTraits).to(equal([.button]))
+                    expect(cell.accessibilityLabel).to(equal("Article"))
+                    expect(cell.accessibilityValue).to(equal("my title"))
+                }
             }
 
             context("with an article that has been read") {
@@ -156,9 +177,16 @@ final class ArticleCellControllerSpec: QuickSpec {
                     subject.configure(cell: cell, with: article)
                 }
 
-                itBehavesLikeShowing(title: "my title", date: "12/31/00", author: "A Few Authors")
+                itShowsAnArticle(title: "my title", date: "12/31/00", author: "A Few Authors")
 
-                itBehavesLikeDisplaysReadStatus()
+                itShowsAReadArticle()
+
+                it("is configured for accessibility") {
+                    expect(cell.isAccessibilityElement).to(beTrue())
+                    expect(cell.accessibilityTraits).to(equal([.button]))
+                    expect(cell.accessibilityLabel).to(equal("Article"))
+                    expect(cell.accessibilityValue).to(equal("my title"))
+                }
             }
         }
     }

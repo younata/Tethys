@@ -60,6 +60,10 @@ public final class ArticleCell: UITableViewCell {
         self.multipleSelectionBackgroundView  = self.backgroundColorView
         self.selectedBackgroundView = self.backgroundColorView
 
+        self.isAccessibilityElement = true
+        self.accessibilityTraits = [.button]
+        self.accessibilityLabel = NSLocalizedString("ArticleCell_Accessibility_Label", comment: "")
+
         self.applyTheme()
     }
 

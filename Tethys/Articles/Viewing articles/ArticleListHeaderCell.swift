@@ -21,6 +21,7 @@ public final class ArticleListHeaderCell: UITableViewCell {
             self.iconWidth.constant = 0
             self.iconHeight.constant = 0
         }
+        self.accessibilityValue = summary
     }
 
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -50,6 +51,11 @@ public final class ArticleListHeaderCell: UITableViewCell {
         self.footer.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 0, left: 0, bottom: -1, right: 0),
                                                  excludingEdge: .top)
         self.footer.autoSetDimension(.height, toSize: 2)
+
+        self.isAccessibilityElement = true
+        self.accessibilityTraits = [.staticText]
+        self.accessibilityLabel = NSLocalizedString("ArticleListController_HeaderCell_Accessibility_Label",
+                                                    comment: "")
 
         self.applyTheme()
     }

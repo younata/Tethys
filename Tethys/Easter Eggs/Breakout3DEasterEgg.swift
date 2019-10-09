@@ -4,9 +4,10 @@ import PureLayout
 private let BreakoutLength: CGFloat = 100
 
 final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDelegate {
-    private let scnView = SCNView()
+    let sceneView = SCNView()
     private(set) var breakoutGame: Breakout3D?
 
+    let exitButton = UIButton(type: .system)
     let scoreLabel = UILabel(forAutoLayout: ())
 
     private let mainQueue: OperationQueue
@@ -25,43 +26,50 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
 
         self.overrideUserInterfaceStyle = .dark
 
-        self.scnView.translatesAutoresizingMaskIntoConstraints = false
-        self.view.addSubview(self.scnView)
-        self.scnView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
+        self.sceneView.translatesAutoresizingMaskIntoConstraints = false
+        self.view.addSubview(self.sceneView)
+        self.sceneView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
 
         let scoreContainer = UIView(forAutoLayout: ())
         scoreContainer.backgroundColor = Theme.overlappingBackgroundColor
         self.view.addSubview(scoreContainer)
         scoreContainer.autoPinEdgesToSuperviewSafeArea(with: .zero, excludingEdge: .bottom)
-        self.scnView.autoPinEdge(.top, to: .bottom, of: scoreContainer)
+        self.sceneView.autoPinEdge(.top, to: .bottom, of: scoreContainer)
 
-        let exitButton = UIButton(type: .system)
-        exitButton.translatesAutoresizingMaskIntoConstraints = false
-        scoreContainer.addSubview(exitButton)
+        self.exitButton.translatesAutoresizingMaskIntoConstraints = false
+        scoreContainer.addSubview(self.exitButton)
 
-        exitButton.addTarget(self, action: #selector(exit), for: .touchUpInside)
-        exitButton.setTitle(NSLocalizedString("Generic_Close", comment: ""), for: .normal)
-        exitButton.setContentCompressionResistancePriority(.required, for: .horizontal)
-        exitButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
-        exitButton.setTitleColor(Theme.textColor, for: .normal)
+        self.exitButton.addTarget(self, action: #selector(exit), for: .touchUpInside)
+        self.exitButton.setTitle(NSLocalizedString("Generic_Close", comment: ""), for: .normal)
+        self.exitButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        self.exitButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
+        self.exitButton.setTitleColor(Theme.highlightColor, for: .normal)
+        self.exitButton.isAccessibilityElement = true
 
         scoreContainer.addSubview(self.scoreLabel)
         self.scoreLabel.font = UIFont.preferredFont(forTextStyle: .body)
         self.scoreDidUpdate(to: 0)
         self.scoreLabel.textColor = Theme.textColor
+        self.scoreLabel.accessibilityTraits = [.updatesFrequently]
+        self.scoreLabel.accessibilityLabel = NSLocalizedString("Breakout3D_Accessibility_ScoreLabel", comment: "")
 
         self.scoreLabel.autoCenterInSuperview()
         self.scoreLabel.autoPinEdge(toSuperviewEdge: .top, withInset: 8)
         self.scoreLabel.autoPinEdge(toSuperviewEdge: .bottom, withInset: 8)
-        self.scoreLabel.autoPinEdge(.leading, to: .trailing, of: exitButton, withOffset: 8,
+        self.scoreLabel.autoPinEdge(.leading, to: .trailing, of: self.exitButton, withOffset: 8,
                                relation: .greaterThanOrEqual)
-        exitButton.autoPinEdge(.top, to: .top, of: self.scoreLabel)
-        exitButton.autoPinEdge(.bottom, to: .bottom, of: self.scoreLabel)
-        exitButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 16)
+        self.exitButton.autoPinEdge(.top, to: .top, of: self.scoreLabel)
+        self.exitButton.autoPinEdge(.bottom, to: .bottom, of: self.scoreLabel)
+        self.exitButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 16)
 
         let scene = SCNScene()
-        self.scnView.scene = scene
-        self.scnView.autoenablesDefaultLighting = false
+        self.sceneView.scene = scene
+        self.sceneView.autoenablesDefaultLighting = false
+        self.sceneView.isAccessibilityElement = true
+        self.sceneView.accessibilityTraits = [.allowsDirectInteraction]
+        self.sceneView.accessibilityLabel = NSLocalizedString("Breakout3D_Title", comment: "")
+        self.sceneView.accessibilityHint = NSLocalizedString("Breakout3D_Accessibility_SceneView_Hint",
+                                                             comment: "")
 
         self.breakoutGame = Breakout3D(scene: scene)
         self.breakoutGame?.delegate = self
@@ -73,8 +81,8 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
         super.viewDidAppear(animated)
 
         self.breakoutGame?.resetGame(
-            width: self.scnView.bounds.size.width / 10,
-            height: self.scnView.bounds.size.height / 10
+            width: self.sceneView.bounds.size.width / 10,
+            height: self.sceneView.bounds.size.height / 10
         )
     }
 
@@ -95,7 +103,7 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
 
     private func touchesHappened(_ touches: Set<UITouch>) {
         guard let touch = touches.first else { return }
-        let location = touch.location(in: self.scnView)
+        let location = touch.location(in: self.sceneView)
 
         let width = self.view.bounds.size.width / 10
         let height = self.view.bounds.size.height / 10
@@ -112,7 +120,7 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
 
     func breakout3d(_ breakout3d: Breakout3D, didEndGame win: Bool) {
         self.mainQueue.addOperation {
-            breakout3d.resetGame(width: self.scnView.bounds.size.width, height: self.scnView.bounds.size.height)
+            breakout3d.resetGame(width: self.sceneView.bounds.size.width, height: self.sceneView.bounds.size.height)
         }
     }
 
@@ -127,6 +135,8 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
             NSLocalizedString("Breakout3D_Points", comment: ""),
             score
         )
+        self.scoreLabel.accessibilityLabel = NSLocalizedString("Breakout3D_Accessibility_ScoreLabel", comment: "")
+        self.scoreLabel.accessibilityValue = self.scoreLabel.text
     }
 }
 

@@ -4,44 +4,6 @@ import Nimble
 @testable import TethysKit
 import UIKit
 
-class FakeUIViewControllerPreviewing: NSObject, UIViewControllerPreviewing {
-    @available(iOS 9.0, *)
-    var previewingGestureRecognizerForFailureRelationship: UIGestureRecognizer {
-        return UIGestureRecognizer()
-    }
-
-    private let _delegate: NSObject?
-
-    @available(iOS 9.0, *)
-    var delegate: UIViewControllerPreviewingDelegate {
-        if let delegate = _delegate as? UIViewControllerPreviewingDelegate {
-            return delegate
-        }
-        fatalError("_delegate was not set")
-    }
-
-    private let _sourceView: UIView
-
-    @available(iOS 9.0, *)
-    var sourceView: UIView {
-        return _sourceView
-    }
-
-    private var _sourceRect: CGRect
-
-    @available(iOS 9.0, *)
-    var sourceRect: CGRect {
-        get { return _sourceRect }
-        set { _sourceRect = newValue }
-    }
-
-    init(sourceView: UIView, sourceRect: CGRect, delegate: NSObject) {
-        self._sourceView = sourceView
-        self._sourceRect = sourceRect
-        self._delegate = delegate
-    }
-}
-
 private var publishedOffset = -1
 func fakeArticle(feed: Feed, isUpdated: Bool = false, read: Bool = false) -> Article {
     publishedOffset += 1
@@ -161,6 +123,12 @@ class ArticleListControllerSpec: QuickSpec {
                         item = subject.navigationItem.rightBarButtonItems?.first
                     }
 
+                    it("is configured for accessibility") {
+                        expect(item?.isAccessibilityElement).to(beTrue())
+                        expect(item?.accessibilityTraits).to(equal([.button]))
+                        expect(item?.accessibilityLabel).to(equal("Share feed"))
+                    }
+
                     describe("when tapped") {
                         beforeEach {
                             item?.tap()
@@ -186,6 +154,12 @@ class ArticleListControllerSpec: QuickSpec {
 
                     beforeEach {
                         item = subject.navigationItem.rightBarButtonItems?.last
+                    }
+
+                    it("is configured for accessibility") {
+                        expect(item?.isAccessibilityElement).to(beTrue())
+                        expect(item?.accessibilityTraits).to(equal([.button]))
+                        expect(item?.accessibilityLabel).to(equal("Mark feed as read"))
                     }
 
                     describe("when tapped") {
@@ -272,11 +246,11 @@ class ArticleListControllerSpec: QuickSpec {
 
             describe("the table") {
                 it("has 2 sections") {
-                    expect(subject.tableView.numberOfSections) == 2
+                    expect(subject.tableView.numberOfSections).to(equal(2))
                 }
 
                 it("does not allow multiselection") {
-                    expect(subject.tableView.allowsMultipleSelection) == false
+                    expect(subject.tableView.allowsMultipleSelection).to(equal(false))
                 }
 
                 describe("the first section") {
@@ -302,8 +276,15 @@ class ArticleListControllerSpec: QuickSpec {
                                 }
                             }
 
+                            it("is configured for accessibility") {
+                                expect(cell?.isAccessibilityElement).to(beTrue())
+                                expect(cell?.accessibilityLabel).to(equal("Feed summary"))
+                                expect(cell?.accessibilityValue).to(equal(feed.displaySummary))
+                                expect(cell?.accessibilityTraits).to(equal([.staticText]))
+                            }
+
                             it("is configured with the feed") {
-                                expect(cell?.summary.text) == feed.displaySummary
+                                expect(cell?.summary.text).to(equal(feed.displaySummary))
                             }
 
                             it("has no contextual actions") {
@@ -377,32 +358,29 @@ class ArticleListControllerSpec: QuickSpec {
                     }
 
                     describe("the cells") {
-                        it("is editable") {
-                            let section = 1
+                        let section = 1
+                        it("are editable") {
                             for row in 0..<subject.tableView.numberOfRows(inSection: section) {
                                 let indexPath = IndexPath(row: row, section: section)
-                                expect(subject.tableView(subject.tableView, canEditRowAt: indexPath)) == true
+                                expect(subject.tableView(subject.tableView, canEditRowAt: indexPath)).to(beTrue())
                             }
                         }
 
-                        it("allows highlighting") {
-                            let section = 1
+                        it("allow highlighting") {
                             for row in 0..<subject.tableView.numberOfRows(inSection: section) {
                                 let indexPath = IndexPath(row: row, section: section)
                                 expect(subject.tableView.delegate?.tableView?(subject.tableView, shouldHighlightRowAt: indexPath)).to(beTrue())
                             }
                         }
 
-                        it("allows selection") {
-                            let section = 1
+                        it("allow selection") {
                             for row in 0..<subject.tableView.numberOfRows(inSection: section) {
                                 let indexPath = IndexPath(row: row, section: section)
                                 expect(subject.tableView.delegate?.tableView?(subject.tableView, willSelectRowAt: indexPath)).to(equal(indexPath))
                             }
                         }
 
-                        it("has 2 contextual actions") {
-                            let section = 1
+                        it("have 2 contextual actions") {
                             for row in 0..<subject.tableView.numberOfRows(inSection: section) {
                                 let indexPath = IndexPath(row: row, section: section)
                                 let swipeActions = subject.tableView.delegate?.tableView?(subject.tableView, trailingSwipeActionsConfigurationForRowAt: indexPath)

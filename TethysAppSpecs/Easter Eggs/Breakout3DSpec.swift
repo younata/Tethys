@@ -24,8 +24,38 @@ final class Breakout3DSpec: QuickSpec {
             expect(subject.breakoutGame?.scene.isPaused).to(beFalse())
         }
 
-        it("shows the score") {
-            expect(subject.scoreLabel.text).to(equal("0 points"))
+        describe("the exit button") {
+            it("is configured for accessibility") {
+                expect(subject.exitButton.isAccessibilityElement).to(beTrue())
+                expect(subject.exitButton.accessibilityTraits).to(equal([.button]))
+                expect(subject.exitButton.accessibilityLabel).to(equal("Close"))
+            }
+
+            it("is styled like a nav button elsewhere in the app") {
+                expect(subject.exitButton.titleColor(for: .normal)).to(equal(Theme.highlightColor))
+            }
+        }
+
+        describe("the score label") {
+            it("is configured for accessibility") {
+                expect(subject.scoreLabel.isAccessibilityElement).to(beTrue())
+                expect(subject.scoreLabel.accessibilityTraits).to(equal([.updatesFrequently]))
+                expect(subject.scoreLabel.accessibilityLabel).to(equal("Score"))
+                expect(subject.scoreLabel.accessibilityValue).to(equal("0 points"))
+            }
+
+            it("is initially set to 0") {
+                expect(subject.scoreLabel.text).to(equal("0 points"))
+            }
+        }
+
+        describe("the sceneView") {
+            it("has minimal accessibility support") {
+                expect(subject.sceneView.isAccessibilityElement).to(beTrue())
+                expect(subject.sceneView.accessibilityTraits).to(equal([.allowsDirectInteraction]))
+                expect(subject.sceneView.accessibilityHint).to(equal("Moves the paddle in the game"))
+                expect(subject.sceneView.accessibilityLabel).to(equal("3D Breakout"))
+            }
         }
 
         describe("the physicsWorld's contactDelegate") {
@@ -109,6 +139,8 @@ final class Breakout3DSpec: QuickSpec {
 
                 it("updates the score") {
                     expect(subject.scoreLabel.text).to(equal("1 point"))
+                    expect(subject.scoreLabel.accessibilityLabel).to(equal("Score"))
+                    expect(subject.scoreLabel.accessibilityValue).to(equal("1 point"))
                 }
 
                 // it triggers an impact event.

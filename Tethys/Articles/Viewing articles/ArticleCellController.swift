@@ -40,10 +40,15 @@ public struct DefaultArticleCellController: ArticleCellController {
             cell.unread.unread = 0
             cell.unreadWidth.constant = 0
             cell.unread.isHidden = true
+            cell.accessibilityValue = article.title
         } else {
             cell.unread.unread = article.read ? 0 : 1
             cell.unreadWidth.constant = article.read ? 0 : 30
             cell.unread.isHidden = article.read
+            let readString = article.read ?
+                NSLocalizedString("ArticleCell_Accessibility_Value_Read", comment: "") :
+                NSLocalizedString("ArticleCell_Accessibility_Value_Unread", comment: "")
+            cell.accessibilityValue = "\(article.title), \(readString)"
         }
 
         if self.settingsRepository.showEstimatedReadingLabel {

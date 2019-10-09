@@ -91,22 +91,6 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         }
         self.toolbarItems = [self.back, self.forward, spacer(), self.addFeedButton]
 
-        self.navigationItem.titleView = self.navField
-        self.navField.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width * 0.8, height: 32)
-        self.navField.delegate = self
-        let urlPlaceholder = NSLocalizedString("FindFeedViewController_URLBar_Placeholder", comment: "")
-        self.navField.attributedPlaceholder = NSAttributedString(string: urlPlaceholder,
-                                                                 attributes: self.placeholderAttributes)
-        self.navField.layer.cornerRadius = 4
-        self.navField.autocorrectionType = .no
-        self.navField.autocapitalizationType = .none
-        self.navField.keyboardType = .URL
-        self.navField.clearsOnBeginEditing = true
-        self.navField.textContentType = .URL
-        self.navField.isAccessibilityElement = true
-        self.navField.accessibilityLabel = NSLocalizedString("FindFeedViewController_Accessibility_URLBar_Label",
-                                                             comment: "")
-
         self.loadingBar.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.loadingBar)
         self.loadingBar.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
@@ -114,9 +98,25 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.loadingBar.progress = 0
         self.loadingBar.isHidden = true
 
+        self.configureNavField(self.navField)
         self.applyTheme()
-
         self.analytics.logEvent("DidViewWebImport", data: nil)
+    }
+
+    private func configureNavField(_ field: UITextField) {
+        self.navigationItem.titleView = field
+        field.frame = CGRect(x: 0, y: 0, width: self.view.bounds.size.width * 0.8, height: 32)
+        field.delegate = self
+        let urlPlaceholder = NSLocalizedString("FindFeedViewController_URLBar_Placeholder", comment: "")
+        field.attributedPlaceholder = NSAttributedString(string: urlPlaceholder, attributes: self.placeholderAttributes)
+        field.layer.cornerRadius = 4
+        field.autocorrectionType = .no
+        field.autocapitalizationType = .none
+        field.keyboardType = .URL
+        field.clearsOnBeginEditing = true
+        field.textContentType = .URL
+        field.isAccessibilityElement = true
+        field.accessibilityLabel = NSLocalizedString("FindFeedViewController_Accessibility_URLBar_Label", comment: "")
     }
 
     private func applyTheme() {
@@ -246,9 +246,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         } else {
             prefix = "<html><body>"
         }
-
         let postfix = "</body></html>"
-
         return prefix + content + postfix
     }
 
@@ -375,14 +373,12 @@ extension FindFeedViewController {
         let title = NSLocalizedString("FindFeedViewController_FoundFeed_Title", comment: "")
         let messageFormat = NSLocalizedString("FindFeedViewController_FoundFeed_Subtitle", comment: "")
         let message = String.localizedStringWithFormat(messageFormat, url.lastPathComponent)
-
         self.displayAlertToSave(title, alertMessage: message) { self.save(link: url, opml: false) }
     }
 
     fileprivate func askToImportOPML(_ url: URL) {
         let title = NSLocalizedString("FindFeedViewController_FoundFeed_List_Title", comment: "")
         let message = NSLocalizedString("FindFeedViewController_FoundFeed_List_Subtitle", comment: "")
-
         self.displayAlertToSave(title, alertMessage: message) { self.save(link: url, opml: true) }
     }
 

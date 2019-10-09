@@ -1,6 +1,8 @@
 import SceneKit
 import PureLayout
 
+// swiftlint:disable file_length
+
 private let BreakoutLength: CGFloat = 100
 
 final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDelegate {

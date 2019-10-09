@@ -26,12 +26,8 @@ public final class FeedListController: UIViewController {
 
     public private(set) lazy var refreshControl: RefreshControl = {
         return RefreshControl(
-            notificationCenter: NotificationCenter.default,
-            scrollView: self.tableView,
-            mainQueue: self.mainQueue,
-            settingsRepository: self.settingsRepository,
-            refresher: self,
-            lowPowerDiviner: ProcessInfo.processInfo
+            notificationCenter: NotificationCenter.default, scrollView: self.tableView, mainQueue: self.mainQueue,
+            settingsRepository: self.settingsRepository, refresher: self, lowPowerDiviner: ProcessInfo.processInfo
         )
     }()
 
@@ -244,10 +240,7 @@ public final class FeedListController: UIViewController {
                         self.tableView.reloadData()
                     }
                     completionHandler?(true)
-                },
-                onError: {
-                    completionHandler?(false)
-                }
+                }, onError: { completionHandler?(false) }
             )
         }
     }
@@ -267,9 +260,7 @@ public final class FeedListController: UIViewController {
 
                     self.notificationCenter.post(name: Notifications.reloadUI, object: self)
                     completionHandler?(true)
-            },
-                onError: { completionHandler?(false) }
-            )
+            }, onError: { completionHandler?(false) })
         }
     }
 
@@ -279,11 +270,7 @@ public final class FeedListController: UIViewController {
     }
 
     fileprivate func shareFeed(feed: Feed, view: UIView?) {
-        let shareSheet = URLShareSheet(
-            url: feed.url,
-            activityItems: [feed.url],
-            applicationActivities: nil
-        )
+        let shareSheet = URLShareSheet(url: feed.url, activityItems: [feed.url], applicationActivities: nil)
         shareSheet.popoverPresentationController?.sourceView = view ?? self.navigationController?.navigationBar
         self.present(shareSheet, animated: true, completion: nil)
     }
@@ -347,9 +334,7 @@ extension FeedListController: UITableViewDelegate, UITableViewDataSource {
             handler(true)
         }
         share.backgroundColor = Theme.highlightColor
-        let configuration = UISwipeActionsConfiguration(actions: [
-            delete, markRead, edit, share
-        ])
+        let configuration = UISwipeActionsConfiguration(actions: [delete, markRead, edit, share])
         configuration.performsFirstActionWithFullSwipe = true
         return configuration
     }

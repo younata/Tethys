@@ -135,7 +135,8 @@ struct InoreaderFeedService: FeedService {
     }
 
     func readAll(of feed: Feed) -> Future<Result<Void, TethysError>> {
-        var urlComponents = URLComponents(url: self.baseURL.appendingPathComponent("reader/api/0/mark-all-as-read"), resolvingAgainstBaseURL: false)!
+        var urlComponents = URLComponents(url: self.baseURL.appendingPathComponent("reader/api/0/mark-all-as-read"),
+                                          resolvingAgainstBaseURL: false)!
         urlComponents.queryItems = [
             URLQueryItem(name: "s", value: "feed/\(feed.url.absoluteString)")
         ]
@@ -160,7 +161,8 @@ struct InoreaderFeedService: FeedService {
     }
 
     func remove(feed: Feed) -> Future<Result<Void, TethysError>> {
-        var urlComponents = URLComponents(url: self.baseURL.appendingPathComponent("reader/api/0/subscription/edit"), resolvingAgainstBaseURL: false)!
+        var urlComponents = URLComponents(url: self.baseURL.appendingPathComponent("reader/api/0/subscription/edit"),
+                                          resolvingAgainstBaseURL: false)!
         urlComponents.queryItems = [
             URLQueryItem(name: "ac", value: "unsubscribe"),
             URLQueryItem(name: "s", value: "feed/\(feed.url.absoluteString)")

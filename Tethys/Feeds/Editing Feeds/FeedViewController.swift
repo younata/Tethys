@@ -28,9 +28,8 @@ public final class FeedViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        let saveTitle = NSLocalizedString("Generic_Save", comment: "")
-        let saveButton = UIBarButtonItem(title: saveTitle, style: .plain, target: self, action:
-            #selector(FeedViewController.save))
+        let saveButton = UIBarButtonItem(barButtonSystemItem: .save, target: self,
+                                         action: #selector(FeedViewController.save))
         self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.title = self.feed.displayTitle
 

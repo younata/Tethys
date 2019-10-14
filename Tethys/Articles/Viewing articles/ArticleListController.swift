@@ -18,6 +18,8 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         button.accessibilityLabel = String.localizedStringWithFormat(
             NSLocalizedString("ArticleListController_Action_Accessibility_MarkFeedAsRead", comment: ""),
             self.feed.displayTitle)
+        button.isAccessibilityElement = true
+        button.accessibilityTraits = [.button]
         return button
     }()
     public private(set) lazy var shareButton: UIBarButtonItem = {
@@ -27,6 +29,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         button.accessibilityLabel = NSLocalizedString("ArticleListController_Action_Accessibility_ShareFeed",
                                                       comment: "")
         button.isAccessibilityElement = true
+        button.accessibilityTraits = [.button]
         return button
     }()
 

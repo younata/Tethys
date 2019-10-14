@@ -87,12 +87,14 @@ public final class FeedListController: UIViewController {
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self,
                                         action: #selector(FeedListController.didTapAddFeed))
         addButton.accessibilityLabel = NSLocalizedString("FeedsTableViewController_Accessibility_AddFeed", comment: "")
+        self.configureBarButtonForAccessibility(addButton)
         self.navigationItem.rightBarButtonItems = [addButton, self.editButtonItem]
 
         let settingsButton = UIBarButtonItem(image: Image(named: "settings"), style: .plain,
                                              target: self, action: #selector(FeedListController.presentSettings))
         settingsButton.accessibilityLabel = NSLocalizedString("FeedsTableViewController_Accessibility_Settings",
                                                               comment: "")
+        self.configureBarButtonForAccessibility(settingsButton)
         self.navigationItem.leftBarButtonItem = settingsButton
         self.navigationItem.title = NSLocalizedString("FeedsTableViewController_Title", comment: "")
 
@@ -105,6 +107,11 @@ public final class FeedListController: UIViewController {
             self.refreshControl.beginRefreshing()
             self.reload()
         }
+    }
+
+    private func configureBarButtonForAccessibility(_ button: UIBarButtonItem) {
+        button.isAccessibilityElement = true
+        button.accessibilityTraits = [.button]
     }
 
     private func applyTheme() {

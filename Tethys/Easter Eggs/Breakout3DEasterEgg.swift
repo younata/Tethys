@@ -41,19 +41,10 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
         self.exitButton.translatesAutoresizingMaskIntoConstraints = false
         scoreContainer.addSubview(self.exitButton)
 
-        self.exitButton.addTarget(self, action: #selector(exit), for: .touchUpInside)
-        self.exitButton.setTitle(NSLocalizedString("Generic_Close", comment: ""), for: .normal)
-        self.exitButton.setContentCompressionResistancePriority(.required, for: .horizontal)
-        self.exitButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
-        self.exitButton.setTitleColor(Theme.highlightColor, for: .normal)
-        self.exitButton.isAccessibilityElement = true
+        self.configureExitButton()
 
         scoreContainer.addSubview(self.scoreLabel)
-        self.scoreLabel.font = UIFont.preferredFont(forTextStyle: .body)
-        self.scoreDidUpdate(to: 0)
-        self.scoreLabel.textColor = Theme.textColor
-        self.scoreLabel.accessibilityTraits = [.updatesFrequently]
-        self.scoreLabel.accessibilityLabel = NSLocalizedString("Breakout3D_Accessibility_ScoreLabel", comment: "")
+        self.configureScoreLabel()
 
         self.scoreLabel.autoCenterInSuperview()
         self.scoreLabel.autoPinEdge(toSuperviewEdge: .top, withInset: 8)
@@ -77,6 +68,26 @@ final class Breakout3DEasterEggViewController: UIViewController, Breakout3DDeleg
         self.breakoutGame?.delegate = self
 
         self.view.backgroundColor = Theme.backgroundColor
+    }
+
+    private func configureExitButton() {
+        self.exitButton.addTarget(self, action: #selector(exit), for: .touchUpInside)
+        self.exitButton.setTitle(NSLocalizedString("Generic_Close", comment: ""), for: .normal)
+        self.exitButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        self.exitButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
+        self.exitButton.setTitleColor(Theme.highlightColor, for: .normal)
+        self.exitButton.isAccessibilityElement = true
+        self.exitButton.accessibilityTraits = [.button]
+        self.exitButton.accessibilityLabel = NSLocalizedString("Generic_Close", comment: "")
+    }
+
+    private func configureScoreLabel() {
+        self.scoreLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        self.scoreDidUpdate(to: 0)
+        self.scoreLabel.textColor = Theme.textColor
+        self.scoreLabel.isAccessibilityElement = true
+        self.scoreLabel.accessibilityTraits = [.updatesFrequently]
+        self.scoreLabel.accessibilityLabel = NSLocalizedString("Breakout3D_Accessibility_ScoreLabel", comment: "")
     }
 
     override func viewDidAppear(_ animated: Bool) {

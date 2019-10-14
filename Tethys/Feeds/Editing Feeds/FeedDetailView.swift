@@ -37,6 +37,7 @@ public final class FeedDetailView: UIView {
         let delegate = self.delegate
         self.delegate = nil
         self.urlField.text = url.absoluteString
+        self.urlField.accessibilityValue = url.absoluteString
         self.delegate = delegate
 
         self.titleLabel.accessibilityLabel = NSLocalizedString(
@@ -102,6 +103,10 @@ public final class FeedDetailView: UIView {
         [self.titleLabel, self.urlField, self.summaryLabel, self.addTagButton].forEach { view in
             view.isAccessibilityElement = true
         }
+        self.titleLabel.accessibilityTraits = [.staticText]
+        self.summaryLabel.accessibilityTraits = [.staticText]
+        self.addTagButton.accessibilityTraits = [.button]
+        self.addTagButton.accessibilityLabel = NSLocalizedString("FeedViewController_Actions_AddTag", comment: "")
 
         self.urlField.accessibilityLabel = NSLocalizedString("FeedViewController_Accessibility_TableHeader_URL_Label",
                                                              comment: "")

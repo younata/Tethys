@@ -57,33 +57,41 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.addFeedButton.isEnabled = false
         self.addFeedButton.accessibilityLabel = NSLocalizedString("FindFeedViewController_Accessibility_AddFeed_Label",
                                                                   comment: "")
+        self.configureBarButtonForAccessibility(self.addFeedButton)
 
         self.back = UIBarButtonItem(image: Image(named: "LeftChevron"), style: .plain, target: self.webContent,
                                     action: #selector(WKWebView.goBack))
         self.back.isEnabled = false
         self.back.accessibilityLabel = NSLocalizedString("FindFeedViewController_Accessibility_Back_Label", comment: "")
+        self.configureBarButtonForAccessibility(self.back)
 
         self.forward = UIBarButtonItem(image: Image(named: "RightChevron"), style: .plain, target: self.webContent,
                                        action: #selector(WKWebView.goForward))
         self.forward.isEnabled = false
         self.forward.accessibilityLabel = NSLocalizedString("FindFeedViewController_Accessibility_Next_Label",
                                                             comment: "")
+        self.configureBarButtonForAccessibility(self.forward)
 
         self.reload = UIBarButtonItem(barButtonSystemItem: .refresh, target: self,
                                       action: #selector(FindFeedViewController.reloadWebPage))
         self.reload.accessibilityLabel = NSLocalizedString("FindFeedViewController_Accessibility_Reload_Label",
                                                            comment: "")
+        self.configureBarButtonForAccessibility(self.reload)
 
         let cancelTitle = NSLocalizedString("Generic_Cancel", comment: "")
         self.cancelTextEntry = UIBarButtonItem(title: cancelTitle, style: .plain,
                                                target: self,
                                                action: #selector(FindFeedViewController.dismissNavFieldKeyboard))
+        self.configureBarButtonForAccessibility(self.cancelTextEntry)
 
-        self.navigationItem.leftBarButtonItem = UIBarButtonItem(
+        let closeButton = UIBarButtonItem(
             title: NSLocalizedString("Generic_Close", comment: ""),
             style: .plain, target: self,
             action: #selector(FindFeedViewController.dismissFromNavigation)
         )
+        closeButton.accessibilityLabel = NSLocalizedString("Generic_Close", comment: "")
+        self.configureBarButtonForAccessibility(closeButton)
+        self.navigationItem.leftBarButtonItem = closeButton
 
         self.navigationController?.isToolbarHidden = false
         func spacer() -> UIBarButtonItem {
@@ -127,6 +135,11 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 
         self.navField.backgroundColor = UIColor.secondarySystemFill
         self.navField.textColor = Theme.textColor
+    }
+
+    private func configureBarButtonForAccessibility(_ button: UIBarButtonItem) {
+        button.isAccessibilityElement = true
+        button.accessibilityTraits = [.button]
     }
 
     public override func viewDidAppear(_ animated: Bool) {

@@ -32,18 +32,13 @@ class FeedViewControllerSpec: QuickSpec {
             subject.view.layoutIfNeeded()
         }
 
-        describe("the save button") {
-            it("is the right button") {
-                expect(subject.navigationItem.rightBarButtonItem?.title).to(equal("Save"))
-            }
-
+        describe("the right bar button item") {
             it("is configured for accessibility") {
                 expect(subject.navigationItem.rightBarButtonItem?.isAccessibilityElement).to(beTrue())
                 expect(subject.navigationItem.rightBarButtonItem?.accessibilityTraits).to(equal([.button]))
-                expect(subject.navigationItem.rightBarButtonItem?.accessibilityLabel).to(equal("Save"))
             }
 
-            describe("tapping 'save' without making any changes") {
+            describe("tapping it without making any changes") {
                 beforeEach {
                     let saveButton = subject.navigationItem.rightBarButtonItem
                     saveButton?.tap()

@@ -124,6 +124,7 @@ class FindFeedViewControllerSpec: QuickSpec {
         describe("Looking up feeds on the interwebs") {
             beforeEach {
                 subject.navField.text = "example.com"
+                subject.navField.sendActions(for: .editingChanged)
                 _ = subject.textFieldShouldReturn(subject.navField)
             }
 
@@ -137,7 +138,6 @@ class FindFeedViewControllerSpec: QuickSpec {
 
             it("sets the navField's accessibility value to that url") {
                 expect(subject.navField.accessibilityLabel).to(equal("Navigate and search"))
-                expect(subject.navField.accessibilityValue).to(equal("https://example.com"))
             }
         }
 

@@ -18,7 +18,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     public var reload: UIBarButtonItem!
     public var cancelTextEntry: UIBarButtonItem!
 
-    fileprivate let importUseCase: ImportUseCase
+    fileprivate let subscribeUseCase: ImportUseCase
     fileprivate let analytics: Analytics
     fileprivate let notificationCenter: NotificationCenter
 
@@ -31,7 +31,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
     public init(importUseCase: ImportUseCase,
                 analytics: Analytics,
                 notificationCenter: NotificationCenter) {
-        self.importUseCase = importUseCase
+        self.subscribeUseCase = importUseCase
         self.analytics = analytics
         self.notificationCenter = notificationCenter
         super.init(nibName: nil, bundle: nil)
@@ -108,7 +108,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
 
         self.configureNavField(self.navField)
         self.applyTheme()
-        self.analytics.logEvent("DidViewWebImport", data: nil)
+        self.analytics.logEvent("DidViewWebSubscribe", data: nil)
     }
 
     private func configureNavField(_ field: UITextField) {
@@ -173,7 +173,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
             let selector = #selector(FindFeedViewController.save as (FindFeedViewController) -> () -> Void)
             let importFeed = UIKeyCommand(input: "i", modifierFlags: [], action: selector)
             importFeed.discoverabilityTitle =
-                NSLocalizedString("FindFeedViewController_FoundFeed_Import", comment: "")
+                NSLocalizedString("FindFeedViewController_FoundFeed_Subscribe", comment: "")
             commands.append(importFeed)
         }
 
@@ -272,7 +272,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
                                                                  attributes: self.placeholderAttributes)
         self.addFeedButton.isEnabled = false
         if let url = webView.url {
-            self.importUseCase.scanForImportable(url).then { item in
+            self.subscribeUseCase.scanForImportable(url).then { item in
                 switch item {
                 case .feed(let url, _):
                     self.askToImportFeed(url)
@@ -300,7 +300,7 @@ extension FindFeedViewController: WKUIDelegate {
         completionHandler(UIContextMenuConfiguration(
             identifier: url as NSURL,
             previewProvider: {
-                let controller = FindFeedViewController(importUseCase: self.importUseCase,
+                let controller = FindFeedViewController(importUseCase: self.subscribeUseCase,
                                                         analytics: self.analytics,
                                                         notificationCenter: self.notificationCenter)
                 _ = controller.view
@@ -345,7 +345,7 @@ extension FindFeedViewController {
         if let rl = self.rssLinks.first, self.rssLinks.count == 1 {
             self.save(link: rl)
         } else if self.rssLinks.count > 1 {
-            let alertTitle = NSLocalizedString("FindFeedViewController_ImportFeeds_SelectFeed", comment: "")
+            let alertTitle = NSLocalizedString("FindFeedViewController_SubscribeToFeeds_SelectFeed", comment: "")
             let alert = UIAlertController(title: alertTitle, message: nil, preferredStyle: .actionSheet)
             for link in self.rssLinks {
                 let pathWithPrecedingSlash = link.path
@@ -374,9 +374,9 @@ extension FindFeedViewController {
         let messageTemplate = opml ? opmlMessageTemplate : feedMessageTemplate
         let message = NSString.localizedStringWithFormat(messageTemplate as NSString, link as CVarArg) as String
         indicator.configure(message: message)
-        self.importUseCase.importItem(link).then { _ in
+        self.subscribeUseCase.importItem(link).then { _ in
             indicator.removeFromSuperview()
-            self.analytics.logEvent("DidUseWebImport", data: nil)
+            self.analytics.logEvent("DidUseWebSubscribe", data: nil)
             self.dismissFromNavigation()
             self.notificationCenter.post(name: Notifications.reloadUI, object: self)
         }
@@ -397,7 +397,7 @@ extension FindFeedViewController {
 
     fileprivate func displayAlertToSave(_ alertTitle: String, alertMessage: String, success: @escaping () -> Void) {
         let doNotSave = NSLocalizedString("FindFeedViewController_FoundFeed_Decline", comment: "")
-        let save = NSLocalizedString("FindFeedViewController_FoundFeed_Import", comment: "")
+        let save = NSLocalizedString("FindFeedViewController_FoundFeed_Subscribe", comment: "")
 
         let alert = UIAlertController(title: alertTitle, message: alertMessage, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: doNotSave, style: .cancel) {_ in

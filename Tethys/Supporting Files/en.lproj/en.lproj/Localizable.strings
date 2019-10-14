@@ -64,13 +64,13 @@
 "FindFeedViewController_Save_Feed" = "Loading feed at %@";
 "FindFeedViewController_Save_Feed_List" = "Loading feed list at %@";
 "FindFeedViewController_URLBar_Loading" = "Loading";
-"FindFeedViewController_FoundFeed_Import" = "Import";
-"FindFeedViewController_FoundFeed_Decline" = "Don't Import";
+"FindFeedViewController_FoundFeed_Subscribe" = "Subscribe";
+"FindFeedViewController_FoundFeed_Decline" = "Don't Subscribe";
 "FindFeedViewController_FoundFeed_Title" = "Feed Detected";
-"FindFeedViewController_FoundFeed_Subtitle" = "Import %@?";
+"FindFeedViewController_FoundFeed_Subtitle" = "Subscribe to %@?";
 "FindFeedViewController_FoundFeed_List_Title" = "Feed List Detected";
-"FindFeedViewController_FoundFeed_List_Subtitle" = "Import?";
-"FindFeedViewController_ImportFeeds_SelectFeed" = "Select a feed to import";
+"FindFeedViewController_FoundFeed_List_Subtitle" = "Subscribe to all?";
+"FindFeedViewController_SubscribeToFeeds_SelectFeed" = "Select a feed to subscribe to";
 "FindFeedViewController_Error_Navigation_title" = "Unable to load page";
 "FindFeedViewController_Error_Navigation_message" = "The page at %@ failed to load";
 

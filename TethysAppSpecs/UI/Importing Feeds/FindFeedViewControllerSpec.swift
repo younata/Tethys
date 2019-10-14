@@ -57,9 +57,9 @@ class FindFeedViewControllerSpec: QuickSpec {
         }
 
         it("tells analytics to log that the user viewed WebImport") {
-            expect(analytics.logEventCallCount) == 1
+            expect(analytics.logEventCallCount).to(equal(1))
             if (analytics.logEventCallCount > 0) {
-                expect(analytics.logEventArgsForCall(0).0) == "DidViewWebImport"
+                expect(analytics.logEventArgsForCall(0).0).to(equal("DidViewWebSubscribe"))
                 expect(analytics.logEventArgsForCall(0).1).to(beNil())
             }
         }
@@ -149,7 +149,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 }
 
                 it("searches duckduckgo for that text") {
-                    expect(webView.lastRequestLoaded?.url) == URL(string: "https://duckduckgo.com/?q=notaurl")
+                    expect(webView.lastRequestLoaded?.url).to(equal(URL(string: "https://duckduckgo.com/?q=notaurl")))
                 }
 
                 it("sets the navField's accessibility values") {
@@ -165,7 +165,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 }
 
                 it("searches duckduckgo for that text") {
-                    expect(webView.lastRequestLoaded?.url) == URL(string: "https://duckduckgo.com/?q=not+a+url")
+                    expect(webView.lastRequestLoaded?.url).to(equal(URL(string: "https://duckduckgo.com/?q=not+a+url")))
                 }
 
                 it("sets the navField's accessibility values") {
@@ -177,24 +177,24 @@ class FindFeedViewControllerSpec: QuickSpec {
 
         describe("key commands") {
             it("can become first responder") {
-                expect(subject.canBecomeFirstResponder) == true
+                expect(subject.canBecomeFirstResponder).to(equal(true))
             }
 
             it("has 2 key commands initially") {
-                expect(subject.keyCommands?.count) == 2
+                expect(subject.keyCommands?.count).to(equal(2))
             }
 
             describe("the first command") {
                 it("is bound to cmd+l") {
                     guard let keyCommand = subject.keyCommands?.first else { fail("No key commands found"); return }
 
-                    expect(keyCommand.input) == "l"
+                    expect(keyCommand.input).to(equal("l"))
                 }
 
                 it("is titled 'open URL'") {
                     guard let keyCommand = subject.keyCommands?.first else { fail("No key commands found"); return }
 
-                    expect(keyCommand.discoverabilityTitle) == "Open URL"
+                    expect(keyCommand.discoverabilityTitle).to(equal("Open URL"))
                 }
             }
 
@@ -202,13 +202,13 @@ class FindFeedViewControllerSpec: QuickSpec {
                 it("is bound to cmd+r") {
                     guard let keyCommand = subject.keyCommands?.last else { fail("No key commands found"); return }
 
-                    expect(keyCommand.input) == "r"
+                    expect(keyCommand.input).to(equal("r"))
                 }
 
                 it("is titled 'Reload'") {
                     guard let keyCommand = subject.keyCommands?.last else { fail("No key commands found"); return }
 
-                    expect(keyCommand.discoverabilityTitle) == "Reload"
+                    expect(keyCommand.discoverabilityTitle).to(equal("Reload"))
                 }
             }
 
@@ -224,19 +224,19 @@ class FindFeedViewControllerSpec: QuickSpec {
                 }
 
                 it("adds a third command") {
-                    expect(subject.keyCommands?.count) == 3
+                    expect(subject.keyCommands?.count).to(equal(3))
                 }
 
                 it("is bound to cmd+i") {
                     guard let keyCommand = subject.keyCommands?.last else { fail("precondition failed"); return }
 
-                    expect(keyCommand.input) == "i"
+                    expect(keyCommand.input).to(equal("i"))
                 }
 
-                it("is titled 'Import'") {
+                it("is titled 'Subscribe'") {
                     guard let keyCommand = subject.keyCommands?.last else { fail("precondition failed"); return }
 
-                    expect(keyCommand.discoverabilityTitle) == "Import"
+                    expect(keyCommand.discoverabilityTitle).to(equal("Subscribe"))
                 }
             }
         }
@@ -247,7 +247,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 subject.webView(subject.webContent, didStartProvisionalNavigation: nil)
             }
 
-            sharedExamples("importing a feed") { (sharedContext: @escaping SharedExampleContext) in
+            sharedExamples("subscribing to a feed") { (sharedContext: @escaping SharedExampleContext) in
                 var url: URL!
 
                 beforeEach {
@@ -255,14 +255,14 @@ class FindFeedViewControllerSpec: QuickSpec {
                 }
 
                 it("asks the import use case to import the feed at the url") {
-                    expect(importUseCase.importItemCalls.last) == url
+                    expect(importUseCase.importItemCalls.last).to(equal(url))
                 }
 
                 it("should show an indicator that we're doing things") {
                     let indicator = subject.view.subviews.filter {
                         return $0.isKind(of: ActivityIndicator.classForCoder())
                         }.first as? ActivityIndicator
-                    expect(indicator?.message) == "Loading feed at \(url.absoluteString)"
+                    expect(indicator?.message).to(equal("Loading feed at \(url.absoluteString)"))
                 }
 
                 describe("when the use case is finished") {
@@ -278,9 +278,9 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
 
                     it("tells analytics to log that the user used WebImport") {
-                        expect(analytics.logEventCallCount) == 2
+                        expect(analytics.logEventCallCount).to(equal(2))
                         if (analytics.logEventCallCount > 1) {
-                            expect(analytics.logEventArgsForCall(1).0) == "DidUseWebImport"
+                            expect(analytics.logEventArgsForCall(1).0).to(equal("DidUseWebSubscribe"))
                             expect(analytics.logEventArgsForCall(1).1).to(beNil())
                         }
                     }
@@ -297,12 +297,12 @@ class FindFeedViewControllerSpec: QuickSpec {
             }
 
             it("shows the loadingBar") {
-                expect(subject.loadingBar.isHidden) == false
+                expect(subject.loadingBar.isHidden).to(beFalse())
                 expect(subject.loadingBar.progress).to(beCloseTo(0))
             }
 
             it("disables the addFeedButton") {
-                expect(subject.addFeedButton.isEnabled) == false
+                expect(subject.addFeedButton.isEnabled).to(beFalse())
             }
 
             describe("context menu events") {
@@ -357,7 +357,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 }
 
                 it("fills the navField's text with the webView's url") {
-                    expect(subject.navField.text) == "https://example.com/feed.xml"
+                    expect(subject.navField.text).to(equal("https://example.com/feed.xml"))
                 }
 
                 it("goes back to the webView's title when loaded cancel is tapped") {
@@ -381,19 +381,19 @@ class FindFeedViewControllerSpec: QuickSpec {
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                     if let alert = subject.presentedViewController as? UIAlertController {
                         expect(alert.title).to(equal("Feed Detected"))
-                        expect(alert.message).to(equal("Import feed?"))
+                        expect(alert.message).to(equal("Subscribe to feed?"))
 
-                        expect(alert.actions.count) == 2
+                        expect(alert.actions.count).to(equal(2))
                         if let dontsave = alert.actions.first {
-                            expect(dontsave.title).to(equal("Don't Import"))
+                            expect(dontsave.title).to(equal("Don't Subscribe"))
                         }
                         if let save = alert.actions.last {
-                            expect(save.title).to(equal("Import"))
+                            expect(save.title).to(equal("Subscribe"))
                         }
                     }
                 }
 
-                describe("tapping 'Don't Import'") {
+                describe("tapping 'Don't Subscribe'") {
                     beforeEach {
                         if let alert = subject.presentedViewController as? UIAlertController,
                             let action = alert.actions.first {
@@ -410,7 +410,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                     }
                 }
 
-                describe("tapping 'Import'") {
+                describe("tapping 'Subscribe'") {
                     beforeEach {
                         if let alert = subject.presentedViewController as? UIAlertController,
                             let action = alert.actions.last {
@@ -426,7 +426,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                         expect(rootViewController.presentedViewController).toNot(beNil())
                     }
 
-                    itBehavesLike("importing a feed")
+                    itBehavesLike("subscribing to a feed")
                 }
             }
 
@@ -440,14 +440,14 @@ class FindFeedViewControllerSpec: QuickSpec {
                     expect(subject.presentedViewController).to(beAnInstanceOf(UIAlertController.self))
                     if let alert = subject.presentedViewController as? UIAlertController {
                         expect(alert.title).to(equal("Feed List Detected"))
-                        expect(alert.message).to(equal("Import?"))
+                        expect(alert.message).to(equal("Subscribe to all?"))
 
-                        expect(alert.actions.count) == 2
+                        expect(alert.actions.count).to(equal(2))
                         if let dontsave = alert.actions.first {
-                            expect(dontsave.title).to(equal("Don't Import"))
+                            expect(dontsave.title).to(equal("Don't Subscribe"))
                         }
                         if let save = alert.actions.last {
-                            expect(save.title).to(equal("Import"))
+                            expect(save.title).to(equal("Subscribe"))
                         }
                     }
                 }
@@ -537,7 +537,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                         subject.addFeedButton.tap()
                     }
 
-                    itBehavesLike("importing a feed") {
+                    itBehavesLike("subscribing to a feed") {
                         return ["url": feedURL]
                     }
                 }
@@ -591,7 +591,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                             }
                         }
 
-                        itBehavesLike("importing a feed") {
+                        itBehavesLike("subscribing to a feed") {
                             return ["url": feedURL2]
                         }
                     }

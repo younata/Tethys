@@ -2,6 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>rnews</string>
+			</array>
+			<key>CFBundleURLName</key>
+			<array>
+				<string>com.rachelbrindel.rssclient</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleIcons</key>
 	<dict>
 		<key>CFBundlePrimaryIcon</key>
@@ -13,18 +26,18 @@
 			<key>UIPrerenderedIcon</key>
 			<false/>
 		</dict>
-        <key>CFBundleAlternateIcons</key>
-        <dict>
-            <key>AppIcon-Black</key>
-            <dict>
-                <key>CFBundleIconFiles</key>
-                <array>
-                    <string>AppIcon-Black</string>
-                </array>
-                <key>UIPrerenderedIcon</key>
-                <false/>
-            </dict>
-        </dict>
+		<key>CFBundleAlternateIcons</key>
+		<dict>
+			<key>AppIcon-Black</key>
+			<dict>
+				<key>CFBundleIconFiles</key>
+				<array>
+					<string>AppIcon-Black</string>
+				</array>
+				<key>UIPrerenderedIcon</key>
+				<false/>
+			</dict>
+		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>For the AR Reader easter egg</string>

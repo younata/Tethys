@@ -30,6 +30,8 @@ public final class FeedViewController: UIViewController {
 
         let saveButton = UIBarButtonItem(barButtonSystemItem: .save, target: self,
                                          action: #selector(FeedViewController.save))
+        saveButton.isAccessibilityElement = true
+        saveButton.accessibilityTraits = [.button]
         self.navigationItem.rightBarButtonItem = saveButton
         self.navigationItem.title = self.feed.displayTitle
 

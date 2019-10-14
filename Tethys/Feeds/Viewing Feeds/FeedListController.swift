@@ -277,7 +277,7 @@ public final class FeedListController: UIViewController {
     }
 
     fileprivate func shareFeed(feed: Feed, view: UIView?) {
-        let shareSheet = URLShareSheet(url: feed.url, activityItems: [feed.url], applicationActivities: nil)
+        let shareSheet = UIActivityViewController(activityItems: [feed.url], applicationActivities: nil)
         shareSheet.popoverPresentationController?.sourceView = view ?? self.navigationController?.navigationBar
         self.present(shareSheet, animated: true, completion: nil)
     }

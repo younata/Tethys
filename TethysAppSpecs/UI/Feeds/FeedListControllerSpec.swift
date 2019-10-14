@@ -406,10 +406,9 @@ final class FeedListControllerSpec: QuickSpec {
                                             }
 
                                             it("brings up a share sheet") {
-                                                expect(navigationController.visibleViewController).to(beAnInstanceOf(URLShareSheet.self))
-                                                if let shareSheet = navigationController.visibleViewController as? URLShareSheet {
-                                                    expect(shareSheet.url) == feeds[0].url
-                                                    expect(shareSheet.activityItems as? [URL]) == [feeds[0].url]
+                                                expect(navigationController.visibleViewController).to(beAnInstanceOf(UIActivityViewController.self))
+                                                if let shareSheet = navigationController.visibleViewController as? UIActivityViewController {
+                                                    expect(shareSheet.activityItems as? [URL]).to(equal([feeds[0].url]))
                                                 }
                                             }
                                         }
@@ -688,10 +687,9 @@ final class FeedListControllerSpec: QuickSpec {
                                         }
 
                                         it("brings up a share sheet") {
-                                            expect(navigationController.visibleViewController).to(beAnInstanceOf(URLShareSheet.self))
-                                            if let shareSheet = navigationController.visibleViewController as? URLShareSheet {
-                                                expect(shareSheet.url) == feeds[0].url
-                                                expect(shareSheet.activityItems as? [URL]) == [feeds[0].url]
+                                            expect(navigationController.visibleViewController).to(beAnInstanceOf(UIActivityViewController.self))
+                                            if let shareSheet = navigationController.visibleViewController as? UIActivityViewController {
+                                                expect(shareSheet.activityItems as? [URL]).to(equal([feeds[0].url]))
                                             }
                                         }
 

@@ -180,8 +180,6 @@
 		8999873A1B483332003C1AF5 /* feed2.rss in Resources */ = {isa = PBXBuildFile; fileRef = 89DBDA9B1A9FBC4100959AC7 /* feed2.rss */; };
 		8999873B1B483332003C1AF5 /* test.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 898C48C41B3D98F60097045A /* test.jpg */; };
 		8999873C1B483332003C1AF5 /* test.opml in Resources */ = {isa = PBXBuildFile; fileRef = 89EF4FD71A96852D0052A82F /* test.opml */; };
-		899B7DFD1E902B080067ABFF /* URLShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899B7DFC1E902B080067ABFF /* URLShareSheet.swift */; };
-		899B7DFF1E902E110067ABFF /* URLShareSheetSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899B7DFE1E902E110067ABFF /* URLShareSheetSpec.swift */; };
 		899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */; };
 		899C6A9F1DCAACF800E0A61C /* libraries.html in Resources */ = {isa = PBXBuildFile; fileRef = 899C6A9E1DCAACF800E0A61C /* libraries.html */; };
 		899C6AA01DCAAD0E00E0A61C /* libraries.html in Resources */ = {isa = PBXBuildFile; fileRef = 899C6A9E1DCAACF800E0A61C /* libraries.html */; };
@@ -515,8 +513,6 @@
 		899823A81B2C76B800818755 /* TagEditorViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagEditorViewControllerSpec.swift; sourceTree = "<group>"; };
 		899823AB1B2C883B00818755 /* ArticleListControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListControllerSpec.swift; sourceTree = "<group>"; };
 		899823AD1B30B64000818755 /* ArticleViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleViewControllerSpec.swift; sourceTree = "<group>"; };
-		899B7DFC1E902B080067ABFF /* URLShareSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLShareSheet.swift; sourceTree = "<group>"; };
-		899B7DFE1E902E110067ABFF /* URLShareSheetSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URLShareSheetSpec.swift; sourceTree = "<group>"; };
 		899C48161A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindFeedViewControllerSpec.swift; sourceTree = "<group>"; };
 		899C6A9E1DCAACF800E0A61C /* libraries.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html.documentation; name = libraries.html; path = documentation/libraries.html; sourceTree = SOURCE_ROOT; };
 		89A3417E1B150D1B0000C60B /* OPMLService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OPMLService.swift; sourceTree = "<group>"; };
@@ -1059,7 +1055,6 @@
 			isa = PBXGroup;
 			children = (
 				89A3A8C81DEF942F002AF9B5 /* ActionableTableViewSpec.swift */,
-				899B7DFE1E902E110067ABFF /* URLShareSheetSpec.swift */,
 			);
 			path = Generic;
 			sourceTree = "<group>";
@@ -1410,7 +1405,6 @@
 				896EF7E921E5495D00C0AB75 /* Messenger.swift */,
 				89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */,
 				89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */,
-				899B7DFC1E902B080067ABFF /* URLShareSheet.swift */,
 				456300A223236C6F008D0401 /* Notifications.swift */,
 			);
 			path = Generic;
@@ -1981,7 +1975,6 @@
 				8918D4DB1B8598D100DCDE0E /* Theme.swift in Sources */,
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
 				892AF323232EFA270018B19C /* SceneDelegate.swift in Sources */,
-				899B7DFD1E902B080067ABFF /* URLShareSheet.swift in Sources */,
 				89E9DD4F21D0069900326E2D /* LoginController.swift in Sources */,
 				89BF4262234006AB00C790A8 /* Breakout3DEasterEgg.swift in Sources */,
 			);
@@ -2047,7 +2040,6 @@
 				89735ABC1C0694C70032E09C /* UITraitCollection+TethysTests.m in Sources */,
 				8994F0F41C8F899600920E6D /* UIViewController+TethysTests.m in Sources */,
 				893F93E41B237EBC00B52194 /* UnreadCounterSpec.swift in Sources */,
-				899B7DFF1E902E110067ABFF /* URLShareSheetSpec.swift in Sources */,
 				89D970BB1B35BF6500ED84B8 /* WKWebView+TethysTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

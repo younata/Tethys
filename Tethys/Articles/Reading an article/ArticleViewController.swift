@@ -139,8 +139,7 @@ public final class ArticleViewController: UIViewController {
         let safari = TOActivitySafari()
         let chrome = TOActivityChrome()
 
-        let activity = URLShareSheet(
-            url: self.article.link,
+        let activity = UIActivityViewController(
             activityItems: [self.article.link],
             applicationActivities: [safari, chrome]
         )

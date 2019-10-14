@@ -122,11 +122,10 @@ class ArticleViewControllerSpec: QuickSpec {
                     }
 
                     it("brings up an activity view controller") {
-                        expect(subject.presentedViewController).to(beAnInstanceOf(URLShareSheet.self))
-                        if let shareSheet = subject.presentedViewController as? URLShareSheet {
-                            expect(shareSheet.activityItems.count) == 1
-                            expect(shareSheet.activityItems.first as? URL) == article.link
-                            expect(shareSheet.url) == article.link
+                        expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController.self))
+                        if let shareSheet = subject.presentedViewController as? UIActivityViewController {
+                            expect(shareSheet.activityItems.count).to(equal(1))
+                            expect(shareSheet.activityItems.first as? URL).to(equal(article.link))
 
                             expect(shareSheet.applicationActivities as? [NSObject]).toNot(beNil())
                             if let activities = shareSheet.applicationActivities as? [NSObject] {

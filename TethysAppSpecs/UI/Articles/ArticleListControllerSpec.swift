@@ -135,16 +135,15 @@ class ArticleListControllerSpec: QuickSpec {
                         }
 
                         it("presents a share sheet") {
-                            expect(subject.presentedViewController).to(beAnInstanceOf(URLShareSheet.self))
+                            expect(subject.presentedViewController).to(beAnInstanceOf(UIActivityViewController.self))
                         }
 
                         it("configures the share sheet with the url") {
-                            guard let shareSheet = subject.presentedViewController as? URLShareSheet else {
+                            guard let shareSheet = subject.presentedViewController as? UIActivityViewController else {
                                 fail("No share sheet presented")
                                 return
                             }
-                            expect(shareSheet.url) == feed.url
-                            expect(shareSheet.activityItems as? [URL]) == [feed.url]
+                            expect(shareSheet.activityItems as? [URL]).to(equal([feed.url]))
                         }
                     }
                 }

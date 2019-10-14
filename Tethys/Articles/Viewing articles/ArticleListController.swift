@@ -334,8 +334,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     }
 
     @objc fileprivate func shareFeed() {
-        let shareSheet = URLShareSheet(
-            url: self.feed.url,
+        let shareSheet = UIActivityViewController(
             activityItems: [self.feed.url],
             applicationActivities: nil
         )

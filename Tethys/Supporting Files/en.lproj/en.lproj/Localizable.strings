@@ -111,7 +111,8 @@
 "ArticleCell_Accessibility_Value_Read" = "read";
 "ArticleCell_Accessibility_Value_Unread" = "unread";
 
-"ArticleViewController_TabBar_ViewLink" = "Open Link";
+"ArticleViewController_TabBar_OpenURL" = "View URL";
+"ArticleViewController_Accessibility_TabBar_OpenURL" = "View article URL";
 "ArticleViewController_Command_ViewPreviousArticle" = "Previous Article";
 "ArticleViewController_Command_ViewNextArticle" = "Next Article";
 "ArticleViewController_Command_ToggleRead" = "Toggle Read";

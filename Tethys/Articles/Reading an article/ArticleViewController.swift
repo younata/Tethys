@@ -17,14 +17,21 @@ public final class ArticleViewController: UIViewController {
             self.article.title
         )
         button.isAccessibilityElement = true
+        button.accessibilityTraits = [.button]
         return button
     }()
     public private(set) lazy var openInSafariButton: UIBarButtonItem = {
-        return UIBarButtonItem(title: self.linkString, style: .plain,
-                               target: self, action: #selector(ArticleViewController.openInSafari))
+        let button = UIBarButtonItem(
+            title: NSLocalizedString("ArticleViewController_TabBar_OpenURL", comment: ""),
+            style: .plain,
+            target: self,
+            action: #selector(ArticleViewController.openInSafari)
+        )
+        button.accessibilityLabel = NSLocalizedString("ArticleViewController_Accessibility_TabBar_OpenURL", comment: "")
+        button.isAccessibilityElement = true
+        button.accessibilityTraits = [.button]
+        return button
     }()
-
-    private let linkString = NSLocalizedString("ArticleViewController_TabBar_ViewLink", comment: "")
 
     fileprivate let articleUseCase: ArticleUseCase
     fileprivate let htmlViewController: HTMLViewController

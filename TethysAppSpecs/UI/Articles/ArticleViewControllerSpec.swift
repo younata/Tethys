@@ -12,7 +12,7 @@ class ArticleViewControllerSpec: QuickSpec {
         var htmlViewController: HTMLViewController!
         var articleUseCase: FakeArticleUseCase!
 
-        let article = articleFactory()
+        let article = articleFactory(title: "fancy article title")
 
         beforeEach {
             articleUseCase = FakeArticleUseCase()
@@ -101,39 +101,63 @@ class ArticleViewControllerSpec: QuickSpec {
             }
 
             it("includes the share button in the toolbar, and the open in safari button") {
-                expect(subject.toolbarItems?.contains(subject.shareButton)) == true
-                expect(subject.toolbarItems?.contains(subject.openInSafariButton)) == true
+                expect(subject.toolbarItems).to(contain(subject.shareButton))
+                expect(subject.toolbarItems).to(contain(subject.openInSafariButton))
             }
 
             it("shows the content") {
                 expect(htmlViewController.htmlString).to(contain("example"))
             }
 
-            describe("tapping the share button") {
-                beforeEach {
-                    subject.shareButton.tap()
+            describe("the share button") {
+                it("is configured for accessibility") {
+                    expect(subject.shareButton.isAccessibilityElement).to(beTrue())
+                    expect(subject.shareButton.accessibilityTraits).to(equal([.button]))
+                    expect(subject.shareButton.accessibilityLabel).to(equal("Share fancy article title"))
                 }
 
-                it("should bring up an activity view controller") {
-                    expect(subject.presentedViewController).to(beAnInstanceOf(URLShareSheet.self))
-                    if let shareSheet = subject.presentedViewController as? URLShareSheet {
-                        expect(shareSheet.activityItems.count) == 1
-                        expect(shareSheet.activityItems.first as? URL) == article.link
-                        expect(shareSheet.url) == article.link
+                describe("tapping it") {
+                    beforeEach {
+                        subject.shareButton.tap()
+                    }
 
-                        expect(shareSheet.applicationActivities as? [NSObject]).toNot(beNil())
-                        if let activities = shareSheet.applicationActivities as? [NSObject] {
-                            expect(activities.first).to(beAnInstanceOf(TOActivitySafari.self))
-                            expect(activities.last).to(beAnInstanceOf(TOActivityChrome.self))
+                    it("brings up an activity view controller") {
+                        expect(subject.presentedViewController).to(beAnInstanceOf(URLShareSheet.self))
+                        if let shareSheet = subject.presentedViewController as? URLShareSheet {
+                            expect(shareSheet.activityItems.count) == 1
+                            expect(shareSheet.activityItems.first as? URL) == article.link
+                            expect(shareSheet.url) == article.link
+
+                            expect(shareSheet.applicationActivities as? [NSObject]).toNot(beNil())
+                            if let activities = shareSheet.applicationActivities as? [NSObject] {
+                                expect(activities.first).to(beAnInstanceOf(TOActivitySafari.self))
+                                expect(activities.last).to(beAnInstanceOf(TOActivityChrome.self))
+                            }
                         }
                     }
                 }
             }
-            
-            it("should open the article in an SFSafariViewController if the open in safari button is tapped") {
-                subject.openInSafariButton.tap()
 
-                expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
+            describe("the open link button") {
+                it("informs the user what it does") {
+                    expect(subject.openInSafariButton.title).to(equal("View URL"))
+                }
+
+                it("is configured for accessibility") {
+                    expect(subject.openInSafariButton.isAccessibilityElement).to(beTrue())
+                    expect(subject.openInSafariButton.accessibilityTraits).to(equal([.button]))
+                    expect(subject.openInSafariButton.accessibilityLabel).to(equal("View article URL"))
+                }
+
+                describe("when tapped") {
+                    beforeEach {
+                        subject.openInSafariButton.tap()
+                    }
+
+                    it("opens the article in an SFSafariViewController") {
+                        expect(navigationController.visibleViewController).to(beAnInstanceOf(SFSafariViewController.self))
+                    }
+                }
             }
 
             context("tapping a link") {

@@ -87,6 +87,7 @@ public final class FeedTableCell: UITableViewCell {
 
         self.selectedBackgroundView = self.backgroundColorView
         self.isAccessibilityElement = true
+        self.accessibilityIdentifier = "FeedList_Cell"
         self.accessibilityLabel = NSLocalizedString("FeedsTableViewController_Accessibility_Cell_Label", comment: "")
         self.accessibilityTraits = [.button]
 

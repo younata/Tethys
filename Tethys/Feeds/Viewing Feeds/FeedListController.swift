@@ -86,6 +86,7 @@ public final class FeedListController: UIViewController {
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self,
                                         action: #selector(FeedListController.didTapAddFeed))
+        addButton.accessibilityIdentifier = "FeedList_OpenFindFeed"
         addButton.accessibilityLabel = NSLocalizedString("FeedsTableViewController_Accessibility_AddFeed", comment: "")
         self.configureBarButtonForAccessibility(addButton)
         self.navigationItem.rightBarButtonItems = [addButton, self.editButtonItem]

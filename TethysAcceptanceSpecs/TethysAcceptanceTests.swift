@@ -30,21 +30,21 @@ class TethysAcceptanceTests: XCTestCase {
 
         self.waitForThingToExist(app.navigationBars["Feeds"])
         RunLoop.main.run(until: Date(timeIntervalSinceNow: 5))
-        app.navigationBars["Feeds"].buttons["Add"].tap()
+        app.navigationBars["Feeds"].buttons["FeedList_OpenFindFeed"].tap()
 
-        let enterUrlTextField = app.textFields["Enter URL"]
+        let enterUrlTextField = app.textFields["FindFeed_URLField"]
         self.waitForThingToExist(enterUrlTextField)
         expect(app.keyboards.element.exists).to(beTrue(), description: "Expected to show a keyboard")
         app.typeText("blog.rachelbrindle.com")
         app.typeText(XCUIKeyboardKey.return.rawValue)
 
-        let addFeedButton = app.toolbars.buttons["Add Feed"]
+        let addFeedButton = app.toolbars.buttons["FindFeed_SubscribeButton"]
         self.waitForThingToExist(addFeedButton)
         waitForPredicate(NSPredicate(format: "enabled == true"), object: addFeedButton)
         expect(addFeedButton.isHittable).to(beTrue())
         addFeedButton.tap()
 
-        self.waitForThingToExist(app.cells["Rachel Brindle"])
+        self.waitForThingToExist(app.cells["FeedList_Cell"])
     }
 
     func assertShareShows(shareButtonName: String, app: XCUIApplication) {
@@ -71,7 +71,7 @@ class TethysAcceptanceTests: XCTestCase {
 
         snapshot("01-feedsList", waitForLoadingIndicator: false)
 
-        app.cells["Rachel Brindle"].tap()
+        app.cells["FeedList_Cell"].tap()
 
         self.waitForThingToExist(app.navigationBars["Rachel Brindle"])
 

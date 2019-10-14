@@ -55,6 +55,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         self.addFeedButton = UIBarButtonItem(title: NSLocalizedString("FindFeedViewController_AddFeed", comment: ""),
                                              style: .plain, target: self, action: save)
         self.addFeedButton.isEnabled = false
+        self.addFeedButton.accessibilityIdentifier = "FindFeed_SubscribeButton"
         self.addFeedButton.accessibilityLabel = NSLocalizedString("FindFeedViewController_Accessibility_AddFeed_Label",
                                                                   comment: "")
         self.configureBarButtonForAccessibility(self.addFeedButton)
@@ -124,6 +125,7 @@ public final class FindFeedViewController: UIViewController, WKNavigationDelegat
         field.clearsOnBeginEditing = true
         field.textContentType = .URL
         field.isAccessibilityElement = true
+        field.accessibilityIdentifier = "FindFeed_URLField"
         field.accessibilityLabel = NSLocalizedString("FindFeedViewController_Accessibility_URLBar_Label", comment: "")
     }
 

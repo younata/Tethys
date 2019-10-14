@@ -21,5 +21,5 @@ func assertSecondLaunch(app: XCUIApplication, file: FileString = #file, line: UI
 
 private func assertFeedsList(app: XCUIApplication, file: FileString, line: UInt) {
     expect(app.navigationBars["Feeds"].buttons["Settings"].exists, file: file, line: line).to(beTrue(), description: "Expected to show the settings button on the feeds list")
-    expect(app.navigationBars["Feeds"].buttons["Add"].exists, file: file, line: line).to(beTrue(), description: "Expected to show button to add more feeds")
+    expect(app.navigationBars["Feeds"].buttons["FeedList_OpenFindFeed"].exists, file: file, line: line).to(beTrue(), description: "Expected to show button to add more feeds")
 }

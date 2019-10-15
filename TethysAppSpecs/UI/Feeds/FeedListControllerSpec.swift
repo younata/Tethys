@@ -165,7 +165,7 @@ final class FeedListControllerSpec: QuickSpec {
 
                         it("is enabled for accessibility") {
                             expect(addFeedButton?.isAccessibilityElement).to(beTrue())
-                            expect(addFeedButton?.accessibilityLabel).to(equal("Add feed"))
+                            expect(addFeedButton?.accessibilityLabel).to(equal("Lookup feed to subscribe to"))
                             expect(addFeedButton?.accessibilityTraits).to(equal([.button]))
                         }
 

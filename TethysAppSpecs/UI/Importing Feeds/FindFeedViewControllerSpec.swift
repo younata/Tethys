@@ -70,7 +70,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 expect(subject.navField.accessibilityLabel).to(equal("Navigate and search"))
             }
 
-            it("configures the add feed button for accessibility") {
+            it("configures the subscribe button for accessibility") {
                 expect(subject.addFeedButton.isAccessibilityElement).to(beTrue())
                 expect(subject.addFeedButton.accessibilityLabel).to(equal("Subscribe"))
                 expect(subject.addFeedButton.accessibilityTraits).to(equal([.button]))
@@ -530,6 +530,7 @@ class FindFeedViewControllerSpec: QuickSpec {
 
                 it("enables the addFeedButton") {
                     expect(subject.addFeedButton.isEnabled).to(beTrue())
+                    expect(subject.addFeedButton.title).to(equal("Subscribe"))
                 }
 
                 describe("tapping on the addFeedButton") {

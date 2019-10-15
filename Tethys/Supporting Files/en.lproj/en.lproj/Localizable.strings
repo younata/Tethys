@@ -35,7 +35,7 @@
 "FeedsTableViewController_Onboarding_AccessibilityValue" = "Welcome to Tethys! Use the add button to search for feeds to follow";
 "FeedsTableViewController_Title" = "Feeds";
 "FeedsTableViewController_Accessibility_Settings" = "Settings";
-"FeedsTableViewController_Accessibility_AddFeed" = "Add feed";
+"FeedsTableViewController_Accessibility_AddFeed" = "Lookup feed to subscribe to";
 "FeedsTableViewController_Accessibility_Cell_Label" = "Feed";
 "FeedsTableViewController_Accessibility_Cell_UnreadArticles" = "%lu unread articles.";
 "FeedsTableViewController_Loading_Deleting_Feed" = "Deleting Feed";
@@ -52,7 +52,7 @@
 "FeedsTableViewController_Table_EditAction_Edit" = "Edit";
 "FeedsTableViewController_PreviewItem_MarkRead" = "Mark Read";
 
-"FindFeedViewController_AddFeed" = "Add Feed";
+"FindFeedViewController_AddFeed" = "Subscribe";
 "FindFeedViewController_Commands_OpenURL" = "Open URL";
 "FindFeedViewController_Commands_Reload" = "Reload";
 "FindFeedViewController_Accessibility_URLBar_Label" = "Navigate and search";

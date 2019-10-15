@@ -478,7 +478,8 @@ final class SettingsViewControllerSpec: QuickSpec {
                     let indexPath = IndexPath(row: 0, section: sectionNumber)
 
                     beforeEach {
-                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? SwitchTableViewCell
+                        subject.tableView.scrollToRow(at: indexPath, at: .middle, animated: false)
+                        cell = subject.tableView.cellForRow(at: indexPath) as? SwitchTableViewCell
                     }
 
                     it("is titled 'Show Estimated Reading Times'") {
@@ -487,8 +488,10 @@ final class SettingsViewControllerSpec: QuickSpec {
 
                     it("is configured for accessibility") {
                         expect(cell?.isAccessibilityElement).to(beTrue())
+                        expect(cell?.accessibilityTraits).to(equal([.button]))
                         expect(cell?.accessibilityLabel).to(equal("Estimated reading times"))
                         expect(cell?.accessibilityValue).to(equal("Enabled"))
+                        expect(cell?.accessibilityHint).to(equal("Tap to toggle"))
                     }
 
                     describe("tapping the switch on the cell") {
@@ -499,6 +502,34 @@ final class SettingsViewControllerSpec: QuickSpec {
 
                         it("does not yet change the settings repository") {
                             expect(settingsRepository.showEstimatedReadingLabel).to(equal(true))
+                        }
+
+                        it("adjusts the accessibility value") {
+                            expect(cell?.accessibilityValue).to(equal("Disabled"))
+                        }
+
+                        itBehavesLike("a changed setting") {
+                            let saveOperation = BlockOperation {
+                                expect(settingsRepository.showEstimatedReadingLabel).to(equal(false))
+                            }
+                            let dismissOperation = BlockOperation {
+                                expect(settingsRepository.showEstimatedReadingLabel).to(equal(true))
+                            }
+                            return ["saveToUserDefaults": saveOperation, "dismissWithoutSaving": dismissOperation]
+                        }
+                    }
+
+                    describe("tapping the cell") {
+                        beforeEach {
+                            subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAt: indexPath)
+                        }
+
+                        it("does not yet change the settings repository") {
+                            expect(settingsRepository.showEstimatedReadingLabel).to(equal(true))
+                        }
+
+                        it("toggles the cell switch") {
+                            expect(cell?.theSwitch.isOn).to(beFalse())
                         }
 
                         it("adjusts the accessibility value") {

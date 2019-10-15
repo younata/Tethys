@@ -234,6 +234,10 @@ extension SettingsViewController: UITableViewDataSource {
             cell.accessibilityValue = self.showReadingTimes ?
                 NSLocalizedString("Generic_Enabled", comment: "") :
                 NSLocalizedString("Generic_Disabled", comment: "")
+            cell.accessibilityHint = NSLocalizedString(
+                "SettingsViewController_Other_ShowReadingTimes_AccessibilityHint",
+                comment: ""
+            )
         case .exportOPML:
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
             cell.accessibilityTraits = [.button]
@@ -419,8 +423,12 @@ extension SettingsViewController: UITableViewDelegate {
             let viewController = self.arViewController()
             viewController.modalPresentationStyle = .fullScreen
             self.present(viewController, animated: true, completion: nil)
-        default:
-            break
+        case .showReadingTimes:
+            guard let cell = tableView.cellForRow(at: indexPath) as? SwitchTableViewCell else {
+                return
+            }
+            cell.theSwitch.setOn(!cell.theSwitch.isOn, animated: true)
+            cell.onTapSwitch?(cell.theSwitch)
         }
     }
 

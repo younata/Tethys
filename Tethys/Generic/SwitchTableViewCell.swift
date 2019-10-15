@@ -18,6 +18,7 @@ public final class SwitchTableViewCell: UITableViewCell {
 
         self.accessibilityLabel = nil
         self.accessibilityValue = nil
+        self.accessibilityHint = nil
     }
 
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -38,6 +39,7 @@ public final class SwitchTableViewCell: UITableViewCell {
         self.textLabel?.textColor = Theme.textColor
 
         self.isAccessibilityElement = true
+        self.accessibilityTraits = [.button]
     }
 
     public required init?(coder aDecoder: NSCoder) { fatalError() }

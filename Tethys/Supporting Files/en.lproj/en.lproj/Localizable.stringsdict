@@ -34,5 +34,23 @@
 			<string>%lu unread articles</string>
 		</dict>
 	</dict>
+    <key>ArticleCell_EstimatedReadingTime</key>
+    <dict>
+        <key>NSStringLocalizedFormatKey</key>
+        <string>%#@minutes@</string>
+        <key>minutes</key>
+        <dict>
+            <key>NSStringFormatSpecTypeKey</key>
+            <string>NSStringPluralRuleType</string>
+            <key>NSStringFormatValueTypeKey</key>
+            <string>lu</string>
+            <key>zero</key>
+            <string>Less than 1 minute to read</string>
+            <key>one</key>
+            <string>1 minute to read</string>
+            <key>other</key>
+            <string>%lu minutes to read</string>
+        </dict>
+    </dict>
 </dict>
 </plist>

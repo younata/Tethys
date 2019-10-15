@@ -22,6 +22,15 @@ public enum RefreshControlStyle: Int, CustomStringConvertible {
             return NSLocalizedString("RefreshControlStyle_Breakout", comment: "")
         }
     }
+
+    public var accessibilityLabel: String {
+        switch self {
+        case .spinner:
+            return NSLocalizedString("RefreshControlStyle_Spinner_Accessibility", comment: "")
+        case .breakout:
+            return NSLocalizedString("RefreshControlStyle_Breakout_Accessibility", comment: "")
+        }
+    }
 }
 
 public final class RefreshControl: NSObject {

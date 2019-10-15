@@ -394,17 +394,17 @@ final class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("is titled 'Spinner'") {
-                        expect(cell.textLabel?.text) == "Spinner"
+                        expect(cell.textLabel?.text).to(equal("Spinner"))
                     }
 
                     it("is configured for accessibility") {
                         expect(cell?.isAccessibilityElement).to(beTrue())
                         expect(cell?.accessibilityTraits).to(equal([.button]))
-                        expect(cell?.accessibilityLabel).to(equal("Spinner"))
+                        expect(cell?.accessibilityLabel).to(equal("Standard spinner refresh indicator"))
                     }
 
                     it("is selected if it's the current refresh control style") { // which it is not
-                        expect(cell.isSelected) == false
+                        expect(cell.isSelected).to(beFalse())
                     }
 
                     it("has no context menu") {
@@ -421,13 +421,13 @@ final class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("is titled 'Breakout'") {
-                        expect(cell.textLabel?.text) == "Breakout"
+                        expect(cell.textLabel?.text).to(equal("Breakout"))
                     }
 
                     it("is configured for accessibility") {
                         expect(cell?.isAccessibilityElement).to(beTrue())
                         expect(cell?.accessibilityTraits).to(equal([.button]))
-                        expect(cell?.accessibilityLabel).to(equal("Breakout"))
+                        expect(cell?.accessibilityLabel).to(equal("Breakout game while refresh happens"))
                     }
 
                     describe("when tapped") {

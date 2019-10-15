@@ -207,7 +207,7 @@ extension SettingsViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
         guard let refreshStyle = RefreshControlStyle(rawValue: indexPath.row) else { return cell }
         cell.textLabel?.text = refreshStyle.description
-        cell.accessibilityLabel = refreshStyle.description
+        cell.accessibilityLabel = refreshStyle.accessibilityLabel
         cell.accessibilityTraits = [.button]
         return cell
     }

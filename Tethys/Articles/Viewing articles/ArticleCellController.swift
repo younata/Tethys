@@ -18,12 +18,6 @@ public struct DefaultArticleCellController: ArticleCellController {
 
         return dateFormatter
     }()
-    private let timeFormatter: DateComponentsFormatter = {
-        let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.hour, .minute]
-        formatter.unitsStyle = .full
-        return formatter
-    }()
 
     public init(hideUnread: Bool, articleService: ArticleService, settingsRepository: SettingsRepository) {
         self.hideUnread = hideUnread
@@ -35,6 +29,8 @@ public struct DefaultArticleCellController: ArticleCellController {
         cell.title.text = article.title
         cell.published.text = self.dateFormatter.string(from: self.articleService.date(for: article))
         cell.author.text = self.articleService.authors(of: article)
+
+        var accessibilityValueItems: [String] = [article.title]
 
         if self.hideUnread {
             cell.unread.unread = 0
@@ -48,18 +44,22 @@ public struct DefaultArticleCellController: ArticleCellController {
             let readString = article.read ?
                 NSLocalizedString("ArticleCell_Accessibility_Value_Read", comment: "") :
                 NSLocalizedString("ArticleCell_Accessibility_Value_Unread", comment: "")
-            cell.accessibilityValue = "\(article.title), \(readString)"
+            accessibilityValueItems.append(readString)
         }
 
         if self.settingsRepository.showEstimatedReadingLabel {
             cell.readingTime.isHidden = false
-            let localizedFormat = NSLocalizedString("ArticleCell_EstimatedReadingTime", comment: "")
-            let readingTime = self.articleService.estimatedReadingTime(of: article)
-            let formattedTime = self.timeFormatter.string(from: readingTime) ?? ""
-            cell.readingTime.text = String.localizedStringWithFormat(localizedFormat, formattedTime)
+            let readingSeconds = self.articleService.estimatedReadingTime(of: article)
+            let readingTimeText = String.localizedStringWithFormat(
+                NSLocalizedString("ArticleCell_EstimatedReadingTime", comment: ""),
+                Int(round(readingSeconds / 60))
+            )
+            cell.readingTime.text = readingTimeText
+            accessibilityValueItems.append(readingTimeText)
         } else {
             cell.readingTime.isHidden = true
             cell.readingTime.text = nil
         }
+        cell.accessibilityValue = accessibilityValueItems.joined(separator: ", ")
     }
 }

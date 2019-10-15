@@ -106,7 +106,6 @@
 "ArticleListController_Action_Accessibility_ShareFeed" = "Share feed";
 "ArticleListController_Action_Accessibility_MarkFeedAsRead" = "Mark feed as read";
 
-"ArticleCell_EstimatedReadingTime" = "%@ to read";
 "ArticleCell_Accessibility_Label" = "Article";
 "ArticleCell_Accessibility_Value_Read" = "read";
 "ArticleCell_Accessibility_Value_Unread" = "unread";
@@ -123,7 +122,9 @@
 "AuthorActivity_Title" = "Articles by %@";
 
 "RefreshControlStyle_Spinner" = "Spinner";
+"RefreshControlStyle_Spinner_Accessibility" = "Standard spinner refresh indicator";
 "RefreshControlStyle_Breakout" = "Breakout";
+"RefreshControlStyle_Breakout_Accessibility" = "Breakout game while refresh happens";
 
 "AREasterEgg_Tracking_NotAvailable" = "Camera tracking not available";
 "AREasterEgg_Tracking_Initializing" = "ARKit initializing, move device around to gather data";

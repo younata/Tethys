@@ -256,6 +256,8 @@
 		89EF4FD81A96852D0052A82F /* test.opml in Resources */ = {isa = PBXBuildFile; fileRef = 89EF4FD71A96852D0052A82F /* test.opml */; };
 		89F516571B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 89F516561B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m */; };
 		89F517021B1C070C0005AB04 /* FeedViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F517011B1C070C0005AB04 /* FeedViewControllerSpec.swift */; };
+		89F55BA5235A749500FE5887 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F55BA4235A749500FE5887 /* Subscription.swift */; };
+		89F55BA7235A74A400FE5887 /* SubscriptionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F55BA6235A74A400FE5887 /* SubscriptionSpec.swift */; };
 		89F73DBF21FE5F93001B3135 /* InoreaderFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F73DBE21FE5F93001B3135 /* InoreaderFeedService.swift */; };
 		89F73DC121FE5FF1001B3135 /* InoreaderFeedServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F73DC021FE5FF1001B3135 /* InoreaderFeedServiceSpec.swift */; };
 		89F98BA11BA079A3005C3CA8 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */; };
@@ -591,6 +593,8 @@
 		89F516551B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIBarButtonItem+TethysTests.h"; sourceTree = "<group>"; };
 		89F516561B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIBarButtonItem+TethysTests.m"; sourceTree = "<group>"; };
 		89F517011B1C070C0005AB04 /* FeedViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedViewControllerSpec.swift; sourceTree = "<group>"; };
+		89F55BA4235A749500FE5887 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
+		89F55BA6235A74A400FE5887 /* SubscriptionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionSpec.swift; sourceTree = "<group>"; };
 		89F73DBE21FE5F93001B3135 /* InoreaderFeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InoreaderFeedService.swift; sourceTree = "<group>"; };
 		89F73DC021FE5FF1001B3135 /* InoreaderFeedServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InoreaderFeedServiceSpec.swift; sourceTree = "<group>"; };
 		89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
@@ -910,6 +914,7 @@
 				893694FA21E2F948002C3A09 /* HTTPMethod.swift */,
 				8948B8BA222CD5DD00E1BFBC /* NetworkPagedCollection.swift */,
 				895DA889222F7D6500B19C37 /* OrderedDictionary.swift */,
+				89F55BA4235A749500FE5887 /* Subscription.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1294,6 +1299,7 @@
 				89D427DF1CF540560093D186 /* TethysErrorSpec.swift */,
 				8948B8BD222CD8A900E1BFBC /* NetworkPagedCollectionSpec.swift */,
 				895DA88B222F7D7600B19C37 /* OrderedDictionarySpec.swift */,
+				89F55BA6235A74A400FE5887 /* SubscriptionSpec.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1839,6 +1845,7 @@
 				89CBD5E821C8A5D900D3FB31 /* FeedRepository.swift in Sources */,
 				8984FE891CB984A40096F4B3 /* Author.swift in Sources */,
 				89CBD5DF21BF780C00D3FB31 /* RealmArticleService.swift in Sources */,
+				89F55BA5235A749500FE5887 /* Subscription.swift in Sources */,
 				893694F921E2EC74002C3A09 /* FutureHTTP+Tethys.swift in Sources */,
 				892E76F11E07956E00866336 /* BackgroundStateMonitor.swift in Sources */,
 				894644D921AB8FEB00153308 /* RealmFeedService.swift in Sources */,
@@ -1897,6 +1904,7 @@
 				89AFF9FF1D4870F7002255E8 /* FakeImportables.swift in Sources */,
 				8935F5DE1B462AD2000FFD5D /* FakeOperationQueue.swift in Sources */,
 				8935F5E11B462B8C000FFD5D /* FakeOPMLService.swift in Sources */,
+				89F55BA7235A74A400FE5887 /* SubscriptionSpec.swift in Sources */,
 				8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */,
 				8935F5DD1B462AD2000FFD5D /* FakeSearchIndex.swift in Sources */,
 				892E77151E09A49900866336 /* FakeTimerFactory.swift in Sources */,

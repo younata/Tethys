@@ -2,7 +2,7 @@ import Result
 import CBGPromise
 import RealmSwift
 
-struct RealmFeedService: FeedService {
+struct LocalRealmFeedService: LocalFeedService {
     private let realmProvider: RealmProvider
     private let updateService: UpdateService
     private let mainQueue: OperationQueue
@@ -18,32 +18,20 @@ struct RealmFeedService: FeedService {
         self.workQueue = workQueue
     }
 
+    // MARK: FeedService Conformance
     func feeds() -> Future<Result<AnyCollection<Feed>, TethysError>> {
         let promise = Promise<Result<AnyCollection<Feed>, TethysError>>()
         self.workQueue.addOperation {
             let realmFeeds = self.realmProvider.realm().objects(RealmFeed.self)
-            let feeds = realmFeeds.map { Feed(realmFeed: $0) }
-            guard feeds.isEmpty == false else {
-                self.resolve(promise: promise, with: AnyCollection([]))
-                return
-            }
-            let updatePromises: [Future<Result<Feed, TethysError>>] = feeds.map {
-                return self.updateService.updateFeed($0)
-            }
-            Promise<Result<Feed, TethysError>>.when(updatePromises).map { results in
-                let errors = results.compactMap { $0.error }
-                guard errors.count != results.count else {
-                    self.resolve(promise: promise, error: .multiple(errors))
-                    return
-                }
-                let updatedFeeds = results.compactMap { $0.value }.sorted { (lhs, rhs) -> Bool in
+            let feeds = realmFeeds
+                .map { Feed(realmFeed: $0) }
+                .sorted { (lhs, rhs) -> Bool in
                     guard lhs.unreadCount == rhs.unreadCount else {
                         return lhs.unreadCount > rhs.unreadCount
                     }
                     return lhs.title < rhs.title
                 }
-                self.resolve(promise: promise, with: AnyCollection(updatedFeeds))
-            }
+            self.resolve(promise: promise, with: AnyCollection(feeds))
         }
         return promise.future
     }
@@ -87,60 +75,21 @@ struct RealmFeedService: FeedService {
                 dump(exception)
                 return self.resolve(promise: promise, error: .database(.unknown))
             }
-
-            self.updateService.updateFeed(Feed(realmFeed: feed)).then { result in
-                self.mainQueue.addOperation {
-                    promise.resolve(result)
-                }
-            }
+            self.resolve(promise: promise, with: Feed(realmFeed: feed))
         }
         return promise.future
     }
 
     func tags() -> Future<Result<AnyCollection<String>, TethysError>> {
-        let promise =  Promise<Result<AnyCollection<String>, TethysError>>()
-        self.workQueue.addOperation {
-            let tags = self.realmProvider.realm().objects(RealmFeed.self)
-                .flatMap { feed in
-                    return feed.tags.map { $0.string }
-                }
-            return self.resolve(promise: promise, with: AnyCollection(Set(tags)))
-        }
-        return promise.future
+        return Promise<Result<AnyCollection<String>, TethysError>>.resolved(.failure(.notSupported))
     }
 
     func set(tags: [String], of feed: Feed) -> Future<Result<Feed, TethysError>> {
-        return self.write(feed: feed) { realmFeed in
-            let realmTags: [RealmString] = tags.map { tag in
-                if let item = self.realmProvider.realm().object(ofType: RealmString.self, forPrimaryKey: tag) {
-                    return item
-                } else {
-                    let item = RealmString(string: tag)
-                    self.realmProvider.realm().add(item)
-                    return item
-                }
-            }
-
-            for (index, tag) in realmFeed.tags.enumerated() {
-                if !realmTags.contains(tag) {
-                    realmFeed.tags.remove(at: index)
-                }
-            }
-            for tag in realmTags {
-                if !realmFeed.tags.contains(tag) {
-                    realmFeed.tags.append(tag)
-                }
-            }
-
-            return Feed(realmFeed: realmFeed)
-        }
+        return Promise<Result<Feed, TethysError>>.resolved(.failure(.notSupported))
     }
 
     func set(url: URL, on feed: Feed) -> Future<Result<Feed, TethysError>> {
-        return self.write(feed: feed) { realmFeed in
-            realmFeed.url = url.absoluteString
-            return Feed(realmFeed: realmFeed)
-        }
+        return Promise<Result<Feed, TethysError>>.resolved(.failure(.notSupported))
     }
 
     func readAll(of feed: Feed) -> Future<Result<Void, TethysError>> {
@@ -164,6 +113,16 @@ struct RealmFeedService: FeedService {
         }
     }
 
+    // MARK: LocalFeedService Conformance
+    func updateFeeds(with feeds: AnyCollection<Feed>) -> Future<Result<Void, TethysError>> {
+        return Promise<Result<Void, TethysError>>().future
+    }
+
+    func updateFeed(from feed: Feed) -> Future<Result<Feed, TethysError>> {
+        return Promise<Result<Feed, TethysError>>().future
+    }
+
+    // MARK: Private methods
     private func write<T>(feed: Feed,
                           transaction: @escaping (RealmFeed) -> T) -> Future<Result<T, TethysError>> {
         let promise = Promise<Result<T, TethysError>>()

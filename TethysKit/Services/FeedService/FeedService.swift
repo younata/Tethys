@@ -15,3 +15,8 @@ public protocol FeedService {
     func readAll(of feed: Feed) -> Future<Result<Void, TethysError>>
     func remove(feed: Feed) -> Future<Result<Void, TethysError>>
 }
+
+protocol LocalFeedService: FeedService {
+    func updateFeeds(with feeds: AnyCollection<Feed>) -> Future<Result<Void, TethysError>>
+    func updateFeed(from feed: Feed) -> Future<Result<Feed, TethysError>>
+}

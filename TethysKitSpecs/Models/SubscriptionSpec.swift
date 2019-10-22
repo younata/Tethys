@@ -31,6 +31,10 @@ final class SubscriptionSpec: QuickSpec {
                 expect(received).to(beEmpty())
             }
 
+            it("has a value of nil") {
+                expect(subject.subscription.value).to(beNil())
+            }
+
             describe("when updated") {
                 beforeEach {
                     subject.update(with: 20)
@@ -48,6 +52,10 @@ final class SubscriptionSpec: QuickSpec {
                     expect(moreReceived).to(equal([20]))
                 }
 
+                it("sets the subscription's value") {
+                    expect(subject.subscription.value).to(equal(20))
+                }
+
                 describe("making more updates") {
                     beforeEach {
                         subject.update(with: 30)
@@ -55,6 +63,10 @@ final class SubscriptionSpec: QuickSpec {
 
                     it("calls the callbacks") {
                         expect(received).to(equal([20, 30]))
+                    }
+
+                    it("updates the subscription's value") {
+                        expect(subject.subscription.value).to(equal(30))
                     }
 
                     it("additional callbacks now only received the latest value") {
@@ -73,6 +85,11 @@ final class SubscriptionSpec: QuickSpec {
 
                     it("stops holding on to the callback blocks") {
                         expect(observer.count).to(equal(1), description: "Expected the block to have been deallocated")
+                    }
+
+                    it("notes to those who ask that it's finished") {
+                        expect(subject.subscription.isFinished).to(beTrue())
+                        expect(subject.isFinished).to(beTrue())
                     }
                 }
             }

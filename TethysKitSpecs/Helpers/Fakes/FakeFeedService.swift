@@ -3,7 +3,7 @@ import CBGPromise
 
 import TethysKit
 
-final class FakeFeedService: FeedService {
+class FakeFeedService: FeedService {
     private(set) var feedsPromises: [Promise<Result<AnyCollection<Feed>, TethysError>>] = []
     func feeds() -> Future<Result<AnyCollection<Feed>, TethysError>> {
         let promise = Promise<Result<AnyCollection<Feed>, TethysError>>()

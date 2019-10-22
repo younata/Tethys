@@ -46,7 +46,14 @@ public func configure(container: Container) {
 
     container.register(Analytics.self) { _ in BadAnalytics() }.inObjectScope(.container)
 
-    container.register(Reachable.self) { _ in Reachability()! }
+    container.register(Reachable.self) { _ in
+        do {
+            return try Reachability()
+
+        } catch let error {
+            fatalError("Error getting reachability: \(error)")
+        }
+    }
 
     #if os(iOS)
     container.register(SearchIndex.self) { _ in CSSearchableIndex.default() }

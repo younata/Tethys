@@ -440,11 +440,11 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                     }
 
                     it("inserts new feeds that the updated list found") {
-                        let newFeed = realm.objects(RealmFeed.self).first { $0.url == "https://example.com/brand_new_feed" }
+                        let newFeed = realm.objects(RealmFeed.self).first { $0.url == "https://example.com/feed/feed1" }
                         expect(newFeed).toNot(beNil())
-                        expect(newFeed?.title).to(equal("Brand New Feed"))
-                        expect(newFeed?.summary).to(equal("some summary"))
-                        expect(newFeed?.tags).to(beEmpty())
+                        expect(newFeed?.title).to(equal("Updated 1"))
+                        expect(newFeed?.summary).to(equal("Updated Summary 1"))
+                        expect(newFeed?.tags.map { $0.string }.sorted()).to(equal(["a", "b", "c"]))
                     }
 
                     it("resolves the promise successfully") {

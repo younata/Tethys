@@ -6,6 +6,6 @@ protocol Reachable {
 
 extension Reachability: Reachable {
     var hasNetworkConnectivity: Bool {
-        return self.connection != .none
+        return self.connection != .unavailable
     }
 }

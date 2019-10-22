@@ -115,11 +115,58 @@ struct LocalRealmFeedService: LocalFeedService {
 
     // MARK: LocalFeedService Conformance
     func updateFeeds(with feeds: AnyCollection<Feed>) -> Future<Result<Void, TethysError>> {
-        return Promise<Result<Void, TethysError>>().future
+        let promise = Promise<Result<Void, TethysError>>()
+        self.workQueue.addOperation {
+            let realm = self.realmProvider.realm()
+            realm.beginWrite()
+            let realmFeeds = realm.objects(RealmFeed.self)
+            for feed in feeds {
+                let realmFeed: RealmFeed
+                if let existing = realmFeeds.first(where: { $0.url == feed.url.absoluteString }) {
+                    realmFeed = existing
+                } else {
+                    realmFeed = RealmFeed()
+                    realmFeed.url = feed.url.absoluteString
+
+                    realm.add(realmFeed)
+                }
+
+                realmFeed.title = feed.title
+                realmFeed.summary = feed.summary
+                self.set(tags: feed.tags, of: realmFeed, realm: realm)
+            }
+            do {
+                try realm.commitWrite()
+            } catch let exception {
+                dump(exception)
+                return self.resolve(promise: promise, error: .database(.unknown))
+            }
+            self.resolve(promise: promise, with: Void())
+        }
+        return promise.future
     }
 
     func updateFeed(from feed: Feed) -> Future<Result<Feed, TethysError>> {
-        return Promise<Result<Feed, TethysError>>().future
+        let promise = Promise<Result<Feed, TethysError>>()
+        self.workQueue.addOperation {
+            let realm = self.realmProvider.realm()
+            guard let realmFeed = realm.objects(RealmFeed.self).first(where: { $0.url == feed.url.absoluteString })
+                else {
+                    return self.resolve(promise: promise, error: .database(.entryNotFound))
+            }
+            realm.beginWrite()
+            realmFeed.title = feed.title
+            realmFeed.summary = feed.summary
+            self.set(tags: feed.tags, of: realmFeed, realm: realm)
+            do {
+                try realm.commitWrite()
+            } catch let exception {
+                dump(exception)
+                return self.resolve(promise: promise, error: .database(.unknown))
+            }
+            self.resolve(promise: promise, with: Feed(realmFeed: realmFeed))
+        }
+        return promise.future
     }
 
     // MARK: Private methods
@@ -164,6 +211,29 @@ struct LocalRealmFeedService: LocalFeedService {
             }
 
             promise.resolve(result)
+        }
+    }
+
+    private func set(tags: [String], of realmFeed: RealmFeed, realm: Realm) {
+        let realmTags: [RealmString] = tags.map { tag in
+            if let item = realm.object(ofType: RealmString.self, forPrimaryKey: tag) {
+                return item
+            } else {
+                let item = RealmString(string: tag)
+                realm.add(item)
+                return item
+            }
+        }
+
+        for (index, tag) in realmFeed.tags.enumerated() {
+            if !realmTags.contains(tag) {
+                realmFeed.tags.remove(at: index)
+            }
+        }
+        for tag in realmTags {
+            if !realmFeed.tags.contains(tag) {
+                realmFeed.tags.append(tag)
+            }
         }
     }
 }

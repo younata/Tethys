@@ -13,6 +13,9 @@
 		4563009123202CD5008D0401 /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; };
 		4563009323202CE4008D0401 /* Nimble.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		456300A323236C6F008D0401 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 456300A223236C6F008D0401 /* Notifications.swift */; };
+		457EB03E236100B1006A7A82 /* FakeFeedCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457EB03D236100B1006A7A82 /* FakeFeedCoordinator.swift */; };
+		457EB03F236100B8006A7A82 /* FakeFeedCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457EB03D236100B1006A7A82 /* FakeFeedCoordinator.swift */; };
+		457EB040236101CE006A7A82 /* FakeLocalFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F55BAC235BA03E00FE5887 /* FakeLocalFeedService.swift */; };
 		45FE744A23431BC100193955 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 45FE744823431BC100193955 /* Localizable.stringsdict */; };
 		8902D5461BB07389003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; };
 		8902D5471BB0753E003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; };
@@ -384,6 +387,7 @@
 		4515FDB6234CECB80032A165 /* ExplanationViewSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplanationViewSpec.swift; sourceTree = "<group>"; };
 		454A2E722316DFC300022660 /* BreakoutToRefreshView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakoutToRefreshView.swift; sourceTree = "<group>"; };
 		456300A223236C6F008D0401 /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
+		457EB03D236100B1006A7A82 /* FakeFeedCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeFeedCoordinator.swift; sourceTree = "<group>"; };
 		45FE744923431BC100193955 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		8902D5451BB07389003D7C22 /* Lepton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lepton.framework; path = ../Carthage/Build/iOS/Lepton.framework; sourceTree = "<group>"; };
 		8903A6241C4AB17C00E896BF /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
@@ -1280,6 +1284,7 @@
 				893694FE21E30F30002C3A09 /* FakeAccountService.swift */,
 				89943211219AAA4900FC6EB6 /* FakeArticleService.swift */,
 				893694F321E1A4E8002C3A09 /* FakeCredentialService.swift */,
+				457EB03D236100B1006A7A82 /* FakeFeedCoordinator.swift */,
 				895B9A1B21AA66A3003FFE46 /* FakeFeedService.swift */,
 				89F55BAC235BA03E00FE5887 /* FakeLocalFeedService.swift */,
 				89AFF9FE1D4870F7002255E8 /* FakeImportables.swift */,
@@ -1945,6 +1950,7 @@
 				89F55BAB235B994F00FE5887 /* FeedCoordinatorSpec.swift in Sources */,
 				89D427E01CF540560093D186 /* TethysErrorSpec.swift in Sources */,
 				893694F621E28727002C3A09 /* RequestFactory.swift in Sources */,
+				457EB03E236100B1006A7A82 /* FakeFeedCoordinator.swift in Sources */,
 				89F55BAD235BA03E00FE5887 /* FakeLocalFeedService.swift in Sources */,
 				8903F5C01D412EF500546099 /* UpdateUseCaseSpec.swift in Sources */,
 				895B9A1C21AA66A3003FFE46 /* FakeFeedService.swift in Sources */,
@@ -2048,11 +2054,13 @@
 				89F517021B1C070C0005AB04 /* FeedViewControllerSpec.swift in Sources */,
 				89FA3BDE21A925D00026BC88 /* ModelFactories.swift in Sources */,
 				899C48171A9AC0E900F57B96 /* FindFeedViewControllerSpec.swift in Sources */,
+				457EB040236101CE006A7A82 /* FakeLocalFeedService.swift in Sources */,
 				8941AB7D1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift in Sources */,
 				89FA3BDB21A785480026BC88 /* ArticleCellControllerSpec.swift in Sources */,
 				8903A6271C4ABA7800E896BF /* NotificationViewSpec.swift in Sources */,
 				894D1AF51DB28B8E00E70B1A /* RefreshControlSpec.swift in Sources */,
 				89F98BA81BA07E50005C3CA8 /* SettingsRepositorySpec.swift in Sources */,
+				457EB03F236100B8006A7A82 /* FakeFeedCoordinator.swift in Sources */,
 				89E2A33F1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift in Sources */,
 				896EF7EC21E54A3200C0AB75 /* FakeMessenger.swift in Sources */,
 				89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */,

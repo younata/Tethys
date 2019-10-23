@@ -35,7 +35,7 @@ public final class FeedListController: UIViewController {
     private var menuTopOffset: NSLayoutConstraint!
     public let notificationView = NotificationView(forAutoLayout: ())
 
-    fileprivate let feedService: FeedService
+    fileprivate let feedCoordinator: FeedCoordinator
     fileprivate let settingsRepository: SettingsRepository
     fileprivate let mainQueue: OperationQueue
     fileprivate let notificationCenter: NotificationCenter
@@ -45,7 +45,7 @@ public final class FeedListController: UIViewController {
     fileprivate let settingsViewController: () -> SettingsViewController
     fileprivate let articleListController: (Feed) -> ArticleListController
 
-    public init(feedService: FeedService,
+    public init(feedCoordinator: FeedCoordinator,
                 settingsRepository: SettingsRepository,
                 mainQueue: OperationQueue,
                 notificationCenter: NotificationCenter,
@@ -54,7 +54,7 @@ public final class FeedListController: UIViewController {
                 settingsViewController: @escaping () -> SettingsViewController,
                 articleListController: @escaping (Feed) -> ArticleListController
         ) {
-        self.feedService = feedService
+        self.feedCoordinator = feedCoordinator
         self.settingsRepository = settingsRepository
         self.mainQueue = mainQueue
         self.notificationCenter = notificationCenter
@@ -194,9 +194,9 @@ public final class FeedListController: UIViewController {
             self.tableView.reloadSections(IndexSet(integer: 0), with: oldFeeds.isEmpty ? .none : .right)
         }
 
-        self.feedService.feeds().then {
+        self.feedCoordinator.feeds().then { [weak self] in
             let errorTitle = NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Title", comment: "")
-            self.unwrap(
+            self?.unwrap(
                 result: $0,
                 errorTitle: errorTitle,
                 onSuccess: { reloadWithFeeds(Array($0)) },
@@ -235,7 +235,7 @@ public final class FeedListController: UIViewController {
     }
 
     fileprivate func deleteFeed(feed: Feed, indexPath: IndexPath?, completionHandler: ((Bool) -> Void)? = nil) {
-        self.feedService.remove(feed: feed).then { result in
+        self.feedCoordinator.unsubscribe(from: feed).then { result in
             let errorTitle = NSLocalizedString("FeedsTableViewController_Loading_Deleting_Feed_Error", comment: "")
             self.unwrap(
                 result: result,
@@ -254,7 +254,7 @@ public final class FeedListController: UIViewController {
     }
 
     fileprivate func markRead(feed: Feed, indexPath: IndexPath?, completionHandler: ((Bool) -> Void)? = nil) {
-        self.feedService.readAll(of: feed).then { result in
+        self.feedCoordinator.readAll(of: feed).then { result in
             let errorTitle = NSLocalizedString("FeedsTableViewController_Loading_Marking_Feed_Error", comment: "")
             self.unwrap(
                 result: result,

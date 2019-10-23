@@ -59,12 +59,12 @@ public class FeedCoordinator {
     }
 
     // MARK: Retrieving articles of a feed
-    func articles(of feed: Feed) -> Future<Result<AnyCollection<Article>, TethysError>> {
+    public func articles(of feed: Feed) -> Future<Result<AnyCollection<Article>, TethysError>> {
         return self.localFeedService.articles(of: feed)
     }
 
     // MARK: Subscribing to a feed
-    func subscribe(to url: URL) -> Future<Result<Feed, TethysError>> {
+    public func subscribe(to url: URL) -> Future<Result<Feed, TethysError>> {
         let localFuture = self.localFeedService.subscribe(to: url)
         let networkFuture = self.networkFeedServiceProvider().subscribe(to: url)
         return Promise<Result<Feed, TethysError>>.when([localFuture, networkFuture]).map { results in
@@ -107,7 +107,7 @@ public class FeedCoordinator {
 
      TODO: Figure out how unsubscribing on the web side of the network service will reflect here.
      */
-    func unsubscribe(from feed: Feed) -> Future<Result<Void, TethysError>> {
+    public func unsubscribe(from feed: Feed) -> Future<Result<Void, TethysError>> {
         let localFuture = self.localFeedService.remove(feed: feed)
         let networkFuture = self.networkFeedServiceProvider().remove(feed: feed)
         return Promise<Result<Void, TethysError>>.when([localFuture, networkFuture])
@@ -129,7 +129,7 @@ public class FeedCoordinator {
     }
 
     // MARK: Marking all articles of a feed as read
-    func readAll(of feed: Feed) -> Future<Result<Void, TethysError>> {
+    public func readAll(of feed: Feed) -> Future<Result<Void, TethysError>> {
         let localFuture = self.localFeedService.readAll(of: feed)
         let networkFuture = self.networkFeedServiceProvider().readAll(of: feed)
         return Promise<Result<Void, TethysError>>.when([localFuture, networkFuture])

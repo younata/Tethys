@@ -39,7 +39,7 @@ func tagEditorViewControllerFactory(
 }
 
 func feedListControllerFactory(
-    feedService: FeedService = FakeFeedService(),
+    feedCoordinator: FeedCoordinator = FakeFeedCoordinator(),
     settingsRepository: SettingsRepository = settingsRepositoryFactory(),
     mainQueue: FakeOperationQueue = FakeOperationQueue(),
     notificationCenter: NotificationCenter = NotificationCenter(),
@@ -49,7 +49,7 @@ func feedListControllerFactory(
     articleListController: @escaping (Feed) -> ArticleListController = { feed in articleListControllerFactory(feed: feed) }
     ) -> FeedListController {
     return FeedListController(
-        feedService: feedService,
+        feedCoordinator: feedCoordinator,
         settingsRepository: SettingsRepository(userDefaults: nil),
         mainQueue: mainQueue,
         notificationCenter: notificationCenter,

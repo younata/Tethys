@@ -14,8 +14,6 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
         var mainQueue: FakeOperationQueue!
         var workQueue: FakeOperationQueue!
 
-        var updateService: FakeUpdateService!
-
         var subject: LocalRealmFeedService!
 
         var realmFeed1: RealmFeed!
@@ -48,11 +46,8 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
             workQueue = FakeOperationQueue()
             workQueue.runSynchronously = true
 
-            updateService = FakeUpdateService()
-
             subject = LocalRealmFeedService(
                 realmProvider: realmProvider,
-                updateService: updateService,
                 mainQueue: mainQueue,
                 workQueue: workQueue
             )

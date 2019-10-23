@@ -102,6 +102,21 @@ private func configureServices(container: Container) {
         )
     }.inObjectScope(.container)
 
+    container.register(FeedCoordinator.self) { r in
+        return FeedCoordinator(
+            localFeedService: r.resolve(LocalFeedService.self)!,
+            networkFeedServiceProvider: { r.resolve(FeedService.self)! }
+        )
+    }.inObjectScope(.container)
+
+    container.register(LocalFeedService.self) { r in
+        return LocalRealmFeedService(
+            realmProvider: r.resolve(RealmProvider.self)!,
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
+        )
+    }
+
     container.register(OPMLService.self) { r in
         return LeptonOPMLService(
             feedService: r.resolve(FeedService.self)!,

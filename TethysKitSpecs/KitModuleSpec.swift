@@ -40,6 +40,8 @@ class KitModuleSpec: QuickSpec {
             exists(RealmProvider.self, kindOf: DefaultRealmProvider.self)
 
             exists(FeedService.self, kindOf: FeedRepository.self, singleton: true)
+            exists(FeedCoordinator.self, singleton: true)
+            exists(LocalFeedService.self, kindOf: LocalRealmFeedService.self)
             exists(ArticleService.self, kindOf: ArticleRepository.self, singleton: true)
 
             exists(HTTPClient.self, kindOf: URLSession.self, singleton: true)
@@ -75,52 +77,58 @@ class KitModuleSpec: QuickSpec {
             exists(BackgroundStateMonitor.self)
         }
 
-        func exists<T>(_ type: T.Type) {
+        func exists<T>(_ type: T.Type, singleton: Bool = false, line: UInt = #line) {
             describe("\(type)") {
                 it("exists") {
-                    expect(subject.resolve(type)).toNot(beNil())
+                    expect(subject.resolve(type), line: line).toNot(beNil())
+                }
+            }
+
+            if singleton {
+                it("is a singleton") {
+                    expect(subject.resolve(type), line: line).to(beIdenticalTo(subject.resolve(type)))
                 }
             }
         }
 
-        func singleton<T>(_ type: T.Type) {
+        func singleton<T>(_ type: T.Type, line: UInt = #line) {
             describe("\(type)") {
                 it("exists") {
-                    expect(subject.resolve(type)).toNot(beNil())
+                    expect(subject.resolve(type), line: line).toNot(beNil())
                 }
 
                 it("is a singleton") {
-                    expect(subject.resolve(type)).to(beIdenticalTo(subject.resolve(type)))
+                    expect(subject.resolve(type), line: line).to(beIdenticalTo(subject.resolve(type)))
                 }
             }
         }
 
-        func exists<T, U>(_ type: T.Type, kindOf otherType: U.Type, singleton: Bool = false) {
+        func exists<T, U>(_ type: T.Type, kindOf otherType: U.Type, singleton: Bool = false, line: UInt = #line) {
             describe("\(type)") {
                 it("exists") {
-                    expect(subject.resolve(type)).toNot(beNil())
+                    expect(subject.resolve(type), line: line).toNot(beNil())
                 }
 
                 it("is a \(otherType)") {
-                    expect(subject.resolve(type)).to(beAKindOf(otherType))
+                    expect(subject.resolve(type), line: line).to(beAKindOf(otherType))
                 }
 
                 if singleton {
                     it("is a singleton") {
-                        expect(subject.resolve(type)).to(beIdenticalTo(subject.resolve(type)))
+                        expect(subject.resolve(type), line: line).to(beIdenticalTo(subject.resolve(type)))
                     }
                 }
             }
         }
 
-        func alwaysIs<T: Equatable>(_ type: T.Type, a obj: T) {
+        func alwaysIs<T: Equatable>(_ type: T.Type, a obj: T, line: UInt = #line) {
             describe("\(type)") {
                 it("exists") {
-                    expect(subject.resolve(type)).toNot(beNil())
+                    expect(subject.resolve(type), line: line).toNot(beNil())
                 }
 
                 it("is always \(Mirror(reflecting: obj).description)") {
-                    expect(subject.resolve(type)).to(equal(obj))
+                    expect(subject.resolve(type), line: line).to(equal(obj))
                 }
             }
         }

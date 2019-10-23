@@ -9,7 +9,7 @@ import CBGPromise
 final class FeedListControllerSpec: QuickSpec {
     override func spec() {
         var subject: FeedListController!
-        var feedService: FakeFeedService!
+        var feedCoordinator: FakeFeedCoordinator!
         var navigationController: UINavigationController!
         var settingsRepository: SettingsRepository!
         var mainQueue: FakeOperationQueue!
@@ -24,14 +24,14 @@ final class FeedListControllerSpec: QuickSpec {
         var recorder: NotificationRecorder!
 
         beforeEach {
-            feedService = FakeFeedService()
+            feedCoordinator = FakeFeedCoordinator()
             mainQueue = FakeOperationQueue()
             settingsRepository = SettingsRepository(userDefaults: nil)
             settingsRepository.refreshControl = .spinner
             notificationCenter = NotificationCenter()
 
             subject = FeedListController(
-                feedService: feedService,
+                feedCoordinator: feedCoordinator,
                 settingsRepository: settingsRepository,
                 mainQueue: mainQueue,
                 notificationCenter: notificationCenter,
@@ -191,18 +191,18 @@ final class FeedListControllerSpec: QuickSpec {
                 }
             }
 
-            it("asks the feed service to fetch the feeds") {
-                expect(feedService.feedsPromises).to(haveCount(1))
+            it("asks the feed coordinator to fetch the feeds") {
+                expect(feedCoordinator.feedsPublishers).to(haveCount(1))
             }
 
             it("starts refreshing") {
                 expect(subject.refreshControl.isRefreshing).to(beTrue())
             }
 
-            describe("when the feed service resolves successfully") {
+            describe("when the feed coordinator updates successfully") {
                 context("with a set of feeds") {
                     beforeEach {
-                        feedService.feedsPromises.last?.resolve(.success(AnyCollection(feeds)))
+                        feedCoordinator.feedsPublishers.last?.update(with: .success(AnyCollection(feeds)))
                     }
 
                     it("shows a row for each returned feed") {
@@ -223,8 +223,8 @@ final class FeedListControllerSpec: QuickSpec {
                             subject.refreshControl.spinner.sendActions(for: .valueChanged)
                         }
 
-                        it("tells the feedService to fetch new feeds") {
-                            expect(feedService.feedsPromises).to(haveCount(2))
+                        it("tells the feed coordinator to fetch new feeds") {
+                            expect(feedCoordinator.feedsPublishers).to(haveCount(2))
                         }
 
                         it("refreshes") {
@@ -320,12 +320,12 @@ final class FeedListControllerSpec: QuickSpec {
                                             }
 
                                             it("marks all articles of that feed as read") {
-                                                expect(feedService.readAllOfFeedCalls).to(equal([feeds[0]]))
+                                                expect(feedCoordinator.readAllOfFeedCalls).to(equal([feeds[0]]))
                                             }
 
-                                            describe("when the feed service succeeds") {
+                                            describe("when the feed coordinator succeeds") {
                                                 beforeEach {
-                                                    feedService.readAllOfFeedPromises.last?.resolve(.success(()))
+                                                    feedCoordinator.readAllOfFeedPromises.last?.resolve(.success(()))
                                                 }
 
                                                 it("marks the cell as unread") {
@@ -337,15 +337,15 @@ final class FeedListControllerSpec: QuickSpec {
                                                     expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
                                                 }
 
-                                                it("does not tell the feedService to fetch new feeds") {
-                                                    expect(feedService.feedsPromises).to(haveCount(1))
+                                                it("does not tell the feed coordinator to fetch new feeds") {
+                                                    expect(feedCoordinator.feedsPublishers).to(haveCount(1))
                                                 }
                                             }
 
-                                            describe("when the feed service fails") {
+                                            describe("when the feed coordinator fails") {
                                                 beforeEach {
                                                     UIView.pauseAnimations()
-                                                    feedService.readAllOfFeedPromises.last?.resolve(.failure(.database(.unknown)))
+                                                    feedCoordinator.readAllOfFeedPromises.last?.resolve(.failure(.database(.unknown)))
                                                 }
 
                                                 afterEach {
@@ -433,13 +433,13 @@ final class FeedListControllerSpec: QuickSpec {
                                                 action?.handler(action!)
                                             }
 
-                                            it("deletes the feed from the data store") {
-                                                expect(feedService.removeFeedCalls).to(equal([feeds[0]]))
+                                            it("unsubcribes from the feed") {
+                                                expect(feedCoordinator.unsubscribeCalls).to(equal([feeds[0]]))
                                             }
 
-                                            describe("if the feedService successfully removes the feed") {
+                                            describe("if the feed coordinator successfully unsubscribes from the feed") {
                                                 beforeEach {
-                                                    feedService.removeFeedPromises.last?.resolve(.success(()))
+                                                    feedCoordinator.unsubscribePromises.last?.resolve(.success(()))
                                                 }
 
                                                 it("removes the feed from the list of cells") {
@@ -447,10 +447,10 @@ final class FeedListControllerSpec: QuickSpec {
                                                 }
                                             }
 
-                                            describe("if the feedService fails to remove the feed") {
+                                            describe("if the feed coordinator fails to unsubscribe from the feed") {
                                                 beforeEach {
                                                     UIView.pauseAnimations()
-                                                    feedService.removeFeedPromises.last?.resolve(.failure(.database(.unknown)))
+                                                    feedCoordinator.unsubscribePromises.last?.resolve(.failure(.database(.unknown)))
                                                 }
 
                                                 afterEach {
@@ -523,12 +523,12 @@ final class FeedListControllerSpec: QuickSpec {
                                         }
 
                                         it("deletes the feed from the data store") {
-                                            expect(feedService.removeFeedCalls).to(equal([feeds[0]]))
+                                            expect(feedCoordinator.unsubscribeCalls).to(equal([feeds[0]]))
                                         }
 
                                         describe("if the feedService successfully removes the feed") {
                                             beforeEach {
-                                                feedService.removeFeedPromises.last?.resolve(.success(()))
+                                                feedCoordinator.unsubscribePromises.last?.resolve(.success(()))
                                             }
 
                                             it("removes the feed from the list of cells") {
@@ -540,10 +540,10 @@ final class FeedListControllerSpec: QuickSpec {
                                             }
                                         }
 
-                                        describe("if the feedService fails to remove the feed") {
+                                        describe("if the feedService fails to unsubscribe from the feed") {
                                             beforeEach {
                                                 UIView.pauseAnimations()
-                                                feedService.removeFeedPromises.last?.resolve(.failure(.database(.unknown)))
+                                                feedCoordinator.unsubscribePromises.last?.resolve(.failure(.database(.unknown)))
                                             }
 
                                             afterEach {
@@ -585,12 +585,12 @@ final class FeedListControllerSpec: QuickSpec {
                                         }
 
                                         it("marks all articles of that feed as read") {
-                                            expect(feedService.readAllOfFeedCalls).to(equal([feeds[0]]))
+                                            expect(feedCoordinator.readAllOfFeedCalls).to(equal([feeds[0]]))
                                         }
 
-                                        describe("when the feed service succeeds") {
+                                        describe("when the feed coordinator succeeds") {
                                             beforeEach {
-                                                feedService.readAllOfFeedPromises.last?.resolve(.success(()))
+                                                feedCoordinator.readAllOfFeedPromises.last?.resolve(.success(()))
                                             }
 
                                             it("marks the cell as unread") {
@@ -602,8 +602,8 @@ final class FeedListControllerSpec: QuickSpec {
                                                 expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
                                             }
 
-                                            it("does not tell the feedService to fetch new feeds") {
-                                                expect(feedService.feedsPromises).to(haveCount(1))
+                                            it("does not tell the feed coordinator to fetch new feeds") {
+                                                expect(feedCoordinator.feedsPublishers).to(haveCount(1))
                                             }
 
                                             it("calls the completion handler") {
@@ -611,10 +611,10 @@ final class FeedListControllerSpec: QuickSpec {
                                             }
                                         }
 
-                                        describe("when the feed service fails") {
+                                        describe("when the feed coordinator fails") {
                                             beforeEach {
                                                 UIView.pauseAnimations()
-                                                feedService.readAllOfFeedPromises.last?.resolve(.failure(.database(.unknown)))
+                                                feedCoordinator.readAllOfFeedPromises.last?.resolve(.failure(.database(.unknown)))
                                             }
 
                                             afterEach {
@@ -708,14 +708,14 @@ final class FeedListControllerSpec: QuickSpec {
                         }
 
                         it("tells the feedService to fetch new feeds") {
-                            expect(feedService.feedsPromises).to(haveCount(2))
+                            expect(feedCoordinator.feedsPublishers).to(haveCount(2))
                         }
                     }
                 }
 
                 context("but no feeds were found") {
                     beforeEach {
-                        feedService.feedsPromises.last?.resolve(.success(AnyCollection([])))
+                        feedCoordinator.feedsPublishers.last?.update(with: .success(AnyCollection([])))
                     }
 
                     it("shows the onboarding view") {
@@ -729,10 +729,10 @@ final class FeedListControllerSpec: QuickSpec {
                 }
             }
 
-            describe("when the feed service resolves with an error") {
+            describe("when the feed coordinator updates with an error") {
                 beforeEach {
                     UIView.pauseAnimations()
-                    feedService.feedsPromises.last?.resolve(.failure(.database(.unknown)))
+                    feedCoordinator.feedsPublishers.last?.update(with: .failure(.database(.unknown)))
                 }
 
                 afterEach {

@@ -84,7 +84,7 @@ private func registerViewControllers(container: Container) {
 
     container.register(FeedListController.self) { r in
         return FeedListController(
-            feedService: r.resolve(FeedService.self)!,
+            feedCoordinator: r.resolve(FeedCoordinator.self)!,
             settingsRepository: r.resolve(SettingsRepository.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
             notificationCenter: .default,

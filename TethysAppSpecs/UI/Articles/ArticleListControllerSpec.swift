@@ -22,7 +22,7 @@ class ArticleListControllerSpec: QuickSpec {
 
         var articleUseCase: FakeArticleUseCase!
 
-        var feedService: FakeFeedService!
+        var feedCoordinator: FakeFeedCoordinator!
         var articleService: FakeArticleService!
         var notificationCenter: NotificationCenter!
         var articleCellController: FakeArticleCellController!
@@ -48,7 +48,7 @@ class ArticleListControllerSpec: QuickSpec {
             let a = fakeArticle(feed: feed)
             articles = [a, b, c, d]
 
-            feedService = FakeFeedService()
+            feedCoordinator = FakeFeedCoordinator()
             articleService = FakeArticleService()
             articleCellController = FakeArticleCellController()
 
@@ -57,7 +57,7 @@ class ArticleListControllerSpec: QuickSpec {
             subject = ArticleListController(
                 feed: feed,
                 messenger: messenger,
-                feedService: feedService,
+                feedCoordinator: feedCoordinator,
                 articleService: articleService,
                 notificationCenter: notificationCenter,
                 articleCellController: articleCellController,
@@ -74,7 +74,7 @@ class ArticleListControllerSpec: QuickSpec {
         }
 
         it("requests the articles from the cell") {
-            expect(feedService.articlesOfFeedCalls).to(equal([feed]))
+            expect(feedCoordinator.articlesOfFeedCalls).to(equal([feed]))
         }
 
         it("dismisses the keyboard upon drag") {
@@ -108,7 +108,7 @@ class ArticleListControllerSpec: QuickSpec {
 
         describe("when the request succeeds") {
             beforeEach {
-                feedService.articlesOfFeedPromises.last?.resolve(.success(AnyCollection(articles)))
+                feedCoordinator.articlesOfFeedPromises.last?.resolve(.success(AnyCollection(articles)))
             }
 
             describe("the bar button items") {
@@ -174,12 +174,12 @@ class ArticleListControllerSpec: QuickSpec {
                         }
 
                         it("marks all articles of that feed as read") {
-                            expect(feedService.readAllOfFeedCalls) == [feed]
+                            expect(feedCoordinator.readAllOfFeedCalls).to(equal([feed]))
                         }
 
                         describe("when the mark read promise succeeds") {
                             beforeEach {
-                                feedService.readAllOfFeedPromises.last?.resolve(.success(()))
+                                feedCoordinator.readAllOfFeedPromises.last?.resolve(.success(()))
                             }
 
                             it("removes the indicator") {
@@ -190,8 +190,8 @@ class ArticleListControllerSpec: QuickSpec {
                             }
 
                             it("refreshes the articles") {
-                                expect(feedService.articlesOfFeedCalls).to(haveCount(2))
-                                expect(feedService.articlesOfFeedCalls.last).to(equal(feed))
+                                expect(feedCoordinator.articlesOfFeedCalls).to(haveCount(2))
+                                expect(feedCoordinator.articlesOfFeedCalls.last).to(equal(feed))
                             }
 
                             it("posts a notification telling other things to reload") {
@@ -208,7 +208,7 @@ class ArticleListControllerSpec: QuickSpec {
                                 var oldConfigureCalls: Int = 0
                                 beforeEach {
                                     oldConfigureCalls = articleCellController.configureCalls.count
-                                    feedService.articlesOfFeedPromises.last?.resolve(.success(AnyCollection(updatedArticles)))
+                                    feedCoordinator.articlesOfFeedPromises.last?.resolve(.success(AnyCollection(updatedArticles)))
                                 }
 
                                 it("refreshes the tableView with the articles") {
@@ -223,7 +223,7 @@ class ArticleListControllerSpec: QuickSpec {
 
                         describe("when the mark read promise fails") {
                             beforeEach {
-                                feedService.readAllOfFeedPromises.last?.resolve(.failure(.database(.unknown)))
+                                feedCoordinator.readAllOfFeedPromises.last?.resolve(.failure(.database(.unknown)))
                             }
 
                             it("removes the indicator") {
@@ -809,7 +809,7 @@ class ArticleListControllerSpec: QuickSpec {
 
         describe("when the request fails") {
             beforeEach {
-                feedService.articlesOfFeedPromises.last?.resolve(.failure(.database(.unknown)))
+                feedCoordinator.articlesOfFeedPromises.last?.resolve(.failure(.database(.unknown)))
             }
 
             itTellsTheUserAboutTheError(title: "Unable to retrieve articles", message: "Unknown Database Error")

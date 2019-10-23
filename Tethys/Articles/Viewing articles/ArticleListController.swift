@@ -37,21 +37,21 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
 
     public let feed: Feed
     private let messenger: Messenger
-    fileprivate let feedService: FeedService
+    fileprivate let feedCoordinator: FeedCoordinator
     fileprivate let articleService: ArticleService
     private let notificationCenter: NotificationCenter
     private let articleCellController: ArticleCellController
     fileprivate let articleViewController: (Article) -> ArticleViewController
     public init(feed: Feed,
                 messenger: Messenger,
-                feedService: FeedService,
+                feedCoordinator: FeedCoordinator,
                 articleService: ArticleService,
                 notificationCenter: NotificationCenter,
                 articleCellController: ArticleCellController,
                 articleViewController: @escaping (Article) -> ArticleViewController) {
         self.feed = feed
         self.messenger = messenger
-        self.feedService = feedService
+        self.feedCoordinator = feedCoordinator
         self.articleService = articleService
         self.notificationCenter = notificationCenter
         self.articleCellController = articleCellController
@@ -308,7 +308,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     }
 
     fileprivate func resetArticles() {
-        self.feedService.articles(of: self.feed).then { result in
+        self.feedCoordinator.articles(of: self.feed).then { result in
             switch result {
             case .success(let articles):
                 self.articles = articles
@@ -349,7 +349,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
 
         indicator.configure(message: NSLocalizedString("ArticleListController_Action_MarkRead_Indicator", comment: ""))
 
-        self.feedService.readAll(of: self.feed).then { markReadResult in
+        self.feedCoordinator.readAll(of: self.feed).then { markReadResult in
             switch markReadResult {
             case .success:
                 indicator.removeFromSuperview()

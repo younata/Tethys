@@ -9,12 +9,15 @@ public protocol OPMLService {
 }
 
 final class LeptonOPMLService: NSObject, OPMLService {
-    private let feedService: FeedService
+    private let feedService: LocalFeedService
+    private let feedCoordinator: FeedCoordinator
     private let mainQueue: OperationQueue
     private let workQueue: OperationQueue
 
-    init(feedService: FeedService, mainQueue: OperationQueue, importQueue: OperationQueue) {
+    init(feedService: LocalFeedService, feedCoordinator: FeedCoordinator,
+         mainQueue: OperationQueue, importQueue: OperationQueue) {
         self.feedService = feedService
+        self.feedCoordinator = feedCoordinator
         self.mainQueue = mainQueue
         self.workQueue = importQueue
 
@@ -48,7 +51,7 @@ final class LeptonOPMLService: NSObject, OPMLService {
         let parser = Lepton.Parser(text: text)
 
         _ = parser.success {items in
-            let futures = items.compactMap { URL(string: $0.xmlURL ?? "") }.map { self.feedService.subscribe(to: $0) }
+            let futures = items.compactMap { URL(string: $0.xmlURL ?? "") }.map { self.feedCoordinator.subscribe(to: $0) }
             Promise<Result<Feed, TethysError>>.when(futures).then { results in
                 let feeds = results.compactMap { $0.value }
 

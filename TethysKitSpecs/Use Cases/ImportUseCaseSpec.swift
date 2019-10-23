@@ -10,7 +10,7 @@ class ImportUseCaseSpec: QuickSpec {
     override func spec() {
         var subject: DefaultImportUseCase!
         var httpClient: FakeHTTPClient!
-        var feedService: FakeFeedService!
+        var feedCoordinator: FakeFeedCoordinator!
         var opmlService: FakeOPMLService!
         var fileManager: FakeFileManager!
         var mainQueue: FakeOperationQueue!
@@ -23,11 +23,11 @@ class ImportUseCaseSpec: QuickSpec {
             mainQueue.runSynchronously = true
 
             httpClient = FakeHTTPClient()
-            feedService = FakeFeedService()
+            feedCoordinator = FakeFeedCoordinator()
 
             subject = DefaultImportUseCase(
                 httpClient: httpClient,
-                feedService: feedService,
+                feedCoordinator: feedCoordinator,
                 opmlService: opmlService,
                 fileManager: fileManager,
                 mainQueue: mainQueue
@@ -36,14 +36,14 @@ class ImportUseCaseSpec: QuickSpec {
 
         func itBehavesLikeSubscribingToAFeed(url: URL, future: @escaping () -> Future<Result<Void, TethysError>>) {
             describe("subscribing to a feed") {
-                it("asks the feed service to subscribe to the feed at that url") {
-                    expect(feedService.subscribeCalls).to(haveCount(1))
-                    expect(feedService.subscribeCalls.last).to(equal(url))
+                it("asks the feed coordinator to subscribe to the feed at that url") {
+                    expect(feedCoordinator.subscribeCalls).to(haveCount(1))
+                    expect(feedCoordinator.subscribeCalls.last).to(equal(url))
                 }
 
-                describe("when the feed service succeeds") {
+                describe("when the subscribe request succeeds") {
                     beforeEach {
-                        feedService.subscribePromises.last?.resolve(.success(
+                        feedCoordinator.subscribePromises.last?.resolve(.success(
                             Feed(title: "", url: url, summary: "", tags: [])
                             ))
                     }
@@ -53,9 +53,9 @@ class ImportUseCaseSpec: QuickSpec {
                     }
                 }
 
-                describe("when the feed service fails") {
+                describe("when the subscribe request fails") {
                     beforeEach {
-                        feedService.subscribePromises.last?.resolve(.failure(.database(.unknown)))
+                        feedCoordinator.subscribePromises.last?.resolve(.failure(.database(.unknown)))
                     }
 
                     it("forwards the error") {

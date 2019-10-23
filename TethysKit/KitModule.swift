@@ -92,15 +92,13 @@ private func configureServices(container: Container) {
     }
 
     container.register(FeedService.self) { r in
-        return FeedRepository(
-            feedService: RealmFeedService(
-                realmProvider: r.resolve(RealmProvider.self)!,
-                updateService: r.resolve(UpdateService.self)!,
-                mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
-                workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
-            )
+        return RealmFeedService(
+            realmProvider: r.resolve(RealmProvider.self)!,
+            updateService: r.resolve(UpdateService.self)!,
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
         )
-    }.inObjectScope(.container)
+    }
 
     container.register(FeedCoordinator.self) { r in
         return FeedCoordinator(
@@ -119,7 +117,8 @@ private func configureServices(container: Container) {
 
     container.register(OPMLService.self) { r in
         return LeptonOPMLService(
-            feedService: r.resolve(FeedService.self)!,
+            feedService: r.resolve(LocalFeedService.self)!,
+            feedCoordinator: r.resolve(FeedCoordinator.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
             importQueue: r.resolve(OperationQueue.self, name: kBackgroundQueue)!
         )
@@ -143,7 +142,7 @@ private func configureUseCases(container: Container) {
     container.register(ImportUseCase.self) { r in
         return DefaultImportUseCase(
             httpClient: r.resolve(HTTPClient.self)!,
-            feedService: r.resolve(FeedService.self)!,
+            feedCoordinator: r.resolve(FeedCoordinator.self)!,
             opmlService: r.resolve(OPMLService.self)!,
             fileManager: r.resolve(FileManager.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!

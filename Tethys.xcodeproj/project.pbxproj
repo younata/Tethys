@@ -228,8 +228,6 @@
 		89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */; };
 		89CBD5DD21BF2EF300D3FB31 /* Reachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBD5DC21BF2EF300D3FB31 /* Reachable.swift */; };
 		89CBD5DF21BF780C00D3FB31 /* RealmArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBD5DE21BF780C00D3FB31 /* RealmArticleService.swift */; };
-		89CBD5E821C8A5D900D3FB31 /* FeedRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBD5E721C8A5D900D3FB31 /* FeedRepository.swift */; };
-		89CBD5EA21C8A66000D3FB31 /* FeedRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBD5E921C8A66000D3FB31 /* FeedRepositorySpec.swift */; };
 		89CBD5EC21C8C85600D3FB31 /* ArticleRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBD5EB21C8C85600D3FB31 /* ArticleRepository.swift */; };
 		89CBD5EE21C8C86200D3FB31 /* ArticleRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBD5ED21C8C86200D3FB31 /* ArticleRepositorySpec.swift */; };
 		89CC82001B46198200648367 /* SearchIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 898C48C61B40D2AC0097045A /* SearchIndex.swift */; };
@@ -266,6 +264,9 @@
 		89F55BAD235BA03E00FE5887 /* FakeLocalFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F55BAC235BA03E00FE5887 /* FakeLocalFeedService.swift */; };
 		89F55BAF235CEC1A00FE5887 /* LocalRealmFeedServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F55BAE235CEC1A00FE5887 /* LocalRealmFeedServiceSpec.swift */; };
 		89F55BB1235CECAE00FE5887 /* LocalRealmFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F55BB0235CECAE00FE5887 /* LocalRealmFeedService.swift */; };
+		89F55BB32361105F00FE5887 /* Matchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F55BB22361105F00FE5887 /* Matchers.swift */; };
+		89F55BB42361107D00FE5887 /* Matchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F55BB22361105F00FE5887 /* Matchers.swift */; };
+		89F55BB6236110BF00FE5887 /* SharedBehavior.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F55BB5236110BF00FE5887 /* SharedBehavior.swift */; };
 		89F73DBF21FE5F93001B3135 /* InoreaderFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F73DBE21FE5F93001B3135 /* InoreaderFeedService.swift */; };
 		89F73DC121FE5FF1001B3135 /* InoreaderFeedServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F73DC021FE5FF1001B3135 /* InoreaderFeedServiceSpec.swift */; };
 		89F98BA11BA079A3005C3CA8 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */; };
@@ -571,8 +572,6 @@
 		89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCellSpec.swift; sourceTree = "<group>"; };
 		89CBD5DC21BF2EF300D3FB31 /* Reachable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachable.swift; sourceTree = "<group>"; };
 		89CBD5DE21BF780C00D3FB31 /* RealmArticleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmArticleService.swift; sourceTree = "<group>"; };
-		89CBD5E721C8A5D900D3FB31 /* FeedRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedRepository.swift; sourceTree = "<group>"; };
-		89CBD5E921C8A66000D3FB31 /* FeedRepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedRepositorySpec.swift; sourceTree = "<group>"; };
 		89CBD5EB21C8C85600D3FB31 /* ArticleRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleRepository.swift; sourceTree = "<group>"; };
 		89CBD5ED21C8C86200D3FB31 /* ArticleRepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleRepositorySpec.swift; sourceTree = "<group>"; };
 		89CC82031B461A2B00648367 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
@@ -609,6 +608,8 @@
 		89F55BAC235BA03E00FE5887 /* FakeLocalFeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeLocalFeedService.swift; sourceTree = "<group>"; };
 		89F55BAE235CEC1A00FE5887 /* LocalRealmFeedServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalRealmFeedServiceSpec.swift; sourceTree = "<group>"; };
 		89F55BB0235CECAE00FE5887 /* LocalRealmFeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalRealmFeedService.swift; sourceTree = "<group>"; };
+		89F55BB22361105F00FE5887 /* Matchers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matchers.swift; sourceTree = "<group>"; };
+		89F55BB5236110BF00FE5887 /* SharedBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedBehavior.swift; sourceTree = "<group>"; };
 		89F73DBE21FE5F93001B3135 /* InoreaderFeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InoreaderFeedService.swift; sourceTree = "<group>"; };
 		89F73DC021FE5FF1001B3135 /* InoreaderFeedServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InoreaderFeedServiceSpec.swift; sourceTree = "<group>"; };
 		89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
@@ -939,7 +940,6 @@
 				895B9A1921AA2C06003FFE46 /* RealmFeedServiceSpec.swift */,
 				89F55BAE235CEC1A00FE5887 /* LocalRealmFeedServiceSpec.swift */,
 				89F73DC021FE5FF1001B3135 /* InoreaderFeedServiceSpec.swift */,
-				89CBD5E921C8A66000D3FB31 /* FeedRepositorySpec.swift */,
 				89F55BAA235B994F00FE5887 /* FeedCoordinatorSpec.swift */,
 			);
 			path = FeedService;
@@ -1036,6 +1036,8 @@
 				89D2566F1C3CC011004066B9 /* Fakes */,
 				8994320F219A921100FC6EB6 /* ModelFactories.swift */,
 				893694F521E28727002C3A09 /* RequestFactory.swift */,
+				89F55BB22361105F00FE5887 /* Matchers.swift */,
+				89F55BB5236110BF00FE5887 /* SharedBehavior.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -1272,7 +1274,6 @@
 				894644D821AB8FEB00153308 /* RealmFeedService.swift */,
 				89F55BB0235CECAE00FE5887 /* LocalRealmFeedService.swift */,
 				89F73DBE21FE5F93001B3135 /* InoreaderFeedService.swift */,
-				89CBD5E721C8A5D900D3FB31 /* FeedRepository.swift */,
 				89F55BA8235B973200FE5887 /* FeedCoordinator.swift */,
 			);
 			path = FeedService;
@@ -1862,7 +1863,6 @@
 				89E1868B1D13629D005C5880 /* Analytics.swift in Sources */,
 				8924FE2E1D6D51DC0060D26D /* Array+TethysKit.swift in Sources */,
 				8943044B1B450A5E000078DC /* Article.swift in Sources */,
-				89CBD5E821C8A5D900D3FB31 /* FeedRepository.swift in Sources */,
 				8984FE891CB984A40096F4B3 /* Author.swift in Sources */,
 				89CBD5DF21BF780C00D3FB31 /* RealmArticleService.swift in Sources */,
 				89F55BA5235A749500FE5887 /* Subscription.swift in Sources */,
@@ -1919,7 +1919,6 @@
 				89E186931D136C48005C5880 /* FakeAnalytics.swift in Sources */,
 				89943210219A921100FC6EB6 /* ModelFactories.swift in Sources */,
 				895DA88C222F7D7600B19C37 /* OrderedDictionarySpec.swift in Sources */,
-				89CBD5EA21C8A66000D3FB31 /* FeedRepositorySpec.swift in Sources */,
 				893694EF21E1A27A002C3A09 /* InoreaderAccountServiceSpec.swift in Sources */,
 				894E755821B3176000B4A0A1 /* RealmRSSUpdateServiceSpec.swift in Sources */,
 				89146E4E1C88F01F00EC8F10 /* FakeFileManager.swift in Sources */,
@@ -1934,7 +1933,9 @@
 				89FA3BD321A6706D0026BC88 /* RealmProviderSpec.swift in Sources */,
 				896EF7DF21E407AE00C0AB75 /* KeychainCredentialServiceSpec.swift in Sources */,
 				8936950021E30F30002C3A09 /* FakeAccountService.swift in Sources */,
+				89F55BB32361105F00FE5887 /* Matchers.swift in Sources */,
 				8903F5BC1D404EA800546099 /* FakeUpdateUseCase.swift in Sources */,
+				89F55BB6236110BF00FE5887 /* SharedBehavior.swift in Sources */,
 				8903F5B01D4022AD00546099 /* FakeUserDefaults.swift in Sources */,
 				8935F5D91B4628B3000FFD5D /* FeedSpec.swift in Sources */,
 				89943212219AAA4900FC6EB6 /* FakeArticleService.swift in Sources */,
@@ -2030,6 +2031,7 @@
 				890B78CA1C78E8650066E201 /* ArticleUseCaseSpec.swift in Sources */,
 				899823AE1B30B64000818755 /* ArticleViewControllerSpec.swift in Sources */,
 				892AF319232D896C0018B19C /* FakeWKContentMenuElementInfo.m in Sources */,
+				89F55BB42361107D00FE5887 /* Matchers.swift in Sources */,
 				89BFAC101C4C66AE007B3415 /* CustomMatchers.swift in Sources */,
 				895B9A1F21AA66AB003FFE46 /* FakeFeedService.swift in Sources */,
 				8958EC3A1DCABDA60000159B /* DocumentationViewControllerSpec.swift in Sources */,

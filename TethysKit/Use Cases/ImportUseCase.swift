@@ -18,7 +18,7 @@ public protocol ImportUseCase {
 
 public final class DefaultImportUseCase: ImportUseCase {
     private let httpClient: HTTPClient
-    private let feedService: FeedService
+    private let feedCoordinator: FeedCoordinator
     private let opmlService: OPMLService
     private let fileManager: FileManager
     private let mainQueue: OperationQueue
@@ -30,12 +30,12 @@ public final class DefaultImportUseCase: ImportUseCase {
     fileprivate var knownUrls: [URL: ImportType] = [:]
 
     public init(httpClient: HTTPClient,
-                feedService: FeedService,
+                feedCoordinator: FeedCoordinator,
                 opmlService: OPMLService,
                 fileManager: FileManager,
                 mainQueue: OperationQueue) {
         self.httpClient = httpClient
-        self.feedService = feedService
+        self.feedCoordinator = feedCoordinator
         self.opmlService = opmlService
         self.fileManager = fileManager
         self.mainQueue = mainQueue
@@ -75,7 +75,7 @@ public final class DefaultImportUseCase: ImportUseCase {
         switch importType {
         case .feed:
             let url = self.canonicalURLForFeedAtURL(url)
-            return self.feedService.subscribe(to: url).map { result in
+            return self.feedCoordinator.subscribe(to: url).map { result in
                 return result.map { _ in Void() }
             }
         case .opml:

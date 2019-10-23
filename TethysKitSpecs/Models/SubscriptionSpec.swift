@@ -11,7 +11,7 @@ final class SubscriptionSpec: QuickSpec {
         }
 
         describe("-then(:)") {
-            var received: [Int] = []
+            var received: [SubscriptionUpdate<Int>] = []
 
             var observer: Observer!
 
@@ -41,15 +41,15 @@ final class SubscriptionSpec: QuickSpec {
                 }
 
                 it("calls the callbacks") {
-                    expect(received).to(equal([20]))
+                    expect(received).to(equal([.update(20)]))
                 }
 
                 it("immediately calls any additional callbacks that might be added") {
-                    var moreReceived = [Int]()
+                    var moreReceived = [SubscriptionUpdate<Int>]()
 
                     subject.subscription.then { moreReceived.append($0) }
 
-                    expect(moreReceived).to(equal([20]))
+                    expect(moreReceived).to(equal([.update(20)]))
                 }
 
                 it("sets the subscription's value") {
@@ -62,7 +62,7 @@ final class SubscriptionSpec: QuickSpec {
                     }
 
                     it("calls the callbacks") {
-                        expect(received).to(equal([20, 30]))
+                        expect(received).to(equal([.update(20), .update(30)]))
                     }
 
                     it("updates the subscription's value") {
@@ -70,17 +70,21 @@ final class SubscriptionSpec: QuickSpec {
                     }
 
                     it("additional callbacks now only received the latest value") {
-                        var moreReceived = [Int]()
+                        var moreReceived = [SubscriptionUpdate<Int>]()
 
                         subject.subscription.then { moreReceived.append($0) }
 
-                        expect(moreReceived).to(equal([30]))
+                        expect(moreReceived).to(equal([.update(30)]))
                     }
                 }
 
                 describe("when finished") {
                     beforeEach {
                         subject.finish()
+                    }
+
+                    it("makes one last call, notifying the user that the subscription has petered out") {
+                        expect(received).to(equal([.update(20), .finished]))
                     }
 
                     it("stops holding on to the callback blocks") {

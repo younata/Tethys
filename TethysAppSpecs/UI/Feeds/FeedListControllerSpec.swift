@@ -209,27 +209,12 @@ final class FeedListControllerSpec: QuickSpec {
                         expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(3))
                     }
 
-                    it("stops refreshing") {
-                        expect(subject.refreshControl.isRefreshing).to(beFalse())
+                    it("does not stop refreshing") {
+                        expect(subject.refreshControl.isRefreshing).to(beTrue())
                     }
 
                     it("removes the onboarding view") {
                         expect(subject.onboardingView.superview).to(beNil())
-                    }
-
-                    describe("pull to refresh") {
-                        beforeEach {
-                            subject.refreshControl.beginRefreshing()
-                            subject.refreshControl.spinner.sendActions(for: .valueChanged)
-                        }
-
-                        it("tells the feed coordinator to fetch new feeds") {
-                            expect(feedCoordinator.feedsPublishers).to(haveCount(2))
-                        }
-
-                        it("refreshes") {
-                            expect(subject.refreshControl.isRefreshing).to(beTrue())
-                        }
                     }
 
                     describe("the table") {
@@ -722,6 +707,10 @@ final class FeedListControllerSpec: QuickSpec {
                         expect(subject.onboardingView.superview).toNot(beNil())
                     }
 
+                    it("does not stop refreshing") {
+                        expect(subject.refreshControl.isRefreshing).to(beTrue())
+                    }
+
                     it("gives the onboarding view accessibility information") {
                         expect(subject.onboardingView.accessibilityLabel).to(equal("Usage"))
                         expect(subject.onboardingView.accessibilityValue).to(equal("Welcome to Tethys! Use the add button to search for feeds to follow"))
@@ -739,10 +728,39 @@ final class FeedListControllerSpec: QuickSpec {
                     UIView.resumeAnimations()
                 }
 
+                it("does not stop refreshing") {
+                    expect(subject.refreshControl.isRefreshing).to(beTrue())
+                }
+
                 it("brings up an alert notifying the user") {
                     expect(subject.notificationView.titleLabel.isHidden) == false
                     expect(subject.notificationView.titleLabel.text).to(equal("Unable to fetch feeds"))
                     expect(subject.notificationView.messageLabel.text).to(equal("Unknown Database Error"))
+                }
+            }
+
+            describe("when the feed coordinator finishes") {
+                beforeEach {
+                    feedCoordinator.feedsPublishers.last?.finish()
+                }
+
+                it("stops refreshing") {
+                    expect(subject.refreshControl.isRefreshing).to(beFalse())
+                }
+
+                describe("pull to refresh") {
+                    beforeEach {
+                        subject.refreshControl.beginRefreshing()
+                        subject.refreshControl.spinner.sendActions(for: .valueChanged)
+                    }
+
+                    it("tells the feed coordinator to fetch new feeds") {
+                        expect(feedCoordinator.feedsPublishers).to(haveCount(2))
+                    }
+
+                    it("refreshes") {
+                        expect(subject.refreshControl.isRefreshing).to(beTrue())
+                    }
                 }
             }
         }

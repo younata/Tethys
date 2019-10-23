@@ -176,8 +176,6 @@ public final class FeedListController: UIViewController {
 
     @objc fileprivate func reload(force: Bool = false) {
         let reloadWithFeeds: ([Feed]) -> Void = {feeds in
-            self.refreshControl.endRefreshing(force: true)
-
             self.onboardingView.removeFromSuperview()
             if feeds.isEmpty {
                 self.view.addSubview(self.onboardingView)
@@ -194,14 +192,19 @@ public final class FeedListController: UIViewController {
             self.tableView.reloadSections(IndexSet(integer: 0), with: oldFeeds.isEmpty ? .none : .right)
         }
 
-        self.feedCoordinator.feeds().then { [weak self] in
+        self.feedCoordinator.feeds().then { [weak self] update in
             let errorTitle = NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Title", comment: "")
-            self?.unwrap(
-                result: $0,
-                errorTitle: errorTitle,
-                onSuccess: { reloadWithFeeds(Array($0)) },
-                onError: { }
-            )
+            switch update {
+            case .update(let result):
+                self?.unwrap(
+                    result: result,
+                    errorTitle: errorTitle,
+                    onSuccess: { reloadWithFeeds(Array($0)) },
+                    onError: { }
+                )
+            case .finished:
+                self?.refreshControl.endRefreshing(force: true)
+            }
         }
     }
 

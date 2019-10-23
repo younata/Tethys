@@ -22,10 +22,6 @@ public class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.container.resolve(Analytics.self)!
     }()
 
-    private lazy var feedService: FeedService = {
-        return self.container.resolve(FeedService.self)!
-    }()
-
     private lazy var importUseCase: ImportUseCase = {
         self.container.resolve(ImportUseCase.self)!
     }()

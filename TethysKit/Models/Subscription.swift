@@ -13,27 +13,35 @@ public class Publisher<T> {
     }
 }
 
+public enum SubscriptionUpdate<T> {
+    case update(T)
+    case finished
+}
+
+extension SubscriptionUpdate: Equatable where T: Equatable {}
+
 public class Subscription<T> {
-    private var callbacks: [(T) -> Void] = []
+    private var callbacks: [(SubscriptionUpdate<T>) -> Void] = []
     public private(set) var value: T?
 
     public private(set) var isFinished = false
 
     fileprivate func update(with value: T) {
         self.value = value
-        callbacks.forEach { $0(value) }
+        callbacks.forEach { $0(.update(value)) }
     }
 
     func finish() {
+        self.callbacks.forEach { $0(.finished) }
         self.callbacks = []
         self.isFinished = true
     }
 
-    public func then(_ block: @escaping (T) -> Void) {
+    public func then(_ block: @escaping (SubscriptionUpdate<T>) -> Void) {
         self.callbacks.append(block)
 
         if let value = self.value {
-            block(value)
+            block(.update(value))
         }
     }
 }

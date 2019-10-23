@@ -39,7 +39,7 @@ class KitModuleSpec: QuickSpec {
 
             exists(RealmProvider.self, kindOf: DefaultRealmProvider.self)
 
-            exists(FeedService.self, kindOf: FeedRepository.self, singleton: true)
+            exists(FeedService.self, kindOf: RealmFeedService.self)
             exists(FeedCoordinator.self, singleton: true)
             exists(LocalFeedService.self, kindOf: LocalRealmFeedService.self)
             exists(ArticleService.self, kindOf: ArticleRepository.self, singleton: true)

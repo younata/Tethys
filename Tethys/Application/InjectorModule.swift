@@ -59,7 +59,7 @@ private func registerViewControllers(container: Container) {
         return ArticleListController(
             feed: feed,
             messenger: r.resolve(Messenger.self)!,
-            feedService: r.resolve(FeedService.self)!,
+            feedCoordinator: r.resolve(FeedCoordinator.self)!,
             articleService: r.resolve(ArticleService.self)!,
             notificationCenter: .default,
             articleCellController: r.resolve(ArticleCellController.self, argument: false)!,

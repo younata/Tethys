@@ -9,12 +9,14 @@ class LeptonOPMLServiceSpec: QuickSpec {
     override func spec() {
         var subject: OPMLService!
 
-        var feedService: FakeFeedService!
+        var feedService: FakeLocalFeedService!
+        var feedCoordinator: FakeFeedCoordinator!
         var workQueue: FakeOperationQueue!
         var mainQueue: FakeOperationQueue!
 
         beforeEach {
-            feedService = FakeFeedService()
+            feedService = FakeLocalFeedService()
+            feedCoordinator = FakeFeedCoordinator()
 
             workQueue = FakeOperationQueue()
             workQueue.runSynchronously = true
@@ -24,6 +26,7 @@ class LeptonOPMLServiceSpec: QuickSpec {
 
             subject = LeptonOPMLService(
                 feedService: feedService,
+                feedCoordinator: feedCoordinator,
                 mainQueue: mainQueue,
                 importQueue: workQueue
             )
@@ -38,9 +41,9 @@ class LeptonOPMLServiceSpec: QuickSpec {
             }
 
             it("tells the feed service to import each feed in the opml file") {
-                expect(feedService.subscribeCalls).to(haveCount(3))
+                expect(feedCoordinator.subscribeCalls).to(haveCount(3))
 
-                expect(feedService.subscribeCalls).to(contain(
+                expect(feedCoordinator.subscribeCalls).to(contain(
                     URL(string: "http://example.com/feedWithTag")!,
                     URL(string: "http://example.com/previouslyImportedFeed")!,
                     URL(string: "http://example.com/feedWithTitle")!
@@ -53,10 +56,10 @@ class LeptonOPMLServiceSpec: QuickSpec {
                 let feed3 = Feed(title: "c", url: URL(string: "http://example.com/feed3")!, summary: "", tags: [])
 
                 beforeEach {
-                    guard feedService.subscribeCalls.count == 3 else { return }
-                    feedService.subscribePromises[0].resolve(.success(feed1))
-                    feedService.subscribePromises[1].resolve(.success(feed2))
-                    feedService.subscribePromises[2].resolve(.success(feed3))
+                    guard feedCoordinator.subscribeCalls.count == 3 else { return }
+                    feedCoordinator.subscribePromises[0].resolve(.success(feed1))
+                    feedCoordinator.subscribePromises[1].resolve(.success(feed2))
+                    feedCoordinator.subscribePromises[2].resolve(.success(feed3))
                 }
 
                 it("resolves the future with the collection of feeds") {
@@ -70,10 +73,10 @@ class LeptonOPMLServiceSpec: QuickSpec {
                 let feed3 = Feed(title: "c", url: URL(string: "http://example.com/feed3")!, summary: "", tags: [])
 
                 beforeEach {
-                    guard feedService.subscribeCalls.count == 3 else { return }
-                    feedService.subscribePromises[0].resolve(.success(feed1))
-                    feedService.subscribePromises[1].resolve(.failure(.unknown))
-                    feedService.subscribePromises[2].resolve(.success(feed3))
+                    guard feedCoordinator.subscribeCalls.count == 3 else { return }
+                    feedCoordinator.subscribePromises[0].resolve(.success(feed1))
+                    feedCoordinator.subscribePromises[1].resolve(.failure(.unknown))
+                    feedCoordinator.subscribePromises[2].resolve(.success(feed3))
                 }
 
                 it("resolves the future with the collection of successful feeds") {
@@ -84,10 +87,10 @@ class LeptonOPMLServiceSpec: QuickSpec {
 
             describe("if none of the subscribe calls succeed") {
                 beforeEach {
-                    guard feedService.subscribeCalls.count == 3 else { return }
-                    feedService.subscribePromises[0].resolve(.failure(.database(.unknown)))
-                    feedService.subscribePromises[1].resolve(.failure(.unknown))
-                    feedService.subscribePromises[2].resolve(.failure(.http(503)))
+                    guard feedCoordinator.subscribeCalls.count == 3 else { return }
+                    feedCoordinator.subscribePromises[0].resolve(.failure(.database(.unknown)))
+                    feedCoordinator.subscribePromises[1].resolve(.failure(.unknown))
+                    feedCoordinator.subscribePromises[2].resolve(.failure(.http(503)))
                 }
 
                 it("resolves the future noting each error") {

@@ -54,6 +54,10 @@ final class FeedCoordinatorSpec: QuickSpec {
                     expect(Array(receivedFeeds)).to(equal(expectedFeeds))
                 }
 
+                it("does not mark the subscription as finished yet") {
+                    expect(subscription.isFinished).to(beFalse())
+                }
+
                 it("asks the network feed service for the list of updated feeds") {
                     expect(networkFeedService.feedsPromises).to(haveCount(1))
                 }

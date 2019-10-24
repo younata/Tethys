@@ -51,6 +51,10 @@ class KitModuleSpec: QuickSpec {
                     subject.register(CredentialService.self) { _ in return credentialService }
                 }
 
+                afterEach {
+                    KeychainWrapper.wipeKeychain()
+                }
+
                 context("without a saved inoreader account") {
                     it("is a RealmFeedService") {
                         expect(subject.resolve(FeedService.self)).to(beAKindOf(RealmFeedService.self))
@@ -110,9 +114,6 @@ class KitModuleSpec: QuickSpec {
 
             exists(UpdateService.self, kindOf: RealmRSSUpdateService.self)
 
-            #if os(iOS)
-                exists(SearchIndex.self)
-            #endif
             singleton(OPMLService.self)
             exists(BackgroundStateMonitor.self)
         }

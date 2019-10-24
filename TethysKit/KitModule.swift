@@ -20,6 +20,7 @@ public func configure(container: Container) {
         backgroundQueue.maxConcurrentOperationCount = 1
         return backgroundQueue
     }.inObjectScope(.container)
+
     container.register(OperationQueue.self, name: kRealmQueue) { _ in
         let realmQueue = OperationQueue()
         realmQueue.qualityOfService = .userInitiated
@@ -55,10 +56,6 @@ public func configure(container: Container) {
         }
     }
 
-    #if os(iOS)
-    container.register(SearchIndex.self) { _ in CSSearchableIndex.default() }
-    #endif
-
     RealmMigrator.beginMigration()
 
     container.register(BackgroundStateMonitor.self) { _ in BackgroundStateMonitor(notificationCenter: .default) }
@@ -77,6 +74,7 @@ private func configureServices(container: Container) {
             dateOracle: Date.init
         )
     }
+
     container.register(ArticleService.self) { r in
         return ArticleRepository(
             articleService: RealmArticleService(

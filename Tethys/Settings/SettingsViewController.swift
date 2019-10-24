@@ -24,7 +24,7 @@ public final class SettingsViewController: UIViewController {
     fileprivate lazy var showReadingTimes: Bool = { return self.settingsRepository.showEstimatedReadingLabel }()
     fileprivate lazy var refreshControlStyle: RefreshControlStyle = { return self.settingsRepository.refreshControl }()
 
-    fileprivate var accounts: [Account] = []
+    fileprivate var account: Account?
 
     public init(settingsRepository: SettingsRepository,
                 opmlService: OPMLService,
@@ -79,7 +79,7 @@ public final class SettingsViewController: UIViewController {
 
         self.accountService.accounts().then { results in
             self.mainQueue.addOperation {
-                self.accounts = results.compactMap { $0.value }
+                self.account = results.compactMap { $0.value }.first { $0.kind == .inoreader }
                 self.reloadTable()
             }
         }
@@ -153,7 +153,7 @@ extension SettingsViewController: UITableViewDataSource {
         }
         switch section {
         case .account:
-            return 1 + self.accounts.count
+            return 1
         case .refresh:
             return 2
         case .other:
@@ -188,13 +188,18 @@ extension SettingsViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
         cell.textLabel?.text = NSLocalizedString("SettingsViewController_Account_Inoreader", comment: "")
         cell.accessibilityTraits = [.button]
-        if indexPath.row < self.accounts.count {
-            cell.detailTextLabel?.text = self.accounts[indexPath.row].username
+        cell.accessibilityHint = nil
+        if let account = self.account {
+            cell.detailTextLabel?.text = account.username
             cell.accessibilityLabel = NSLocalizedString(
                 "SettingsViewController_Account_Accessibility_InoreaderExists",
                 comment: ""
             )
-            cell.accessibilityValue = self.accounts[indexPath.row].username
+            cell.accessibilityValue = account.username
+            cell.accessibilityHint = NSLocalizedString(
+                "SettingsViewController_Account_Accessibility_InoreaderExists_Hint",
+                comment: ""
+            )
         } else {
             cell.detailTextLabel?.text = NSLocalizedString("SettingsViewController_Account_Add", comment: "")
             cell.accessibilityLabel = NSLocalizedString("SettingsViewController_Account_Add", comment: "")
@@ -369,8 +374,8 @@ extension SettingsViewController: UITableViewDelegate {
         self.loginController.begin().then { result in
             switch result {
             case .success(let account):
-                self.accounts.append(account)
-                self.tableView.insertRows(at: [indexPath], with: .right)
+                self.account = account
+                self.tableView.reloadRows(at: [indexPath], with: .right)
             case .failure(.network(_, .cancelled)):
                 break
             default:

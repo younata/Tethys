@@ -8,6 +8,7 @@
 "SettingsViewController_Account_Error_Title" = "Unable to Authenticate";
 "SettingsViewController_Account_Error_Message" = "Please try again";
 "SettingsViewController_Account_Accessibility_InoreaderExists" = "Existing inoreader account";
+"SettingsViewController_Account_Accessibility_InoreaderExists_Hint" = "Tap for log in to a different account, or re-log in to this account";
 "SettingsViewController_Other_ShowReadingTimes" = "Show Estimated Reading Times";
 "SettingsViewController_Other_ShowReadingTimes_AccessibilityHint" = "Tap to toggle";
 "SettingsViewController_Other_Accessibility_ShowReadingTimes" = "Estimated reading times";

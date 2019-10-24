@@ -4,7 +4,7 @@ import FutureHTTP
 
 struct InoreaderFeedService: FeedService {
     private let httpClient: HTTPClient
-    private let baseURL: URL
+    let baseURL: URL
 
     init(httpClient: HTTPClient, baseURL: URL) {
         self.httpClient = httpClient

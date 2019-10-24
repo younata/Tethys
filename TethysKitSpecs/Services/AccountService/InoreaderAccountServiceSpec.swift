@@ -259,7 +259,7 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                             credentialService.storeCredentialPromises.last?.resolve(.success(Void()))
                         }
 
-                        it("resolves the future with the created account") {
+                        it("resolves the future with the created account, giving it an id of 'inoreader'") {
                             expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
 
                             expect(future.value?.value).to(equal(

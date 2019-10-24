@@ -2,9 +2,7 @@ import Quick
 import Nimble
 import Swinject
 import FutureHTTP
-#if os(iOS)
-    import CoreSpotlight
-#endif
+import SwiftKeychainWrapper
 @testable import TethysKit
 
 class KitModuleSpec: QuickSpec {
@@ -39,6 +37,48 @@ class KitModuleSpec: QuickSpec {
 
             exists(RealmProvider.self, kindOf: DefaultRealmProvider.self)
 
+            describe("FeedService") {
+                var credentialService: KeychainCredentialService!
+                let keychain = KeychainWrapper.standard
+
+                beforeEach {
+                    credentialService = KeychainCredentialService(
+                        keychain: keychain
+                    )
+
+                    KeychainWrapper.wipeKeychain()
+
+                    subject.register(CredentialService.self) { _ in return credentialService }
+                }
+
+                context("without a saved inoreader account") {
+                    it("is a RealmFeedService") {
+                        expect(subject.resolve(FeedService.self)).to(beAKindOf(RealmFeedService.self))
+                    }
+                }
+
+                context("with a saved inoreader account") {
+                    beforeEach {
+                        let future = credentialService.store(credential: Credential(
+                            access: "access",
+                            expiration: Date(),
+                            refresh: "refresh",
+                            accountId: "some user id",
+                            accountType: .inoreader
+                        ))
+                        expect(future.value).toEventuallyNot(beNil(), description: "Expected future to be resolved")
+                        expect(future.value?.value).to(beVoid())
+                    }
+
+                    it("is an InoreaderFeedService") {
+                        let value = subject.resolve(FeedService.self)
+                        expect(value).to(beAKindOf(InoreaderFeedService.self))
+                        if let feedService = value as? InoreaderFeedService {
+                            expect(feedService.baseURL).to(equal(URL(string: "https://www.inoreader.com")))
+                        }
+                    }
+                }
+            }
             exists(FeedService.self, kindOf: RealmFeedService.self)
             exists(FeedCoordinator.self, singleton: true)
             exists(LocalFeedService.self, kindOf: LocalRealmFeedService.self)

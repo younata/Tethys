@@ -180,6 +180,96 @@ final class SettingsViewControllerSpec: QuickSpec {
                     expect(dataSource.tableView?(subject.tableView, titleForHeaderInSection: sectionNumber)).to(equal("Account"))
                 }
 
+                func itBehavesLikeAnAccountLoginCell(_ indexPath: IndexPath) {
+                    describe("tapping the cell") {
+                        beforeEach {
+                            subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAt: indexPath)
+                        }
+
+                        it("asks the login controller to begin the login process") {
+                            expect(loginController.beginPromises).to(haveCount(1))
+                        }
+
+                        describe("when the login succeeds") {
+                            beforeEach {
+                                loginController.beginPromises.last?.resolve(.success(Account(
+                                    kind: .inoreader,
+                                    username: "username",
+                                    id: "id"
+                                )))
+                            }
+
+                            it("shows the account in the table") {
+                                expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(1))
+                                let cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
+                                expect(cell?.textLabel?.text).to(equal("Inoreader"))
+                                expect(cell?.detailTextLabel?.text).to(equal("username"))
+                            }
+                        }
+
+                        describe("when the login fails") {
+                            context("because something nefarious was going on") {
+                                beforeEach {
+                                    loginController.beginPromises.last?.resolve(.failure(.network(
+                                        URL(string: "https://www.inoreader.com/oauth2/auth")!,
+                                        .badResponse
+                                    )))
+                                }
+
+                                it("tells the user something was up") {
+                                    expect(messenger.warningCalls).to(haveCount(1))
+                                    guard let call = messenger.warningCalls.last else { return }
+
+                                    expect(call.title).to(equal("Unable to Authenticate"))
+                                    expect(call.message).to(equal("Please try again"))
+                                }
+                            }
+
+                            context("because the user cancelled") {
+                                beforeEach {
+                                    loginController.beginPromises.last?.resolve(.failure(.network(
+                                        URL(string: "https://www.inoreader.com/oauth2/auth")!,
+                                        .cancelled
+                                    )))
+                                }
+
+                                it("does not show an alert") {
+                                    expect(messenger.warningCalls).to(beEmpty())
+                                }
+
+                                it("does not alter the table") {
+                                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(1))
+                                    let cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
+                                    expect(cell?.textLabel?.text).to(equal("Inoreader"))
+                                }
+                            }
+
+                            context("for any other reason") {
+                                beforeEach {
+                                    loginController.beginPromises.last?.resolve(.failure(.network(
+                                        URL(string: "https://www.inoreader.com/oauth2/auth")!,
+                                        .unknown
+                                    )))
+                                }
+
+                                it("tells the user there was an error") {
+                                    expect(messenger.warningCalls).to(haveCount(1))
+                                    guard let call = messenger.warningCalls.last else { return }
+
+                                    expect(call.title).to(equal("Unable to Authenticate"))
+                                    expect(call.message).to(equal("Please try again"))
+                                }
+
+                                it("does not alter the table") {
+                                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(1))
+                                    let cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
+                                    expect(cell?.textLabel?.text).to(equal("Inoreader"))
+                                }
+                            }
+                        }
+                    }
+                }
+
                 context("if there is no local account for this user") {
                     beforeEach {
                         accountService.accountsPromises.last?.resolve([])
@@ -210,102 +300,7 @@ final class SettingsViewControllerSpec: QuickSpec {
                             expect(cell?.detailTextLabel?.text).to(equal("Add account"))
                         }
 
-                        describe("tapping the cell") {
-                            beforeEach {
-                                subject.tableView.delegate?.tableView?(subject.tableView, didSelectRowAt: indexPath)
-                            }
-
-                            it("asks the login controller to begin the login process") {
-                                expect(loginController.beginPromises).to(haveCount(1))
-                            }
-
-                            describe("when the login succeeds") {
-                                beforeEach {
-                                    loginController.beginPromises.last?.resolve(.success(Account(
-                                        kind: .inoreader,
-                                        username: "username",
-                                        id: "id"
-                                    )))
-                                }
-
-                                it("shows the account in the table") {
-                                    expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(2))
-                                    cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
-                                    expect(cell?.textLabel?.text).to(equal("Inoreader"))
-                                    expect(cell?.detailTextLabel?.text).to(equal("username"))
-                                }
-
-                                it("still shows the add account in the table") {
-                                    let addIndexPath = IndexPath(row: 1, section: sectionNumber)
-                                    let addCell = dataSource.tableView(subject.tableView, cellForRowAt: addIndexPath) as? TableViewCell
-                                    expect(addCell?.textLabel?.text).to(equal("Inoreader"))
-                                    expect(addCell?.detailTextLabel?.text).to(equal("Add account"))
-                                }
-                            }
-
-                            describe("when the login fails") {
-                                context("because something nefarious was going on") {
-                                    beforeEach {
-                                        loginController.beginPromises.last?.resolve(.failure(.network(
-                                            URL(string: "https://www.inoreader.com/oauth2/auth")!,
-                                            .badResponse
-                                        )))
-                                    }
-
-                                    it("tells the user something was up") {
-                                        expect(messenger.warningCalls).to(haveCount(1))
-                                        guard let call = messenger.warningCalls.last else { return }
-
-                                        expect(call.title).to(equal("Unable to Authenticate"))
-                                        expect(call.message).to(equal("Please try again"))
-                                    }
-                                }
-
-                                context("because the user cancelled") {
-                                    beforeEach {
-                                        loginController.beginPromises.last?.resolve(.failure(.network(
-                                            URL(string: "https://www.inoreader.com/oauth2/auth")!,
-                                            .cancelled
-                                        )))
-                                    }
-
-                                    it("does not show an alert") {
-                                        expect(messenger.warningCalls).to(beEmpty())
-                                    }
-
-                                    it("does not alter the table") {
-                                        expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(1))
-                                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
-                                        expect(cell?.textLabel?.text).to(equal("Inoreader"))
-                                        expect(cell?.detailTextLabel?.text).to(equal("Add account"))
-                                    }
-                                }
-
-                                context("for any other reason") {
-                                    beforeEach {
-                                        loginController.beginPromises.last?.resolve(.failure(.network(
-                                            URL(string: "https://www.inoreader.com/oauth2/auth")!,
-                                            .unknown
-                                        )))
-                                    }
-
-                                    it("tells the user there was an error") {
-                                        expect(messenger.warningCalls).to(haveCount(1))
-                                        guard let call = messenger.warningCalls.last else { return }
-
-                                        expect(call.title).to(equal("Unable to Authenticate"))
-                                        expect(call.message).to(equal("Please try again"))
-                                    }
-
-                                    it("does not alter the table") {
-                                        expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(1))
-                                        cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
-                                        expect(cell?.textLabel?.text).to(equal("Inoreader"))
-                                        expect(cell?.detailTextLabel?.text).to(equal("Add account"))
-                                    }
-                                }
-                            }
-                        }
+                        itBehavesLikeAnAccountLoginCell(indexPath)
                     }
                 }
 
@@ -321,11 +316,11 @@ final class SettingsViewControllerSpec: QuickSpec {
                         subject.tableView.reloadData()
                     }
 
-                    it("has a two cells") {
-                        expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(2))
+                    it("has a single cell") {
+                        expect(subject.tableView.numberOfRows(inSection: sectionNumber)).to(equal(1))
                     }
 
-                    describe("the first cell") {
+                    describe("the cell") {
                         var cell: TableViewCell?
                         let indexPath = IndexPath(row: 0, section: sectionNumber)
 
@@ -338,33 +333,15 @@ final class SettingsViewControllerSpec: QuickSpec {
                             expect(cell?.accessibilityTraits).to(equal([.button]))
                             expect(cell?.accessibilityLabel).to(equal("Existing inoreader account"))
                             expect(cell?.accessibilityValue).to(equal("username"))
+                            expect(cell?.accessibilityHint).to(equal("Tap for log in to a different account, or re-log in to this account"))
                         }
 
                         it("states the account type and username") {
                             expect(cell?.textLabel?.text).to(equal("Inoreader"))
                             expect(cell?.detailTextLabel?.text).to(equal("username"))
                         }
-                    }
 
-                    describe("the second cell") {
-                        var cell: TableViewCell?
-                        let indexPath = IndexPath(row: 1, section: sectionNumber)
-
-                        beforeEach {
-                            cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
-                        }
-
-                        it("is configured for accessibility") {
-                            expect(cell?.isAccessibilityElement).to(beTrue())
-                            expect(cell?.accessibilityTraits).to(equal([.button]))
-                            expect(cell?.accessibilityLabel).to(equal("Add account"))
-                            expect(cell?.accessibilityValue).to(equal("Inoreader"))
-                        }
-
-                        it("it asks the user to log in") {
-                            expect(cell?.textLabel?.text).to(equal("Inoreader"))
-                            expect(cell?.detailTextLabel?.text).to(equal("Add account"))
-                        }
+                        itBehavesLikeAnAccountLoginCell(indexPath)
                     }
                 }
             }

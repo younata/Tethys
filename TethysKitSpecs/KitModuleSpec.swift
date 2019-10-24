@@ -61,7 +61,7 @@ class KitModuleSpec: QuickSpec {
                     }
                 }
 
-                context("with a saved inoreader account") {
+                xcontext("with a saved inoreader account") {
                     beforeEach {
                         let future = credentialService.store(credential: Credential(
                             access: "access",

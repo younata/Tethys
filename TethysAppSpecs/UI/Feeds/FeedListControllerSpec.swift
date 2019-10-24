@@ -203,6 +203,7 @@ final class FeedListControllerSpec: QuickSpec {
                 context("with a set of feeds") {
                     beforeEach {
                         feedCoordinator.feedsPublishers.last?.update(with: .success(AnyCollection(feeds)))
+                        mainQueue.runNextOperation()
                     }
 
                     it("shows a row for each returned feed") {
@@ -701,6 +702,7 @@ final class FeedListControllerSpec: QuickSpec {
                 context("but no feeds were found") {
                     beforeEach {
                         feedCoordinator.feedsPublishers.last?.update(with: .success(AnyCollection([])))
+                        mainQueue.runNextOperation()
                     }
 
                     it("shows the onboarding view") {
@@ -722,6 +724,7 @@ final class FeedListControllerSpec: QuickSpec {
                 beforeEach {
                     UIView.pauseAnimations()
                     feedCoordinator.feedsPublishers.last?.update(with: .failure(.database(.unknown)))
+                    mainQueue.runNextOperation()
                 }
 
                 afterEach {
@@ -742,6 +745,7 @@ final class FeedListControllerSpec: QuickSpec {
             describe("when the feed coordinator finishes") {
                 beforeEach {
                     feedCoordinator.feedsPublishers.last?.finish()
+                    mainQueue.runNextOperation()
                 }
 
                 it("stops refreshing") {

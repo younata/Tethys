@@ -116,6 +116,39 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                             Account(kind: .inoreader, username: "another_username", id: "456")
                         ))
                     }
+
+                    describe("asking again") {
+                        beforeEach {
+                            future = subject.accounts()
+                        }
+
+                        it("asks the credential service for the list of credentials") {
+                            expect(credentialService.credentialsPromises).to(haveCount(2))
+                        }
+
+                        describe("when the credential service succeeds") {
+                            beforeEach {
+                                credentialService.credentialsPromises.last?.resolve(.success(credentials))
+                            }
+
+                            it("does not ask inoreader again for data.") {
+                                expect(httpClient.requests).to(haveCount(2))
+                            }
+
+                            it("resolves the future with the stored account data") {
+                                expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                                expect(future.value).to(haveCount(2))
+
+                                guard let accounts = future.value?.compactMap({ $0.value }) else { return }
+                                expect(accounts).to(haveCount(2), description: "Expected both results to have succeeded")
+
+                                expect(accounts).to(contain(
+                                    Account(kind: .inoreader, username: "a_username", id: "123"),
+                                    Account(kind: .inoreader, username: "another_username", id: "456")
+                                ))
+                            }
+                        }
+                    }
                 }
 
                 describe("when the requests fail for other reasons") {

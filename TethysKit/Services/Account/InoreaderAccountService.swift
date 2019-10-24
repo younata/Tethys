@@ -2,12 +2,21 @@ import Result
 import CBGPromise
 import FutureHTTP
 
-struct InoreaderAccountService: AccountService {
+final class InoreaderAccountService: AccountService {
     let clientId: String
     let clientSecret: String
     let credentialService: CredentialService
     let httpClient: HTTPClient
     let dateOracle: () -> Date
+
+    init(clientId: String, clientSecret: String, credentialService: CredentialService,
+         httpClient: HTTPClient, dateOracle: @escaping () -> Date) {
+        self.clientId = clientId
+        self.clientSecret = clientSecret
+        self.credentialService = credentialService
+        self.httpClient = httpClient
+        self.dateOracle = dateOracle
+    }
 
     func accounts() -> Future<[Result<Account, TethysError>]> {
         return self.credentialService.credentials().map { result in
@@ -90,7 +99,11 @@ struct InoreaderAccountService: AccountService {
         }
     }
 
+    private var cachedAccounts: [Credential: Account] = [:]
     private func userInfo(credential: Credential) -> Future<Result<Account, TethysError>> {
+        if let existingAccount = self.cachedAccounts[credential] {
+            return Promise<Result<Account, TethysError>>.resolved(.success(existingAccount))
+        }
         guard let url = URL(string: "https://www.inoreader.com/reader/api/0/user-info") else {
             return Promise<Result<Account, TethysError>>.resolved(.failure(.unknown))
         }
@@ -114,11 +127,13 @@ struct InoreaderAccountService: AccountService {
                     return .failure(.network(url, .badResponse))
                 }
 
-                return .success(Account(
+                let account = Account(
                     kind: .inoreader,
                     username: accountResponse.userName,
                     id: accountResponse.userId
-                ))
+                )
+                self.cachedAccounts[credential] = account
+                return .success(account)
             }
         }
     }

@@ -104,8 +104,21 @@ final class FeedCoordinatorSpec: QuickSpec {
                     }
 
                     describe("when the local feeds update") {
+                        let savedFeeds = [
+                            feedFactory(title: "feed4"),
+                            feedFactory(title: "feed5")
+                        ]
+
                         beforeEach {
-                            localFeedService.updateFeedsPromises.last?.resolve(.success(Void()))
+                            localFeedService.updateFeedsPromises.last?.resolve(.success(AnyCollection(savedFeeds)))
+                        }
+
+                        it("updates the subscription with the results") {
+                            expect(subscription.value).toNot(beNil(), description: "Expected subscription to be updated")
+                            guard let receivedFeeds = subscription.value?.value else {
+                                return expect(subscription.value?.value).toNot(beNil(), description: "Expected subscription to be updated with success")
+                            }
+                            expect(Array(receivedFeeds)).to(equal(savedFeeds))
                         }
 
                         it("finishes updates for the subscription") {
@@ -124,6 +137,14 @@ final class FeedCoordinatorSpec: QuickSpec {
 
                         it("finishes updates for the subscription") {
                             expect(subscription.isFinished).to(beTrue())
+                        }
+
+                        it("does not update the subscription") {
+                            expect(subscription.value).toNot(beNil(), description: "Expected subscription to be updated")
+                            guard let receivedFeeds = subscription.value?.value else {
+                                return expect(subscription.value?.value).toNot(beNil(), description: "Expected subscription to be updated with success")
+                            }
+                            expect(Array(receivedFeeds)).to(equal(updatedFeeds))
                         }
 
                         it("returns a new subscription if you ask for feeds again") {
@@ -150,7 +171,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                         expect(Array(receivedFeeds)).to(equal(expectedFeeds))
                     }
 
-                    it("tells the local feed service to update") {
+                    it("does not tell the local feed service to update") {
                         expect(localFeedService.updateFeedsCalls).to(beEmpty())
                     }
 
@@ -221,8 +242,21 @@ final class FeedCoordinatorSpec: QuickSpec {
                     }
 
                     describe("when the local feeds update") {
+                        let savedFeeds = [
+                            feedFactory(title: "feed4"),
+                            feedFactory(title: "feed5")
+                        ]
+
                         beforeEach {
-                            localFeedService.updateFeedsPromises.last?.resolve(.success(Void()))
+                            localFeedService.updateFeedsPromises.last?.resolve(.success(AnyCollection(savedFeeds)))
+                        }
+
+                        it("updates the subscription with the results") {
+                            expect(subscription.value).toNot(beNil(), description: "Expected subscription to be updated")
+                            guard let receivedFeeds = subscription.value?.value else {
+                                return expect(subscription.value?.value).toNot(beNil(), description: "Expected subscription to be updated with success")
+                            }
+                            expect(Array(receivedFeeds)).to(equal(savedFeeds))
                         }
 
                         it("returns a new subscription if you ask for feeds again") {

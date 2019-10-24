@@ -51,7 +51,9 @@ final class LeptonOPMLService: NSObject, OPMLService {
         let parser = Lepton.Parser(text: text)
 
         _ = parser.success {items in
-            let futures = items.compactMap { URL(string: $0.xmlURL ?? "") }.map { self.feedCoordinator.subscribe(to: $0) }
+            let futures = items
+                .compactMap { URL(string: $0.xmlURL ?? "") }
+                .map { self.feedCoordinator.subscribe(to: $0) }
             Promise<Result<Feed, TethysError>>.when(futures).then { results in
                 let feeds = results.compactMap { $0.value }
 

@@ -1,6 +1,7 @@
 import Quick
 import Nimble
 import Result
+import XCTest
 import CBGPromise
 import SwiftKeychainWrapper
 
@@ -180,6 +181,47 @@ final class KeychainCredentialServiceSpec: QuickSpec {
                     expect(future.value?.value).to(beVoid())
                 }
             }
+        }
+    }
+}
+
+final class KeychainCredentialServicePerformanceTest: XCTestCase {
+    override func tearDown() {
+        KeychainWrapper.wipeKeychain()
+    }
+
+    func testPerformance() {
+        let credential = Credential(
+            access: "foo",
+            expiration: Date(timeIntervalSinceReferenceDate: 0),
+            refresh: "refresh",
+            accountId: "account",
+            accountType: .inoreader
+        )
+
+        let otherCredential = Credential(
+            access: "bar",
+            expiration: Date(timeIntervalSinceReferenceDate: 2),
+            refresh: "baz",
+            accountId: "number 2",
+            accountType: .inoreader
+        )
+
+        guard let data = try? JSONEncoder().encode([credential, otherCredential]) else {
+            fail("Failed to encode the credentials into json")
+            return
+        }
+
+        let keychain = KeychainWrapper.standard
+
+        let subject = KeychainCredentialService(
+            keychain: keychain
+        )
+
+        expect(keychain.set(data, forKey: "credentials")).to(beTruthy())
+
+        self.measure {
+            expect(subject.credentials().wait()).toNot(beNil())
         }
     }
 }

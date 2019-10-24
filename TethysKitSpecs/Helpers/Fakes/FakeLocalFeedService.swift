@@ -5,10 +5,10 @@ import CBGPromise
 
 final class FakeLocalFeedService: FakeFeedService, LocalFeedService {
     private(set) var updateFeedsCalls: [AnyCollection<Feed>] = []
-    private(set) var updateFeedsPromises: [Promise<Result<Void, TethysError>>] = []
-    func updateFeeds(with feeds: AnyCollection<Feed>) -> Future<Result<Void, TethysError>> {
+    private(set) var updateFeedsPromises: [Promise<Result<AnyCollection<Feed>, TethysError>>] = []
+    func updateFeeds(with feeds: AnyCollection<Feed>) -> Future<Result<AnyCollection<Feed>, TethysError>> {
         self.updateFeedsCalls.append(feeds)
-        let promise = Promise<Result<Void, TethysError>>()
+        let promise = Promise<Result<AnyCollection<Feed>, TethysError>>()
         self.updateFeedsPromises.append(promise)
         return promise.future
     }

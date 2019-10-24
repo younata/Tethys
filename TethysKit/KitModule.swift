@@ -90,19 +90,19 @@ private func configureServices(container: Container) {
     }
 
     container.register(FeedService.self) { r in
-//        guard let credential = r.resolve(CredentialService.self)?.credentials()
-//            .wait()?.value?.first(where: { $0.accountType == .inoreader }) else {
+        guard let credential = r.resolve(CredentialService.self)?.credentials()
+            .wait()?.value?.first(where: { $0.accountType == .inoreader }) else {
                 return RealmFeedService(
                     realmProvider: r.resolve(RealmProvider.self)!,
                     updateService: r.resolve(UpdateService.self)!,
                     mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
                     workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
                 )
-//        }
-//        return InoreaderFeedService(
-//            httpClient: r.resolve(HTTPClient.self, argument: credential.accountId)!,
-//            baseURL: URL(string: "https://www.inoreader.com")!
-//        )
+        }
+        return InoreaderFeedService(
+            httpClient: r.resolve(HTTPClient.self, argument: credential.accountId)!,
+            baseURL: URL(string: "https://www.inoreader.com")!
+        )
     }
 
     container.register(FeedCoordinator.self) { r in

@@ -6,7 +6,7 @@ public enum AccountType: String, Codable {
     case inoreader
 }
 
-struct Credential: Codable, Equatable {
+struct Credential: Codable, Equatable, Hashable {
     let access: String
     let expiration: Date
     let refresh: String

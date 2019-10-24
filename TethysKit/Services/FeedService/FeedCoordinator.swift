@@ -23,7 +23,7 @@ public class FeedCoordinator {
             publisher.update(with: $0)
         }.map { _ in
             self.networkFeedServiceProvider().feeds()
-        }.map { updatedFeeds -> Future<Result<Void, TethysError>> in
+        }.map { updatedFeeds -> Future<Result<AnyCollection<Feed>, TethysError>> in
             if self.shouldPublishUpdatedFeeds(updatedFeeds, existingFeeds: publisher.subscription.value) {
                 publisher.update(with: updatedFeeds)
             }
@@ -33,7 +33,10 @@ public class FeedCoordinator {
             case .failure(let error):
                 return Promise<Result<Void, TethysError>>.resolved(.failure(error))
             }
-        }.then { _ in
+        }.then { savedFeeds in
+            if self.shouldPublishUpdatedFeeds(savedFeeds, existingFeeds: publisher.subscription.value) {
+                publisher.update(with: savedFeeds)
+            }
             publisher.finish()
             self.lastFeedsPublisher = nil
         }

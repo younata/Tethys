@@ -378,9 +378,19 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                                 summary: "some summary", tags: [], unreadCount: 0, image: nil)
                 ]
 
-                var future: Future<Result<Void, TethysError>>!
+                var future: Future<Result<AnyCollection<Feed>, TethysError>>!
 
                 beforeEach {
+                    write {
+                        let unreadArticle = RealmArticle()
+                        unreadArticle.title = "article1"
+                        unreadArticle.link = "https://example.com/article/article1"
+                        unreadArticle.read = false
+                        unreadArticle.feed = realmFeed2
+
+                        realm.add(unreadArticle)
+                    }
+
                     future = subject.updateFeeds(with: AnyCollection(feeds))
                 }
 
@@ -405,9 +415,22 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                     expect(newFeed?.tags).to(beEmpty())
                 }
 
-                it("resolves the promise successfully") {
+                it("resolves the promise with the new set of feeds") {
                     expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
-                    expect(future.value?.value).to(beVoid())
+                    guard let receivedFeeds = future.value?.value else {
+                        return fail("Future did not resolve successfully")
+                    }
+
+                    expect(Array(receivedFeeds)).to(equal([
+                        feedFactory(title: realmFeed2.title, url: URL(string: realmFeed2.url)!, summary: "",
+                                    tags: [], unreadCount: 1, image: nil),
+                        feedFactory(title: "Brand New Feed", url: URL(string: "https://example.com/brand_new_feed")!,
+                                    summary: "some summary", tags: [], unreadCount: 0, image: nil),
+                        feedFactory(title: realmFeed3.title, url: URL(string: realmFeed3.url)!, summary: "",
+                                    tags: [], unreadCount: 0, image: nil),
+                        feedFactory(title: "Updated 1", url: URL(string: realmFeed1.url)!, summary: "Updated Summary 1",
+                                    tags: ["a", "b", "c"], unreadCount: 0, image: nil),
+                    ]))
                 }
             }
 

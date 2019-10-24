@@ -193,17 +193,19 @@ public final class FeedListController: UIViewController {
         }
 
         self.feedCoordinator.feeds().then { [weak self] update in
-            let errorTitle = NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Title", comment: "")
-            switch update {
-            case .update(let result):
-                self?.unwrap(
-                    result: result,
-                    errorTitle: errorTitle,
-                    onSuccess: { reloadWithFeeds(Array($0)) },
-                    onError: { }
-                )
-            case .finished:
-                self?.refreshControl.endRefreshing(force: true)
+            self?.mainQueue.addOperation { [weak self] in
+                let errorTitle = NSLocalizedString("FeedsTableViewController_UpdateFeeds_Error_Title", comment: "")
+                switch update {
+                case .update(let result):
+                    self?.unwrap(
+                        result: result,
+                        errorTitle: errorTitle,
+                        onSuccess: { reloadWithFeeds(Array($0)) },
+                        onError: { }
+                    )
+                case .finished:
+                    self?.refreshControl.endRefreshing(force: true)
+                }
             }
         }
     }

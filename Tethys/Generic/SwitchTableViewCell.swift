@@ -1,9 +1,6 @@
 import UIKit
 
 public final class SwitchTableViewCell: UITableViewCell {
-    private var _textLabel = UILabel(forAutoLayout: ())
-    public override var textLabel: UILabel? { return self._textLabel }
-
     public override var detailTextLabel: UILabel? { return nil }
 
     public let theSwitch: UISwitch = UISwitch(forAutoLayout: ())
@@ -22,15 +19,11 @@ public final class SwitchTableViewCell: UITableViewCell {
     }
 
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        super.init(style: .value1, reuseIdentifier: reuseIdentifier)
 
-        self.contentView.addSubview(self._textLabel)
-        self._textLabel.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 4, left: 20, bottom: 4, right: 0),
-            excludingEdge: .trailing)
         self.contentView.addSubview(self.theSwitch)
         self.theSwitch.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 5, left: 0, bottom: 4, right: 20),
             excludingEdge: .leading)
-        self.theSwitch.autoPinEdge(.leading, to: .trailing, of: self._textLabel)
 
         self.theSwitch.addTarget(self, action: #selector(SwitchTableViewCell.didTapSwitch),
                                  for: .valueChanged)

@@ -432,7 +432,7 @@ extension SettingsViewController: UITableViewDelegate {
             guard let cell = tableView.cellForRow(at: indexPath) as? SwitchTableViewCell else {
                 return
             }
-            UISelectionFeedbackGenerator().selectionChanged()
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
             cell.theSwitch.setOn(!cell.theSwitch.isOn, animated: true)
             cell.onTapSwitch?(cell.theSwitch)
         }

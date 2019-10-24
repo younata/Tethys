@@ -19,16 +19,10 @@ struct LocalRealmFeedService: LocalFeedService {
     func feeds() -> Future<Result<AnyCollection<Feed>, TethysError>> {
         let promise = Promise<Result<AnyCollection<Feed>, TethysError>>()
         self.workQueue.addOperation {
-            let realmFeeds = self.realmProvider.realm().objects(RealmFeed.self)
-            let feeds = realmFeeds
-                .map { Feed(realmFeed: $0) }
-                .sorted { (lhs, rhs) -> Bool in
-                    guard lhs.unreadCount == rhs.unreadCount else {
-                        return lhs.unreadCount > rhs.unreadCount
-                    }
-                    return lhs.title < rhs.title
-                }
-            self.resolve(promise: promise, with: AnyCollection(feeds))
+            self.resolve(
+                promise: promise,
+                with: AnyCollection(self.allFeeds(in: self.realmProvider.realm()))
+            )
         }
         return promise.future
     }
@@ -111,8 +105,8 @@ struct LocalRealmFeedService: LocalFeedService {
     }
 
     // MARK: LocalFeedService Conformance
-    func updateFeeds(with feeds: AnyCollection<Feed>) -> Future<Result<Void, TethysError>> {
-        let promise = Promise<Result<Void, TethysError>>()
+    func updateFeeds(with feeds: AnyCollection<Feed>) -> Future<Result<AnyCollection<Feed>, TethysError>> {
+        let promise = Promise<Result<AnyCollection<Feed>, TethysError>>()
         self.workQueue.addOperation {
             let realm = self.realmProvider.realm()
             realm.beginWrite()
@@ -138,7 +132,10 @@ struct LocalRealmFeedService: LocalFeedService {
                 dump(exception)
                 return self.resolve(promise: promise, error: .database(.unknown))
             }
-            self.resolve(promise: promise, with: Void())
+            self.resolve(
+                promise: promise,
+                with: AnyCollection(self.allFeeds(in: self.realmProvider.realm()))
+            )
         }
         return promise.future
     }
@@ -231,6 +228,18 @@ struct LocalRealmFeedService: LocalFeedService {
             if !realmFeed.tags.contains(tag) {
                 realmFeed.tags.append(tag)
             }
+        }
+    }
+
+    private func allFeeds(in realm: Realm) -> [Feed] {
+        let realmFeeds = realm.objects(RealmFeed.self)
+        return realmFeeds
+            .map { Feed(realmFeed: $0) }
+            .sorted { (lhs, rhs) -> Bool in
+                guard lhs.unreadCount == rhs.unreadCount else {
+                    return lhs.unreadCount > rhs.unreadCount
+                }
+                return lhs.title < rhs.title
         }
     }
 }

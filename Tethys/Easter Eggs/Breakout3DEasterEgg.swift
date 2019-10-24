@@ -243,6 +243,14 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
         self.delegate?.breakout3dDidUpdateScore(self)
     }
 
+    func physicsWorld(_ world: SCNPhysicsWorld, didBegin contact: SCNPhysicsContact) {
+        let nodeA = contact.nodeA
+        let nodeB = contact.nodeB
+        guard nodeA.categoryBitMask == self.ballCategory || nodeB.categoryBitMask == self.ballCategory else { return }
+
+        self.impactGenerator.prepare()
+    }
+
     func physicsWorld(_ world: SCNPhysicsWorld, didEnd contact: SCNPhysicsContact) {
         let nodeA = contact.nodeA
         let nodeB = contact.nodeB

@@ -646,7 +646,7 @@ final class SettingsViewControllerSpec: QuickSpec {
                     }
 
                     it("has the git version as the detail text") {
-                        let gitVersion = Bundle.main.infoDictionary?["CurrentGitVersion"] as? String
+                        let gitVersion = Bundle.main.infoDictionary?["CurrentVersion"] as? String
                         expect(cell.detailTextLabel?.text).to(equal(gitVersion))
                         expect(cell?.accessibilityValue).to(equal(gitVersion))
                     }

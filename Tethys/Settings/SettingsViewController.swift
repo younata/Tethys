@@ -259,7 +259,7 @@ extension SettingsViewController: UITableViewDataSource {
             let cell = self.tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! TableViewCell
             tableCell = cell
 
-            let versionText = Bundle.main.infoDictionary?["CurrentGitVersion"] as? String
+            let versionText = Bundle.main.infoDictionary?["CurrentVersion"] as? String
             cell.detailTextLabel?.text = versionText
             cell.accessibilityValue = versionText
             cell.accessibilityTraits = [.button]

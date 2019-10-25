@@ -540,12 +540,16 @@ final class FeedCoordinatorSpec: QuickSpec {
 
         describe("readAll(of:)") {
             var future: Future<Result<Void, TethysError>>!
-            let feed = feedFactory()
+            let feed = feedFactory(unreadCount: 20)
 
             let readAllURL = URL(string: "https://example.com/readAll")!
 
             beforeEach {
                 future = subject.readAll(of: feed)
+            }
+
+            it("sets the feed's unread count to 0") {
+                expect(feed.unreadCount).to(equal(0))
             }
 
             it("asks both feed services to mark all articles for that feed as read") {

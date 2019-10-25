@@ -133,6 +133,7 @@ public class FeedCoordinator {
 
     // MARK: Marking all articles of a feed as read
     public func readAll(of feed: Feed) -> Future<Result<Void, TethysError>> {
+        feed.unreadCount = 0
         let localFuture = self.localFeedService.readAll(of: feed)
         let networkFuture = self.networkFeedServiceProvider().readAll(of: feed)
         return Promise<Result<Void, TethysError>>.when([localFuture, networkFuture])

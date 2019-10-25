@@ -435,7 +435,7 @@ final class SettingsViewControllerSpec: QuickSpec {
                                             }
 
                                             expect(errorCall.title).to(equal("Unable to log out"))
-                                            expect(errorCall.message).to(equal("Unknown error - please try again"))
+                                            expect(errorCall.message).to(equal("Unknown Error - please try again"))
                                         }
 
                                         it("still indicates that the user is logged in") {

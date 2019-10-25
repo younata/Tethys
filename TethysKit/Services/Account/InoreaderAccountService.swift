@@ -99,6 +99,18 @@ final class InoreaderAccountService: AccountService {
         }
     }
 
+    func logout(of account: Account) -> Future<Result<Void, TethysError>> {
+        return self.credentialService.credentials().map { result in
+            return result.mapFuture { credentials in
+                guard let credential = credentials.first(where: { $0.accountId == account.id }) else {
+                    return Promise<Result<Void, TethysError>>.resolved(Result<Void, TethysError>.success(Void()))
+                }
+
+                return self.credentialService.delete(credential: credential)
+            }
+        }
+    }
+
     private var cachedAccounts: [Credential: Account] = [:]
     private func userInfo(credential: Credential) -> Future<Result<Account, TethysError>> {
         if let existingAccount = self.cachedAccounts[credential] {

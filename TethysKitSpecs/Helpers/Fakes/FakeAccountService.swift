@@ -19,4 +19,13 @@ final class FakeAccountService: AccountService {
         self.authenticatePromises.append(promise)
         return promise.future
     }
+
+    private(set) var logoutCalls: [Account] = []
+    private(set) var logoutPromises: [Promise<Result<Void, TethysError>>] = []
+    func logout(of account: Account) -> Future<Result<Void, TethysError>> {
+        let promise = Promise<Result<Void, TethysError>>()
+        logoutCalls.append(account)
+        logoutPromises.append(promise)
+        return promise.future
+    }
 }

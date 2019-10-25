@@ -309,6 +309,34 @@ extension SettingsViewController: UITableViewDelegate {
 
     public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { return false }
 
+    public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        guard SettingsSection(rawValue: indexPath.section) == .account, let account = self.account else { return nil }
+
+        let actions = UISwipeActionsConfiguration(actions: [
+            UIContextualAction(
+                style: .destructive,
+                title: NSLocalizedString("SettingsViewController_Account_Logout_Title", comment: ""),
+                handler: { [weak self] (_, _, callback) in
+                    self?.accountService.logout(of: account).then { [weak self] (result: Result<Void, TethysError>) in
+                        switch result {
+                        case .success:
+                            self?.account = nil
+                            tableView.reloadRows(at: [indexPath], with: .right)
+                            callback(true)
+                        case .failure(let error):
+                            callback(false)
+                            self?.messenger.error(
+                                title: NSLocalizedString("SettingsViewController_Account_Logout_Error", comment: ""),
+                                message: error.localizedDescription
+                            )
+                        }
+                    }
+            })
+        ])
+        actions.performsFirstActionWithFullSwipe = true
+        return actions
+    }
+
     @objc(tableView:commitEditingStyle:forRowAtIndexPath:)
     public func tableView(_ tableView: UITableView,
                           commit editingStyle: UITableViewCell.EditingStyle,

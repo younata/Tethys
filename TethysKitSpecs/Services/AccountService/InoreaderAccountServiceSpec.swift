@@ -367,5 +367,79 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                 }
             }
         }
+
+        describe("-logout(of:)") {
+            var future: Future<Result<Void, TethysError>>!
+
+            let account = Account(kind: .inoreader, username: "foo", id: "bar")
+
+            beforeEach {
+                future = subject.logout(of: account)
+            }
+
+            context("and the account is in the credential service") {
+                let credential = Credential(access: "access", expiration: Date(), refresh: "refresh", accountId: "bar", accountType: .inoreader)
+                beforeEach {
+                    credentialService.credentialsPromises.last?.resolve(.success([
+                        Credential(access: "access", expiration: Date(), refresh: "refresh", accountId: "bar2", accountType: .inoreader),
+                        credential,
+                        Credential(access: "access", expiration: Date(), refresh: "refresh", accountId: "bar3", accountType: .inoreader)
+                    ]))
+                }
+
+                it("does not yet resolve the future") {
+                    expect(future.value).to(beNil())
+                }
+
+                it("tells the credential service to remove the credential") {
+                    expect(credentialService.deleteCredentialCalls).to(equal([credential]))
+                }
+
+                context("and the credential service removes the credential") {
+                    beforeEach {
+                        credentialService.deleteCredentialPromises.last?.resolve(.success(Void()))
+                    }
+
+                    it("resolves the future with success") {
+                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future.value?.value).to(beVoid())
+                    }
+                }
+
+                context("and the credential service fails to remove the credential") {
+                    beforeEach {
+                        credentialService.deleteCredentialPromises.last?.resolve(.failure(.unknown))
+                    }
+                    it("forwards the error to the user") {
+                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future.value?.error).to(equal(.unknown))
+                    }
+                }
+            }
+
+            context("and the account is not in the credential service") {
+                beforeEach {
+                    credentialService.credentialsPromises.last?.resolve(.success([
+                        Credential(access: "access", expiration: Date(), refresh: "refresh", accountId: "bar2", accountType: .inoreader)
+                    ]))
+                }
+
+                it("resolves the future with success") {
+                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future.value?.value).to(beVoid())
+                }
+            }
+
+            context("and the credential service can't get the list of accounts") {
+                beforeEach {
+                    credentialService.credentialsPromises.last?.resolve(.failure(.unknown))
+                }
+
+                it("forwards the error to the user") {
+                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future.value?.error).to(equal(.unknown))
+                }
+            }
+        }
     }
 }

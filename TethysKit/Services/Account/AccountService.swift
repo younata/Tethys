@@ -27,4 +27,5 @@ public struct Account: Codable, Equatable {
 public protocol AccountService {
     func accounts() -> Future<[Result<Account, TethysError>]>
     func authenticate(code: String) -> Future<Result<Account, TethysError>>
+    func logout(of account: Account) -> Future<Result<Void, TethysError>>
 }

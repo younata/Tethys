@@ -301,18 +301,32 @@ final class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         itBehavesLikeAnAccountLoginCell(indexPath)
+
+                        it("has no context menus") {
+                            expect(subject.tableView.delegate?.tableView?(
+                                subject.tableView,
+                                contextMenuConfigurationForRowAt: indexPath,
+                                point: .zero
+                            )).to(beNil())
+                        }
+
+                        it("has no contextual actions") {
+                            expect(
+                                subject.tableView.delegate?.tableView?(subject.tableView,
+                                                                       trailingSwipeActionsConfigurationForRowAt: indexPath)
+                            ).to(beNil())
+                        }
                     }
                 }
 
                 context("if there is an account for this user") {
+                    let account = Account(
+                        kind: .inoreader,
+                        username: "username",
+                        id: "id"
+                    )
                     beforeEach {
-                        accountService.accountsPromises.last?.resolve([
-                            .success(Account(
-                                kind: .inoreader,
-                                username: "username",
-                                id: "id"
-                            ))
-                        ])
+                        accountService.accountsPromises.last?.resolve([.success(account)])
                         subject.tableView.reloadData()
                     }
 
@@ -342,6 +356,101 @@ final class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         itBehavesLikeAnAccountLoginCell(indexPath)
+
+                        it("has no context menus") {
+                            expect(subject.tableView.delegate?.tableView?(
+                                subject.tableView,
+                                contextMenuConfigurationForRowAt: indexPath,
+                                point: .zero
+                                )).to(beNil())
+                        }
+
+                        describe("contextual actions") {
+                            var swipeActions: UISwipeActionsConfiguration?
+
+                            beforeEach {
+                                swipeActions = subject.tableView.delegate?.tableView?(subject.tableView, trailingSwipeActionsConfigurationForRowAt: indexPath)
+                            }
+
+                            it("has a single action") {
+                                expect(swipeActions?.actions).to(haveCount(1))
+                            }
+
+                            it("performs that actions with a full swipe") {
+                                expect(swipeActions?.performsFirstActionWithFullSwipe).to(beTrue())
+                            }
+
+                            describe("the action") {
+                                var action: UIContextualAction?
+
+                                beforeEach {
+                                    action = swipeActions?.actions.first
+                                }
+
+                                it("states it logs the user out") {
+                                    expect(action?.title).to(equal("Log out"))
+                                }
+
+                                describe("tapping it") {
+                                    var completionHandlerCalls: [Bool] = []
+                                    beforeEach {
+                                        completionHandlerCalls = []
+                                        guard let action = action, let cell = cell else { return }
+                                        action.handler(action, cell) { completionHandlerCalls.append($0) }
+                                    }
+
+                                    it("logs the user out") {
+                                        expect(accountService.logoutCalls).to(equal([account]))
+                                    }
+
+                                    context("on success") {
+                                        beforeEach {
+                                            accountService.logoutPromises.last?.resolve(.success(Void()))
+                                        }
+
+                                        it("completes the handler") {
+                                            expect(completionHandlerCalls).to(equal([true]))
+                                        }
+
+                                        it("does not post an error message") {
+                                            expect(messenger.errorCalls).to(beEmpty())
+                                        }
+
+                                        it("changes out the cell to indicate the user is logged out") {
+                                            cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
+                                            expect(cell?.textLabel?.text).to(equal("Inoreader"))
+                                            expect(cell?.detailTextLabel?.text).to(equal("Add account"))
+                                        }
+                                    }
+
+                                    context("on failure") {
+                                        beforeEach {
+                                            accountService.logoutPromises.last?.resolve(.failure(.unknown))
+                                        }
+
+                                        it("notifies the user about the error") {
+                                            expect(messenger.errorCalls).to(haveCount(1))
+                                            guard let errorCall = messenger.errorCalls.last else {
+                                                return
+                                            }
+
+                                            expect(errorCall.title).to(equal("Unable to log out"))
+                                            expect(errorCall.message).to(equal("Unknown error - please try again"))
+                                        }
+
+                                        it("still indicates that the user is logged in") {
+                                            cell = dataSource.tableView(subject.tableView, cellForRowAt: indexPath) as? TableViewCell
+                                            expect(cell?.textLabel?.text).to(equal("Inoreader"))
+                                            expect(cell?.detailTextLabel?.text).to(equal("username"))
+                                        }
+
+                                        it("completes the handler") {
+                                            expect(completionHandlerCalls).to(equal([false]))
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

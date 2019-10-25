@@ -107,6 +107,67 @@ final class RealmRSSUpdateServiceSpec: QuickSpec {
                         httpClient.requestPromises.last?.resolve(.success(response))
                     }
 
+                    context("if the downloaded feed data has no link") {
+                        beforeEach {
+                            resolvePromise(feed: "feed_no_link")
+                        }
+
+                        it("Updates the feed's information based on the downloaded feed, and the url used to fetch the feed") {
+                            expect(realmFeed.title).to(equal("Rachel Brindle"))
+                            expect(realmFeed.url).to(equal("https://example.com/feed/feed"))
+                            expect(realmFeed.summary).to(equal("Software Engineer and Electric Vehicle enthusiast"))
+                        }
+
+                        it("inserts articles for each article in the feed") {
+                            expect(realmFeed.articles).to(haveCount(10))
+
+                            guard let article = realmFeed.articles.sorted(byKeyPath: "published", ascending: false).first else { return }
+                            expect(article.title).to(equal("MKOverlayRenderer - Drawing Lines"))
+                            expect(article.summary).to(contain("Today, I spent roughly 5 hours"))
+                            expect(article.content).to(equal(""))
+                            expect(article.published).to(equal(dateFormatter.date(from: "2018-09-16T00:00:00Z")!))
+                            expect(article.identifier).to(equal("http://younata.github.io/2018/09/16/MKOverlayRenderer-drawing-lines/"))
+                            expect(article.link).to(equal("http://younata.github.io/2018/09/16/MKOverlayRenderer-drawing-lines/"))
+                            expect(article.authors).to(haveCount(1))
+                        }
+
+                        it("inserts any new authors into the list") {
+                            let authors = realm.objects(RealmAuthor.self)
+
+                            expect(authors).to(haveCount(1))
+
+                            expect(authors.first?.email).to(beNil())
+                            expect(authors.first?.name).to(equal("Rachel Brindle"))
+                        }
+
+                        it("resolves the promise with the now-updated feed") {
+                            expect(future.value?.value).to(equal(
+                                Feed(
+                                    title: "Rachel Brindle",
+                                    url: URL(string: "https://example.com/feed/feed")!,
+                                    summary: "Software Engineer and Electric Vehicle enthusiast",
+                                    tags: []
+                                )
+                            ))
+                        }
+
+                        describe("updating the feed again") {
+                            beforeEach {
+                                _ = subject.updateFeed(Feed(realmFeed: realmFeed))
+
+                                resolvePromise(feed: "feed")
+                            }
+
+                            it("doesn't add duplicate articles") {
+                                expect(realmFeed.articles).to(haveCount(10))
+                            }
+
+                            it("doesn't add duplicate authors") {
+                                expect(realm.objects(RealmAuthor.self)).to(haveCount(1))
+                            }
+                        }
+                    }
+
                     context("if the downloaded feed data has no image url") {
                         beforeEach {
                             resolvePromise(feed: "feed")
@@ -126,7 +187,7 @@ final class RealmRSSUpdateServiceSpec: QuickSpec {
                             expect(article.summary).to(contain("Today, I spent roughly 5 hours"))
                             expect(article.content).to(equal(""))
                             expect(article.published).to(equal(dateFormatter.date(from: "2018-09-16T00:00:00Z")!))
-                            expect(article.identifier).to(beNil())
+                            expect(article.identifier).to(equal("http://younata.github.io/2018/09/16/MKOverlayRenderer-drawing-lines/"))
                             expect(article.link).to(equal("http://younata.github.io/2018/09/16/MKOverlayRenderer-drawing-lines/"))
                             expect(article.authors).to(haveCount(1))
                         }

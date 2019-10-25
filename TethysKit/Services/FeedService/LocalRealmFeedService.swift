@@ -233,6 +233,14 @@ struct LocalRealmFeedService: LocalFeedService {
 
     private func allFeeds(in realm: Realm) -> [Feed] {
         let realmFeeds = realm.objects(RealmFeed.self)
+        let feedsToDelete = realmFeeds.filter { $0.title == "" && $0.url == "" }
+        if feedsToDelete.isEmpty == false {
+            realm.beginWrite()
+            realm.delete(feedsToDelete)
+            do {
+                try realm.commitWrite()
+            } catch {}
+        }
         return realmFeeds
             .map { Feed(realmFeed: $0) }
             .sorted { (lhs, rhs) -> Bool in

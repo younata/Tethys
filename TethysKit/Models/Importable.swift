@@ -2,7 +2,7 @@ import Muon
 
 protocol ImportableFeed {
     var title: String { get }
-    var url: URL { get }
+    var url: URL? { get }
     var description: String { get }
     var imageURL: URL? { get }
     var lastUpdated: Date { get }
@@ -11,7 +11,7 @@ protocol ImportableFeed {
 
 protocol ImportableArticle {
     var title: String { get }
-    var url: URL { get }
+    var url: URL? { get }
     var summary: String { get }
     var content: String { get }
     var published: Date { get }
@@ -26,8 +26,8 @@ protocol ImportableAuthor {
 }
 // MARK: Muon conformance
 extension Muon.Feed: ImportableFeed {
-    var url: URL {
-        return self.link!
+    var url: URL? {
+        return self.link
     }
 
     var importableArticles: [ImportableArticle] {
@@ -39,8 +39,8 @@ extension Muon.Feed: ImportableFeed {
     }
 }
 extension Muon.Article: ImportableArticle {
-    var url: URL {
-        return self.link!
+    var url: URL? {
+        return self.link ?? URL(string: self.guid ?? "")
     }
 
     var summary: String {

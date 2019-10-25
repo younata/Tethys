@@ -2,7 +2,7 @@
 
 struct FakeImportableFeed: ImportableFeed {
     let title: String
-    let url: URL
+    let url: URL?
     let description: String
     let lastUpdated: Date
     let imageURL: URL?
@@ -13,7 +13,7 @@ struct FakeImportableFeed: ImportableFeed {
         return self.articles.map { $0 as ImportableArticle }
     }
 
-    init(title: String, link: URL, description: String, lastUpdated: Date, imageURL: URL?, articles: [FakeImportableArticle] = []) {
+    init(title: String, link: URL?, description: String, lastUpdated: Date, imageURL: URL?, articles: [FakeImportableArticle] = []) {
         self.title = title
         self.url = link
         self.description = description
@@ -25,7 +25,7 @@ struct FakeImportableFeed: ImportableFeed {
 
 struct FakeImportableArticle: ImportableArticle {
     let title: String
-    let url: URL
+    let url: URL?
     let summary: String
     let content: String
     let published: Date
@@ -38,7 +38,7 @@ struct FakeImportableArticle: ImportableArticle {
         return self.authors.map { $0 as ImportableAuthor }
     }
 
-    init(title: String, url: URL, summary: String, content: String, published: Date, updated: Date?, read: Bool, authors: [FakeImportableAuthor] = []) {
+    init(title: String, url: URL?, summary: String, content: String, published: Date, updated: Date?, read: Bool, authors: [FakeImportableAuthor] = []) {
         self.title = title
         self.url = url
         self.summary = summary

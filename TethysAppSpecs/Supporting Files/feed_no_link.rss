@@ -1,0 +1,1199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Rachel Brindle</title>
+        <description>Software Engineer and Electric Vehicle enthusiast</description>
+        <atom:link href="https://younata.github.io/feed.xml" rel="self" type="application/rss+xml" />
+        <pubDate>Mon, 17 Sep 2018 05:15:24 +0000</pubDate>
+        <lastBuildDate>Mon, 17 Sep 2018 05:15:24 +0000</lastBuildDate>
+        <generator>Jekyll v3.7.4</generator>
+
+        <item>
+            <title>MKOverlayRenderer - Drawing Lines</title>
+            <description>&lt;p&gt;Today, I spent roughly 5 hours, off and on, trying to figure out why the following custom MKOverlayRenderer wasn’t rendering a line:&lt;/p&gt;
+
+                &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MyOverlay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MKOverlay&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;startCoordinate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CLLocationCoordinate2D&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;endCoordinate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CLLocationCoordinate2D&lt;/span&gt;
+
+                &lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CLLocationCoordinate2D&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CLLocationCoordinate2D&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;startCoordinate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;endCoordinate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;end&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+                &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MyOverlayRenderer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MKOverlayRenderer&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;strokeColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Color&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;lineWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CGFloat&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+
+                &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;myOverlay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MyOverlay&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;overlay&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as!&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MyOverlay&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+                &lt;span class=&quot;k&quot;&gt;override&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;draw&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;mapRect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MKMapRect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;zoomScale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MKZoomScale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CGContext&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;guard&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;startPoint&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CGPoint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zero&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;endPoint&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CGPoint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zero&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;saveGState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+                &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CGMutablePath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addLines&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;between&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;startPoint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;endPoint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+
+                &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;setStrokeColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strokeColor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cgColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;setLineWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lineWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+                &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;drawPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;using&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stroke&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+                &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;restoreGState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+                &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;startPoint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CGPoint&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MKMapPoint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;myOverlay&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;startCoordinate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;endPoint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CGPoint&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MKMapPoint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;myOverlay&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;endCoordinate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;p&gt;Which was rendering as below (circles are where the two ends of the line segments should be):&lt;/p&gt;
+
+                &lt;p&gt;&lt;img src=&quot;/assets/mkoverlayrenderer/no_line.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+                &lt;p&gt;I spent hours trying to figure out why these two points weren’t rendering.&lt;/p&gt;
+
+                &lt;p&gt;Eventually, looking through the docs, I noticed the &lt;a href=&quot;https://developer.apple.com/documentation/mapkit/1452156-mkroadwidthatzoomscale&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MKRoadWidthAtZoomScale(_:)&lt;/code&gt;&lt;/a&gt; function, and wondered if I should use that as a scaling factor for my line.&lt;/p&gt;
+
+                &lt;p&gt;So, I did that. I changed the &lt;code class=&quot;highlighter-rouge&quot;&gt;setLineWidth&lt;/code&gt; line to be: &lt;code class=&quot;highlighter-rouge&quot;&gt;context.setLineWidth(MKRoadWidthAtZoomScale(zoomScale) * max(self.lineWidth, 1))&lt;/code&gt;, and ran it.&lt;/p&gt;
+
+                &lt;p&gt;Behold, it works:&lt;/p&gt;
+
+                &lt;p&gt;&lt;img src=&quot;/assets/mkoverlayrenderer/shows_line.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+
+                &lt;p&gt;But, hey, in the future. If you’re looking at MKMapView, with a custom MKOverlayRenderer, and are trying to draw line segments, remember: MULTIPLY YOUR LINE WIDTH BY &lt;a href=&quot;https://developer.apple.com/documentation/mapkit/1452156-mkroadwidthatzoomscale&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;MKRoadWidthAtZoomScale(_:)&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+
+                &lt;p&gt;For reference, the full code is below:&lt;/p&gt;
+
+                &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MyOverlay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MKOverlay&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;startCoordinate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CLLocationCoordinate2D&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;endCoordinate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CLLocationCoordinate2D&lt;/span&gt;
+
+                &lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CLLocationCoordinate2D&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CLLocationCoordinate2D&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;startCoordinate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;endCoordinate&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;end&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;init&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+                &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MyOverlayRenderer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MKOverlayRenderer&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;strokeColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Color&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;clear&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;lineWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CGFloat&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+
+                &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;myOverlay&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MyOverlay&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;overlay&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as!&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MyOverlay&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+                &lt;span class=&quot;k&quot;&gt;override&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;draw&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;mapRect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MKMapRect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;zoomScale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MKZoomScale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CGContext&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;guard&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;startPoint&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CGPoint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zero&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;endPoint&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CGPoint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zero&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;saveGState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+                &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CGMutablePath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addLines&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;between&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;startPoint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;endPoint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+
+                &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;setStrokeColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;strokeColor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cgColor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MKRoadWidthAtZoomScale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zoomScale&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lineWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;setLineWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+                &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;drawPath&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;using&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stroke&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+                &lt;span class=&quot;n&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;restoreGState&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+                &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;startPoint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CGPoint&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MKMapPoint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;myOverlay&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;startCoordinate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;endPoint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CGPoint&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;point&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;for&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MKMapPoint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;myOverlay&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;endCoordinate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+            </description>
+            <pubDate>Sun, 16 Sep 2018 00:00:00 +0000</pubDate>
+            <link>http://younata.github.io/2018/09/16/MKOverlayRenderer-drawing-lines/</link>
+            <guid isPermaLink="true">http://younata.github.io/2018/09/16/MKOverlayRenderer-drawing-lines/</guid>
+            <author>Rachel Brindle</author>
+
+            <category>MKMapView,</category>
+
+            <category>MapKit,</category>
+
+            <category>MKOverlayRenderer,</category>
+
+            <category>custom,</category>
+
+            <category>lines,</category>
+
+            <category>drawing,</category>
+
+            <category>not,</category>
+
+            <category>rendering</category>
+
+
+        </item>
+
+        <item>
+            <title>Charging my Electric Bike with Solar Power</title>
+            <description>&lt;p&gt;Yesterday was Earth Day. I did not join the &lt;a href=&quot;https://twitter.com/search?q=%23marchforscience&quot;&gt;#marchforscience&lt;/a&gt;. Instead, I was finishing the modifications to my bike trailer.&lt;/p&gt;
+
+                &lt;p&gt;&lt;img src=&quot;/assets/solar_trailer/solar_trailer.jpg&quot; alt=&quot;Solar Trailer with me&quot; /&gt;&lt;/p&gt;
+
+                &lt;p&gt;This is a Burley Nomad trailer with 2 50 watt solar panels mounted on top. This feeds into an MPPT charge controller, that charges a 52V LiPO battery.&lt;/p&gt;
+
+                &lt;p&gt;&lt;img src=&quot;/assets/solar_trailer/solar_trailer_charging.jpg&quot; alt=&quot;Charging Battery Demo&quot; /&gt;&lt;/p&gt;
+
+                &lt;p&gt;This is an image of the front of the trailer charging my bike battery. Normally, the battery would be undernearth the charge controller, but it’s sitting on a bucket for imaging purposes.&lt;/p&gt;
+
+                &lt;p&gt;The wiring is pretty simple - the solar panels are strung in series, then plugged into the charge controller, which directly plugs into the charging port of the battery. The charge controller then pulls power from the panels and upconverts it to the necessary voltage to properly charge the battery. It’s set to stop charging when the battery is 80% full, to maximize the lifetime of the battery.&lt;/p&gt;
+
+                &lt;p&gt;I’m going to later plug a buck converter (dc to dc, downshifter) into the battery so that I can interface with a standard 12V power inverter and charge other battery-powered devices (such as my computer!).&lt;/p&gt;
+
+                &lt;h5 id=&quot;economics&quot;&gt;Economics&lt;/h5&gt;
+
+                &lt;p&gt;This is far from even close to economically worth it. Not including the bike battery, this cost approximately $700 ($200 for the panels, $300 for the overpriced trailer, another $200 for other electronics). At &lt;a href=&quot;https://www.pge.com/tariffs/Res_170101-170228.xls&quot;&gt;residential rates in CA&lt;/a&gt; (Excel document), it costs between $0.10 and $0.07 per charge for my particular bike battery (0.6 KWh battery). At best, it’ll be 7000 charge cycles before I recoup the cost. At the rate I recharge my bike battery (roughly once a week), this’ll take 134 years to break even. Which means it won’t.&lt;/p&gt;
+
+                &lt;p&gt;However, it has been (and continues to be) a really fun project, which is all I really wanted.&lt;/p&gt;
+
+                &lt;p&gt;Next weekend, I have plans to go bike camping with this setup, to actually test it in the field.&lt;/p&gt;
+            </description>
+            <pubDate>Sun, 23 Apr 2017 00:00:00 +0000</pubDate>
+            <link>http://younata.github.io/2017/04/23/solar-charge-ebike/</link>
+            <guid isPermaLink="true">http://younata.github.io/2017/04/23/solar-charge-ebike/</guid>
+            <author>Rachel Brindle</author>
+
+            <category>electric,</category>
+
+            <category>bike,</category>
+
+            <category>ebike,</category>
+
+            <category>vehicle,</category>
+
+            <category>ev,</category>
+
+            <category>solar,</category>
+
+            <category>power,</category>
+
+            <category>charging,</category>
+
+            <category>off,</category>
+
+            <category>the,</category>
+
+            <category>grid</category>
+
+
+        </item>
+
+        <item>
+            <title>Setting Up a macOS Worker with Concourse</title>
+            <description>&lt;p&gt;Setting up a macOS worker with Concourse is interesting. Because of licensing issues (as I understand it), you can’t just provisioning a mac box on AWS to be a worker, you need to use your own hardware. For that, there does exist a process to configure your Concourse installation to accept external workers (which your mac would be).&lt;/p&gt;
+
+                &lt;p&gt;I recommend purchasing a separate mac to be a worker (if you don’t already have an extra mac to use). Given the &lt;a href=&quot;http://buyersguide.macrumors.com/#Mac&quot;&gt;current state of the mac lineup&lt;/a&gt; (as of November 2016), I would recommend buying secondhand macs. The point is to not use someone’s workstation as your worker.&lt;/p&gt;
+
+                &lt;p&gt;This assumes you already have a &lt;a href=&quot;/2016/11/08/concourse-aws/&quot;&gt;Concourse installation w/ bosh setup&lt;/a&gt;.&lt;/p&gt;
+
+                &lt;h2 id=&quot;configuring-the-mac-worker&quot;&gt;Configuring the Mac Worker&lt;/h2&gt;
+
+                &lt;p&gt;To configure a Mac worker with Concourse, there’s a few steps we need to do.&lt;/p&gt;
+
+                &lt;h3 id=&quot;build-dependencies&quot;&gt;Build Dependencies&lt;/h3&gt;
+
+                &lt;p&gt;First, ensure that the mac is correctly set up to build things, including:&lt;/p&gt;
+
+                &lt;ol&gt;
+                &lt;li&gt;Install latest Xcode&lt;/li&gt;
+                &lt;li&gt;
+                &lt;p&gt;Install command line tools&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;xcode-select &lt;span class=&quot;nt&quot;&gt;--install&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                &lt;p&gt;Accept the Xcode license:&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;xcodebuild &lt;span class=&quot;nt&quot;&gt;-license&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                &lt;p&gt;Enable developer mode:&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;DevToolsSecurity &lt;span class=&quot;nt&quot;&gt;-enable&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+                &lt;/li&gt;
+                &lt;li&gt;Do any other bits of manually provisioning that is needed to perform jobs for your pipeline (i.e. install provisioning profiles and signing identities).&lt;/li&gt;
+                &lt;/ol&gt;
+
+                &lt;p&gt;Second, disable sleeping on the mac:&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;systemsetup &lt;span class=&quot;nt&quot;&gt;-setcomputersleep&lt;/span&gt; Never
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;h3 id=&quot;houdini--concourse-connection&quot;&gt;Houdini &amp;amp; Concourse Connection&lt;/h3&gt;
+
+                &lt;p&gt;Next, we need to install Houdini (a no-op Garden backend for macOS). Houdini executes jobs that Concourse hands it. Normally, Concourse jobs are executed in there own virtual machines (containers), which guarantees that an individual job is executed in a clean environment (without affecting the host system). These containers are started up from stemcells (preconfigured virtual machines). For various reasons (my understanding is licensing issues, but that may be wrong), there are no publicly available stemcells of macOS, and the workaround to this is Houdini, which runs a job without any virtualization. Alternatively, you could probably create stemcells for macOS and configure a worker to run jobs on them, but I have no idea how to do that. So, let’s set up Houdini and connect it to your Concourse instance.&lt;/p&gt;
+
+                &lt;ol&gt;
+                &lt;li&gt;
+                &lt;p&gt;Make a clean directory for the worker’s files:&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;mkdir /usr/local/concourse_worker
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                &lt;p&gt;Create an ssh key for the worker to talk with Concourse:&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;ssh-keygen &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; rsa &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; /usr/local/concourse_worker/worker_id_rsa &lt;span class=&quot;nt&quot;&gt;-N&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;''&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                &lt;p&gt;Add the key to the TSA in your concourse Manifest (see the &lt;a href=&quot;https://concourse.ci/clusters-with-bosh.html#section_configuring-bosh-tsa&quot;&gt;oncourse/bosh documentation&lt;/a&gt; for more information):&lt;/p&gt;
+
+                &lt;div class=&quot;language-yml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;instance_groups&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;web&lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;# rest of web config&lt;/span&gt;
+                &lt;span class=&quot;na&quot;&gt;jobs&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;atc&lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;# atc config&lt;/span&gt;
+                &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;tsa&lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;# rest of tsa config&lt;/span&gt;
+                &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;properties&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;na&quot;&gt;host_key&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# contents of tsa private key&lt;/span&gt;
+                &lt;span class=&quot;na&quot;&gt;host_public_key&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# contents of tsa public key&lt;/span&gt;
+                &lt;span class=&quot;na&quot;&gt;authorized_keys&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# contents of worker public key&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                &lt;p&gt;Redeploy your concourse:&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;bosh deploy
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                &lt;p&gt;&lt;a href=&quot;https://github.com/vito/houdini/releases/latest&quot;&gt;Download the latest Houdini&lt;/a&gt; and install it to &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/concourse_worker&lt;/code&gt;:&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;install ~/Downloads/houdini_darwin_amd64 /usr/local/concourse_worker/houdini
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                &lt;p&gt;Create a worker file (in ~/concourse_worker/worker.json) to describe the new worker:&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'{ &quot;name&quot;: &quot;osxworker&quot;, &quot;platform&quot;: &quot;darwin&quot; }'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; /usr/local/concourse_worker/worker.json
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                &lt;p&gt;Write a script to run houdini, place it in &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/concourse_worker/run-houdini.sh&lt;/code&gt;:&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
+
+                &lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+                /usr/local/concourse_worker/houdini &lt;span class=&quot;nt&quot;&gt;-depot&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/local/concourse_worker/containers
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                &lt;p&gt;Write a launchctl plist to manage the ssh tunnel script, place it in &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/concourse_worker/com.example.concourse.houdini.plist&lt;/code&gt; (replace com.example with your reverse domain name):&lt;/p&gt;
+
+                &lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;cp&quot;&gt;&amp;lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;plist&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;version=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;1.0&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;dict&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;key&amp;gt;&lt;/span&gt;AbandonProcessGroup&lt;span class=&quot;nt&quot;&gt;&amp;lt;/key&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;true/&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;key&amp;gt;&lt;/span&gt;KeepAlive&lt;span class=&quot;nt&quot;&gt;&amp;lt;/key&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;true/&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;key&amp;gt;&lt;/span&gt;Label&lt;span class=&quot;nt&quot;&gt;&amp;lt;/key&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;string&amp;gt;&lt;/span&gt;com.example.concourse.houdini&lt;span class=&quot;nt&quot;&gt;&amp;lt;/string&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;key&amp;gt;&lt;/span&gt;Nice&lt;span class=&quot;nt&quot;&gt;&amp;lt;/key&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;integer&amp;gt;&lt;/span&gt;0&lt;span class=&quot;nt&quot;&gt;&amp;lt;/integer&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;key&amp;gt;&lt;/span&gt;ProgramArguments&lt;span class=&quot;nt&quot;&gt;&amp;lt;/key&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;array&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;string&amp;gt;&lt;/span&gt;/usr/local/concourse_worker/run-houdini.sh&lt;span class=&quot;nt&quot;&gt;&amp;lt;/string&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;/array&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;key&amp;gt;&lt;/span&gt;RunAtLoad&lt;span class=&quot;nt&quot;&gt;&amp;lt;/key&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;true/&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dict&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;/plist&amp;gt;&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                &lt;p&gt;Write a script to run an ssh tunnel between the worker and your concourse installation, place it in &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/concourse_worker/ssh-tunnel.sh&lt;/code&gt; (replace ci.example.com with your concourse host):&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#!/bin/sh&lt;/span&gt;
+
+                ssh &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; 2222 ci.example.com &lt;span class=&quot;nt&quot;&gt;-i&lt;/span&gt; /usr/local/concourse_worker/worker_id_rsa &lt;span class=&quot;nt&quot;&gt;-R&lt;/span&gt; 0.0.0.0:0:127.0.0.1:7777 forward-worker &amp;lt; /usr/local/concourse_worker/worker.json
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                &lt;p&gt;Write a launchctl plist to manage the ssh tunnel script, place it in &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/concourse_worker/com.example.concourse.ssh-tunnel.plist&lt;/code&gt;:&lt;/p&gt;
+
+                &lt;div class=&quot;language-xml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;cp&quot;&gt;&amp;lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot; &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;plist&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;version=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;1.0&quot;&lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;dict&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;key&amp;gt;&lt;/span&gt;KeepAlive&lt;span class=&quot;nt&quot;&gt;&amp;lt;/key&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;true/&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;key&amp;gt;&lt;/span&gt;Label&lt;span class=&quot;nt&quot;&gt;&amp;lt;/key&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;string&amp;gt;&lt;/span&gt;com.example.concourse.ssh-tunnel&lt;span class=&quot;nt&quot;&gt;&amp;lt;/string&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;key&amp;gt;&lt;/span&gt;Nice&lt;span class=&quot;nt&quot;&gt;&amp;lt;/key&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;integer&amp;gt;&lt;/span&gt;0&lt;span class=&quot;nt&quot;&gt;&amp;lt;/integer&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;key&amp;gt;&lt;/span&gt;ProgramArguments&lt;span class=&quot;nt&quot;&gt;&amp;lt;/key&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;array&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;string&amp;gt;&lt;/span&gt;/usr/local/concourse_worker/ssh-tunnel.sh&lt;span class=&quot;nt&quot;&gt;&amp;lt;/string&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;/array&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;key&amp;gt;&lt;/span&gt;RunAtLoad&lt;span class=&quot;nt&quot;&gt;&amp;lt;/key&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;true/&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;/dict&amp;gt;&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;&amp;lt;/plist&amp;gt;&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                &lt;p&gt;Install the 3 launchctl scripts for the user:&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;cp /usr/local/concourse_worker/&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt;.plist ~/Library/LaunchAgents/
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+                &lt;/li&gt;
+                &lt;li&gt;
+                &lt;p&gt;Open System Preferences and set the machine to automatically log in:&lt;/p&gt;
+
+                &lt;p&gt;&lt;img src=&quot;/assets/concourse_houdini_auto_login.png&quot; alt=&quot;AutoLoginImage&quot; /&gt;&lt;/p&gt;
+                &lt;/li&gt;
+                &lt;/ol&gt;
+
+                &lt;p&gt;Now, if you reboot, you should be see that this machine is now a worker for your concourse instance.&lt;/p&gt;
+
+                &lt;p&gt;To manually ensure that you correctly configured houdine, then simply run the &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/concourse_worker/run-houdini.sh&lt;/code&gt; and the &lt;code class=&quot;highlighter-rouge&quot;&gt;/usr/local/concourse_worker/ssh-tunnel.sh&lt;/code&gt; scripts in separate terminals. You should see output that indicates the worker is correctly configured.&lt;/p&gt;
+
+                &lt;p&gt;Otherwise, to run houdini and connect it to your concourse installation, run&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;launchctl load ~/Library/LaunchAgents/com.example.concourse.houdini.plist
+                &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;launchctl load ~/Library/LaunchAgents/com.example.concourse.ssh-tunnel.plist
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;p&gt;Or, just reboot.&lt;/p&gt;
+
+                &lt;h2 id=&quot;configuring-jobs-to-use-the-mac-worker&quot;&gt;Configuring jobs to use the Mac Worker&lt;/h2&gt;
+
+                &lt;p&gt;Now you should have a mac worker to run tasks for you. To configure a job to use your mac worker, just specify &lt;code class=&quot;highlighter-rouge&quot;&gt;darwin&lt;/code&gt; as the platform in the task file. For example, see &lt;a href=&quot;https://github.com/younata/RSSClient/blob/master/concourse/tests.yml&quot;&gt;this task file&lt;/a&gt; from one of my iOS projects.&lt;/p&gt;
+            </description>
+            <pubDate>Tue, 08 Nov 2016 00:00:00 +0000</pubDate>
+            <link>http://younata.github.io/2016/11/08/concourse-mac-worker/</link>
+            <guid isPermaLink="true">http://younata.github.io/2016/11/08/concourse-mac-worker/</guid>
+            <author>Rachel Brindle</author>
+
+            <category>ios,</category>
+
+            <category>concourse,</category>
+
+            <category>ci</category>
+
+
+        </item>
+
+        <item>
+            <title>Concourse on AWS (November 2016)</title>
+            <description>&lt;p&gt;I just spent 4 days trying to deploy &lt;a href=&quot;https://concourse.ci&quot;&gt;Concourse&lt;/a&gt; on AWS. I finally got it set up by cheating and asking the Concourse dev team for help (One of the benefits of working at the company funding Concourse’s development). I wanted to document how one should deploy Concourse to AWS, and some of the pitfalls I came across.&lt;/p&gt;
+
+                &lt;p&gt;Note that because the tooling literally changes all the time (bosh bootloader is currently on the order of months old right now), this may be out of date by the time you read this.&lt;/p&gt;
+
+                &lt;h2 id=&quot;deploying-bosh-via-bosh-bootloader&quot;&gt;Deploying Bosh via Bosh Bootloader&lt;/h2&gt;
+
+                &lt;p&gt;Deploying Concourse to AWS means deploying via &lt;a href=&quot;https://bosh.io&quot;&gt;bosh&lt;/a&gt;. The &lt;a href=&quot;http://concourse.ci/clusters-with-bosh.html&quot;&gt;Concourse Documentation&lt;/a&gt; recommends manually setting up a bosh director. Ain’t nobody got time for that, so let’s use a tool to set up our deployment tool so we can deploy our CI tool. I spent 3 days trying to manually set up a bosh director before a coworker pointed me to &lt;a href=&quot;https://github.com/cloudfoundry/bosh-bootloader&quot;&gt;bosh-bootloader&lt;/a&gt;. First, because bosh-bootloader is a Go package, we need to install Go, so:&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;brew install go
+                &lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;GOPATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/go  &lt;span class=&quot;c&quot;&gt;# or, wherever. This is just what was recommended to me&lt;/span&gt;
+                &lt;span class=&quot;nb&quot;&gt;export &lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;PATH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$GOPATH&lt;/span&gt;/bin:&lt;span class=&quot;nv&quot;&gt;$PATH&lt;/span&gt;
+                &lt;span class=&quot;c&quot;&gt;# Put the above in your .profile&lt;/span&gt;
+                go get github.com/cloudfoundry/bosh-bootloader/bbl  &lt;span class=&quot;c&quot;&gt;# actually install bosh bootloader.&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;p&gt;Next, we install the bosh cli: &lt;code class=&quot;highlighter-rouge&quot;&gt;sudo gem install bosh_cli -n/usr/local/bin&lt;/code&gt;&lt;/p&gt;
+
+                &lt;p&gt;Then, we install bosh-init by following &lt;a href=&quot;http://bosh.io/docs/install-bosh-init.html&quot;&gt;these instructions&lt;/a&gt;.&lt;/p&gt;
+
+                &lt;p&gt;Next, we need to set up an AWS IAM user (see &lt;a href=&quot;http://bosh.io/docs/aws-iam-users.html#create&quot;&gt;this bosh documentation for how&lt;/a&gt;), with the following policy:&lt;/p&gt;
+
+                &lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Version&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2012-10-17&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Statement&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Effect&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Allow&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Action&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ec2:*&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;cloudformation:*&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;elasticloadbalancing:*&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;iam:*&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Resource&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;*&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;p&gt;Set the IAM user’s access key to the &lt;code class=&quot;highlighter-rouge&quot;&gt;$AWS_ACCESS_KEY_ID&lt;/code&gt; environment variable, and the secret access key to &lt;code class=&quot;highlighter-rouge&quot;&gt;$AWS_SECRET_ACCESS_KEY&lt;/code&gt; environment variable.&lt;/p&gt;
+
+                &lt;p&gt;Now, to initialize the bosh director, invoke:&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;bbl up &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;--aws-access-key-id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;AWS_ACCESS_KEY_ID&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;--aws-secret-access-key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;AWS_SECRET_ACCESS_KEY&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;--aws-region&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;us-east-1 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                deploy-bosh-on-aws-for-concourse
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;p&gt;Then, we need to set up a load balancer for concourse, do that as:&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;bbl create-lbs &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;--aws-region&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;us-east-1 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                &lt;span class=&quot;nt&quot;&gt;--type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;concourse
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;p&gt;Now, we need to get the director address, username, and password and have the bosh cli target it:&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;bbl director-username  &lt;span class=&quot;c&quot;&gt;# username&lt;/span&gt;
+                bbl director-password  &lt;span class=&quot;c&quot;&gt;# password&lt;/span&gt;
+                bosh target &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;${&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;bbl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt; director-address&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+                &lt;span class=&quot;c&quot;&gt;# Input username/password as prompted&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;p&gt;Next, we need to upload the stemcells and concourse releases.&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;bosh upload stemcell https://bosh.io/d/stemcells/bosh-aws-xen-ubuntu-trusty-go_agent
+                bosh upload stemcell https://bosh.io/d/stemcells/bosh-aws-xen-hvm-ubuntu-trusty-go_agent
+                bosh upload release https://bosh.io/d/github.com/cloudfoundry-incubator/garden-runc-release
+                bosh upload release https://bosh.io/d/github.com/concourse/concourse
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;p&gt;Okay. Bosh is configured, and latest concourse release is uploaded.&lt;/p&gt;
+
+                &lt;h2 id=&quot;concourse-manifest&quot;&gt;Concourse Manifest&lt;/h2&gt;
+
+                &lt;p&gt;Next, we need to set up the concourse manifest. Start with the manifest described &lt;a href=&quot;https://concourse.ci/clusters-with-bosh.html&quot;&gt;in the concourse documentation&lt;/a&gt;. For VM types, I’d start at the m3.medium and go up as desired/as needed.&lt;/p&gt;
+
+                &lt;p&gt;For SSL, you can simply use a self-signed cert, which can be generated with &lt;code class=&quot;highlighter-rouge&quot;&gt;openssl req -x509 -newkey rsa:4096 -keyout concourse.key -out concourse.cert -days 365&lt;/code&gt;. Once you have that, copy the contents of the key and cert to your deployment manifest.&lt;/p&gt;
+
+                &lt;p&gt;For reference, a cleaned-up version of my config is &lt;a href=&quot;https://gist.github.com/younata/f975df6b5be7f1b99db6f1463fd38267&quot;&gt;available at this gist&lt;/a&gt;.&lt;/p&gt;
+
+                &lt;p&gt;If you have a domain you want your ci to point to (for example, I have &lt;a href=&quot;https://ci.younata.com&quot;&gt;ci.younata.com&lt;/a&gt;), then you need to configure it to be a CNAME to your load balancer (load balancer URL obtained from &lt;code class=&quot;highlighter-rouge&quot;&gt;bbl lbs&lt;/code&gt;). Otherwise, you should just use the load balancer URL as the external url in your concourse manifest.&lt;/p&gt;
+
+                &lt;p&gt;Once you have that, you need to deploy it.&lt;/p&gt;
+
+                &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;bosh deployment concourse_deployment.yml  &lt;span class=&quot;c&quot;&gt;# Specifies the concourse manifest to be deployed&lt;/span&gt;
+                bosh deploy  &lt;span class=&quot;c&quot;&gt;# deploy the previously set manifest&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;p&gt;If you can access your CI at the external URL you provided, then you’re done setting things up. In my case, bosh bootloader incorrectly configured my load balancer and my concourse security group. This showed up as an infinite redirect to my external url.&lt;/p&gt;
+
+                &lt;h3 id=&quot;load-balancer-infinite-redirect&quot;&gt;Load Balancer Infinite Redirect&lt;/h3&gt;
+
+                &lt;p&gt;First, your load balancer needs to be configured to forward TCP 443 to TCP 4443, without doing a certificate check (your web/atc instance will do that, this is why you specified the certificate in your concourse manifest). Next, the security group for concourse needs be configured to let in all traffic for port 443. This security group will have a description of “Concourse”, and was otherwise configured to let everything from 80 and 2222 in.&lt;/p&gt;
+
+                &lt;h2 id=&quot;configuring-fly&quot;&gt;Configuring Fly&lt;/h2&gt;
+
+                &lt;p&gt;In theory, you should be able to access the concourse web ui now.&lt;/p&gt;
+
+                &lt;p&gt;Now, you need to download fly (the concourse CLI tool), and have it target your concourse installation. Fly is downloaded from the concourse UI, and can be installed as just &lt;code class=&quot;highlighter-rouge&quot;&gt;install ~/Downloads/fly /usr/local/bin&lt;/code&gt;.&lt;/p&gt;
+
+                &lt;p&gt;Targeting your concourse instance is as simple as &lt;code class=&quot;highlighter-rouge&quot;&gt;fly -t main login -c CONCOURSE_EXTERNAL_URL -k&lt;/code&gt;.&lt;/p&gt;
+
+                &lt;p&gt;From here, follow the rest of the &lt;a href=&quot;https://concourse.ci/hello-world.html&quot;&gt;Concourse documentation&lt;/a&gt; for configuring pipelines and such.&lt;/p&gt;
+            </description>
+            <pubDate>Tue, 08 Nov 2016 00:00:00 +0000</pubDate>
+            <link>http://younata.github.io/2016/11/08/concourse-aws/</link>
+            <guid isPermaLink="true">http://younata.github.io/2016/11/08/concourse-aws/</guid>
+            <author>Rachel Brindle</author>
+
+            <category>concourse,</category>
+
+            <category>ci,</category>
+
+            <category>pivotal,</category>
+
+            <category>aws,</category>
+
+            <category>configure,</category>
+
+            <category>set</category>
+
+            <category>up</category>
+
+
+        </item>
+
+        <item>
+            <title>Automating Mobile Releases</title>
+            <description>&lt;p&gt;This is based on a talk I gave at Uber Mobility on November 1st, 2016 (yesterday).&lt;/p&gt;
+
+                &lt;p&gt;Automating your deploys means using Continuous Integration (CI) to deploy. CI is a machine (or set of machines) that exists to run scripts on your code in response to commits getting pushed.&lt;/p&gt;
+
+                &lt;h2 id=&quot;process&quot;&gt;Process&lt;/h2&gt;
+
+                &lt;p&gt;First, process, because my process is not your process (and that’s ok!), but we need a shared basis to start from.&lt;/p&gt;
+
+                &lt;p&gt;This post assumes an agile process, specifically extreme programming. This also focuses on a developer’s perspective.&lt;/p&gt;
+
+                &lt;p&gt;When doing the initial development, write tests. I practice TDD, and I work for a company that practices TDD (Pivotal), but even without it, the point is comprehensive (and good) test coverage. No code should be written without an accompanying (valid!) test. Writing good tests is it’s own post, and this will be long enough as is.&lt;/p&gt;
+
+                &lt;p&gt;Next, after the feature is done, it’s committed and pushed to some git repository. This git repository interacts with a CI system whenever a new commit is pushed - either by being polled by the CI, or by notifying the CI system. The CI will check out the git repository at that commit and run all the tests. Most high profile open source projects have a similar setup, where commits are checked by a third-party CI system to ensure that tests pass in a clean environment.&lt;/p&gt;
+
+                &lt;p&gt;At Pivotal, we rarely do feature flagging, we commit directly to master, and by virtue of TDD, we usually are able to keep master green.&lt;/p&gt;
+
+                &lt;p&gt;Every once in a while, ideally after a build passes CI, but more than likely just once or twice a day, someone or something will take the repo and perform steps to deliver a build; a build is uploaded to a staging environment so that a product manager can accept the new features/bug fixes/whatever was changed.&lt;/p&gt;
+
+                &lt;p&gt;Even less often, maybe once a week, a release will be cut, and another build based on an accepted build will be uploaded to production.&lt;/p&gt;
+
+                &lt;h2 id=&quot;why-should-you-automate-your-deployments&quot;&gt;Why should you automate your deployments&lt;/h2&gt;
+
+                &lt;p&gt;First, it frees up the human who otherwise would have done the deployment to do other things, including taking a break.&lt;/p&gt;
+
+                &lt;p&gt;Second, it ensures that your deployments are much more consistent as it’s followed by a computer that is much less likely to screw up than a human.&lt;/p&gt;
+
+                &lt;p&gt;Third, this helps shorten the build-test-release cycle - because deployments take time and essentially prevent whoever is doing the deployment from doing something else, you’re much more inclined to only do the deployment once a day or even less often. However, if you have some automated system do your deployment, you can do a deployment as often as whenever a commit is pushed.&lt;/p&gt;
+
+                &lt;p&gt;Last, automating deployments ensures that your deployments are reproducible. Your deploy script becomes the source of truth for how to deploy, and it’s not siloed in one single person.&lt;/p&gt;
+
+                &lt;p&gt;That said, it’s a lot of work. Backend and web folks have it easy - thanks to PaaSs like Cloud Foundry and Heroku, deploying is trivially automatable. Mobile devs have it much harder - having a containerized server automatically generate blessed builds is a really tough problem, it turns out, one I’ll go over in detail later.&lt;/p&gt;
+
+                &lt;h2 id=&quot;deployment&quot;&gt;Deployment&lt;/h2&gt;
+
+                &lt;p&gt;The standard manual deployment process looks something like:&lt;/p&gt;
+
+                &lt;ul&gt;
+                &lt;li&gt;Make sure tests pass (Because we’re software engineers, right?)&lt;/li&gt;
+                &lt;li&gt;Create a build for release.&lt;/li&gt;
+                &lt;li&gt;Gather metadata
+                &lt;ul&gt;
+                &lt;li&gt;Release Notes&lt;/li&gt;
+                &lt;li&gt;Screenshots&lt;/li&gt;
+                &lt;li&gt;Other&lt;/li&gt;
+                &lt;/ul&gt;
+                &lt;/li&gt;
+                &lt;li&gt;Use your browser to upload the build and metadata to the desired environment.&lt;/li&gt;
+                &lt;/ul&gt;
+
+                &lt;p&gt;This is a very slow, time-consuming and error-prone process. It’s very tempting to shortcut the process - “eh, tests probably pass, so I’ll skip them”, “Did I remember to build turn on optimizations? Oh well”, “the UI hasn’t changed THAT much, so even with the new changes, I’ll not add screenshots”, “‘Bug fixes and performance improvements’ is totally an acceptable release note”, and finally “Oh shoot, I didn’t sign it with the proper credentials, now I have to redo it”.&lt;/p&gt;
+
+                &lt;p&gt;In contrast, a fully automated deploy is just “well, we finished that feature. Let’s push and do another feature.” Because your deploy script is scripted, you don’t even have the option to skip tests. It always builds for release. You can write a script to autogenerate screenshots for you. Your staging environment can use your git log as your release notes. You should still, however, have an actual human write your release notes for production. Just store them in a place that your deploy script can retrieve from.&lt;/p&gt;
+
+                &lt;h3 id=&quot;tests&quot;&gt;Tests&lt;/h3&gt;
+                &lt;p&gt;Testing is a hallmark of good software engineering. However, it’s outside the scope of this, so I’ll just assume that you know how to test your app, and that you have tests.&lt;/p&gt;
+
+                &lt;p&gt;Automating these tests are the next thing. It’s a super useful thing to be able to invoke &lt;code class=&quot;highlighter-rouge&quot;&gt;./tests.sh&lt;/code&gt; and go on your way. Usually if you have tests you also have this sort of script existing. If not, I’ll direct you to &lt;a href=&quot;https://github.com/fastlane/fastlane/blob/master/scan/README.md&quot;&gt;scan&lt;/a&gt; from fastlane for a way to automatically run your iOS tests. Android users should have a gradle task set up that runs tests.&lt;/p&gt;
+
+                &lt;h3 id=&quot;build-project&quot;&gt;Build Project&lt;/h3&gt;
+
+                &lt;p&gt;Now, let’s build the project. Android utilizes gradle, and iOS has xcodebuild. Both are the underlying tools used to build the project, and they’re both accessible from the command line.&lt;/p&gt;
+
+                &lt;h4 id=&quot;blessing-an-ios-build&quot;&gt;Blessing an iOS build&lt;/h4&gt;
+
+                &lt;p&gt;Building for release also involves blessing the build with the correct code signing identity and provisioning profiles. As anyone who has ever had to debug this can tell you, it is a source of hours of fun (for sarcastic values of fun). There are a few ways to approach this:&lt;/p&gt;
+
+                &lt;ol&gt;
+                &lt;li&gt;Only build on pre-blessed machines.&lt;/li&gt;
+                &lt;li&gt;Commit your blessing materials to your (private) repository&lt;/li&gt;
+                &lt;li&gt;Host your blessing materials in some other (private) repository.&lt;/li&gt;
+                &lt;/ol&gt;
+
+                &lt;p&gt;Let’s go over each of these approaches:&lt;/p&gt;
+
+                &lt;h5 id=&quot;pre-blessed-machines&quot;&gt;Pre-Blessed machines&lt;/h5&gt;
+
+                &lt;p&gt;These are machines that have been set up to be blessed, and ideally manually confirmed to produce ‘blessed’ builds. If you use Jenkins, then this is the approach you are likely taking.&lt;br /&gt;
+                This has issues in that it makes it harder to scale your build process, it makes your CI boxes into special snowcases, and at smaller scales, it raises your operating costs (need to buy those dedicated CI boxes, after all).
+                It is, however, incredibly convenient because you only have to bless a machine once and that’s it. However, if you use a hosted CI solution (i.e. Circle, Travis), then you can’t do this.&lt;/p&gt;
+
+                &lt;h5 id=&quot;commit-code-signing-material-to-code-repository&quot;&gt;Commit Code Signing Material to Code Repository&lt;/h5&gt;
+
+                &lt;p&gt;If you want to use a CI as a Service (CIaaS) solution (which I recommend for all sorts of reasons), then you need to have some way to re-bless the CI machine each time it runs. This is because all the CIaaS solutions use containerization to ensure that you get a clean machine each time CI runs.&lt;/p&gt;
+
+                &lt;p&gt;One way to ensure that the container that runs your build is properly blessed is to directly commit your blessing material (code signing keys, provisioning profiles, etc.) directly to your code repository. Once the build starts up, you take the blessing material and correctly insert them to be picked up by the build script.&lt;/p&gt;
+
+                &lt;p&gt;This does have issues. If you have an open source project, then you can’t do this. There are ways to get around that. You can, for example, encrypt your signing materials before you commit them, and decrypt them on the CI box. All CIaaS have ways to load secret environment variables, so just store the encryption/decryption key there. Even if you have a closed source project, you should still encrypt your code signing information as that reduces the damage done if your code gets leaked somehow (don’t want random people to be able to sign their code as you).&lt;/p&gt;
+
+                &lt;p&gt;See &lt;a href=&quot;https://www.objc.io/issues/6-build-tools/travis-ci/#app-signing&quot;&gt;this article on objc.io&lt;/a&gt; for an example of how to encrypt your code signing materials before uploading them (utilizing Travis CI, Circle CI didn’t support iOS at the time the article was published).&lt;/p&gt;
+
+                &lt;h5 id=&quot;host-blessing-material-elsewhere&quot;&gt;Host Blessing Material Elsewhere&lt;/h5&gt;
+
+                &lt;p&gt;Another approach that still allows you to use CIaaS is to store your code signing materials in some other repository that’s not your code. This is the approach that &lt;a href=&quot;https://github.com/fastlane/fastlane/tree/master/match#readme&quot;&gt;Fastlane’s match&lt;/a&gt; utilizes.&lt;/p&gt;
+
+                &lt;p&gt;The basic idea is that you have your code blessing material stored in some repository not your code repository, and your CI scripts know how to correctly interface with that repository. This works because it means you don’t have to store your code signing identies in every repository you have, and makes it much easier to update all your apps in the event that the code signing identity has to change. This is the approach I take for my personal apps (utilizing &lt;a href=&quot;https://github.com/fastlane/fastlane/tree/master/match#readme&quot;&gt;Fastlane’s match&lt;/a&gt;).&lt;/p&gt;
+
+                &lt;h3 id=&quot;gathering-metadata&quot;&gt;Gathering Metadata&lt;/h3&gt;
+
+                &lt;p&gt;In my apps, the only metadata that I care to change between app store deployments are the screenshots and the release notes.&lt;/p&gt;
+
+                &lt;p&gt;The only reason I change the screenshots is because I have that process automated, and for the longest time, I had my release notes be an edited version of the git log.&lt;/p&gt;
+
+                &lt;h4 id=&quot;screenshots&quot;&gt;Screenshots&lt;/h4&gt;
+
+                &lt;p&gt;Thankfully, screenshots are a thing you really only have to worry about for production.&lt;/p&gt;
+
+                &lt;p&gt;Creating Screenshots manually is time consuming and error prone. Even if you do it perfectly, generating screenshots for all your device sizes and localizations takes forever. Let’s change that and automate it. You can (ab)use the UI Testing frameworks provided by both platforms to automatically generate screenshots for various screen sizes and localizations.&lt;/p&gt;
+
+                &lt;p&gt;For Android, I would recommend looking at &lt;a href=&quot;https://github.com/fastlane/fastlane/tree/master/screengrab&quot;&gt;Fastlane’s screengrab&lt;/a&gt; as a tool for utilizing Android’s UI Testing to autogenerate screenshots.&lt;/p&gt;
+
+                &lt;p&gt;For iOS, I have used &lt;a href=&quot;https://github.com/fastlane/fastlane/tree/master/snapshot&quot;&gt;Fastlane’s snapshot&lt;/a&gt; to autogenerate screenshots.&lt;/p&gt;
+
+                &lt;h4 id=&quot;release-notes&quot;&gt;Release Notes&lt;/h4&gt;
+
+                &lt;p&gt;Release notes should be human generated, but uploaded to a consistent place. Nowadays, I prefer it when the PM (or whoever writes the release notes) attaches the screenshots to the “release” story in the project tracker. This even works for internationalized versions - english notes are attached as “release_notes.en.txt”, german would be “release_notes.de.txt”, and a script can take those and place them in the appropriate place for &lt;a href=&quot;https://github.com/fastlane/fastlane/blob/master/deliver/README.md&quot;&gt;deliver&lt;/a&gt; to find.&lt;/p&gt;
+
+                &lt;h4 id=&quot;versioning&quot;&gt;Versioning&lt;/h4&gt;
+
+                &lt;p&gt;This is both the build number and the version string. The build number can easily be automatically generated from a number of ways - I prefer the number of commits in the git history. The version string can also be generated in an automated way - I prefer the output of &lt;code class=&quot;highlighter-rouge&quot;&gt;git describe --tags&lt;/code&gt;, which works both for tagged commits and untagged commits!&lt;/p&gt;
+
+                &lt;h3 id=&quot;upload&quot;&gt;Upload&lt;/h3&gt;
+
+                &lt;p&gt;Once we have the build and the associated metadata, we need to gather these up and upload them to the desired environment.&lt;/p&gt;
+
+                &lt;p&gt;Deciding between environments is relatively easy to automate. Personally, I just tag a commit intended for production as “v[major].[minor].[bugfix]” - standard semantic versioning. Anytime a tag of that format is pushed, I have CI build for release.&lt;/p&gt;
+
+                &lt;p&gt;As for actually uploading, that depends on what environment you’re uploading to. Most environments should have a simple RESTful API to upload things. For places like Google Play, the App Store, and Testflight, I’m going to once again point to fastlane for &lt;a href=&quot;https://github.com/fastlane/fastlane/blob/master/supply/README.md&quot;&gt;supply&lt;/a&gt;, &lt;a href=&quot;https://github.com/fastlane/fastlane/blob/master/deliver/README.md&quot;&gt;deliver&lt;/a&gt;, and &lt;a href=&quot;https://github.com/fastlane/fastlane/blob/master/pilot/README.md&quot;&gt;pilot&lt;/a&gt; respectively. Hopefully your Enterprise MDM has a RESTful API to automate this, otherwise submit a feature request and talk about how much hours are wasted each day doing manual deployments?&lt;/p&gt;
+
+                &lt;h2 id=&quot;automated-deployment&quot;&gt;Automated Deployment&lt;/h2&gt;
+
+                &lt;p&gt;Once you have all of these automated, this is a decent stopping-point for semi-automated deployment, especially for small teams. Just run the deploy script from a workstation and go take a break.&lt;/p&gt;
+
+                &lt;p&gt;But, to me, this isn’t far enough. I don’t want my workstation to be tied up while the deploy happens. Maybe I just came back from a break and don’t feel like taking another one.&lt;/p&gt;
+
+                &lt;p&gt;Well, why not have CI do your deploy? CI is a clean environment that operates on your code. Typically, it just runs the tests to make sure the build is “green”. You can also tell your CI to do your deploys. That way, you don’t even have to modify your standard workflow, deploys just happen as a result of a push.&lt;/p&gt;
+
+                &lt;h3 id=&quot;which-ci&quot;&gt;Which CI?&lt;/h3&gt;
+
+                &lt;p&gt;Because of my job as a consultant, I am in the unique position of getting to try out a new CI solution multiple times a year. In my two years at Pivotal (thus far), I’ve used 4 different CI systems: &lt;a href=&quot;https://developer.apple.com/library/content/documentation/IDEs/Conceptual/xcode_guide-continuous_integration/&quot;&gt;Xcode Server&lt;/a&gt;, &lt;a href=&quot;https://travis-ci.com&quot;&gt;Travis CI&lt;/a&gt;, &lt;a href=&quot;https://circleci.com&quot;&gt;Circle CI&lt;/a&gt;, and &lt;a href=&quot;https://concourse.ci&quot;&gt;Concourse&lt;/a&gt;.&lt;/p&gt;
+
+                &lt;p&gt;Xcode Server was used entirely because it was easier to set up than Jenkins. The lead for this project spent 2 days trying to set up Jenkins before giving up. I suggested Xcode Server (because at the time Concourse wasn’t usable for iOS CI), and spent half a day to set up. Maintaining Xcode Server was a pain in the ass (multiple times it lost our entire build history, properly blessing it was annoying because it runs as _xcsbuildd) Xcode Server could be great, but it’s obvious that Apple doesn’t dogfood it.&lt;/p&gt;
+
+                &lt;p&gt;Travis CI and Circle CI are my go-to for CIaaS. Of late, I’ve been recommending Circle over Travis (Circle doesn’t require a command line tool to set secret environment variables), but they’re essentially the same. They’re relatively cheap, and they scale reasonably well. For every client project I’ve been on except the one where I learned how fun Xcode Server is, we’ve used either Travis or Circle.&lt;/p&gt;
+
+                &lt;p&gt;Concourse is a new CI solution sponsored by Pivotal, created to address the unique problems Cloud Foundry ran into in CI. CI is broken up into jobs that run on their own containerized workers. Jobs can depend on the success (or failure) of other jobs. Meaning that Concourse has built-in support for pipelines. Concourse itself pretty much just manages workers and delegates jobs out to them, which makes it scale up really well. However, Concourse is painful to first set up if you’re not familiar with any of the technologies it utilizes (once you learn BOSH, you’re good. I didn’t know BOSH when I first tried to use Concourse). Additionally, once Concourse is set up, you still need to configure mac workers to talk to it. Overall, I don’t use Concourse for client iOS projects, but for internal projects and personal projects, it’s my first choice.&lt;/p&gt;
+
+                &lt;h2 id=&quot;advanced-things&quot;&gt;Advanced Things&lt;/h2&gt;
+
+                &lt;p&gt;These are bits of advanced things that I didn’t feel the need to go into during the actual talk, but I figured I should talk talk about otherwise.&lt;/p&gt;
+
+                &lt;h3 id=&quot;reusing-binaries&quot;&gt;Reusing Binaries&lt;/h3&gt;
+
+                &lt;p&gt;The idea behind reusing binaries is that you make a build and send it through staging. Then, QA or whoever signs off on it and you deploy that binary to production, without having to rebuild from source. Not only does this save you the time spent recompiling from source, but (more importantly) it allows you to verify that you are deploying to production the actual build that QA signed off on (because dependencies and such might have slightly changed on you - or you upgraded compilers between your staging deploy and your production deploy and that might have introduced bugs).&lt;/p&gt;
+
+                &lt;p&gt;Personally, I do not have the discipline to do this for my personal projects, and in my professional career I’ve yet to run into issues that this would have solved. For my uses, binary reuse is an optimization step more than anything else.&lt;/p&gt;
+
+                &lt;p&gt;So, you’ve decided to do this… how? First, you need to save off the raw build artifact. In iOS, if you use Testflight as your staging environment and the app store as your deploy environment, then you can save the .ipa you send to Apple. Otherwise, you need to save the unsigned and unprovisioned build to, say, s3, then sign and provision that build before uploading to your staging environment.&lt;/p&gt;
+
+                &lt;p&gt;When you do decide to deploy to production, your deploy task needs to take that build from s3 (or wherever you stored it), sign and provision it, then upload to prod.&lt;/p&gt;
+
+                &lt;p&gt;As I understand it, this is much easier to do on Android.&lt;/p&gt;
+
+                &lt;h3 id=&quot;deploying-only-signed-commitstags&quot;&gt;Deploying Only Signed Commits/Tags&lt;/h3&gt;
+
+                &lt;p&gt;I’m not going to go into why &lt;a href=&quot;http://programmers.stackexchange.com/questions/212192/what-are-the-advantages-and-disadvantages-of-cryptographically-signing-commits-a&quot;&gt;you should cryptographically sign your commits/tags&lt;/a&gt;, but assuming you decide to do this, you’ll want to only deploy commits that are actually from members of your dev team.&lt;/p&gt;
+
+                &lt;p&gt;To do this, you need to upload your teams GPG public keys to your CI server. Depending on your CI system, you running into a trust problem - for example, as of right now, neither Circle or travis has no way to upload your GPG keys independent of the circle.yml or .travis.yml file. Which means that you need to trust that a malicious committer didn’t think to add a false gpg key to the ci configuration file. On the other hand, Concourse, by virtue of not being a hosted CI platform, allows you to add GPG keys entirely independent of your repository. Concourse has gpg-checking &lt;a href=&quot;https://github.com/concourse/git-resource#gpg-signature-verification&quot;&gt;built in to the git resource&lt;/a&gt;, which won’t allow any builds to happen if specified.&lt;/p&gt;
+
+                &lt;h2 id=&quot;go-forth-and-deploy&quot;&gt;Go Forth and Deploy&lt;/h2&gt;
+
+                &lt;p&gt;Automating your deployments can be a very frustrating experience with a high up-front time-cost. However, once it works, it pays for itself immensely just by not having to think about your deployments. And if something does go wrong, CI will go red, alerting you to the issue. Staging deployments are as easy as &lt;code class=&quot;highlighter-rouge&quot;&gt;git push&lt;/code&gt;, and production deployments are as simple as &lt;code class=&quot;highlighter-rouge&quot;&gt;git tag $VERSION_NUMBER; git push origin $VERSION_NUMBER&lt;/code&gt;.&lt;/p&gt;
+
+                &lt;p&gt;Stop worrying and let CI deploy for you.&lt;/p&gt;
+            </description>
+            <pubDate>Wed, 02 Nov 2016 00:00:00 +0000</pubDate>
+            <link>http://younata.github.io/2016/11/02/automating-releases/</link>
+            <guid isPermaLink="true">http://younata.github.io/2016/11/02/automating-releases/</guid>
+            <author>Rachel Brindle</author>
+
+            <category>mobile,</category>
+
+            <category>releases,</category>
+
+            <category>automated,</category>
+
+            <category>ci,</category>
+
+            <category>fastlane</category>
+
+
+        </item>
+
+        <item>
+            <title>Homemade thermostat for my apartment</title>
+            <description>&lt;p&gt;In the process of setting up a home automation system, I realized that I can’t do a lot of what I want with simple off-the-shelf parts - because I rent. For example, I wanted to set up a &lt;a href=&quot;https://lockitron.com&quot;&gt;Lockitron&lt;/a&gt;, but I can’t replace the lock&lt;sup&gt;&lt;a href=&quot;#1&quot;&gt;1&lt;/a&gt;&lt;/sup&gt;. I also wanted to set up a &lt;a href=&quot;https://nest.com&quot;&gt;Nest&lt;/a&gt;, but I don’t want to risk my security deposit. I’m still working on the smartlock thing&lt;sup&gt;&lt;a href=&quot;#2&quot;&gt;2&lt;/a&gt;&lt;/sup&gt;, but I think I figured out the thermostat.&lt;/p&gt;
+
+                &lt;p&gt;A bit of background first, though. I set up a Raspberry Pi 2 to run &lt;a href=&quot;https://home-assistant.io&quot;&gt;Home Assistant&lt;/a&gt;, and I’ve long since set that up to control the lights &lt;sup&gt;&lt;a href=&quot;#3&quot;&gt;3&lt;/a&gt;&lt;/sup&gt;. I have it hooked up to quite a few different components - for example, when we watch a movie using Kodi, it adjusts the lights for optimal enjoyment&lt;sup&gt;&lt;a href=&quot;#4&quot;&gt;4&lt;/a&gt;&lt;/sup&gt;.&lt;/p&gt;
+
+                &lt;p&gt;This winter, however, I ran into another area for improvement. While my apartment does have a heater/thermostat, it’s not programmable in any way. Instead, I hooked a space heater to a &lt;a href=&quot;http://www.amazon.com/WeMo-Enabled-Electronics-anywhere-Compatible/dp/B00BB2MMNE/&quot;&gt;WeMo wifi-enabled power outlet&lt;/a&gt;, and gave Home Assistant similar rules as the lights&lt;sup&gt;&lt;a href=&quot;#5&quot;&gt;5&lt;/a&gt;&lt;/sup&gt;. It works wonderfully. I don’t have to worry about a potential fire hazard, because I can just check Home Assistant from anywhere and see that the power outlet is off.&lt;/p&gt;
+
+                &lt;p&gt;To improve upon this, I have plans to set up a thermometer so that Home Assistant can act as a proper thermostat. This will certainly be useful as it starts to warm up in a couple months, and I no longer have to waste electricity needlessly heating our apartment.&lt;/p&gt;
+
+                &lt;p&gt;&lt;a href=&quot;https://gist.github.com/younata/930e85a717d1006245a5&quot;&gt;Here’s a link to a scrubbed copy of my configuration.yml&lt;/a&gt;&lt;/p&gt;
+
+                &lt;p&gt;&lt;a name=&quot;1&quot;&gt;1&lt;/a&gt;: I suffer from the problem of forgetting that I locked the door. I’d love the ability to check at a glance that my door is locked, and if not, have it locked.&lt;br /&gt;
+                &lt;a name=&quot;2&quot;&gt;2&lt;/a&gt;: As I understand it, the kickstarted lockitron could do this, but I’m a couple years too late for that.&lt;br /&gt;
+                &lt;a name=&quot;3&quot;&gt;3&lt;/a&gt;: Before I set this up, I just used the Hue app on my phone. However, after my partner moved in with me, I found using home assistant to the handle the either/or cases for us to be superior to us both using the Hue app. For example, when I would leave for work, the app would sense that I had left home and turn the lights out even though my partner was still home. Now, Home Assistant sees that I leave home, but doesn’t turn the lights off because my partner is still home.&lt;br /&gt;
+                &lt;a name=&quot;4&quot;&gt;4&lt;/a&gt;: Unfortunately, it doesn’t detect when I turn on any of my other media devices, and I don’t know how to do that.&lt;br /&gt;
+                &lt;a name=&quot;5&quot;&gt;5&lt;/a&gt;: Turn on at a certain time (2 hours before the lights, so that it can warm the room up), turn off when nobody is home, etc.&lt;/p&gt;
+            </description>
+            <pubDate>Wed, 23 Dec 2015 00:00:00 +0000</pubDate>
+            <link>http://younata.github.io/2015/12/23/iot-homemade-thermostat/</link>
+            <guid isPermaLink="true">http://younata.github.io/2015/12/23/iot-homemade-thermostat/</guid>
+            <author>Rachel Brindle</author>
+
+            <category>home</category>
+
+            <category>assistant,</category>
+
+            <category>thermostat</category>
+
+
+        </item>
+
+        <item>
+            <title>OS X Programming - Setting up Core Animation</title>
+            <description>&lt;p&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSView_Class/index.html#//apple_ref/occ/cl/NSView&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NSViews&lt;/code&gt;&lt;/a&gt;, unless &lt;a href=&quot;https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIView_Class/index.html#//apple_ref/occ/cl/UIView&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;UIViews&lt;/code&gt;&lt;/a&gt;, are not always backed by &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/GraphicsImaging/Reference/CALayer_class/index.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Core Animation layers&lt;/code&gt;&lt;/a&gt;. In fact, by default, they don’t have anything to do with CALayers. You can optionally choose to make an NSView a layer-backed view, a layer-hosting view, or have nothing to do with them.&lt;/p&gt;
+
+                &lt;p&gt;Other than that, CoreAnimation on OSX is the same as CoreAnimation on iOS. You don’t even need to flip your coordinate system (as CoreAnimation on iOS uses bottom-left as the origin - which OSX uses by default).&lt;/p&gt;
+
+                &lt;p&gt;Note that actually using Core Animation will be a future, more generic, article, this is just how to set it up with AppKit.&lt;/p&gt;
+
+                &lt;h4 id=&quot;layer-backed&quot;&gt;Layer-Backed&lt;/h4&gt;
+
+                &lt;p&gt;A layer-backed view means that the view delegates all the drawing to a &lt;code class=&quot;highlighter-rouge&quot;&gt;CALayer&lt;/code&gt; that it manages. Setting one view to be layer-backed automatically sets all of it’s subviews (and onwards) to be layer-backed. Additionally, if you want to directly do stuff to the layer, you need to set the &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSView_Class/index.html#//apple_ref/occ/instp/NSView/wantsUpdateLayer&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;wantsUpdateLayer&lt;/code&gt;&lt;/a&gt; property to &lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt;. &lt;code class=&quot;highlighter-rouge&quot;&gt;UIViews&lt;/code&gt; behave like this by default.&lt;/p&gt;
+
+                &lt;p&gt;Layer-Backed views are always more performant than views w/o layers. But, in general, you don’t need to make all views layer-backed, only if you’re feeling pain on that.&lt;/p&gt;
+
+                &lt;p&gt;To set a view as layer-backed, you need to set the &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSView_Class/index.html#//apple_ref/occ/instp/NSView/wantsLayer&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;wantsLayer&lt;/code&gt;&lt;/a&gt; property to &lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt;, and not set the &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSView_Class/index.html#//apple_ref/occ/instp/NSView/layer&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;layer&lt;/code&gt;&lt;/a&gt; property.&lt;/p&gt;
+
+                &lt;p&gt;In code:&lt;/p&gt;
+
+                &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;view&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;view&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;wantsLayer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// makes it layer-backed&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;view&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;wantsUpdateLayer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// allows you to safely directly access the layer&lt;/span&gt;
+                &lt;span class=&quot;nf&quot;&gt;assert&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;view&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;layer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;this should always pass&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;view&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;layer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cornerRadius&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;h4 id=&quot;layer-hosting&quot;&gt;Layer-Hosting&lt;/h4&gt;
+
+                &lt;p&gt;The difference between a layer-backed view and a layer-hosting view is that the system manages the layer in a layer-backed view, whereas you must manage the layer for a layer-hosting view.&lt;/p&gt;
+
+                &lt;p&gt;To create a layer-hosting view, set the &lt;code class=&quot;highlighter-rouge&quot;&gt;layer&lt;/code&gt; property to a &lt;code class=&quot;highlighter-rouge&quot;&gt;CALayer&lt;/code&gt;, then set the &lt;code class=&quot;highlighter-rouge&quot;&gt;wantsLayer&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt;. In that order.&lt;/p&gt;
+
+                &lt;p&gt;You would want to use the Layer-Hosting technique when you just want one view in a hierarchy to have a layer, but not all of them.&lt;/p&gt;
+
+                &lt;p&gt;In code:&lt;/p&gt;
+
+                &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;view&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;frame&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CGRectMake&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;layer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;CALayer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;view&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;layer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;layer&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;view&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;wantsLayer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;
+
+                &lt;span class=&quot;n&quot;&gt;layer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bounds&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;view&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bounds&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;layer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cornerRadius&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;h4 id=&quot;reference&quot;&gt;Reference&lt;/h4&gt;
+                &lt;ul&gt;
+                &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSView_Class/index.html#//apple_ref/occ/cl/NSView&quot;&gt;NSView&lt;/a&gt;
+                &lt;ul&gt;
+                &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSView_Class/index.html#//apple_ref/occ/instp/NSView/wantsUpdateLayer&quot;&gt;wantsUpdateLayer&lt;/a&gt; (property)&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSView_Class/index.html#//apple_ref/occ/instp/NSView/wantsLayer&quot;&gt;wantsLayer&lt;/a&gt;  (property)&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSView_Class/index.html#//apple_ref/occ/instp/NSView/layer&quot;&gt;layer&lt;/a&gt; (property)&lt;/li&gt;
+                &lt;/ul&gt;
+                &lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/library/ios/documentation/UIKit/Reference/UIView_Class/index.html#//apple_ref/occ/cl/UIView&quot;&gt;UIView&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/GraphicsImaging/Reference/CALayer_class/index.html&quot;&gt;CALayer&lt;/a&gt;&lt;/li&gt;
+                &lt;/ul&gt;
+
+                &lt;h4 id=&quot;other-posts-in-this-series&quot;&gt;Other posts in this series&lt;/h4&gt;
+                &lt;ol&gt;
+                &lt;li&gt;&lt;a href=&quot;/2015/08/14/osx-programming-programmatic-menu-buttons/&quot;&gt;Programmatic Menu Buttons&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;/2015/08/08/osx-programming-programmatic-scrolling-tableview/&quot;&gt;Programmatically creating a scrolling TableView&lt;/a&gt;&lt;/li&gt;
+                &lt;/ol&gt;
+            </description>
+            <pubDate>Fri, 21 Aug 2015 00:00:00 +0000</pubDate>
+            <link>http://younata.github.io/2015/08/21/osx-programming-set-up-core-animation/</link>
+            <guid isPermaLink="true">http://younata.github.io/2015/08/21/osx-programming-set-up-core-animation/</guid>
+            <author>Rachel Brindle</author>
+
+            <category>swift,</category>
+
+            <category>cocoa,</category>
+
+            <category>appkit,</category>
+
+            <category>osx,</category>
+
+            <category>core,</category>
+
+            <category>animation</category>
+
+
+        </item>
+
+        <item>
+            <title>OS X Programming - Programmatic Menu Buttons</title>
+            <description>&lt;p&gt;This is the second in a series on OS X programming without nibs.&lt;/p&gt;
+
+                &lt;p&gt;Menus are used throughout AppKit. In addition to the global menubar, they’re also used in the StatusBar (on the right side of the menubar), secondary clicking (right-click or two-finger click) on a view, and secondary clicking on an app’s icon in the dock.&lt;/p&gt;
+
+                &lt;h4 id=&quot;secondary-clicking-a-view&quot;&gt;Secondary Clicking a View&lt;/h4&gt;
+
+                &lt;p&gt;The &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSView_Class/index.html#//apple_ref/occ/instm/NSView/rightMouseDown:&quot;&gt;default implementation of &lt;code class=&quot;highlighter-rouge&quot;&gt;-rightMouseDown:&lt;/code&gt;&lt;/a&gt; calls &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSView_Class/index.html#//apple_ref/occ/instm/NSView/menuForEvent:&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-menuForEvent:&lt;/code&gt;&lt;/a&gt; to display a menu.&lt;/p&gt;
+
+                &lt;p&gt;A sample implementation to display a menu upon secondary clicking looks like:&lt;/p&gt;
+
+                &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;MyView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSView&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;override&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;menuForEvent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSEvent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSMenu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;menu&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSMenu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;menuItem&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSMenuItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;hello&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;didSelectMenuItem:&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keyEquivalent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;menuItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;menuItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+                &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;didSelectMenuItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;menuItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSMenuItem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Selected menu item &lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;menuItem&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;p&gt;In addition to creating an &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSMenuItem_Class/index.html#//apple_ref/doc/c_ref/NSMenuItem&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NSMenuItem&lt;/code&gt;&lt;/a&gt; through &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSMenuItem_Class/index.html#//apple_ref/occ/instm/NSMenuItem/initWithTitle:action:keyEquivalent:&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-initWithTitle:action:keyEquivalent:&lt;/code&gt;&lt;/a&gt;, you can also use &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSMenu_Class/index.html#//apple_ref/doc/c_ref/NSMenu&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NSMenu's&lt;/code&gt;&lt;/a&gt; &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSMenu_Class/index.html#//apple_ref/occ/instm/NSMenu/insertItemWithTitle:action:keyEquivalent:atIndex:&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-addItemWithTitle:action:keyEquivalent:&lt;/code&gt;&lt;/a&gt;, which returns an &lt;code class=&quot;highlighter-rouge&quot;&gt;NSMenuItem&lt;/code&gt; (meaning, all you have to do is set the menuItem’s &lt;code class=&quot;highlighter-rouge&quot;&gt;target&lt;/code&gt; property).&lt;/p&gt;
+
+                &lt;h4 id=&quot;the-dock-menu&quot;&gt;The Dock Menu&lt;/h4&gt;
+
+                &lt;p&gt;Similar to creating a menu in response to secondary clicking a view, the AppDelegate will get called if you secondary click on the dock icon. The particular message that gets sent is &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/NSApplicationDelegate_Protocol/index.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-applicationDockMenu:&lt;/code&gt;&lt;/a&gt;. A sample implementation would look like:&lt;/p&gt;
+
+                &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cocoa&lt;/span&gt;
+                &lt;span class=&quot;kd&quot;&gt;@NSApplicationMain&lt;/span&gt;
+                &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;AppDelegate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSApplicationDelegate&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;applicationDockMenu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;sender&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSApplication&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSMenu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;menu&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSMenu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;clickMe&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addItemWithTitle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ClickMe&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;didSelectClickMe&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keyEquivalent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;C&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;clickMe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;
+
+                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+                &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;didSelectClickMe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;didSelectClickMe&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;h4 id=&quot;the-global-menu&quot;&gt;The Global Menu&lt;/h4&gt;
+
+                &lt;p&gt;The Global Menu is accessed through &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSApplication_Class/index.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NSApplication's&lt;/code&gt;&lt;/a&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;mainMenu&lt;/code&gt; property, which returns an optional &lt;code class=&quot;highlighter-rouge&quot;&gt;NSMenu&lt;/code&gt;. You can use this to add your own custom menu.&lt;/p&gt;
+
+                &lt;p&gt;There are quite a few gotcha’s to adding things to the global menu. First is that every &lt;code class=&quot;highlighter-rouge&quot;&gt;NSMenuItem&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;NSMenu&lt;/code&gt; you add needs to have the &lt;code class=&quot;highlighter-rouge&quot;&gt;title&lt;/code&gt; property set, otherwise they won’t be visible. Second, all the parent MenuItems of a given &lt;code class=&quot;highlighter-rouge&quot;&gt;NSMenuItem&lt;/code&gt; need to be enabled in order for that MenuItem to be enabled. This means that every &lt;code class=&quot;highlighter-rouge&quot;&gt;NSMenuItem&lt;/code&gt; you add needs to have an action selector that, either the MenuItem’s target responds to (if it has a target), or an object in the responder chain responds to (if the MenuItem does not have a target).&lt;/p&gt;
+
+                &lt;p&gt;This basically means you can’t just use a blank or nil selector even for a MenuItem that serves as a section (e.g. the &lt;code class=&quot;highlighter-rouge&quot;&gt;File&lt;/code&gt; section in the menu).&lt;/p&gt;
+
+                &lt;p&gt;Some sample code that adds a section to the Main Menu bar:&lt;/p&gt;
+
+                &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cocoa&lt;/span&gt;
+                &lt;span class=&quot;kd&quot;&gt;@NSApplicationMain&lt;/span&gt;
+                &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;AppDelegate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSApplicationDelegate&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;applicationDidFinishLaunching&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;aNotification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSNotification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;guard&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;menu&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSApp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mainMenu&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;menuItem&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addItemWithTitle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;MySection&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;didSelectMySection&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keyEquivalent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;menuItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;submenu&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSMenu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;MySection&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;menuItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;submenu&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;submenu&lt;/span&gt;
+
+                &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;clickMe&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;submenu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addItemWithTitle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ClickMe&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;didSelectClickMe&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keyEquivalent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;C&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;clickMe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+                &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;didSelectMySection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;this will never be called&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+                &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;didSelectClickMe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;didSelectClickMe&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;h4 id=&quot;status-bar&quot;&gt;Status Bar&lt;/h4&gt;
+
+                &lt;p&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSStatusBar_Class/index.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NSStatusBar&lt;/code&gt;&lt;/a&gt; is used to represent the list of icons you see at the top-right on the global menu (spotlight, bluetooth, calendar, etc.). You get an &lt;code class=&quot;highlighter-rouge&quot;&gt;NSStatusBar&lt;/code&gt; instance by sending &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSStatusBar_Class/index.html#//apple_ref/occ/clm/NSStatusBar/systemStatusBar&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;+systemStatusBar&lt;/code&gt;&lt;/a&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;NSStatusBar&lt;/code&gt;. You can get an &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSStatusItem_Class/index.html#//apple_ref/doc/c_ref/NSStatusItem&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NSStatusItem&lt;/code&gt;&lt;/a&gt; (which represents your own little icon in that list) by sending &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSStatusBar_Class/index.html#//apple_ref/occ/instm/NSStatusBar/statusItemWithLength:&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-statusItemWithLength:&lt;/code&gt;&lt;/a&gt;, and passing in a &lt;code class=&quot;highlighter-rouge&quot;&gt;CGFloat&lt;/code&gt;. As of OSX 10.10, everything but the &lt;code class=&quot;highlighter-rouge&quot;&gt;length&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;statusBar&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;menu&lt;/code&gt; properties are deprecated, so use an &lt;code class=&quot;highlighter-rouge&quot;&gt;NSMenu&lt;/code&gt; object to configure your statusItem.&lt;/p&gt;
+
+                &lt;p&gt;Some sample code that configures an &lt;code class=&quot;highlighter-rouge&quot;&gt;NSStatusBar&lt;/code&gt; with a single menu item:&lt;/p&gt;
+
+                &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Cocoa&lt;/span&gt;
+                &lt;span class=&quot;kd&quot;&gt;@NSApplicationMain&lt;/span&gt;
+                &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;AppDelegate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSApplicationDelegate&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;applicationDidFinishLaunching&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;aNotification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSNotification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;statusItem&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSStatusBar&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;systemStatusBar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;statusItemWithLength&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+                &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;menu&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSMenu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Hi&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;statusItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt;
+
+                &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;clickMe&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;menu&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addItemWithTitle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ClickMe&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;didSelectClickMe&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keyEquivalent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;C&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;clickMe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+                &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;didSelectClickMe&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;nf&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;didSelectClickMe&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;p&gt;This is useful for creating an app that lives in the menu bar, but you’ll still have the app icon living in the dock. To change that, you need to set the &lt;code class=&quot;highlighter-rouge&quot;&gt;LSUIElement&lt;/code&gt; key to &lt;code class=&quot;highlighter-rouge&quot;&gt;true&lt;/code&gt; in your &lt;code class=&quot;highlighter-rouge&quot;&gt;info.plist&lt;/code&gt; file.&lt;/p&gt;
+
+                &lt;hr /&gt;
+
+                &lt;h4 id=&quot;separators&quot;&gt;Separators&lt;/h4&gt;
+
+                &lt;p&gt;You can get a separator (greyed-out solid line in the menu) by sending &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSMenuItem_Class/index.html#//apple_ref/occ/clm/NSMenuItem/separatorItem&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;+separatorItem&lt;/code&gt;&lt;/a&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;NSMenuItem&lt;/code&gt;, and treat this like any other MenuItem. You cannot add submenus to this item (it’s disabled, nothing will ever show, so there’s no point).&lt;/p&gt;
+
+                &lt;h4 id=&quot;key-equivalentsshortcuts&quot;&gt;Key Equivalents/Shortcuts&lt;/h4&gt;
+
+                &lt;p&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSMenuItem_Class/index.html#//apple_ref/doc/c_ref/NSMenuItem&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NSMenuItems&lt;/code&gt;&lt;/a&gt; have a &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSMenuItem_Class/index.html#//apple_ref/occ/instm/NSMenuItem/setKeyEquivalent:&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;keyEquivalent&lt;/code&gt;&lt;/a&gt; property, which is used for keyboard shortcuts. Setting this allows the user to use cmd+(key) as a shortcut to perform that action. For example, setting &lt;code class=&quot;highlighter-rouge&quot;&gt;D&lt;/code&gt; as a keyEquivalent means I have to hit &lt;code class=&quot;highlighter-rouge&quot;&gt;cmd+shift+d&lt;/code&gt; to use that. You can also set the &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSMenuItem_Class/index.html#//apple_ref/occ/instm/NSMenuItem/setKeyEquivalentModifierMask:&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;keyEquivalentMask&lt;/code&gt;&lt;/a&gt; property to allow more modifiers (e.g. opt, or to unset cmd)&lt;/p&gt;
+
+                &lt;p&gt;####Conditionally Disabling a MenuItem&lt;/p&gt;
+
+                &lt;p&gt;Sometimes, you want to conditionally disable a Menuitem. For example, if you have an action to go to next item in a list, then it makes no sense to have that enabled if you’re already at the end of the list. Thankfully, there’s an informal protocol that you can conform to in order to lazily disable a menuitem. &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Protocols/NSMenuValidation_Protocol/index.html&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;NSMenuValidation&lt;/code&gt;&lt;/a&gt; is the informal protocol that MenuItem’s target (doesn’t search the responder chain) can conform to in order to lazily disable a menuItem. Implement &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Protocols/NSMenuValidation_Protocol/index.html#//apple_ref/occ/instm/NSObject/validateMenuItem:&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-validateMenuItem:&lt;/code&gt;&lt;/a&gt; and return true if you want the item to be enabled, and false to disable it. This is only called when a menu is about to be displayed.&lt;/p&gt;
+
+                &lt;hr /&gt;
+
+                &lt;h4 id=&quot;reference&quot;&gt;Reference&lt;/h4&gt;
+                &lt;ul&gt;
+                &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSMenu_Class/index.html#//apple_ref/doc/c_ref/NSMenu&quot;&gt;NSMenu&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSMenuItem_Class/index.html#//apple_ref/doc/c_ref/NSMenuItem&quot;&gt;NSMenuItem&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSView_Class/index.html#//apple_ref/occ/instm/NSView&quot;&gt;NSView&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSStatusBar_Class/index.html&quot;&gt;NSStatusBar&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSStatusItem_Class/index.html#//apple_ref/doc/c_ref/NSStatusItem&quot;&gt;NSStatusItem&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Protocols/NSMenuValidation_Protocol/index.html&quot;&gt;NSMenuValidation&lt;/a&gt;&lt;/li&gt;
+                &lt;/ul&gt;
+
+                &lt;h4 id=&quot;other-posts-in-this-series&quot;&gt;Other posts in this series&lt;/h4&gt;
+                &lt;ol&gt;
+                &lt;li&gt;&lt;a href=&quot;/2015/08/08/osx-programming-programmatic-scrolling-tableview/&quot;&gt;Programmatically creating a scrolling TableView&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;/2015/08/21/osx-programming-set-up-core-animation/&quot;&gt;Intro to Core Animation on OSX&lt;/a&gt;&lt;/li&gt;
+                &lt;/ol&gt;
+            </description>
+            <pubDate>Fri, 14 Aug 2015 00:00:00 +0000</pubDate>
+            <link>http://younata.github.io/2015/08/14/osx-programming-programmatic-menu-buttons/</link>
+            <guid isPermaLink="true">http://younata.github.io/2015/08/14/osx-programming-programmatic-menu-buttons/</guid>
+            <author>Rachel Brindle</author>
+
+            <category>swift,</category>
+
+            <category>cocoa,</category>
+
+            <category>appkit,</category>
+
+            <category>osx,</category>
+
+            <category>NSMenu,</category>
+
+            <category>NSMenuItem,</category>
+
+            <category>menubar,</category>
+
+            <category>menuitem,</category>
+
+            <category>programmatic</category>
+
+
+        </item>
+
+        <item>
+            <title>OS X Programming - Programmatic scrolling tableviews</title>
+            <description>&lt;p&gt;This is the first in a series on OS X/AppKit programming for iOS devs. AppKit does not do as much for us out-of-the-box as UIKit does, to the point where, it seems to me, Interface Builder exists to hide a lot of AppKit’s cruft. As someone who dislikes nibs/generated code on principle, I’ve been looking into how to use it programmatically.&lt;/p&gt;
+
+                &lt;p&gt;These examples all use swift, though the objective-c version of the code isn’t all that different.&lt;/p&gt;
+
+                &lt;p&gt;For the tl;dr; version of this, just drop down to end for a complete code snippet.&lt;/p&gt;
+
+                &lt;p&gt;There are two kinds of &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSTableView_Class/index.html&quot;&gt;TableViews&lt;/a&gt; in AppKit - Cell-based, and View-Based. View-based tableviews are the new hotness, they’re far more configurable and easier to use than Cell-based. However, View-Based tableViews are only available in OSX 10.7 or later, which makes Cell-Based the default. Telling AppKit to use the view-based mode is fairly non-intuitive (there is no property you have to set), but easy - you implement a specific delegate method (&lt;code class=&quot;highlighter-rouge&quot;&gt;-tableView:viewForTableColumn:row:&lt;/code&gt;).&lt;/p&gt;
+
+                &lt;p&gt;Additionally, there are (at least) two ways to provide data to an NSTableView: through delegate/datasource, and through cocoa bindings. This article is going to focus on delegate/datasource.&lt;/p&gt;
+
+                &lt;p&gt;In UIKit, you can just &lt;code class=&quot;highlighter-rouge&quot;&gt;-new&lt;/code&gt; up a tableView, set the delegate and datasource, implement those, and be on your way to a nice, scrolling, single-column tableview. In AppKit, if you do that, then your delegate will never get called - because the tableView doesn’t have any columns. You need to first add an &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSTableColumn_Class/index.html#//apple_ref/occ/cl/NSTableColumn&quot;&gt;NSTableColumn&lt;/a&gt; to the tableView. This is because, unlike iOS, NSTableViews can have more than one column.&lt;/p&gt;
+
+                &lt;p&gt;So, something like:&lt;/p&gt;
+
+                &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;tableView&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSTableView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;tableView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addTableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;NSTableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;tableView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;setDelegate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;tableView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;setDataSource&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;p&gt;For the delegate/datasource, there’s two methods (one in each) you need to implement: &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/NSTableViewDelegate_Protocol/index.html#//apple_ref/occ/intfm/NSTableViewDelegate/tableView:viewForTableColumn:row:&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-tableView:viewForTableColumn:row:&lt;/code&gt;&lt;/a&gt; in the &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/NSTableViewDelegate_Protocol/index.html&quot;&gt;delegate&lt;/a&gt;, and &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Protocols/NSTableDataSource_Protocol/index.html#//apple_ref/occ/intfm/NSTableViewDataSource/numberOfRowsInTableView:&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-numberOfRowsInTableView:&lt;/code&gt;&lt;/a&gt; in the &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Protocols/NSTableDataSource_Protocol/index.html&quot;&gt;datasource&lt;/a&gt;. The first returns an &lt;code class=&quot;highlighter-rouge&quot;&gt;NSView?&lt;/code&gt;, the second returns an &lt;code class=&quot;highlighter-rouge&quot;&gt;Int&lt;/code&gt;.&lt;/p&gt;
+
+                &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// datasource&lt;/span&gt;
+                &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;numberOfRowsInTableView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;tableView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSTableView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+                &lt;span class=&quot;c1&quot;&gt;// delegate&lt;/span&gt;
+                &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;tableView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;tableView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSTableView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;viewForTableColumn&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;tableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSTableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;textView&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSTextView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;textView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;textView&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;h3 id=&quot;scrolling&quot;&gt;Scrolling&lt;/h3&gt;
+
+                &lt;p&gt;Now we have something! Just add it to an NSView and… it doesn’t scroll. That’s annoying.&lt;br /&gt;
+                NSTableView, unlike UITableView, does not inherit from a ScrollView. You do not get scrolling behavior out of the box. Instead, what we must do, is place our tableView inside an &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSScrollView_Class/index.html#//apple_ref/occ/cl/NSScrollView&quot;&gt;NSScrollView&lt;/a&gt;, which is simple enough. Be sure to not call &lt;code class=&quot;highlighter-rouge&quot;&gt;-addSubview:&lt;/code&gt; to add the tableView to the scrollView.&lt;/p&gt;
+
+                &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;scrollView&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSScrollView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;scrollView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hasVerticalScroller&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;scrollView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;documentView&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tableView&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+                &lt;p&gt;Then just add the scrollView to that NSView.&lt;/p&gt;
+
+                &lt;p&gt;At this point, we’re basically done. We have a scrolling view-based tableView. There is, however, one more thing we should do: reusing previously created views. This is essentially the same as the pre-iOS 6 &lt;a href=&quot;https://developer.apple.com/library/ios/documentation/UIKit/Reference/UITableView_Class/index.html#//apple_ref/occ/instm/UITableView/dequeueReusableCellWithIdentifier:&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-dequeueReusableCellWithIdentifier:&lt;/code&gt;&lt;/a&gt; method, without any class registration. Instead, what we want to call is &lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSTableView_Class/index.html#//apple_ref/occ/instm/NSTableView/makeViewWithIdentifier:owner:&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;-makeViewWithIdentifier:owner:&lt;/code&gt;&lt;/a&gt; on the tableView, and, when it returns nil, create our own and return that.&lt;/p&gt;
+
+                &lt;p&gt;So, modify &lt;code class=&quot;highlighter-rouge&quot;&gt;-tableView:viewForTableColumn:row:&lt;/code&gt; to use this behavior:&lt;/p&gt;
+
+                &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;tableView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;tableView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSTableView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;viewForTableColumn&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;tableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSTableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;textView&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tableView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;makeViewWithIdentifier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;textView&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;owner&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as?&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSTextView&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;textView&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;nil&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;textView&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSTextView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;textView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;identifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;textView&quot;&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;textView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;textView&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;p&gt;Finally, if you’re using autolayout (which you should), be sure to not enable autolayout for the tableView (though, please, use it for the scrollView).&lt;/p&gt;
+
+                &lt;h3 id=&quot;recap&quot;&gt;Recap&lt;/h3&gt;
+
+                &lt;p&gt;Note that I’m using the excellent &lt;a href=&quot;https://github.com/smileyborg/purelayout&quot;&gt;PureLayout&lt;/a&gt; library to help with autolayout.&lt;/p&gt;
+
+                &lt;div class=&quot;language-swift highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;PureLayout_Mac&lt;/span&gt;
+
+                &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;TableController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSObject&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+                &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;configureView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;view&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;tableView&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSTableView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;tableView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addTableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;NSTableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;identifier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;column&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;tableView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;setDelegate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;tableView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;setDataSource&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+                &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;scrollView&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSScrollView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;forAutoLayout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;scrollView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hasVerticalScroller&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;scrollView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;documentView&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tableView&lt;/span&gt;
+
+                &lt;span class=&quot;n&quot;&gt;view&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;addSubview&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scrollView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;scrollView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;autoPinEdgesToSuperviewEdges&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;NSEdgeInsetZero&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+                &lt;span class=&quot;kd&quot;&gt;extension&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;TableController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSTableViewDataSource&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;numberOfRowsInTableView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;tableView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSTableView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+                &lt;span class=&quot;kd&quot;&gt;extension&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;TableController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSTableViewDelegate&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;kd&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;tableView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;tableView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSTableView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;viewForTableColumn&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;tableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSTableColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;textView&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tableView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;makeViewWithIdentifier&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;textView&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;owner&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as?&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSTextView&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;textView&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;nil&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;textView&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;NSTextView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;textView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;identifier&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;textView&quot;&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;textView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;?&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;text&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;textView&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;h4 id=&quot;reference&quot;&gt;Reference:&lt;/h4&gt;
+
+                &lt;ul&gt;
+                &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSTableView_Class/index.html&quot;&gt;NSTableView&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSTableColumn_Class/index.html#//apple_ref/occ/cl/NSTableColumn&quot;&gt;NSTableColumn&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/NSTableViewDelegate_Protocol/index.html&quot;&gt;NSTableViewDelegate&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Protocols/NSTableDataSource_Protocol/index.html&quot;&gt;NSTableViewDataSource&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;
+                &lt;p&gt;&lt;a href=&quot;https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ApplicationKit/Classes/NSScrollView_Class/index.html#//apple_ref/occ/cl/NSScrollView&quot;&gt;NSScrollView&lt;/a&gt;&lt;/p&gt;
+                &lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;https://github.com/smileyborg/purelayout&quot;&gt;PureLayout&lt;/a&gt; (AutoLayout helper - works in OSX and iOS)&lt;/li&gt;
+                &lt;/ul&gt;
+
+                &lt;h4 id=&quot;other-posts-in-this-series&quot;&gt;Other posts in this series&lt;/h4&gt;
+                &lt;ol&gt;
+                &lt;li&gt;&lt;a href=&quot;/2015/08/14/osx-programming-programmatic-menu-buttons/&quot;&gt;Programmatic Menu Buttons&lt;/a&gt;&lt;/li&gt;
+                &lt;li&gt;&lt;a href=&quot;/2015/08/21/osx-programming-set-up-core-animation/&quot;&gt;Intro to Core Animation on OSX&lt;/a&gt;&lt;/li&gt;
+                &lt;/ol&gt;
+            </description>
+            <pubDate>Sat, 08 Aug 2015 00:00:00 +0000</pubDate>
+            <link>http://younata.github.io/2015/08/08/osx-programming-programmatic-scrolling-tableview/</link>
+            <guid isPermaLink="true">http://younata.github.io/2015/08/08/osx-programming-programmatic-scrolling-tableview/</guid>
+            <author>Rachel Brindle</author>
+
+            <category>swift,</category>
+
+            <category>cocoa,</category>
+
+            <category>appkit,</category>
+
+            <category>osx,</category>
+
+            <category>NSTableView,</category>
+
+            <category>NSScrollView</category>
+
+
+        </item>
+
+        <item>
+            <title>Muon - RSS/Atom Parser in Swift</title>
+            <description>&lt;p&gt;&lt;a href=&quot;https://github.com/younata/muon&quot;&gt;Muon&lt;/a&gt; is an RSS/Atom parser I wrote for use in &lt;a href=&quot;https://github.com/younata/rssclient&quot;&gt;rNews&lt;/a&gt;. It came about out of frustration with &lt;a href=&quot;https://github.com/mwaterfall/mwfeedparser&quot;&gt;mwfeedparser&lt;/a&gt;, which, prior to Muon, was the only open source feed parser I could find for ios/osx. Muon is entirely test-driven (I have a couple examples of standards-complient rss 1.0, rss 2.0, and atom feeds, as well as a couple feeds that I knew mwfeedparser choked on - such as the feed for Apple’s &lt;a href=&quot;https://github.com/researchkit/researchkit&quot;&gt;ResearchKit&lt;/a&gt; - which, despite claiming that it’s an atom feed in the metadata, is actually an rss 2.0 feed).&lt;/p&gt;
+
+                &lt;p&gt;Muon is written as an NSOperation subclass, which fit my usecase in rNews of parsing feeds entirely in the background (keeps the app from locking up when you have to parse several 100 item feeds). You simply give it a string representation of the feed to parse, and stick it in an operation queue, or simply call &lt;code class=&quot;highlighter-rouge&quot;&gt;main()&lt;/code&gt; on it.&lt;/p&gt;
+
+                &lt;p&gt;So, a sample usecase looks like:&lt;/p&gt;
+
+                &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;let feedParser = Muon.FeedParser(string: feedAsString)\n
+                feedParser.success {feed: Muon.Feed in print(&quot;Feed: \(feed)&quot;)}
+                feedParser.error {error: NSError in print(&quot;Error: \(error)&quot;)}
+                // to asynchronously parse:
+                operationQueue.addOperation(feedParser)
+                // to synchronously parse:
+                feedParser.main()
+                &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+                &lt;p&gt;Muon can be installed with Carthage (&lt;code class=&quot;highlighter-rouge&quot;&gt;github &quot;younata/Muon&quot;&lt;/code&gt;) or Cocoapods (though it’s not yet in the main trunk). I prefer Carthage to Cocoapods.&lt;/p&gt;
+            </description>
+            <pubDate>Tue, 21 Jul 2015 00:00:00 +0000</pubDate>
+            <link>http://younata.github.io/2015/07/21/muon-rss-parsing-swift/</link>
+            <guid isPermaLink="true">http://younata.github.io/2015/07/21/muon-rss-parsing-swift/</guid>
+            <author>Rachel Brindle</author>
+
+            <category>ios,</category>
+
+            <category>swift,</category>
+
+            <category>rss,</category>
+
+            <category>atom,</category>
+
+            <category>muon</category>
+
+
+        </item>
+
+    </channel>
+</rss>
+
+

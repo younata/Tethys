@@ -49,6 +49,8 @@
 		8918D4DB1B8598D100DCDE0E /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8918D4DA1B8598D100DCDE0E /* Theme.swift */; };
 		8924D8E91A094CF5003B7529 /* github2.css in Resources */ = {isa = PBXBuildFile; fileRef = 8924D8E81A094CF5003B7529 /* github2.css */; };
 		8924FE2E1D6D51DC0060D26D /* Array+TethysKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924FE2D1D6D51DC0060D26D /* Array+TethysKit.swift */; };
+		8925B0FE2362BDA900A3895B /* feed_no_link.rss in Resources */ = {isa = PBXBuildFile; fileRef = 8925B0FD2362BDA900A3895B /* feed_no_link.rss */; };
+		8925B0FF2362BEC900A3895B /* feed_no_link.rss in Resources */ = {isa = PBXBuildFile; fileRef = 8925B0FD2362BDA900A3895B /* feed_no_link.rss */; };
 		892AF319232D896C0018B19C /* FakeWKContentMenuElementInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 892AF318232D896C0018B19C /* FakeWKContentMenuElementInfo.m */; };
 		892AF31B232DB5930018B19C /* FakeContextMenuAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892AF31A232DB5930018B19C /* FakeContextMenuAnimator.swift */; };
 		892AF31E232DC5960018B19C /* UIContextMenuConfiguration+Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 892AF31D232DC5960018B19C /* UIContextMenuConfiguration+Tests.m */; };
@@ -413,6 +415,7 @@
 		8918D4DA1B8598D100DCDE0E /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		8924D8E81A094CF5003B7529 /* github2.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = github2.css; sourceTree = "<group>"; };
 		8924FE2D1D6D51DC0060D26D /* Array+TethysKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+TethysKit.swift"; sourceTree = "<group>"; };
+		8925B0FD2362BDA900A3895B /* feed_no_link.rss */ = {isa = PBXFileReference; lastKnownFileType = text; path = feed_no_link.rss; sourceTree = "<group>"; };
 		892AF317232D896C0018B19C /* FakeWKContentMenuElementInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FakeWKContentMenuElementInfo.h; sourceTree = "<group>"; };
 		892AF318232D896C0018B19C /* FakeWKContentMenuElementInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FakeWKContentMenuElementInfo.m; sourceTree = "<group>"; };
 		892AF31A232DB5930018B19C /* FakeContextMenuAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeContextMenuAnimator.swift; sourceTree = "<group>"; };
@@ -1189,6 +1192,7 @@
 			isa = PBXGroup;
 			children = (
 				89DBDA991A9EBB0C00959AC7 /* feed.rss */,
+				8925B0FD2362BDA900A3895B /* feed_no_link.rss */,
 				89DBDA9B1A9FBC4100959AC7 /* feed2.rss */,
 				89C8309019D730E9009924DA /* Info.plist */,
 				898C48C41B3D98F60097045A /* test.jpg */,
@@ -1670,6 +1674,7 @@
 				899987391B483332003C1AF5 /* feed.rss in Resources */,
 				8999873A1B483332003C1AF5 /* feed2.rss in Resources */,
 				8999873B1B483332003C1AF5 /* test.jpg in Resources */,
+				8925B0FF2362BEC900A3895B /* feed_no_link.rss in Resources */,
 				8999873C1B483332003C1AF5 /* test.opml in Resources */,
 				8903EB061C702689001C0189 /* webpage.html in Resources */,
 			);
@@ -1711,6 +1716,7 @@
 				89DBDA9C1A9FBCB200959AC7 /* feed2.rss in Resources */,
 				899C6AA01DCAAD0E00E0A61C /* libraries.html in Resources */,
 				895901B41A32B61A002E2C62 /* Localizable.strings in Resources */,
+				8925B0FE2362BDA900A3895B /* feed_no_link.rss in Resources */,
 				898C48C51B3D98F60097045A /* test.jpg in Resources */,
 				89EF4FD81A96852D0052A82F /* test.opml in Resources */,
 			);
@@ -2414,7 +2420,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.RSSClient;
 				PRODUCT_NAME = Tethys;
 				PROVISIONING_PROFILE = "184da801-b6b9-47e3-a560-e3d9c54e5ac0";
-				PROVISIONING_PROFILE_SPECIFIER = "com.rachelbrindle.RSSClient Development";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development com.rachelbrindle.RSSClient";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				USER_HEADER_SEARCH_PATHS = "";
 			};
@@ -2442,7 +2448,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.RSSClient;
 				PRODUCT_NAME = Tethys;
 				PROVISIONING_PROFILE = "102ff7ac-9378-49de-8e9e-fa6cf25e9870";
-				PROVISIONING_PROFILE_SPECIFIER = "com.rachelbrindle.RSSClient Development";
+				PROVISIONING_PROFILE_SPECIFIER = "match Development com.rachelbrindle.RSSClient";
 				USER_HEADER_SEARCH_PATHS = "";
 			};
 			name = Release;

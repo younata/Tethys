@@ -30,7 +30,7 @@ final class RealmRSSUpdateService: UpdateService {
                 }
             }.map {
                 return $0.mapFuture { muonFeed -> Future<Result<Feed, TethysError>> in
-                    return self.update(from: muonFeed, identifier: identifier)
+                    return self.update(from: muonFeed, identifier: identifier, fallbackURL: feed.url)
                 }
             }.then { result in
                 promise.resolve(result)
@@ -96,7 +96,7 @@ final class RealmRSSUpdateService: UpdateService {
         }
     }
 
-    private func update(from muonFeed: Muon.Feed, identifier: String) -> Future<Result<Feed, TethysError>> {
+    private func update(from muonFeed: Muon.Feed, identifier: String, fallbackURL: URL) -> Future<Result<Feed, TethysError>> {
         let promise = Promise<Result<Feed, TethysError>>()
         self.workQueue.addOperation {
             guard let feed = self.realmProvider.realm().object(ofType: RealmFeed.self, forPrimaryKey: identifier) else {
@@ -109,7 +109,7 @@ final class RealmRSSUpdateService: UpdateService {
             feed.summary = muonFeed.description
 
             muonFeed.articles.forEach {
-                self.upsert(article: $0, to: feed, feedURL: muonFeed.url)
+                self.upsert(article: $0, to: feed, feedURL: muonFeed.link ?? fallbackURL)
             }
 
             do {
@@ -158,7 +158,9 @@ final class RealmRSSUpdateService: UpdateService {
 
     private func upsert(article: Muon.Article, to realmFeed: RealmFeed, feedURL: URL) {
         let realmArticle: RealmArticle
-        if let existingArticle = realmFeed.articles.filter("link == %@", article.url.absoluteString).first {
+        if let existingArticle = realmFeed.articles.filter(
+            "link == %@ OR identifier == %@", article.url?.absoluteString ?? "", article.guid ?? ""
+        ).first {
             realmArticle = existingArticle
         } else {
             realmArticle = RealmArticle()
@@ -174,11 +176,14 @@ final class RealmRSSUpdateService: UpdateService {
         }
         let title = rawTitle.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
         realmArticle.title = title.stringByUnescapingHTML().stringByStrippingHTML()
-        realmArticle.link = URL(string: article.url.absoluteString, relativeTo: feedURL)!.absoluteString
+        realmArticle.link = URL(
+            string: article.url?.absoluteString ?? "", relativeTo: feedURL
+        )?.absoluteString ?? ""
         realmArticle.published = article.published
         realmArticle.updatedAt = article.updated
         realmArticle.summary = article.summary
         realmArticle.content = article.content
+        realmArticle.identifier = article.guid
 
         article.authors.forEach {
             self.upsert(author: $0, to: realmArticle)

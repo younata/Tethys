@@ -215,6 +215,7 @@ final class FeedListControllerSpec: QuickSpec {
                     }
 
                     it("shows a row for each returned feed") {
+                        expect(subject.tableView.numberOfSections).to(equal(1))
                         expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(3))
                     }
 
@@ -415,7 +416,7 @@ final class FeedListControllerSpec: QuickSpec {
                                         }
 
                                         it("states it deletes the feed") {
-                                            expect(action?.title).to(equal("Delete"))
+                                            expect(action?.title).to(equal("Unsubscribe"))
                                         }
 
                                         it("uses a trash can icon") {
@@ -431,17 +432,18 @@ final class FeedListControllerSpec: QuickSpec {
                                                 expect(feedCoordinator.unsubscribeCalls).to(equal([feeds[0]]))
                                             }
 
-                                            describe("if the feed coordinator successfully unsubscribes from the feed") {
+                                            describe("if the unsubscribe succeeds") {
                                                 beforeEach {
                                                     feedCoordinator.unsubscribePromises.last?.resolve(.success(()))
                                                 }
 
                                                 it("removes the feed from the list of cells") {
+                                                    expect(subject.tableView.numberOfSections).to(equal(1))
                                                     expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(2))
                                                 }
                                             }
 
-                                            describe("if the feed coordinator fails to unsubscribe from the feed") {
+                                            describe("if the unsubscribe fails") {
                                                 beforeEach {
                                                     UIView.pauseAnimations()
                                                     feedCoordinator.unsubscribePromises.last?.resolve(.failure(.database(.unknown)))
@@ -458,6 +460,7 @@ final class FeedListControllerSpec: QuickSpec {
                                                 }
 
                                                 it("does not remove the feed from the list of cells") {
+                                                    expect(subject.tableView.numberOfSections).to(equal(1))
                                                     expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(3))
                                                 }
                                             }
@@ -497,74 +500,14 @@ final class FeedListControllerSpec: QuickSpec {
                                 }
 
                                 it("has 4 edit actions") {
+                                    expect(subject.tableView.dataSource?.tableView?(subject.tableView, canEditRowAt: indexPath)).to(beTrue())
                                     expect(contextualActions).to(haveCount(4))
                                 }
 
                                 describe("the first one") {
                                     beforeEach {
-                                        action = contextualActions.first
-                                    }
-
-                                    it("states it deletes the feed") {
-                                        expect(action?.title).to(equal("Delete"))
-                                    }
-
-                                    describe("tapping it") {
-                                        var completionHandlerCalls: [Bool] = []
-                                        beforeEach {
-                                            completionHandlerCalls = []
-                                            action?.handler(action!, subject.tableView.cellForRow(at: indexPath)!) { completionHandlerCalls.append($0) }
-                                        }
-
-                                        it("deletes the feed from the data store") {
-                                            expect(feedCoordinator.unsubscribeCalls).to(equal([feeds[0]]))
-                                        }
-
-                                        describe("if the feedService successfully removes the feed") {
-                                            beforeEach {
-                                                feedCoordinator.unsubscribePromises.last?.resolve(.success(()))
-                                            }
-
-                                            it("removes the feed from the list of cells") {
-                                                expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(2))
-                                            }
-
-                                            it("calls the completion handler") {
-                                                expect(completionHandlerCalls).to(equal([true]))
-                                            }
-                                        }
-
-                                        describe("if the feedService fails to unsubscribe from the feed") {
-                                            beforeEach {
-                                                UIView.pauseAnimations()
-                                                feedCoordinator.unsubscribePromises.last?.resolve(.failure(.database(.unknown)))
-                                            }
-
-                                            afterEach {
-                                                UIView.resumeAnimations()
-                                            }
-
-                                            it("brings up an alert notifying the user") {
-                                                expect(subject.notificationView.titleLabel.isHidden) == false
-                                                expect(subject.notificationView.titleLabel.text).to(equal("Unable to delete feed"))
-                                                expect(subject.notificationView.messageLabel.text).to(equal("Unknown Database Error"))
-                                            }
-
-                                            it("does not remove the feed from the list of cells") {
-                                                expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(3))
-                                            }
-
-                                            it("calls the completion handler") {
-                                                expect(completionHandlerCalls).to(equal([false]))
-                                            }
-                                        }
-                                    }
-                                }
-
-                                describe("the second one") {
-                                    beforeEach {
-                                        guard contextualActions.count > 1 else { return }
-                                        action = contextualActions[1]
+                                        guard contextualActions.count > 0 else { return }
+                                        action = contextualActions[0]
                                     }
 
                                     it("states it marks all items in the feed as read") {
@@ -623,6 +566,70 @@ final class FeedListControllerSpec: QuickSpec {
 
                                             it("doesn't post a notification") {
                                                 expect(recorder.notifications).to(beEmpty())
+                                            }
+
+                                            it("calls the completion handler") {
+                                                expect(completionHandlerCalls).to(equal([false]))
+                                            }
+                                        }
+                                    }
+                                }
+
+                                describe("the second one") {
+                                    beforeEach {
+                                        guard contextualActions.count > 1 else { return }
+                                        action = contextualActions[1]
+                                    }
+
+                                    it("states it deletes the feed") {
+                                        expect(action?.title).to(equal("Unsubscribe"))
+                                    }
+
+                                    describe("tapping it") {
+                                        var completionHandlerCalls: [Bool] = []
+                                        beforeEach {
+                                            completionHandlerCalls = []
+                                            action?.handler(action!, subject.tableView.cellForRow(at: indexPath)!) { completionHandlerCalls.append($0) }
+                                        }
+
+                                        it("unsubscribes from the feed") {
+                                            expect(feedCoordinator.unsubscribeCalls).to(equal([feeds[0]]))
+                                        }
+
+                                        describe("if the unsubscribe succeeds") {
+                                            beforeEach {
+                                                feedCoordinator.unsubscribePromises.last?.resolve(.success(()))
+                                            }
+
+                                            it("removes the feed from the list of cells") {
+                                                expect(subject.tableView.numberOfSections).to(equal(1))
+                                                expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(2))
+                                            }
+
+                                            it("calls the completion handler") {
+                                                expect(completionHandlerCalls).to(equal([true]))
+                                            }
+                                        }
+
+                                        describe("if the unsubscribe fails") {
+                                            beforeEach {
+                                                UIView.pauseAnimations()
+                                                feedCoordinator.unsubscribePromises.last?.resolve(.failure(.database(.unknown)))
+                                            }
+
+                                            afterEach {
+                                                UIView.resumeAnimations()
+                                            }
+
+                                            it("brings up an alert notifying the user") {
+                                                expect(subject.notificationView.titleLabel.isHidden) == false
+                                                expect(subject.notificationView.titleLabel.text).to(equal("Unable to delete feed"))
+                                                expect(subject.notificationView.messageLabel.text).to(equal("Unknown Database Error"))
+                                            }
+
+                                            it("does not remove the feed from the list of cells") {
+                                                expect(subject.tableView.numberOfSections).to(equal(1))
+                                                expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(3))
                                             }
 
                                             it("calls the completion handler") {

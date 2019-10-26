@@ -51,6 +51,8 @@
 		8924FE2E1D6D51DC0060D26D /* Array+TethysKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8924FE2D1D6D51DC0060D26D /* Array+TethysKit.swift */; };
 		8925B0FE2362BDA900A3895B /* feed_no_link.rss in Resources */ = {isa = PBXBuildFile; fileRef = 8925B0FD2362BDA900A3895B /* feed_no_link.rss */; };
 		8925B0FF2362BEC900A3895B /* feed_no_link.rss in Resources */ = {isa = PBXBuildFile; fileRef = 8925B0FD2362BDA900A3895B /* feed_no_link.rss */; };
+		8925B101236400DA00A3895B /* DiffableDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8925B100236400DA00A3895B /* DiffableDataSource.swift */; };
+		8925B1032364017B00A3895B /* DiffableDataSourceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8925B1022364017B00A3895B /* DiffableDataSourceSpec.swift */; };
 		892AF319232D896C0018B19C /* FakeWKContentMenuElementInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 892AF318232D896C0018B19C /* FakeWKContentMenuElementInfo.m */; };
 		892AF31B232DB5930018B19C /* FakeContextMenuAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892AF31A232DB5930018B19C /* FakeContextMenuAnimator.swift */; };
 		892AF31E232DC5960018B19C /* UIContextMenuConfiguration+Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 892AF31D232DC5960018B19C /* UIContextMenuConfiguration+Tests.m */; };
@@ -416,6 +418,8 @@
 		8924D8E81A094CF5003B7529 /* github2.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = github2.css; sourceTree = "<group>"; };
 		8924FE2D1D6D51DC0060D26D /* Array+TethysKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+TethysKit.swift"; sourceTree = "<group>"; };
 		8925B0FD2362BDA900A3895B /* feed_no_link.rss */ = {isa = PBXFileReference; lastKnownFileType = text; path = feed_no_link.rss; sourceTree = "<group>"; };
+		8925B100236400DA00A3895B /* DiffableDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiffableDataSource.swift; sourceTree = "<group>"; };
+		8925B1022364017B00A3895B /* DiffableDataSourceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiffableDataSourceSpec.swift; sourceTree = "<group>"; };
 		892AF317232D896C0018B19C /* FakeWKContentMenuElementInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FakeWKContentMenuElementInfo.h; sourceTree = "<group>"; };
 		892AF318232D896C0018B19C /* FakeWKContentMenuElementInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FakeWKContentMenuElementInfo.m; sourceTree = "<group>"; };
 		892AF31A232DB5930018B19C /* FakeContextMenuAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeContextMenuAnimator.swift; sourceTree = "<group>"; };
@@ -1076,6 +1080,7 @@
 			isa = PBXGroup;
 			children = (
 				89A3A8C81DEF942F002AF9B5 /* ActionableTableViewSpec.swift */,
+				8925B1022364017B00A3895B /* DiffableDataSourceSpec.swift */,
 			);
 			path = Generic;
 			sourceTree = "<group>";
@@ -1431,6 +1436,7 @@
 				89F98BA01BA079A3005C3CA8 /* SwitchTableViewCell.swift */,
 				89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */,
 				456300A223236C6F008D0401 /* Notifications.swift */,
+				8925B100236400DA00A3895B /* DiffableDataSource.swift */,
 			);
 			path = Generic;
 			sourceTree = "<group>";
@@ -1982,6 +1988,7 @@
 				89FA3BD921A76D730026BC88 /* ArticleCellController.swift in Sources */,
 				8941AB801DC9AEE400A2CE5F /* DocumentationViewController.swift in Sources */,
 				892AF32A232F22E60018B19C /* AugmentedRealityEasterEgg.swift in Sources */,
+				8925B101236400DA00A3895B /* DiffableDataSource.swift in Sources */,
 				8918D4A41B8115F800DCDE0E /* ExplanationView.swift in Sources */,
 				89C5E5701DECA2AB0078633C /* FeedDetailView.swift in Sources */,
 				89C830C819DA2FEF009924DA /* FeedListController.swift in Sources */,
@@ -2022,6 +2029,7 @@
 				893694FF21E30F30002C3A09 /* FakeAccountService.swift in Sources */,
 				89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */,
 				89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */,
+				8925B1032364017B00A3895B /* DiffableDataSourceSpec.swift in Sources */,
 				8997C8531B2566A600972930 /* ArticleCellSpec.swift in Sources */,
 				89BF42582339B1D900C790A8 /* AppIconSelectionViewControllerSpec.swift in Sources */,
 				899823AC1B2C883B00818755 /* ArticleListControllerSpec.swift in Sources */,

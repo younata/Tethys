@@ -31,6 +31,16 @@ public final class FeedListController: UIViewController {
         )
     }()
 
+    private enum FeedSection {
+        case feeds
+    }
+
+    private lazy var dataSource: UITableViewDiffableDataSource<FeedSection, Feed> = {
+        return DiffableDataSource<FeedSection, Feed>(
+            tableView: tableView,
+            cellProvider: self.cell(tableView:at:with:)
+        )
+    }()
     public fileprivate(set) var feeds: [Feed] = []
     private var menuTopOffset: NSLayoutConstraint!
     public let notificationView = NotificationView(forAutoLayout: ())
@@ -74,7 +84,7 @@ public final class FeedListController: UIViewController {
         self.view.addSubview(self.tableView)
         self.tableView.autoPinEdgesToSuperviewEdges(with: .zero)
         self.tableView.delegate = self
-        self.tableView.dataSource = self
+        self.tableView.dataSource = self.dataSource
         self.tableView.register(FeedTableCell.self, forCellReuseIdentifier: "read")
         self.tableView.register(FeedTableCell.self, forCellReuseIdentifier: "unread")
         self.refreshControl.updateSize(self.view.bounds.size)
@@ -188,8 +198,10 @@ public final class FeedListController: UIViewController {
 
             let oldFeeds = self.feeds
             self.feeds = feeds
-            guard force || oldFeeds != feeds else { return }
-            self.tableView.reloadSections(IndexSet(integer: 0), with: oldFeeds.isEmpty ? .none : .right)
+            var snapshot = NSDiffableDataSourceSnapshot<FeedSection, Feed>()
+            snapshot.appendSections([.feeds])
+            snapshot.appendItems(feeds)
+            self.dataSource.apply(snapshot, animatingDifferences: self.feeds != oldFeeds)
         }
 
         self.feedCoordinator.feeds().then { [weak self] update in
@@ -241,41 +253,50 @@ public final class FeedListController: UIViewController {
         }
     }
 
-    fileprivate func deleteFeed(feed: Feed, indexPath: IndexPath?, completionHandler: ((Bool) -> Void)? = nil) {
+    fileprivate func deleteFeed(feed: Feed, completionHandler: ((Bool) -> Void)? = nil) {
         self.feedCoordinator.unsubscribe(from: feed).then { result in
-            let errorTitle = NSLocalizedString("FeedsTableViewController_Loading_Deleting_Feed_Error", comment: "")
-            self.unwrap(
-                result: result,
-                errorTitle: errorTitle,
-                onSuccess: {
-                    self.feeds = self.feeds.filter { $0 != feed }
-                    if let indexPath = indexPath {
-                        self.tableView.deleteRows(at: [indexPath], with: .automatic)
-                    } else {
-                        self.tableView.reloadData()
-                    }
-                    completionHandler?(true)
+            self.mainQueue.addOperation {
+                let errorTitle = NSLocalizedString("FeedsTableViewController_Loading_Deleting_Feed_Error", comment: "")
+                self.unwrap(
+                    result: result,
+                    errorTitle: errorTitle,
+                    onSuccess: {
+                        self.feeds = self.feeds.filter { $0 != feed }
+                        var snapshot = NSDiffableDataSourceSnapshot<FeedSection, Feed>()
+                        snapshot.appendSections([.feeds])
+                        snapshot.appendItems(self.feeds)
+                        self.dataSource.apply(snapshot, animatingDifferences: true)
+                        completionHandler?(true)
                 }, onError: { completionHandler?(false) }
-            )
+                )
+            }
         }
     }
 
     fileprivate func markRead(feed: Feed, indexPath: IndexPath?, completionHandler: ((Bool) -> Void)? = nil) {
         self.feedCoordinator.readAll(of: feed).then { result in
-            let errorTitle = NSLocalizedString("FeedsTableViewController_Loading_Marking_Feed_Error", comment: "")
-            self.unwrap(
-                result: result,
-                errorTitle: errorTitle,
-                onSuccess: {
-                    if let indexPath = indexPath {
-                        self.tableView.reloadRows(at: [indexPath], with: .automatic)
-                    } else {
-                        self.tableView.reloadData()
-                    }
+            self.mainQueue.addOperation {
+                let errorTitle = NSLocalizedString("FeedsTableViewController_Loading_Marking_Feed_Error", comment: "")
+                self.unwrap(
+                    result: result,
+                    errorTitle: errorTitle,
+                    onSuccess: {
+                        var snapshot = NSDiffableDataSourceSnapshot<FeedSection, Feed>()
+                        self.feeds = self.feeds.sorted {
+                            if $0.unreadCount == $1.unreadCount {
+                                return $0.title > $1.title
+                            } else {
+                                return $0.unreadCount > $1.unreadCount
+                            }
+                        }
+                        snapshot.appendSections([.feeds])
+                        snapshot.appendItems(self.feeds)
+                        self.dataSource.apply(snapshot, animatingDifferences: true)
 
-                    self.notificationCenter.post(name: Notifications.reloadUI, object: self)
-                    completionHandler?(true)
-            }, onError: { completionHandler?(false) })
+                        self.notificationCenter.post(name: Notifications.reloadUI, object: self)
+                        completionHandler?(true)
+                }, onError: { completionHandler?(false) })
+            }
         }
     }
 
@@ -291,19 +312,8 @@ public final class FeedListController: UIViewController {
     }
 
     fileprivate func feed(indexPath: IndexPath) -> Feed { return self.feeds[indexPath.row] }
-}
 
-extension FeedListController: Refresher {
-    public func refresh() { self.reload() }
-}
-
-extension FeedListController: UITableViewDelegate, UITableViewDataSource {
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.feeds.count
-    }
-
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let feed = self.feed(indexPath: indexPath)
+    func cell(tableView: UITableView, at indexPath: IndexPath, with feed: Feed) -> UITableViewCell? {
         let cellTypeToUse = (feed.unreadCount > 0 ? "unread": "read")
         // Prevents a green triangle which'll (dis)appear depending on
         // whether new feed loaded into it has unread articles or not.
@@ -312,16 +322,20 @@ extension FeedListController: UITableViewDelegate, UITableViewDataSource {
             cell.feed = feed
             return cell
         }
-        return UITableViewCell()
+        return nil
     }
+}
 
+extension FeedListController: Refresher {
+    public func refresh() { self.reload() }
+}
+
+extension FeedListController: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: false)
         let feed = self.feed(indexPath: indexPath)
         self.navigationController?.pushViewController(self.articleListController(feed), animated: true)
     }
-
-    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { return true }
 
     public func tableView(_ tableView: UITableView,
                           commit editingStyle: UITableViewCell.EditingStyle,
@@ -329,9 +343,9 @@ extension FeedListController: UITableViewDelegate, UITableViewDataSource {
 
     public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt
                                                     indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
+        let deleteTitle = NSLocalizedString("Generic_Unsubscribe", comment: "")
         let delete = UIContextualAction(style: .destructive, title: deleteTitle, handler: { (_, _, handler) in
-            self.deleteFeed(feed: self.feed(indexPath: indexPath), indexPath: indexPath, completionHandler: handler)
+            self.deleteFeed(feed: self.feed(indexPath: indexPath), completionHandler: handler)
         })
         let readTitle = NSLocalizedString("FeedsTableViewController_Table_EditAction_MarkRead", comment: "")
         let markRead = UIContextualAction(style: .normal, title: readTitle) { (_, _, handler) in
@@ -349,7 +363,7 @@ extension FeedListController: UITableViewDelegate, UITableViewDataSource {
             handler(true)
         }
         share.backgroundColor = Theme.highlightColor
-        let configuration = UISwipeActionsConfiguration(actions: [delete, markRead, edit, share])
+        let configuration = UISwipeActionsConfiguration(actions: [markRead, delete, edit, share])
         configuration.performsFirstActionWithFullSwipe = true
         return configuration
     }
@@ -380,9 +394,9 @@ extension FeedListController: UITableViewDelegate, UITableViewDataSource {
         let share = UIAction(title: shareTitle, image: UIImage(systemName: "square.and.arrow.up")) { [weak self] _ in
             self?.shareFeed(feed: feed, view: nil)
         }
-        let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
+        let deleteTitle = NSLocalizedString("Generic_Unsubscribe", comment: "")
         let delete = UIAction(title: deleteTitle, image: UIImage(systemName: "trash")) { [weak self] _ in
-            self?.deleteFeed(feed: feed, indexPath: nil)
+            self?.deleteFeed(feed: feed)
         }
         return [markRead, edit, share, delete]
     }

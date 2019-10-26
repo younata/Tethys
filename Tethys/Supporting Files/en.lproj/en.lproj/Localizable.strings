@@ -164,6 +164,7 @@
 
 // Generic
 
+"Generic_Unsubscribe" = "Unsubscribe";
 "Generic_Dismiss" = "Dismiss";
 "Generic_Close" = "Close";
 "Generic_Ok" = "Ok";

@@ -163,6 +163,10 @@ public class BreakOutToRefreshView: SKView {
             self.isRefreshing = false
         }
     }
+
+    func isOccluded() -> Bool {
+        return self.scrollView.contentOffset.y > self.sceneHeight
+    }
 }
 
 extension BreakOutToRefreshView: UIScrollViewDelegate {
@@ -411,7 +415,9 @@ private class BreakOutScene: SKScene, SKPhysicsContactDelegate {
         }
 
         if otherBody.categoryBitMask == self.backCategory {
-            self.gameEventFeedbackGenerator.notificationOccurred(.error)
+            if (self.view as? BreakOutToRefreshView)?.isOccluded() == false {
+                self.gameEventFeedbackGenerator.notificationOccurred(.error)
+            }
             self.reset()
             self.start()
             return
@@ -439,10 +445,14 @@ private class BreakOutScene: SKScene, SKPhysicsContactDelegate {
                 self.reset()
                 self.start()
             } else {
-                self.impactGenerator.impactOccurred(intensity: 0.5)
+                if (self.view as? BreakOutToRefreshView)?.isOccluded() == false {
+                    self.impactGenerator.impactOccurred(intensity: 0.5)
+                }
             }
         } else {
-            self.impactGenerator.impactOccurred(intensity: 0.5)
+            if (self.view as? BreakOutToRefreshView)?.isOccluded() == false {
+                self.impactGenerator.impactOccurred(intensity: 0.5)
+            }
         }
     }
 

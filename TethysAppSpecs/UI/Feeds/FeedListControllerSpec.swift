@@ -147,6 +147,10 @@ final class FeedListControllerSpec: QuickSpec {
                                 expect(subject.presentedViewController).to(beAnInstanceOf(UINavigationController.self))
                                 expect((subject.presentedViewController as? UINavigationController)?.visibleViewController).to(beAnInstanceOf(SettingsViewController.self))
                             }
+
+                            it("stops refreshing the control") {
+                                expect(subject.refreshControl.isRefreshing).to(beFalse())
+                            }
                         }
                     }
                 }
@@ -181,6 +185,10 @@ final class FeedListControllerSpec: QuickSpec {
                             it("presents a FindFeedViewController") {
                                 expect(subject.presentedViewController).to(beAnInstanceOf(UINavigationController.self))
                                 expect((subject.presentedViewController as? UINavigationController)?.visibleViewController).to(beAnInstanceOf(FindFeedViewController.self))
+                            }
+
+                            it("stops refreshing the control") {
+                                expect(subject.refreshControl.isRefreshing).to(beFalse())
                             }
                         }
                     }

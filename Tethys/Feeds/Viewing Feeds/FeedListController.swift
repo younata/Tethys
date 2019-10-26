@@ -214,6 +214,8 @@ public final class FeedListController: UIViewController {
         let navigationController = UINavigationController(rootViewController: controller)
         navigationController.modalPresentationStyle = .pageSheet
 
+        self.refreshControl.endRefreshing()
+
         self.present(navigationController, animated: true, completion: nil)
     }
 

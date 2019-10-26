@@ -373,6 +373,7 @@ final class SettingsViewControllerSpec: QuickSpec {
                             }
 
                             it("has a single action") {
+                                expect(subject.tableView.dataSource?.tableView?(subject.tableView, canEditRowAt: indexPath)).to(beTrue())
                                 expect(swipeActions?.actions).to(haveCount(1))
                             }
 

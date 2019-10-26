@@ -321,6 +321,7 @@ final class FeedListControllerSpec: QuickSpec {
                                             describe("when the feed coordinator succeeds") {
                                                 beforeEach {
                                                     feedCoordinator.readAllOfFeedPromises.last?.resolve(.success(()))
+                                                    mainQueue.runNextOperation()
                                                 }
 
                                                 it("marks the cell as unread") {
@@ -341,6 +342,7 @@ final class FeedListControllerSpec: QuickSpec {
                                                 beforeEach {
                                                     UIView.pauseAnimations()
                                                     feedCoordinator.readAllOfFeedPromises.last?.resolve(.failure(.database(.unknown)))
+                                                    mainQueue.runNextOperation()
                                                 }
 
                                                 afterEach {
@@ -435,6 +437,7 @@ final class FeedListControllerSpec: QuickSpec {
                                             describe("if the unsubscribe succeeds") {
                                                 beforeEach {
                                                     feedCoordinator.unsubscribePromises.last?.resolve(.success(()))
+                                                    mainQueue.runNextOperation()
                                                 }
 
                                                 it("removes the feed from the list of cells") {
@@ -447,6 +450,7 @@ final class FeedListControllerSpec: QuickSpec {
                                                 beforeEach {
                                                     UIView.pauseAnimations()
                                                     feedCoordinator.unsubscribePromises.last?.resolve(.failure(.database(.unknown)))
+                                                    mainQueue.runNextOperation()
                                                 }
 
                                                 afterEach {
@@ -528,6 +532,7 @@ final class FeedListControllerSpec: QuickSpec {
                                         describe("when the feed coordinator succeeds") {
                                             beforeEach {
                                                 feedCoordinator.readAllOfFeedPromises.last?.resolve(.success(()))
+                                                mainQueue.runNextOperation()
                                             }
 
                                             it("marks the cell as unread") {
@@ -552,6 +557,7 @@ final class FeedListControllerSpec: QuickSpec {
                                             beforeEach {
                                                 UIView.pauseAnimations()
                                                 feedCoordinator.readAllOfFeedPromises.last?.resolve(.failure(.database(.unknown)))
+                                                mainQueue.runNextOperation()
                                             }
 
                                             afterEach {
@@ -599,6 +605,7 @@ final class FeedListControllerSpec: QuickSpec {
                                         describe("if the unsubscribe succeeds") {
                                             beforeEach {
                                                 feedCoordinator.unsubscribePromises.last?.resolve(.success(()))
+                                                mainQueue.runNextOperation()
                                             }
 
                                             it("removes the feed from the list of cells") {
@@ -615,6 +622,7 @@ final class FeedListControllerSpec: QuickSpec {
                                             beforeEach {
                                                 UIView.pauseAnimations()
                                                 feedCoordinator.unsubscribePromises.last?.resolve(.failure(.database(.unknown)))
+                                                mainQueue.runNextOperation()
                                             }
 
                                             afterEach {

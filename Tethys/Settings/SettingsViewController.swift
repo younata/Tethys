@@ -307,9 +307,13 @@ extension SettingsViewController: UITableViewDelegate {
         }
     }
 
-    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { return false }
+    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        guard SettingsSection(rawValue: indexPath.section) == .account else { return false }
+        return self.account != nil
+    }
 
-    public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
         guard SettingsSection(rawValue: indexPath.section) == .account, let account = self.account else { return nil }
 
         let actions = UISwipeActionsConfiguration(actions: [

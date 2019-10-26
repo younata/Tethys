@@ -290,7 +290,7 @@ final class RealmRSSUpdateServiceSpec: QuickSpec {
                         }
 
                         it("does not yet resolve the future") {
-                            expect(future.value).to(beNil())
+                            expect(future).toNot(beResolved())
                         }
 
                         describe("when the image url request succeeds") {

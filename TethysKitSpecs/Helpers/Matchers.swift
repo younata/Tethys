@@ -34,3 +34,44 @@ func voidResult(error: TethysError?) -> Result<Void, TethysError> {
         return .success(Void())
     }
 }
+
+import CBGPromise
+
+func beResolved<T>() -> Predicate<Future<T>> {
+    return Predicate { (received: Expression<Future<T>>) throws -> PredicateResult in
+        let msg = ExpectationMessage.expectedActualValueTo("be resolved")
+        if let receivedFuture = try received.evaluate() {
+            return PredicateResult(bool: receivedFuture.value != nil, message: msg)
+        } else {
+            return PredicateResult(status: .fail, message: msg.appendedBeNilHint())
+        }
+    }
+}
+
+final class MatcherSpec: QuickSpec {
+    override func spec() {
+        enum SomeError: Error {
+            case woot
+            case boo
+        }
+
+        enum SomeSuccess {
+            case whee
+        }
+
+        describe("beResolved()") {
+            it("does not match if the future is not resolved") {
+                let promise = Promise<Void>()
+
+                expect(promise.future).toNot(beResolved())
+            }
+
+            it("matches if the future is resolved") {
+                let promise = Promise<Void>()
+                promise.resolve(Void())
+
+                expect(promise.future).to(beResolved())
+            }
+        }
+    }
+}

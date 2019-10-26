@@ -55,7 +55,7 @@ final class KeychainCredentialServiceSpec: QuickSpec {
                 }
 
                 it("resolves the future with the stored credentials") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.value).to(haveCount(2))
                     expect(future.value?.value).to(contain(credential, otherCredential))
                 }
@@ -67,7 +67,7 @@ final class KeychainCredentialServiceSpec: QuickSpec {
                 }
 
                 it("resolves with no data") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.value).to(beEmpty())
                 }
             }
@@ -99,7 +99,7 @@ final class KeychainCredentialServiceSpec: QuickSpec {
                 }
 
                 it("resolves the future with a success") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.value).to(beVoid())
                 }
             }
@@ -135,7 +135,7 @@ final class KeychainCredentialServiceSpec: QuickSpec {
                 }
 
                 it("resolves the future with a success") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.value).to(beVoid())
                 }
             }
@@ -166,7 +166,7 @@ final class KeychainCredentialServiceSpec: QuickSpec {
                 }
 
                 it("resolves with a successful value") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.value).to(beVoid())
                 }
             }
@@ -177,7 +177,7 @@ final class KeychainCredentialServiceSpec: QuickSpec {
                 }
 
                 it("resolves the future with success") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.value).to(beVoid())
                 }
             }

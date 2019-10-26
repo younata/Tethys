@@ -76,7 +76,7 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                     }
 
                     it("resolves the future with all stored feeds, ordered by the title of the feed") {
-                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future).to(beResolved())
                         guard let result = future.value?.value else {
                             fail("Expected to have the list of feeds, got \(String(describing: future.value))")
                             return
@@ -119,7 +119,7 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                     }
 
                     it("resolves the future with all stored feeds, ordered first by unread count, then by the title of the feed") {
-                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future).to(beResolved())
                         guard let result = future.value?.value else {
                             fail("Expected to have the list of feeds, got \(String(describing: future.value))")
                             return
@@ -240,7 +240,7 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                     }
 
                     it("resolves the future with that feed") {
-                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future).to(beResolved())
                         expect(future.value?.value).to(equal(
                             feedFactory(title: "", url: url, summary: "", tags: [], unreadCount: 0, image: nil)
                         ))
@@ -252,7 +252,7 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                 it("immediately resolves with error notSupported") {
                     let future = subject.tags()
 
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.error).to(equal(.notSupported))
                 }
             }
@@ -261,7 +261,7 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                 it("immediately resolves with error notSupported") {
                     let future = subject.set(tags: [], of: feedFactory())
 
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.error).to(equal(.notSupported))
                 }
             }
@@ -270,7 +270,7 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                 it("immediately resolves with error notSupported") {
                     let future = subject.set(url: URL(string: "https://example.com/whatever")!, on: feedFactory())
 
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.error).to(equal(.notSupported))
                 }
             }
@@ -416,7 +416,7 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                 }
 
                 it("resolves the promise with the new set of feeds") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     guard let receivedFeeds = future.value?.value else {
                         return fail("Future did not resolve successfully")
                     }
@@ -443,7 +443,7 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                     }
 
                     it("resolves with an entryNotFound error") {
-                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future).to(beResolved())
                         expect(future.value?.error).to(equal(.database(.entryNotFound)))
                     }
                 }
@@ -466,7 +466,7 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                     }
 
                     it("resolves the promise successfully") {
-                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future).to(beResolved())
                         expect(future.value?.value).to(equal(updatedFeed))
                     }
                 }

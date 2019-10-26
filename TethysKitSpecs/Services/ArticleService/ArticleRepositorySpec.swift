@@ -108,7 +108,7 @@ func itCachesFuturesPermanently<T>(factory: @escaping () -> Future<Result<T, Tet
     }
 
     it("returns an in-progress future") {
-        expect(future.value).to(beNil())
+        expect(future).toNot(beResolved())
     }
 
     it("makes a call to the underlying service") {
@@ -167,7 +167,7 @@ func itCachesFuturesPermanently<T>(factory: @escaping () -> Future<Result<T, Tet
             }
 
             it("returns an in-progress future") {
-                expect(future.value).to(beNil())
+                expect(future).toNot(beResolved())
             }
 
             it("makes another call to the underlying service") {

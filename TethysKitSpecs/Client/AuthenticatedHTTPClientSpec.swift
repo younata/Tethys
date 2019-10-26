@@ -51,7 +51,7 @@ final class AuthenticatedHTTPClientSpec: QuickSpec {
                     }
 
                     it("resolves the future with the value") {
-                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future).to(beResolved())
                         expect(future.value?.value).to(equal(HTTPResponse(
                             body: "hello".data(using: .utf8)!,
                             status: .ok,
@@ -82,7 +82,7 @@ final class AuthenticatedHTTPClientSpec: QuickSpec {
                             }
 
                             it("resolves the future with that result") {
-                                expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                                expect(future).to(beResolved())
                                 expect(future.value?.value).to(equal(HTTPResponse(
                                     body: "bad".data(using: .utf8)!,
                                     status: .unauthorized,
@@ -98,7 +98,7 @@ final class AuthenticatedHTTPClientSpec: QuickSpec {
                             }
 
                             it("resolves the future with that result") {
-                                expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                                expect(future).to(beResolved())
                                 expect(future.value?.value).to(equal(HTTPResponse(
                                     body: "bad".data(using: .utf8)!,
                                     status: .unauthorized,
@@ -115,7 +115,7 @@ final class AuthenticatedHTTPClientSpec: QuickSpec {
                         }
 
                         it("forwards the error") {
-                            expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                            expect(future).to(beResolved())
                             expect(future.value?.error).to(equal(.unknown("error")))
                         }
                     }
@@ -229,7 +229,7 @@ final class AuthenticatedHTTPClientSpec: QuickSpec {
                             }
 
                             it("resolves the future with that result") {
-                                expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                                expect(future).to(beResolved())
                                 expect(future.value?.value).to(equal(HTTPResponse(
                                     body: "bad".data(using: .utf8)!,
                                     status: .unauthorized,
@@ -249,7 +249,7 @@ final class AuthenticatedHTTPClientSpec: QuickSpec {
                             }
 
                             it("resolves the future with that result") {
-                                expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                                expect(future).to(beResolved())
                                 expect(future.value?.value).to(equal(HTTPResponse(
                                     body: "bad".data(using: .utf8)!,
                                     status: .unauthorized,
@@ -270,7 +270,7 @@ final class AuthenticatedHTTPClientSpec: QuickSpec {
                         }
 
                         it("resolves the future with that error") {
-                            expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                            expect(future).to(beResolved())
                             expect(future.value?.error).to(equal(.unknown("error")))
                         }
                     }
@@ -293,7 +293,7 @@ final class AuthenticatedHTTPClientSpec: QuickSpec {
                 }
 
                 it("resolves with an unauthorized error") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.value).to(equal(HTTPResponse(
                         body: Data(),
                         status: .unauthorized,

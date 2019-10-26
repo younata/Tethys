@@ -14,7 +14,7 @@ func itCachesInProgressFutures<T>(factory: @escaping () -> Future<Result<T, Teth
     }
 
     it("returns an in-progress future") {
-        expect(future.value).to(beNil())
+        expect(future).toNot(beResolved())
     }
 
     it("makes a call to the underlying service") {
@@ -45,7 +45,7 @@ func itCachesInProgressFutures<T>(factory: @escaping () -> Future<Result<T, Teth
             }
 
             it("returns an in-progress future") {
-                expect(future.value).to(beNil())
+                expect(future).toNot(beResolved())
             }
 
             it("makes another call to the underlying service") {
@@ -70,7 +70,7 @@ func itCachesInProgressFutures<T>(factory: @escaping () -> Future<Result<T, Teth
             }
 
             it("returns an in-progress future") {
-                expect(future.value).to(beNil())
+                expect(future).toNot(beResolved())
             }
 
             it("makes another call to the underlying service") {

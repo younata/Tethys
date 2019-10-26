@@ -105,7 +105,7 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                     }
 
                     it("resolves the future with the account details") {
-                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future).to(beResolved())
                         expect(future.value).to(haveCount(2))
 
                         guard let accounts = future.value?.compactMap({ $0.value }) else { return }
@@ -136,7 +136,7 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                             }
 
                             it("resolves the future with the stored account data") {
-                                expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                                expect(future).to(beResolved())
                                 expect(future.value).to(haveCount(2))
 
                                 guard let accounts = future.value?.compactMap({ $0.value }) else { return }
@@ -163,7 +163,7 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                     }
 
                     it("resolves the future with the failure details") {
-                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future).to(beResolved())
                         expect(future.value).to(haveCount(2))
 
                         guard let errors = future.value?.compactMap({ $0.error }) else { return }
@@ -189,7 +189,7 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                 }
 
                 it("resolves the future with the failure") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value).to(haveCount(1))
                     expect(future.value?.first?.error).to(equal(.unknown))
                 }
@@ -293,7 +293,7 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                         }
 
                         it("resolves the future with the created account, giving it an id of 'inoreader'") {
-                            expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                            expect(future).to(beResolved())
 
                             expect(future.value?.value).to(equal(
                                 Account(kind: .inoreader, username: "a_username", id: "123")
@@ -307,7 +307,7 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                         }
 
                         it("resolves the future with the last failure") {
-                            expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                            expect(future).to(beResolved())
 
                             expect(future.value?.error).to(equal(.database(.unknown)))
                         }
@@ -329,7 +329,7 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                     }
 
                     it("resolves the future with an error") {
-                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future).to(beResolved())
                         expect(future.value?.error).to(equal(TethysError.network(
                             URL(string: "https://www.inoreader.com/reader/api/0/user-info")!, .http(.unauthorized))
                         ))
@@ -346,7 +346,7 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                     }
 
                     it("resolves the future with an error") {
-                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future).to(beResolved())
                         expect(future.value?.error).to(equal(.network(
                             URL(string: "https://www.inoreader.com/reader/api/0/user-info")!, .timedOut)
                         ))
@@ -360,7 +360,7 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                 }
 
                 it("resolves the future with an error") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.error).to(equal(.network(
                         URL(string: "https://www.inoreader.com/oauth2/token")!, .timedOut)
                     ))
@@ -388,7 +388,7 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                 }
 
                 it("does not yet resolve the future") {
-                    expect(future.value).to(beNil())
+                    expect(future).toNot(beResolved())
                 }
 
                 it("tells the credential service to remove the credential") {
@@ -401,7 +401,7 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                     }
 
                     it("resolves the future with success") {
-                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future).to(beResolved())
                         expect(future.value?.value).to(beVoid())
                     }
                 }
@@ -411,7 +411,7 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                         credentialService.deleteCredentialPromises.last?.resolve(.failure(.unknown))
                     }
                     it("forwards the error to the user") {
-                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future).to(beResolved())
                         expect(future.value?.error).to(equal(.unknown))
                     }
                 }
@@ -425,7 +425,7 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                 }
 
                 it("resolves the future with success") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.value).to(beVoid())
                 }
             }
@@ -436,7 +436,7 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                 }
 
                 it("forwards the error to the user") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.error).to(equal(.unknown))
                 }
             }

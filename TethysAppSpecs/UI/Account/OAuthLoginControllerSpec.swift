@@ -126,7 +126,7 @@ final class OAuthLoginControllerSpec: QuickSpec {
                         }
 
                         it("resolves the future with the account") {
-                            expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                            expect(future).to(beResolved())
                             expect(future.value?.value).to(equal(Account(
                                 kind: .inoreader,
                                 username: "a username",
@@ -141,7 +141,7 @@ final class OAuthLoginControllerSpec: QuickSpec {
                         }
 
                         it("resolves the future with the error") {
-                            expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                            expect(future).to(beResolved())
                             expect(future.value?.error).to(equal(.unknown))
                         }
                     }
@@ -157,7 +157,7 @@ final class OAuthLoginControllerSpec: QuickSpec {
                     }
 
                     it("resolves the future with an invalidResponse error") {
-                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future).to(beResolved())
                         guard let error = future.value?.error else { fail("error not set"); return }
                         switch error {
                         case .network(let url, let networkError):
@@ -183,7 +183,7 @@ final class OAuthLoginControllerSpec: QuickSpec {
                 }
 
                 it("resolves the future with a cancelled error") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     guard let error = future.value?.error else { fail("error not set"); return }
                     switch error {
                     case .network(let url, let networkError):

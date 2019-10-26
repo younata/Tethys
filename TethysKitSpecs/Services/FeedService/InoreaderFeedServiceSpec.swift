@@ -613,7 +613,7 @@ final class InoreaderFeedServiceSpec: QuickSpec {
             }
 
             it("immediately resolves with a notSupported url") {
-                expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                expect(future).to(beResolved())
                 expect(future.value?.error).to(equal(TethysError.notSupported))
             }
         }
@@ -625,7 +625,7 @@ final class InoreaderFeedServiceSpec: QuickSpec {
             it("immediately resolves with a notSupported url") {
                 let future = subject.set(url: URL(string: "https://example.com/feed2/")!, on: feed)
 
-                expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                expect(future).to(beResolved())
                 expect(future.value?.error).to(equal(TethysError.notSupported))
             }
         }

@@ -354,7 +354,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                     }
 
                     it("resolves the future with one of them") {
-                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future).to(beResolved())
                         expect(future.value?.value).to(equal(feed1))
                     }
                 }
@@ -369,7 +369,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                     }
 
                     it("does not yet resolve the future") {
-                        expect(future.value).to(beNil())
+                        expect(future).toNot(beResolved())
                     }
 
                     it("tells the local feed service to update the feed with the network feed services' feed") {
@@ -384,7 +384,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                         }
 
                         it("resolves the future with the updated feed") {
-                            expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                            expect(future).to(beResolved())
                             expect(future.value?.value).to(equal(updatedFeed))
                         }
                     }
@@ -395,7 +395,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                         }
 
                         it("resolves the future with the network service' feed") {
-                            expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                            expect(future).to(beResolved())
                             expect(future.value?.value).to(equal(feed2))
                         }
                     }
@@ -410,7 +410,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                 }
 
                 it("resolves the future successfully, hiding the error") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.value).to(equal(feed))
                 }
             }
@@ -423,7 +423,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                 }
 
                 it("does not yet resolve the future") {
-                    expect(future.value).to(beNil())
+                    expect(future).toNot(beResolved())
                 }
 
                 it("tells the local feed service to update the feed with the network feed services' feed") {
@@ -438,7 +438,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                     }
 
                     it("resolves the future with the updated feed") {
-                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future).to(beResolved())
                         expect(future.value?.value).to(equal(updatedFeed))
                     }
                 }
@@ -449,7 +449,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                     }
 
                     it("resolves the future with the network service' feed") {
-                        expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                        expect(future).to(beResolved())
                         expect(future.value?.value).to(equal(feed))
                     }
                 }
@@ -462,7 +462,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                 }
 
                 it("resolves the future with the combined failure") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.error).to(equal(.multiple([
                         .database(.unknown),
                         .network(url, .internetDown)
@@ -493,7 +493,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                 }
 
                 it("resolves the future successfully") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.value).to(beVoid())
                 }
             }
@@ -505,7 +505,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                 }
 
                 it("resolves the future with the local feed service's error") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.error).to(equal(.network(unsubscribeURL, .badResponse)))
                 }
             }
@@ -517,7 +517,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                 }
 
                 it("resolves the future with the local feed service's error") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.error).to(equal(.database(.notFound)))
                 }
             }
@@ -529,7 +529,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                 }
 
                 it("resolves the future with both errors") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.error).to(equal(.multiple([
                         .database(.entryNotFound),
                         .network(unsubscribeURL, .internetDown)
@@ -564,7 +564,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                 }
 
                 it("resolves the future successfully") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.value).to(beVoid())
                 }
             }
@@ -576,7 +576,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                 }
 
                 it("resolves the future successfully") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.value).to(beVoid())
                 }
             }
@@ -588,7 +588,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                 }
 
                 it("resolves the future successfully") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.value).to(beVoid())
                 }
             }
@@ -600,7 +600,7 @@ final class FeedCoordinatorSpec: QuickSpec {
                 }
 
                 it("resolves the future with both failures") {
-                    expect(future.value).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future).to(beResolved())
                     expect(future.value?.error).to(equal(.multiple([
                         .database(.entryNotFound),
                         .network(readAllURL, .dns)

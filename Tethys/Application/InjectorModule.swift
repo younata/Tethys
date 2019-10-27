@@ -58,6 +58,7 @@ private func registerViewControllers(container: Container) {
     container.register(ArticleListController.self) { r, feed in
         return ArticleListController(
             feed: feed,
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
             messenger: r.resolve(Messenger.self)!,
             feedCoordinator: r.resolve(FeedCoordinator.self)!,
             articleService: r.resolve(ArticleService.self)!,

@@ -37,7 +37,7 @@ public final class FeedListController: UIViewController {
 
     private lazy var dataSource: UITableViewDiffableDataSource<FeedSection, Feed> = {
         return DiffableDataSource<FeedSection, Feed>(
-            tableView: tableView,
+            tableView: self.tableView,
             cellProvider: self.cell(tableView:at:with:)
         )
     }()

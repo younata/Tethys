@@ -36,6 +36,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     public let tableView = UITableView(forAutoLayout: ())
 
     public let feed: Feed
+    private let mainQueue: OperationQueue
     private let messenger: Messenger
     fileprivate let feedCoordinator: FeedCoordinator
     fileprivate let articleService: ArticleService
@@ -43,6 +44,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     private let articleCellController: ArticleCellController
     fileprivate let articleViewController: (Article) -> ArticleViewController
     public init(feed: Feed,
+                mainQueue: OperationQueue,
                 messenger: Messenger,
                 feedCoordinator: FeedCoordinator,
                 articleService: ArticleService,
@@ -50,6 +52,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
                 articleCellController: ArticleCellController,
                 articleViewController: @escaping (Article) -> ArticleViewController) {
         self.feed = feed
+        self.mainQueue = mainQueue
         self.messenger = messenger
         self.feedCoordinator = feedCoordinator
         self.articleService = articleService
@@ -308,21 +311,23 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     }
 
     fileprivate func resetArticles() {
-        self.feedCoordinator.articles(of: self.feed).then { result in
-            switch result {
-            case .update(.success(let articles)):
-                self.articles = articles
-                self.tableView.beginUpdates()
-                self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
-                self.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
-                self.tableView.endUpdates()
-            case .update(.failure(let error)):
-                self.showAlert(
-                    error: error,
-                    title: NSLocalizedString("ArticleListController_Retrieving_Error_Title", comment: "")
-                )
-            case .finished:
-                break
+        self.feedCoordinator.articles(of: self.feed).then { [weak self] result in
+            self?.mainQueue.addOperation {
+                switch result {
+                case .update(.success(let articles)):
+                    self?.articles = articles
+                    self?.tableView.beginUpdates()
+                    self?.tableView.reloadSections(IndexSet(integer: 0), with: .none)
+                    self?.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
+                    self?.tableView.endUpdates()
+                case .update(.failure(let error)):
+                    self?.showAlert(
+                        error: error,
+                        title: NSLocalizedString("ArticleListController_Retrieving_Error_Title", comment: "")
+                    )
+                case .finished:
+                    break
+                }
             }
         }
     }

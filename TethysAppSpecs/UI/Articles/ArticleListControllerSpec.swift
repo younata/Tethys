@@ -32,6 +32,7 @@ class ArticleListControllerSpec: QuickSpec {
 
         beforeEach {
             mainQueue = FakeOperationQueue()
+            mainQueue.runSynchronously = true
 
             articleUseCase = FakeArticleUseCase()
             articleUseCase.readArticleReturns("hello")
@@ -56,6 +57,7 @@ class ArticleListControllerSpec: QuickSpec {
 
             subject = ArticleListController(
                 feed: feed,
+                mainQueue: mainQueue,
                 messenger: messenger,
                 feedCoordinator: feedCoordinator,
                 articleService: articleService,

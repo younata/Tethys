@@ -78,6 +78,7 @@ func htmlViewControllerFactory() -> HTMLViewController {
 
 func articleListControllerFactory(
     feed: Feed = feedFactory(),
+    mainQueue: OperationQueue = FakeOperationQueue(),
     messenger: Messenger = FakeMessenger(),
     feedCoordinator: FeedCoordinator = FakeFeedCoordinator(),
     articleService: ArticleService = FakeArticleService(),
@@ -87,6 +88,7 @@ func articleListControllerFactory(
     ) -> ArticleListController {
     return ArticleListController(
         feed: feed,
+        mainQueue: mainQueue,
         messenger: messenger,
         feedCoordinator: feedCoordinator,
         articleService: articleService,

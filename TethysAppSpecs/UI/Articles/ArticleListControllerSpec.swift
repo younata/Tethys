@@ -7,9 +7,9 @@ import UIKit
 private var publishedOffset = -1
 func fakeArticle(feed: Feed, isUpdated: Bool = false, read: Bool = false) -> Article {
     publishedOffset += 1
-    return Article(title: "article \(publishedOffset)", link: URL(string: "http://example.com")!, summary: "",
-                   authors: [Author(name: "Rachel", email: nil)], identifier: "\(publishedOffset)", content: "",
-                   read: read)
+    return articleFactory(title: "article \(publishedOffset)", link: URL(string: "http://example.com")!, summary: "",
+                          authors: [Author(name: "Rachel", email: nil)], identifier: "\(publishedOffset)", content: "",
+                          read: read)
 }
 
 class ArticleListControllerSpec: QuickSpec {
@@ -108,7 +108,7 @@ class ArticleListControllerSpec: QuickSpec {
 
         describe("when the request succeeds") {
             beforeEach {
-                feedCoordinator.articlesOfFeedPromises.last?.resolve(.success(AnyCollection(articles)))
+                feedCoordinator.articlesOfFeedPublishers.last?.update(with: .success(AnyCollection(articles)))
             }
 
             describe("the bar button items") {
@@ -208,7 +208,7 @@ class ArticleListControllerSpec: QuickSpec {
                                 var oldConfigureCalls: Int = 0
                                 beforeEach {
                                     oldConfigureCalls = articleCellController.configureCalls.count
-                                    feedCoordinator.articlesOfFeedPromises.last?.resolve(.success(AnyCollection(updatedArticles)))
+                                    feedCoordinator.articlesOfFeedPublishers.last?.update(with: .success(AnyCollection(updatedArticles)))
                                 }
 
                                 it("refreshes the tableView with the articles") {
@@ -809,7 +809,7 @@ class ArticleListControllerSpec: QuickSpec {
 
         describe("when the request fails") {
             beforeEach {
-                feedCoordinator.articlesOfFeedPromises.last?.resolve(.failure(.database(.unknown)))
+                feedCoordinator.articlesOfFeedPublishers.last?.update(with: .failure(.database(.unknown)))
             }
 
             itTellsTheUserAboutTheError(title: "Unable to retrieve articles", message: "Unknown Database Error")

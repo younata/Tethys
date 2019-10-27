@@ -50,6 +50,7 @@ struct InoreaderFeedService: FeedService {
         },
             dataParser: { (body: Data) throws -> ([Article], String?) in
                 let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .secondsSince1970
                 let parsedArticlesResponse = try decoder.decode(InoreaderArticles.self, from: body)
                 let articles: [Article] = parsedArticlesResponse.items.compactMap {
                     guard let url = $0.canonical.first?.href else { return nil }
@@ -57,10 +58,12 @@ struct InoreaderFeedService: FeedService {
                         title: $0.title,
                         link: url,
                         summary: $0.summary.content,
-                        authors: [Author($0.author)],
+                        authors: [Author(name: $0.author, email: nil)],
                         identifier: $0.id,
                         content: $0.summary.content,
-                        read: InoreaderTags(tags: $0.categories.map { InoreaderTag(id: $0) }).containsRead
+                        read: InoreaderTags(tags: $0.categories.map { InoreaderTag(id: $0) }).containsRead,
+                        published: $0.published,
+                        updated: $0.updated
                     )
                 }
                 return (articles, parsedArticlesResponse.continuation)
@@ -256,7 +259,7 @@ private struct InoreaderArticle: Codable {
     let title: String
     let categories: [String]
     let published: Date
-    let updated: Date
+    let updated: Date?
     let canonical: [InoreaderLink]
     let alternate: [InoreaderLink]
     let author: String

@@ -21,5 +21,17 @@ final class FakeLocalFeedService: FakeFeedService, LocalFeedService {
         self.updateFeedFromPromises.append(promise)
         return promise.future
     }
+
+    private(set) var updateArticlesCalls: [(articles: AnyCollection<Article>, feed: Feed)] = []
+    private(set) var updateArticlesPromises: [Promise<Result<AnyCollection<Article>, TethysError>>] = []
+    func updateArticles(
+        with articles: AnyCollection<Article>,
+        feed: Feed
+    ) -> Future<Result<AnyCollection<Article>, TethysError>> {
+        self.updateArticlesCalls.append((articles, feed))
+        let promise = Promise<Result<AnyCollection<Article>, TethysError>>()
+        self.updateArticlesPromises.append(promise)
+        return promise.future
+    }
 }
 

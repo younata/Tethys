@@ -24,17 +24,17 @@ public class FeedCoordinator {
         }.map { _ in
             self.networkFeedServiceProvider().feeds()
         }.map { updatedFeeds -> Future<Result<AnyCollection<Feed>, TethysError>> in
-            if self.shouldPublishUpdatedFeeds(updatedFeeds, existingFeeds: publisher.subscription.value) {
+            if self.shouldPublishUpdates(updatedFeeds, existing: publisher.subscription.value) {
                 publisher.update(with: updatedFeeds)
             }
             switch updatedFeeds {
             case .success(let feeds):
                 return self.localFeedService.updateFeeds(with: feeds)
             case .failure(let error):
-                return Promise<Result<Void, TethysError>>.resolved(.failure(error))
+                return Promise<Result<AnyCollection<Feed>, TethysError>>.resolved(.failure(error))
             }
         }.then { savedFeeds in
-            if self.shouldPublishUpdatedFeeds(savedFeeds, existingFeeds: publisher.subscription.value) {
+            if self.shouldPublishUpdates(savedFeeds, existing: publisher.subscription.value) {
                 publisher.update(with: savedFeeds)
             }
             publisher.finish()
@@ -52,18 +52,48 @@ public class FeedCoordinator {
         BUT if local failed for some reason, then we should publish both errors.
         We don't want the user to see feeds, then suddenly have no data, that's a bad user experience.
      */
-    private func shouldPublishUpdatedFeeds(
-        _ updatedFeeds: Result<AnyCollection<Feed>, TethysError>,
-        existingFeeds: Result<AnyCollection<Feed>, TethysError>?
+    private func shouldPublishUpdates<T>(
+        _ updated: Result<AnyCollection<T>, TethysError>,
+        existing existingResult: Result<AnyCollection<T>, TethysError>?
     ) -> Bool {
-        guard let existing = existingFeeds else { return true }
-        if updatedFeeds.succeeded { return true }
+        guard let existing = existingResult else { return true }
+        if updated.succeeded { return true }
         return existing.errored
     }
 
     // MARK: Retrieving articles of a feed
-    public func articles(of feed: Feed) -> Future<Result<AnyCollection<Article>, TethysError>> {
-        return self.localFeedService.articles(of: feed)
+    private var articlesPublishers: [Feed: Publisher<Result<AnyCollection<Article>, TethysError>>] = [:]
+    public func articles(of feed: Feed) -> Subscription<Result<AnyCollection<Article>, TethysError>> {
+        if let publisher = self.articlesPublishers[feed], publisher.isFinished == false {
+            return publisher.subscription
+        }
+        let publisher = Publisher<Result<AnyCollection<Article>, TethysError>>()
+        articlesPublishers[feed] = publisher
+
+        self.localFeedService.articles(of: feed).then {
+            publisher.update(with: $0)
+        }.map { _ in
+            self.networkFeedServiceProvider().articles(of: feed)
+        }.map { networkArticles -> Future<Result<AnyCollection<Article>, TethysError>> in
+            if self.shouldPublishUpdates(networkArticles, existing: publisher.subscription.value) {
+                publisher.update(with: networkArticles)
+            }
+
+            switch networkArticles {
+            case .success(let articles):
+                return self.localFeedService.updateArticles(with: articles, feed: feed)
+            case .failure(let error):
+                return Promise<Result<AnyCollection<Article>, TethysError>>.resolved(.failure(error))
+            }
+        }.then { savedArticles in
+            if self.shouldPublishUpdates(savedArticles, existing: publisher.subscription.value) {
+                publisher.update(with: savedArticles)
+            }
+            publisher.finish()
+            self.articlesPublishers.removeValue(forKey: feed)
+        }
+
+        return publisher.subscription
     }
 
     // MARK: Subscribing to a feed

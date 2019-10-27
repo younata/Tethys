@@ -471,6 +471,93 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                     }
                 }
             }
+
+            describe("updateArticles(with:feed:)") {
+                var future: Future<Result<AnyCollection<Article>, TethysError>>!
+
+                context("and the feed is not in realm") {
+                    it("resolves with an entry not found error") {
+                        future = subject.updateArticles(with: AnyCollection([]), feed: feedFactory())
+
+                        expect(future).to(beResolved())
+                        expect(future.value?.error).to(equal(.database(.entryNotFound)))
+                    }
+                }
+
+                context("and the feed is in realm") {
+                    let dateFormatter = ISO8601DateFormatter()
+                    let updatedArticles = [
+                        articleFactory(title: "article 0", link: URL(string: "https://example.com/article/article0")!,
+                                       published: dateFormatter.date(from: "2019-03-18T09:15:00-0800")!),
+                        articleFactory(title: "article 1, updated", link: URL(string: "https://example.com/article/article1")!,
+                                       summary: "hello", published: dateFormatter.date(from: "2017-08-14T09:00:00-0700")!, updated: dateFormatter.date(from: "2019-01-11T16:45:00-0800")!),
+                        articleFactory(title: "article 2", link: URL(string: "https://example.com/article/article2")!,
+                                       published: dateFormatter.date(from: "2017-07-21T18:00:00-0700")!),
+                        articleFactory(title: "article 3", link: URL(string: "https://example.com/article/article3")!,
+                                       published: dateFormatter.date(from: "2015-06-14T10:15:00-0700")!),
+                    ]
+                    beforeEach {
+                        write {
+                            let article1 = RealmArticle()
+                            article1.title = "article1"
+                            article1.link = "https://example.com/article/article1"
+                            article1.feed = realmFeed1
+                            article1.published = updatedArticles[1].published
+
+                            realm.add(article1)
+
+                            let article2 = RealmArticle()
+                            article2.title = "article 2"
+                            article2.link = "https://example.com/article/article2"
+                            article2.feed = realmFeed1
+                            article2.published = updatedArticles[2].published
+
+                            realm.add(article2)
+                        }
+
+                        let feed = Feed(realmFeed: realmFeed1)
+
+                        future = subject.updateArticles(with: AnyCollection(updatedArticles), feed: feed)
+                    }
+
+                    it("stores up to the first unmodified article in the datastore") {
+                        expect(realmFeed1.articles).to(haveCount(3))
+                        let allArticles = realm.objects(RealmArticle.self).sorted(by: [
+                            SortDescriptor(keyPath: "published", ascending: false)
+                        ])
+                        expect(allArticles).to(haveCount(3))
+
+                        expect(allArticles[0].title).to(equal("article 0"))
+                        expect(allArticles[0].link).to(equal("https://example.com/article/article0"))
+                        expect(allArticles[0].published).to(equal(updatedArticles[0].published))
+                        expect(allArticles[0].feed).to(equal(realmFeed1))
+
+                        expect(allArticles[1].title).to(equal(updatedArticles[1].title))
+                        expect(allArticles[1].link).to(equal(updatedArticles[1].link.absoluteString))
+                        expect(allArticles[1].summary).to(equal(updatedArticles[1].summary))
+                        expect(allArticles[1].published).to(equal(updatedArticles[1].published))
+                        expect(allArticles[1].updatedAt).to(equal(updatedArticles[1].updated))
+                        expect(allArticles[1].feed).to(equal(realmFeed1))
+
+                        expect(allArticles[2].title).to(equal(updatedArticles[2].title))
+                        expect(allArticles[2].link).to(equal(updatedArticles[2].link.absoluteString))
+                        expect(allArticles[2].published).to(equal(updatedArticles[2].published))
+                        expect(allArticles[2].feed).to(equal(realmFeed1))
+                    }
+
+                    it("resolves the future with the stored articles") {
+                        expect(future).to(beResolved())
+                        guard let articles = future.value?.value else {
+                            return expect(future.value?.error).to(beNil())
+                        }
+                        expect(Array(articles)).to(equal([
+                            articleFactory(title: "article 0", link: URL(string: "https://example.com/article/article0")!, published: updatedArticles[0].published, updated: updatedArticles[0].updated),
+                            articleFactory(title: "article 1, updated", link: URL(string: "https://example.com/article/article1")!, summary: "hello", published: updatedArticles[1].published, updated: updatedArticles[1].updated),
+                            articleFactory(title: "article 2", link: URL(string: "https://example.com/article/article2")!, published: updatedArticles[2].published, updated: updatedArticles[2].updated),
+                        ]))
+                    }
+                }
+            }
         }
     }
 }

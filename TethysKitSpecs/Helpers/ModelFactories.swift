@@ -26,7 +26,9 @@ func articleFactory(
     identifier: String = "",
     content: String = "",
     read: Bool = false,
-    estimatedReadingTime: TimeInterval = 0
+    estimatedReadingTime: TimeInterval = 0,
+    published: Date = Date(),
+    updated: Date? = nil
     ) -> Article {
     return Article(
         title: title,
@@ -35,6 +37,8 @@ func articleFactory(
         authors: authors,
         identifier: identifier,
         content: content,
-        read: read
+        read: read,
+        published: published,
+        updated: updated
     )
 }

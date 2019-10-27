@@ -31,12 +31,14 @@ class ArticleSpec: QuickSpec {
             }
 
             it("should report two articles not created with datastore objects with the same property equality as equal") {
+                let publishedDate = Date()
                 let a = Article(title: "", link: URL(string: "https://example.com/articlea")!, summary: "", authors: [],
-                                identifier: "", content: "", read: false)
+                                identifier: "", content: "", read: false, published: publishedDate, updated: nil)
                 let b = Article(title: "blah", link: URL(string: "https://example.com")!, summary: "hello",
-                                authors: [Author("anAuthor")], identifier: "hi", content: "hello there", read: true)
+                                authors: [Author("anAuthor")], identifier: "hi", content: "hello there", read: true,
+                                published: Date(), updated: Date())
                 let c = Article(title: "", link: URL(string: "https://example.com/articlea")!, summary: "", authors: [],
-                                identifier: "", content: "", read: false)
+                                identifier: "", content: "", read: false, published: publishedDate, updated: nil)
 
                 expect(a).toNot(equal(b))
                 expect(a).to(equal(c))
@@ -59,12 +61,14 @@ class ArticleSpec: QuickSpec {
             }
 
             it("should report two articles not created from datastores with the same property equality as having the same hashValue") {
+                let publishedDate = Date()
                 let a = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [],
-                                identifier: "", content: "", read: false)
+                                identifier: "", content: "", read: false, published: publishedDate, updated: nil)
                 let b = Article(title: "blah", link: URL(string: "https://example.com")!, summary: "hello",
-                                authors: [Author("anAuthor")], identifier: "hi", content: "hello there", read: true)
+                                authors: [Author("anAuthor")], identifier: "hi", content: "hello there", read: true,
+                                published: Date(), updated: Date())
                 let c = Article(title: "", link: URL(string: "https://example.com/article1")!, summary: "", authors: [],
-                                identifier: "", content: "", read: false)
+                                identifier: "", content: "", read: false, published: publishedDate, updated: nil)
 
                 expect(a.hashValue).toNot(equal(b.hashValue))
                 expect(a.hashValue).to(equal(c.hashValue))

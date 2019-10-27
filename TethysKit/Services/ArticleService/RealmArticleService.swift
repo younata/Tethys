@@ -88,7 +88,8 @@ struct RealmArticleService: ArticleService {
     }
 
     private func realmArticle(for article: Article) -> RealmArticle? {
-        return self.realmProvider.realm().object(ofType: RealmArticle.self, forPrimaryKey: article.identifier)
+        let predicate = NSPredicate(format: "link == %@", article.link.absoluteString)
+        return self.realmProvider.realm().objects(RealmArticle.self).filter(predicate).first
     }
 
     private func saveReadingTime(_ readingTime: TimeInterval, for article: Article) {

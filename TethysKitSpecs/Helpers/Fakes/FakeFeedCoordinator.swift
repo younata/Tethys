@@ -15,12 +15,12 @@ final class FakeFeedCoordinator: FeedCoordinator {
     }
 
     private(set) var articlesOfFeedCalls: [Feed] = []
-    private(set) var articlesOfFeedPromises: [Promise<Result<AnyCollection<Article>, TethysError>>] = []
-    override func articles(of feed: Feed) -> Future<Result<AnyCollection<Article>, TethysError>> {
+    private(set) var articlesOfFeedPublishers: [Publisher<Result<AnyCollection<Article>, TethysError>>] = []
+    override func articles(of feed: Feed) -> Subscription<Result<AnyCollection<Article>, TethysError>> {
         self.articlesOfFeedCalls.append(feed)
-        let promise = Promise<Result<AnyCollection<Article>, TethysError>>()
-        self.articlesOfFeedPromises.append(promise)
-        return promise.future
+        let publisher = Publisher<Result<AnyCollection<Article>, TethysError>>()
+        self.articlesOfFeedPublishers.append(publisher)
+        return publisher.subscription
     }
 
     private(set) var subscribeCalls: [URL] = []

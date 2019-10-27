@@ -163,6 +163,63 @@ struct LocalRealmFeedService: LocalFeedService {
         return promise.future
     }
 
+    func updateArticles(
+        with updatedArticles: AnyCollection<Article>,
+        feed: Feed
+    ) -> Future<Result<AnyCollection<Article>, TethysError>> {
+        let promise = Promise<Result<AnyCollection<Article>, TethysError>>()
+        self.workQueue.addOperation {
+            let realm = self.realmProvider.realm()
+            guard let realmFeed = realm.objects(RealmFeed.self).first(where: { $0.url == feed.url.absoluteString })
+                else {
+                    return self.resolve(promise: promise, error: .database(.entryNotFound))
+            }
+            realm.beginWrite()
+            for (index, article) in updatedArticles.enumerated() {
+                let predicate = NSPredicate(format: "link == %@", article.link.absoluteString)
+                let realmArticle: RealmArticle
+                if let existing = realmFeed.articles.filter(predicate).first {
+                    realmArticle = existing
+                } else {
+                    realmArticle = RealmArticle()
+                    realm.add(realmArticle)
+                    realmArticle.link = article.link.absoluteString
+                    realmArticle.feed = realmFeed
+                }
+                if Article(realmArticle: realmArticle) == article {
+                    break
+                }
+                realmArticle.title = article.title
+                if article.content.isEmpty == false {
+                    realmArticle.content = article.content
+                }
+                if article.summary.isEmpty == false {
+                    realmArticle.summary = article.summary
+                }
+                realmArticle.read = article.read
+                realmArticle.published = article.published
+                realmArticle.updatedAt = article.updated
+                realmArticle.identifier = article.identifier
+                self.set(authors: article.authors, of: realmArticle, realm: realm)
+            }
+
+            do {
+                try realm.commitWrite()
+            } catch let exception {
+                dump(exception)
+                return self.resolve(promise: promise, error: .database(.unknown))
+            }
+            let articles = realmFeed.articles.sorted(by: [
+                SortDescriptor(keyPath: "published", ascending: false)
+            ])
+            return self.resolve(
+                promise: promise,
+                with: AnyCollection(Array(articles.map { Article(realmArticle: $0)} ))
+            )
+        }
+        return promise.future
+    }
+
     // MARK: Private methods
     private func write<T>(feed: Feed,
                           transaction: @escaping (RealmFeed) -> T) -> Future<Result<T, TethysError>> {
@@ -227,6 +284,31 @@ struct LocalRealmFeedService: LocalFeedService {
         for tag in realmTags {
             if !realmFeed.tags.contains(tag) {
                 realmFeed.tags.append(tag)
+            }
+        }
+    }
+
+    private func set(authors: [Author], of realmArticle: RealmArticle, realm: Realm) {
+        let realmAuthors: [RealmAuthor] = authors.map { author in
+            let predicate = NSPredicate(format: "name == %@ AND email == %@",
+                                        author.name, author.email?.absoluteString ?? "nil")
+            if let item = realm.objects(RealmAuthor.self).filter(predicate).first {
+                return item
+            } else {
+                let item = RealmAuthor(name: author.name, email: author.email)
+                realm.add(item)
+                return item
+            }
+        }
+
+        for (index, author) in realmArticle.authors.enumerated() {
+            if !realmAuthors.contains(author) {
+                realmArticle.authors.remove(at: index)
+            }
+        }
+        for author in realmAuthors {
+            if !realmArticle.authors.contains(author) {
+                realmArticle.authors.append(author)
             }
         }
     }

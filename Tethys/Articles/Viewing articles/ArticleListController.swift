@@ -310,17 +310,19 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     fileprivate func resetArticles() {
         self.feedCoordinator.articles(of: self.feed).then { result in
             switch result {
-            case .success(let articles):
+            case .update(.success(let articles)):
                 self.articles = articles
                 self.tableView.beginUpdates()
                 self.tableView.reloadSections(IndexSet(integer: 0), with: .none)
                 self.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
                 self.tableView.endUpdates()
-            case .failure(let error):
+            case .update(.failure(let error)):
                 self.showAlert(
                     error: error,
                     title: NSLocalizedString("ArticleListController_Retrieving_Error_Title", comment: "")
                 )
+            case .finished:
+                break
             }
         }
     }

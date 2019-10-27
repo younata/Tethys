@@ -433,7 +433,9 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                         authors: [Author("Foo Bar")],
                         identifier: "whatever",
                         content: "this is my article summary",
-                        read: true
+                        read: true,
+                        published: Date(timeIntervalSince1970: 123456787),
+                        updated: Date(timeIntervalSince1970: 123456789)
 
                     )))
                     expect(articles[AnyIndex(1)]).to(equal(Article(
@@ -443,7 +445,9 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                         authors: [Author("First Last")],
                         identifier: "whatever2",
                         content: "some more summary",
-                        read: false
+                        read: false,
+                        published: Date(timeIntervalSince1970: 1422262271),
+                        updated: Date(timeIntervalSince1970: 1422538193)
                     )))
                     expect(articles[AnyIndex(2)]).to(equal(Article(
                         title: "Article 3",
@@ -452,7 +456,9 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                         authors: [Author("Jane Smith")],
                         identifier: "whatever3",
                         content: "more summary",
-                        read: false
+                        read: false,
+                        published: Date(timeIntervalSince1970: 1422283440),
+                        updated: Date(timeIntervalSince1970: 1422554242)
                     )))
                 }
             }

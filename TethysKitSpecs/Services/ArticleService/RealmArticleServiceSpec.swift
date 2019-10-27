@@ -60,7 +60,10 @@ final class RealmArticleServiceSpec: QuickSpec {
 
                 let article = Article(realmArticle: realmArticle)
 
-                expect(subject.feed(of: article).value?.value).to(equal(Feed(realmFeed: realmFeed)))
+                let future = subject.feed(of: article)
+                expect(future).to(beResolved())
+                expect(future.value?.error).to(beNil())
+                expect(future.value?.value).to(equal(Feed(realmFeed: realmFeed)))
             }
 
             it("returns a database error if no feed is found") {

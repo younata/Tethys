@@ -39,7 +39,7 @@ import CBGPromise
 
 func beResolved<T>() -> Predicate<Future<T>> {
     return Predicate { (received: Expression<Future<T>>) throws -> PredicateResult in
-        let msg = ExpectationMessage.expectedActualValueTo("be resolved")
+        let msg = ExpectationMessage.expectedTo("be resolved")
         if let receivedFuture = try received.evaluate() {
             return PredicateResult(bool: receivedFuture.value != nil, message: msg)
         } else {

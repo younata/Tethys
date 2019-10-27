@@ -56,6 +56,10 @@ final class RealmAuthor: Object {
     @objc dynamic var name = ""
     @objc dynamic var email: String?
 
+    convenience init(name: String, email: URL?) {
+        self.init(value: ["name": name, "email": email?.absoluteString])
+    }
+
     @objc dynamic var id: String = UUID().uuidString
     override static func primaryKey() -> String? {
         return "id"

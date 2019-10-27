@@ -314,19 +314,289 @@ final class FeedCoordinatorSpec: QuickSpec {
         }
 
         describe("articles(of:)") {
-            var future: Future<Result<AnyCollection<Article>, TethysError>>!
+            var subscription: Subscription<Result<AnyCollection<Article>, TethysError>>!
             let feed = feedFactory()
 
             beforeEach {
-                future = subject.articles(of: feed)
+                subscription = subject.articles(of: feed)
             }
 
-            it("forwards the request to the local feed service") {
-                expect(future).to(beIdenticalTo(localFeedService.articlesOfFeedPromises.last?.future))
+            it("asks the local feed service for articles") {
+                expect(localFeedService.articlesOfFeedCalls).to(equal([feed]))
             }
 
-            it("does not ask the network feed service what's up") {
+            it("returns the same subscription if you ask for this information twice") {
+                expect(subject.articles(of: feed)).to(beIdenticalTo(subscription))
+                expect(subject.articles(of: feedFactory(title: "other feed"))).toNot(beIdenticalTo(subscription))
+            }
+
+            it("does not yet ask the network feed service for articles") {
                 expect(networkFeedService.articlesOfFeedCalls).to(beEmpty())
+            }
+
+            context("when the local feed service succeeds") {
+                let expectedArticles = [
+                    articleFactory(title: "article 1"),
+                    articleFactory(title: "article 2")
+                ]
+
+                beforeEach {
+                    localFeedService.articlesOfFeedPromises.last?.resolve(.success(AnyCollection(expectedArticles)))
+                }
+
+                it("updates the subscription with the list of feeds") {
+                    expect(subscription.isFinished).to(beFalse())
+                    expect(subscription.value).toNot(beNil())
+                    guard let receivedArticles = subscription.value?.value else {
+                        return expect(subscription.value?.error).to(beNil())
+                    }
+                    expect(Array(receivedArticles)).to(equal(expectedArticles))
+                }
+
+                it("does not ask the local feed service to try again") {
+                    expect(localFeedService.articlesOfFeedCalls).to(equal([feed]))
+                }
+
+                it("returns the same subscription if you ask for this information twice") {
+                    expect(subject.articles(of: feed)).to(beIdenticalTo(subscription))
+                    expect(subject.articles(of: feedFactory(title: "other feed"))).toNot(beIdenticalTo(subscription))
+                }
+
+                it("asks the network feed service for articles of the feed") {
+                    expect(networkFeedService.articlesOfFeedCalls).to(equal([feed]))
+                }
+
+                context("when the network feed service succeeds") {
+                    let networkArticles = [articleFactory(title: "article 3"), articleFactory(title: "article 4")]
+
+                    beforeEach {
+                        networkFeedService.articlesOfFeedPromises.last?.resolve(.success(AnyCollection(networkArticles)))
+                    }
+
+                    it("updates the subscription with the list of feeds") {
+                        expect(subscription.isFinished).to(beFalse())
+                        expect(subscription.value).toNot(beNil())
+                        guard let receivedArticles = subscription.value?.value else {
+                            return expect(subscription.value?.error).to(beNil())
+                        }
+                        expect(Array(receivedArticles)).to(equal(networkArticles))
+                    }
+
+                    it("does not try to fetch articles again") {
+                        expect(localFeedService.articlesOfFeedCalls).to(equal([feed]))
+                        expect(networkFeedService.articlesOfFeedCalls).to(equal([feed]))
+                    }
+
+                    it("tells the local feed service to update") {
+                        expect(localFeedService.updateArticlesCalls).to(haveCount(1))
+                        guard let updateArticlesCall = localFeedService.updateArticlesCalls.last else { return }
+                        expect(Array(updateArticlesCall.articles)).to(equal(networkArticles))
+                        expect(updateArticlesCall.feed).to(equal(feed))
+                    }
+
+                    it("returns the same subscription if you ask for this information twice") {
+                        expect(subject.articles(of: feed)).to(beIdenticalTo(subscription))
+                        expect(subject.articles(of: feedFactory(title: "other feed"))).toNot(beIdenticalTo(subscription))
+                    }
+
+                    context("when the local feed service updates") {
+                        let savedArticles = [articleFactory(title: "article 5"), articleFactory(title: "article 6")]
+
+                        beforeEach {
+                            localFeedService.updateArticlesPromises.last?.resolve(.success(AnyCollection(savedArticles)))
+                        }
+
+                        it("finishes the subscription with the newly saved articles") {
+                            expect(subscription.isFinished).to(beTrue())
+                            expect(subscription.value).toNot(beNil())
+                            guard let receivedArticles = subscription.value?.value else {
+                                return expect(subscription.value?.error).to(beNil())
+                            }
+                            expect(Array(receivedArticles)).to(equal(savedArticles))
+                        }
+
+                        it("returns a new subscription if you ask again") {
+                            expect(subject.articles(of: feed)).toNot(beIdenticalTo(subscription))
+                        }
+
+                        it("returns a new subscription if you ask for this information twice") {
+                            expect(subject.articles(of: feed)).toNot(beIdenticalTo(subscription))
+                        }
+                    }
+
+                    context("when the local feed service fails") {
+                        beforeEach {
+                            localFeedService.updateArticlesPromises.last?.resolve(.failure(.database(.entryNotFound)))
+                        }
+
+                        it("finishes the subscription without updating it") {
+                            expect(subscription.isFinished).to(beTrue())
+                            expect(subscription.value).toNot(beNil())
+                            guard let receivedArticles = subscription.value?.value else {
+                                return expect(subscription.value?.error).to(beNil())
+                            }
+                            expect(Array(receivedArticles)).to(equal(networkArticles))
+                        }
+
+                        it("returns a new subscription if you ask again") {
+                            expect(subject.articles(of: feed)).toNot(beIdenticalTo(subscription))
+                        }
+
+                        it("returns a new subscription if you ask for this information twice") {
+                            expect(subject.articles(of: feed)).toNot(beIdenticalTo(subscription))
+                        }
+                    }
+                }
+
+                context("when the network feed service fails") {
+                    beforeEach {
+                        networkFeedService.articlesOfFeedPromises.last?.resolve(.failure(.unknown))
+                    }
+
+                    it("finishes the subscription without updating it") {
+                        expect(subscription.isFinished).to(beTrue())
+                        expect(subscription.value).toNot(beNil())
+                        guard let receivedArticles = subscription.value?.value else {
+                            return expect(subscription.value?.error).to(beNil())
+                        }
+                        expect(Array(receivedArticles)).to(equal(expectedArticles))
+                    }
+
+                    it("does not tell the local feed service to update") {
+                        expect(localFeedService.updateArticlesCalls).to(beEmpty())
+                    }
+
+                    it("returns a new subscription if you ask again") {
+                        expect(subject.articles(of: feed)).toNot(beIdenticalTo(subscription))
+                    }
+                }
+            }
+
+            context("when the local feed service fails") {
+                beforeEach {
+                    localFeedService.articlesOfFeedPromises.last?.resolve(.failure(.database(.entryNotFound)))
+                }
+
+                it("updates the subscription with the value") {
+                    expect(subscription.value).toNot(beNil())
+                    expect(subscription.value?.error).to(equal(.database(.entryNotFound)))
+                    expect(subscription.isFinished).to(beFalse())
+                }
+
+                it("does not ask the local feed service to try again") {
+                    expect(localFeedService.articlesOfFeedCalls).to(equal([feed]))
+                }
+
+                it("returns the same subscription if you ask for this information twice") {
+                    expect(subject.articles(of: feed)).to(beIdenticalTo(subscription))
+                    expect(subject.articles(of: feedFactory(title: "other feed"))).toNot(beIdenticalTo(subscription))
+                }
+
+                it("asks the network feed service for articles of the feed") {
+                    expect(networkFeedService.articlesOfFeedCalls).to(equal([feed]))
+                }
+
+                context("when the network feed service succeeds") {
+                    let networkArticles = [articleFactory(title: "article 3"), articleFactory(title: "article 4")]
+
+                    beforeEach {
+                        networkFeedService.articlesOfFeedPromises.last?.resolve(.success(AnyCollection(networkArticles)))
+                    }
+
+                    it("updates the subscription with the list of feeds") {
+                        expect(subscription.isFinished).to(beFalse())
+                        expect(subscription.value).toNot(beNil())
+                        guard let receivedArticles = subscription.value?.value else {
+                            return expect(subscription.value?.error).to(beNil())
+                        }
+                        expect(Array(receivedArticles)).to(equal(networkArticles))
+                    }
+
+                    it("does not try to fetch articles again") {
+                        expect(localFeedService.articlesOfFeedCalls).to(equal([feed]))
+                        expect(networkFeedService.articlesOfFeedCalls).to(equal([feed]))
+                    }
+
+                    it("tells the local feed service to update") {
+                        expect(localFeedService.updateArticlesCalls).to(haveCount(1))
+                        guard let updateArticlesCall = localFeedService.updateArticlesCalls.last else { return }
+                        expect(Array(updateArticlesCall.articles)).to(equal(networkArticles))
+                        expect(updateArticlesCall.feed).to(equal(feed))
+                    }
+
+                    it("returns the same subscription if you ask for this information twice") {
+                        expect(subject.articles(of: feed)).to(beIdenticalTo(subscription))
+                        expect(subject.articles(of: feedFactory(title: "other feed"))).toNot(beIdenticalTo(subscription))
+                    }
+
+                    context("when the local feed service updates") {
+                        let savedArticles = [articleFactory(title: "article 5"), articleFactory(title: "article 6")]
+
+                        beforeEach {
+                            localFeedService.updateArticlesPromises.last?.resolve(.success(AnyCollection(savedArticles)))
+                        }
+
+                        it("finishes the subscription with the newly saved articles") {
+                            expect(subscription.isFinished).to(beTrue())
+                            expect(subscription.value).toNot(beNil())
+                            guard let receivedArticles = subscription.value?.value else {
+                                return expect(subscription.value?.error).to(beNil())
+                            }
+                            expect(Array(receivedArticles)).to(equal(savedArticles))
+                        }
+
+                        it("returns a new subscription if you ask again") {
+                            expect(subject.articles(of: feed)).toNot(beIdenticalTo(subscription))
+                        }
+
+                        it("returns a new subscription if you ask for this information twice") {
+                            expect(subject.articles(of: feed)).toNot(beIdenticalTo(subscription))
+                        }
+                    }
+
+                    context("when the local feed service fails") {
+                        beforeEach {
+                            localFeedService.updateArticlesPromises.last?.resolve(.failure(.database(.entryNotFound)))
+                        }
+
+                        it("finishes the subscription without updating it") {
+                            expect(subscription.isFinished).to(beTrue())
+                            expect(subscription.value).toNot(beNil())
+                            guard let receivedArticles = subscription.value?.value else {
+                                return expect(subscription.value?.error).to(beNil())
+                            }
+                            expect(Array(receivedArticles)).to(equal(networkArticles))
+                        }
+
+                        it("returns a new subscription if you ask again") {
+                            expect(subject.articles(of: feed)).toNot(beIdenticalTo(subscription))
+                        }
+
+                        it("returns a new subscription if you ask for this information twice") {
+                            expect(subject.articles(of: feed)).toNot(beIdenticalTo(subscription))
+                        }
+                    }
+                }
+
+                context("when the network feed service fails") {
+                    beforeEach {
+                        networkFeedService.articlesOfFeedPromises.last?.resolve(.failure(.unknown))
+                    }
+
+                    it("finishes the subscription with the new error") {
+                        expect(subscription.isFinished).to(beTrue())
+                        expect(subscription.value).toNot(beNil())
+                        expect(subscription.value?.error).to(equal(.unknown))
+                    }
+
+                    it("does not tell the local feed service to update") {
+                        expect(localFeedService.updateArticlesCalls).to(beEmpty())
+                    }
+
+                    it("returns a new subscription if you ask again") {
+                        expect(subject.articles(of: feed)).toNot(beIdenticalTo(subscription))
+                    }
+                }
             }
         }
 

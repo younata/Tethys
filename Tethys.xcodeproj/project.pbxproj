@@ -111,6 +111,8 @@
 		894E755221B3164D00B4A0A1 /* FutureHTTP.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 894E755021B3164100B4A0A1 /* FutureHTTP.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		894E755421B316F200B4A0A1 /* RealmRSSUpdateService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894E755321B316F200B4A0A1 /* RealmRSSUpdateService.swift */; };
 		894E755821B3176000B4A0A1 /* RealmRSSUpdateServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894E755721B3176000B4A0A1 /* RealmRSSUpdateServiceSpec.swift */; };
+		894F8B3623654D72005AE5F0 /* EasterEggGalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894F8B3523654D72005AE5F0 /* EasterEggGalleryViewController.swift */; };
+		894F8B3823654DA5005AE5F0 /* EasterEggGalleryViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894F8B3723654DA5005AE5F0 /* EasterEggGalleryViewControllerSpec.swift */; };
 		8958EC3A1DCABDA60000159B /* DocumentationViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8958EC391DCABDA60000159B /* DocumentationViewControllerSpec.swift */; };
 		8958EC3F1DCBB2B20000159B /* SettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8958EC3E1DCBB2B20000159B /* SettingsSection.swift */; };
 		895901B31A32B61A002E2C62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 895901AF1A32B61A002E2C62 /* Localizable.strings */; };
@@ -466,6 +468,8 @@
 		894E755021B3164100B4A0A1 /* FutureHTTP.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FutureHTTP.framework; path = Carthage/Build/iOS/FutureHTTP.framework; sourceTree = "<group>"; };
 		894E755321B316F200B4A0A1 /* RealmRSSUpdateService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmRSSUpdateService.swift; sourceTree = "<group>"; };
 		894E755721B3176000B4A0A1 /* RealmRSSUpdateServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmRSSUpdateServiceSpec.swift; sourceTree = "<group>"; };
+		894F8B3523654D72005AE5F0 /* EasterEggGalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasterEggGalleryViewController.swift; sourceTree = "<group>"; };
+		894F8B3723654DA5005AE5F0 /* EasterEggGalleryViewControllerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasterEggGalleryViewControllerSpec.swift; sourceTree = "<group>"; };
 		8957799D19E62C7100548418 /* TethysAppSpecs-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TethysAppSpecs-Bridging-Header.h"; sourceTree = "<group>"; };
 		8958EC391DCABDA60000159B /* DocumentationViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationViewControllerSpec.swift; sourceTree = "<group>"; };
 		8958EC3E1DCBB2B20000159B /* SettingsSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsSection.swift; sourceTree = "<group>"; };
@@ -708,6 +712,7 @@
 			isa = PBXGroup;
 			children = (
 				4515FDB4234C4A0D0032A165 /* Breakout3DSpec.swift */,
+				894F8B3723654DA5005AE5F0 /* EasterEggGalleryViewControllerSpec.swift */,
 			);
 			path = "Easter Eggs";
 			sourceTree = "<group>";
@@ -1090,6 +1095,7 @@
 			children = (
 				892AF329232F22E60018B19C /* AugmentedRealityEasterEgg.swift */,
 				89BF4261234006AB00C790A8 /* Breakout3DEasterEgg.swift */,
+				894F8B3523654D72005AE5F0 /* EasterEggGalleryViewController.swift */,
 			);
 			path = "Easter Eggs";
 			sourceTree = "<group>";
@@ -2005,6 +2011,7 @@
 				894D1AF31DB1EF2500E70B1A /* RefreshControl.swift in Sources */,
 				89F98BA61BA07DC6005C3CA8 /* SettingsRepository.swift in Sources */,
 				8958EC3F1DCBB2B20000159B /* SettingsSection.swift in Sources */,
+				894F8B3623654D72005AE5F0 /* EasterEggGalleryViewController.swift in Sources */,
 				89E2A33D1B6A856900A40D4E /* SettingsViewController.swift in Sources */,
 				89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */,
 				89F98BA11BA079A3005C3CA8 /* SwitchTableViewCell.swift in Sources */,
@@ -2056,6 +2063,7 @@
 				8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */,
 				894D1AEB1DB0971E00E70B1A /* FakeWKNavigationAction.swift in Sources */,
 				8978C52B21975A0800D702BB /* InjectorModuleSpec.swift in Sources */,
+				894F8B3823654DA5005AE5F0 /* EasterEggGalleryViewControllerSpec.swift in Sources */,
 				89C5E5721DECA8E30078633C /* FeedDetailViewSpec.swift in Sources */,
 				898ECDE11B197C0D00E4D7F6 /* FeedListControllerSpec.swift in Sources */,
 				89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */,

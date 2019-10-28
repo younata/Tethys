@@ -51,6 +51,16 @@ private func registerEasterEggs(container: Container) {
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!
         )
     }
+
+    container.register(EasterEggGalleryViewController.self) { r in
+        return EasterEggGalleryViewController(easterEggs: [
+            EasterEgg(
+                name: NSLocalizedString("Breakout3D_Title", comment: ""),
+                image: UIImage(named: "Breakout3DIcon")!,
+                viewController: { r.resolve(Breakout3DEasterEggViewController.self)! }
+            )
+        ])
+    }
 }
 
 // swiftlint:disable function_body_length
@@ -140,8 +150,8 @@ private func registerViewControllers(container: Container) {
             appIconChangeController: {
                 return AppIconSelectionViewController(appIconChanger: r.resolve(AppIconChanger.self)!)
             },
-            arViewController: {
-                return r.resolve(Breakout3DEasterEggViewController.self)!
+            easterEggViewController: {
+                return r.resolve(EasterEggGalleryViewController.self)!
             }
         )
     }

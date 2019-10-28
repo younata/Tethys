@@ -19,7 +19,7 @@ final class SettingsViewControllerSpec: QuickSpec {
         var rootViewController: UIViewController!
 
         var appIconChangeController: UIViewController!
-        var arViewController: UIViewController!
+        var easterEggViewController: UIViewController!
 
         beforeEach {
             settingsRepository = SettingsRepository(userDefaults: nil)
@@ -37,7 +37,7 @@ final class SettingsViewControllerSpec: QuickSpec {
             appIconChanger = FakeAppIconChanger()
 
             appIconChangeController = UIViewController()
-            arViewController = UIViewController()
+            easterEggViewController = UIViewController()
 
             subject = SettingsViewController(
                 settingsRepository: settingsRepository,
@@ -49,7 +49,7 @@ final class SettingsViewControllerSpec: QuickSpec {
                 loginController: loginController,
                 documentationViewController: { documentation in documentationViewControllerFactory(documentation: documentation) },
                 appIconChangeController: { return appIconChangeController },
-                arViewController: { return arViewController }
+                easterEggViewController: { return easterEggViewController }
             )
 
             rootViewController = UIViewController()
@@ -774,7 +774,7 @@ final class SettingsViewControllerSpec: QuickSpec {
                         }
 
                         it("shows whatever the arViewController factory returns") {
-                            expect(navigationController.visibleViewController).to(be(arViewController))
+                            expect(navigationController.visibleViewController).to(be(easterEggViewController))
                         }
                     }
 

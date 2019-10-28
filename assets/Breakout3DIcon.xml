@@ -1,0 +1,69 @@
+<?xml version="1.0" standalone="yes"?>
+<svg width="250" height="250" xmlns="http://www.w3.org/2000/svg">
+    <rect x="60" y="60" width="130" height="130" fill="black"/>
+    <g fill="#222" stroke="#333">
+        <path d="M 0 0
+               L 60 60
+               L 190 60
+               L 250 0
+               Z" />
+        <path d="M 0 0
+               L 60 60
+               L 60 190
+               L 0 250
+               Z" />
+        <path d="M 250 250
+               L 190 190
+               L 60 190
+               L 0 250
+               Z" />
+        <path d="M 250 250
+               L 190 190
+               L 190 60
+               L 250 0
+               Z" />
+    </g>
+
+    <g>
+        <rect x="52.5"  y="52.5" width="25" height="25" fill="red"/>
+        <rect x="82.5"  y="52.5" width="25" height="25" fill="red"/>
+        <rect x="112.5" y="52.5" width="25" height="25" fill="red"/>
+        <rect x="142.5" y="52.5" width="25" height="25" fill="red"/>
+        <rect x="172.5" y="52.5" width="25" height="25" fill="red"/>
+    </g>
+
+    <g>
+        <rect x="52.5"  y="82.5" width="25" height="25" fill="red"/>
+        <rect x="82.5"  y="82.5" width="25" height="25" fill="red"/>
+        <rect x="112.5" y="82.5" width="25" height="25" fill="red"/>
+        <rect x="142.5" y="82.5" width="25" height="25" fill="red"/>
+        <rect x="172.5" y="82.5" width="25" height="25" fill="red"/>
+    </g>
+
+    <g>
+        <rect x="52.5"  y="112.5" width="25" height="25" fill="red"/>
+        <rect x="82.5"  y="112.5" width="25" height="25" fill="red"/>
+        <rect x="112.5" y="112.5" width="25" height="25" fill="red"/>
+        <rect x="142.5" y="112.5" width="25" height="25" fill="red"/>
+        <rect x="172.5" y="112.5" width="25" height="25" fill="red"/>
+    </g>
+
+    <g>
+        <rect x="52.5"  y="142.5" width="25" height="25" fill="red"/>
+        <rect x="82.5"  y="142.5" width="25" height="25" fill="red"/>
+        <rect x="112.5" y="142.5" width="25" height="25" fill="red"/>
+        <rect x="142.5" y="142.5" width="25" height="25" fill="red"/>
+        <rect x="172.5" y="142.5" width="25" height="25" fill="red"/>
+    </g>
+
+    <g>
+        <rect x="52.5"  y="172.5" width="25" height="25" fill="red"/>
+        <rect x="82.5"  y="172.5" width="25" height="25" fill="red"/>
+        <rect x="112.5" y="172.5" width="25" height="25" fill="red"/>
+        <rect x="142.5" y="172.5" width="25" height="25" fill="red"/>
+        <rect x="172.5" y="172.5" width="25" height="25" fill="red"/>
+    </g>
+
+    <circle cx="170" cy="80" r="4" fill="white"/>
+</svg>
+

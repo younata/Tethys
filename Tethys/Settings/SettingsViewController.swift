@@ -19,7 +19,7 @@ public final class SettingsViewController: UIViewController {
     fileprivate let loginController: LoginController
     fileprivate let documentationViewController: (Documentation) -> DocumentationViewController
     fileprivate let appIconChangeController: () -> UIViewController
-    fileprivate let arViewController: () -> UIViewController
+    fileprivate let easterEggViewController: () -> UIViewController
 
     fileprivate lazy var showReadingTimes: Bool = { return self.settingsRepository.showEstimatedReadingLabel }()
     fileprivate lazy var refreshControlStyle: RefreshControlStyle = { return self.settingsRepository.refreshControl }()
@@ -35,7 +35,7 @@ public final class SettingsViewController: UIViewController {
                 loginController: LoginController,
                 documentationViewController: @escaping (Documentation) -> DocumentationViewController,
                 appIconChangeController: @escaping () -> UIViewController,
-                arViewController: @escaping () -> UIViewController) {
+                easterEggViewController: @escaping () -> UIViewController) {
         self.settingsRepository = settingsRepository
         self.opmlService = opmlService
         self.mainQueue = mainQueue
@@ -45,7 +45,7 @@ public final class SettingsViewController: UIViewController {
         self.loginController = loginController
         self.documentationViewController = documentationViewController
         self.appIconChangeController = appIconChangeController
-        self.arViewController = arViewController
+        self.easterEggViewController = easterEggViewController
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -457,9 +457,7 @@ extension SettingsViewController: UITableViewDelegate {
         case .appIcon:
             self.navigationController?.pushViewController(self.appIconChangeController(), animated: true)
         case .gitVersion:
-            let viewController = self.arViewController()
-            viewController.modalPresentationStyle = .fullScreen
-            self.present(viewController, animated: true, completion: nil)
+            self.navigationController?.pushViewController(self.easterEggViewController(), animated: true)
         case .showReadingTimes:
             guard let cell = tableView.cellForRow(at: indexPath) as? SwitchTableViewCell else {
                 return

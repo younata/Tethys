@@ -130,6 +130,8 @@
 "RefreshControlStyle_Breakout" = "Breakout";
 "RefreshControlStyle_Breakout_Accessibility" = "Breakout game while refresh happens";
 
+"EasterEgg_Gallery_Title" = "Easter Eggs";
+
 "AREasterEgg_Tracking_NotAvailable" = "Camera tracking not available";
 "AREasterEgg_Tracking_Initializing" = "ARKit initializing, move device around to gather data";
 "AREasterEgg_Tracking_ExcessiveMotion" = "Device being moved too quickly";

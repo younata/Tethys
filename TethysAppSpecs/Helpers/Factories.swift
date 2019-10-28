@@ -1,4 +1,4 @@
-import Tethys
+@testable import Tethys
 import TethysKit
 import AuthenticationServices
 
@@ -98,6 +98,14 @@ func articleListControllerFactory(
     )
 }
 
+func breakout3DEasterEggViewControllerFactory(
+    mainQueue: FakeOperationQueue = FakeOperationQueue()
+    ) -> Breakout3DEasterEggViewController {
+    return Breakout3DEasterEggViewController(
+        mainQueue: mainQueue
+    )
+}
+
 func settingsViewControllerFactory(
     settingsRepository: SettingsRepository = settingsRepositoryFactory(),
     opmlService: OPMLService = FakeOPMLService(),
@@ -108,7 +116,7 @@ func settingsViewControllerFactory(
     loginController: LoginController = FakeLoginController(),
     documentationViewController: @escaping (Documentation) -> DocumentationViewController = { docs in documentationViewControllerFactory(documentation: docs) },
     appIconChangeController: @escaping () -> UIViewController = { UIViewController() },
-    arViewController: @escaping () -> AugmentedRealityEasterEggViewController = { augmentedRealityViewControllerFactory() }
+    easterEggViewController: @escaping () -> UIViewController = { UIViewController() }
     ) -> SettingsViewController {
     return SettingsViewController(
         settingsRepository: settingsRepository,
@@ -120,7 +128,7 @@ func settingsViewControllerFactory(
         loginController: loginController,
         documentationViewController: documentationViewController,
         appIconChangeController: appIconChangeController,
-        arViewController: arViewController
+        easterEggViewController: easterEggViewController
     )
 }
 

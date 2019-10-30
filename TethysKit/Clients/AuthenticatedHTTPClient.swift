@@ -52,9 +52,7 @@ struct AuthenticatedHTTPClient: HTTPClient {
             guard let response = result.value, response.status == .unauthorized else {
                 return Promise<Result<HTTPResponse, HTTPClientError>>.resolved(result)
             }
-            return self.credentialService.delete(credential: credential).map { _ in
-                return result
-            }
+            return self.refresh(credential: credential, originalRequest: request)
         }
     }
 

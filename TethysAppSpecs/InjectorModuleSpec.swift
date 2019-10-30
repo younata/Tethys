@@ -49,13 +49,15 @@ final class InjectorModuleSpec: QuickSpec {
         describe("Easter Eggs") {
             exists(AugmentedRealityEasterEggViewController.self)
             exists(Breakout3DEasterEggViewController.self)
+            exists(RogueLikeViewController.self)
 
             describe("EasterEggGalleryViewController") {
                 it("configures the returned view controller with the current list of easter eggs") {
                     let vc = subject.resolve(EasterEggGalleryViewController.self)
                     expect(vc).toNot(beNil())
                     expect(vc?.easterEggs).to(equal([
-                        EasterEgg(name: "3D Breakout", image: UIImage(named: "Breakout3DIcon")!, viewController: { breakout3DEasterEggViewControllerFactory() })
+                        EasterEgg(name: "3D Breakout", image: UIImage(named: "Breakout3DIcon")!, viewController: { breakout3DEasterEggViewControllerFactory() }),
+                        EasterEgg(name: "Roguelike Game", image: UIImage(named: "EasterEggUnknown")!, viewController: { RogueLikeViewController() })
                     ]))
                 }
             }

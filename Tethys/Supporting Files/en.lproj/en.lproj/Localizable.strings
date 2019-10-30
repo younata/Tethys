@@ -144,6 +144,8 @@
 "Breakout3D_Accessibility_ScoreLabel" = "Score";
 "Breakout3D_Accessibility_SceneView_Hint" = "Moves the paddle in the game";
 
+"Roguelike_Title" = "Roguelike Game";
+
 // Errors
 
 "Error_Network_BadResponse" = "Bad Server Response";

@@ -113,6 +113,8 @@
 		894E755821B3176000B4A0A1 /* RealmRSSUpdateServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894E755721B3176000B4A0A1 /* RealmRSSUpdateServiceSpec.swift */; };
 		894F8B3623654D72005AE5F0 /* EasterEggGalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894F8B3523654D72005AE5F0 /* EasterEggGalleryViewController.swift */; };
 		894F8B3823654DA5005AE5F0 /* EasterEggGalleryViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894F8B3723654DA5005AE5F0 /* EasterEggGalleryViewControllerSpec.swift */; };
+		894F8B3A23675BCB005AE5F0 /* RogueLikeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894F8B3923675BCB005AE5F0 /* RogueLikeViewController.swift */; };
+		894F8B3C2369E834005AE5F0 /* RogueLikeViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894F8B3B2369E834005AE5F0 /* RogueLikeViewControllerSpec.swift */; };
 		8958EC3A1DCABDA60000159B /* DocumentationViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8958EC391DCABDA60000159B /* DocumentationViewControllerSpec.swift */; };
 		8958EC3F1DCBB2B20000159B /* SettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8958EC3E1DCBB2B20000159B /* SettingsSection.swift */; };
 		895901B31A32B61A002E2C62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 895901AF1A32B61A002E2C62 /* Localizable.strings */; };
@@ -470,6 +472,8 @@
 		894E755721B3176000B4A0A1 /* RealmRSSUpdateServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmRSSUpdateServiceSpec.swift; sourceTree = "<group>"; };
 		894F8B3523654D72005AE5F0 /* EasterEggGalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasterEggGalleryViewController.swift; sourceTree = "<group>"; };
 		894F8B3723654DA5005AE5F0 /* EasterEggGalleryViewControllerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasterEggGalleryViewControllerSpec.swift; sourceTree = "<group>"; };
+		894F8B3923675BCB005AE5F0 /* RogueLikeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RogueLikeViewController.swift; sourceTree = "<group>"; };
+		894F8B3B2369E834005AE5F0 /* RogueLikeViewControllerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RogueLikeViewControllerSpec.swift; sourceTree = "<group>"; };
 		8957799D19E62C7100548418 /* TethysAppSpecs-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TethysAppSpecs-Bridging-Header.h"; sourceTree = "<group>"; };
 		8958EC391DCABDA60000159B /* DocumentationViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationViewControllerSpec.swift; sourceTree = "<group>"; };
 		8958EC3E1DCBB2B20000159B /* SettingsSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsSection.swift; sourceTree = "<group>"; };
@@ -712,6 +716,7 @@
 			isa = PBXGroup;
 			children = (
 				4515FDB4234C4A0D0032A165 /* Breakout3DSpec.swift */,
+				894F8B3B2369E834005AE5F0 /* RogueLikeViewControllerSpec.swift */,
 				894F8B3723654DA5005AE5F0 /* EasterEggGalleryViewControllerSpec.swift */,
 			);
 			path = "Easter Eggs";
@@ -1095,6 +1100,7 @@
 			children = (
 				892AF329232F22E60018B19C /* AugmentedRealityEasterEgg.swift */,
 				89BF4261234006AB00C790A8 /* Breakout3DEasterEgg.swift */,
+				894F8B3923675BCB005AE5F0 /* RogueLikeViewController.swift */,
 				894F8B3523654D72005AE5F0 /* EasterEggGalleryViewController.swift */,
 			);
 			path = "Easter Eggs";
@@ -2013,6 +2019,7 @@
 				8958EC3F1DCBB2B20000159B /* SettingsSection.swift in Sources */,
 				894F8B3623654D72005AE5F0 /* EasterEggGalleryViewController.swift in Sources */,
 				89E2A33D1B6A856900A40D4E /* SettingsViewController.swift in Sources */,
+				894F8B3A23675BCB005AE5F0 /* RogueLikeViewController.swift in Sources */,
 				89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */,
 				89F98BA11BA079A3005C3CA8 /* SwitchTableViewCell.swift in Sources */,
 				896EF7EA21E5495D00C0AB75 /* Messenger.swift in Sources */,
@@ -2080,6 +2087,7 @@
 				89E2A33F1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift in Sources */,
 				896EF7EC21E54A3200C0AB75 /* FakeMessenger.swift in Sources */,
 				89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */,
+				894F8B3C2369E834005AE5F0 /* RogueLikeViewControllerSpec.swift in Sources */,
 				89F98BAA1BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift in Sources */,
 				89943213219AAA5000FC6EB6 /* FakeArticleService.swift in Sources */,
 				899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */,

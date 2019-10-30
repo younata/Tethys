@@ -52,12 +52,21 @@ private func registerEasterEggs(container: Container) {
         )
     }
 
+    container.register(RogueLikeViewController.self) { _ in
+        return RogueLikeViewController()
+    }
+
     container.register(EasterEggGalleryViewController.self) { r in
         return EasterEggGalleryViewController(easterEggs: [
             EasterEgg(
                 name: NSLocalizedString("Breakout3D_Title", comment: ""),
                 image: UIImage(named: "Breakout3DIcon")!,
                 viewController: { r.resolve(Breakout3DEasterEggViewController.self)! }
+            ),
+            EasterEgg(
+                name: NSLocalizedString("Roguelike_Title", comment: ""),
+                image: UIImage(named: "EasterEggUnknown")!,
+                viewController: { r.resolve(RogueLikeViewController.self)! }
             )
         ])
     }

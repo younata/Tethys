@@ -105,11 +105,14 @@ svgexport Checkmark.xml ../$APP_NAME/Assets.xcassets/Checkmark.imageset/Checkmar
 EOF
 }
 
-function breakout3d_icon {
+function eastereggs {
     parallel --progress -j 0 << EOF
 svgexport Breakout3DIcon.xml "../$APP_NAME/Assets.xcassets/Easter Eggs/Breakout3DIcon.imageset/Breakout3DIcon.png" 250:250
 svgexport Breakout3DIcon.xml "../$APP_NAME/Assets.xcassets/Easter Eggs/Breakout3DIcon.imageset/Breakout3DIcon@2x.png" 500:500
 svgexport Breakout3DIcon.xml "../$APP_NAME/Assets.xcassets/Easter Eggs/Breakout3DIcon.imageset/Breakout3DIcon@3x.png" 750:750
+svgexport EasterEggUnknown.xml "../$APP_NAME/Assets.xcassets/Easter Eggs/EasterEggUnknown.imageset/EasterEggUnknown.png" 250:250
+svgexport EasterEggUnknown.xml "../$APP_NAME/Assets.xcassets/Easter Eggs/EasterEggUnknown.imageset/EasterEggUnknown@2x.png" 500:500
+svgexport EasterEggUnknown.xml "../$APP_NAME/Assets.xcassets/Easter Eggs/EasterEggUnknown.imageset/EasterEggUnknown@3x.png" 750:750
 EOF
 }
 
@@ -122,23 +125,23 @@ fi
 if [ $# -eq 1 ]; then
     case "$1" in
         "app") app_icon; app_icon_black ;;
-        "breakout") breakout3d_icon ;;
         "chevron") chevron_icons ;;
         "checkmark") checkmark_icon ;;
+        "eastereggs") eastereggs;;
         "gray") gray_icon ;;
         "markread") markread_icons ;;
         "settings") settings_icon ;;
         *)
-            echo "Usage: $0 [app, breaout, chevron, checkmark, gray, markread, settings]"
+            echo "Usage: $0 [app, chevron, checkmark, eastereggs, gray, markread, settings]"
             echo "No arguments will recreate all icons."
             ;;
     esac
 else
     export -f app_icon
     export -f app_icon_black
-    export -f breakout3d_icon
     export -f chevron_icons
     export -f checkmark_icon
+    export -f eastereggs
     export -f gray_icon
     export -f settings_icon
     export -f markread_icons 
@@ -146,9 +149,9 @@ else
     parallel --progress -j 0 << EOF
 app_icon
 app_icon_black
-breakout3d_icon
 chevron_icons
 checkmark_icon
+eastereggs
 gray_icon
 settings_icon
 markread_icons

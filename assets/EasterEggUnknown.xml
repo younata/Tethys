@@ -1,0 +1,8 @@
+<?xml version="1.0" standalone="yes"?>
+<svg width="250" height="250" xmlns="http://www.w3.org/2000/svg">
+    <style>
+        .normal { font: 200px sans-serif; fill: white; }
+    </style>
+    <rect width="100%" height="100%" fill="#222" />
+    <text x="70" y="190" class="normal">?</text>
+</svg>

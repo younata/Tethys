@@ -115,6 +115,11 @@
 		894F8B3823654DA5005AE5F0 /* EasterEggGalleryViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894F8B3723654DA5005AE5F0 /* EasterEggGalleryViewControllerSpec.swift */; };
 		894F8B3A23675BCB005AE5F0 /* RogueLikeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894F8B3923675BCB005AE5F0 /* RogueLikeViewController.swift */; };
 		894F8B3C2369E834005AE5F0 /* RogueLikeViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894F8B3B2369E834005AE5F0 /* RogueLikeViewControllerSpec.swift */; };
+		894F8B3F236B40B4005AE5F0 /* RogueLikeGameSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894F8B3E236B40B4005AE5F0 /* RogueLikeGameSpec.swift */; };
+		894F8B41236B434E005AE5F0 /* FakeLevelGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894F8B40236B434E005AE5F0 /* FakeLevelGenerator.swift */; };
+		894F8B46236B450C005AE5F0 /* RogueLikeGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894F8B45236B450C005AE5F0 /* RogueLikeGame.swift */; };
+		894F8B48236B61C5005AE5F0 /* DirectionalGestureRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894F8B47236B61C5005AE5F0 /* DirectionalGestureRecognizer.swift */; };
+		894F8B4A236B61D3005AE5F0 /* DirectionalGestureRecognizerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894F8B49236B61D3005AE5F0 /* DirectionalGestureRecognizerSpec.swift */; };
 		8958EC3A1DCABDA60000159B /* DocumentationViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8958EC391DCABDA60000159B /* DocumentationViewControllerSpec.swift */; };
 		8958EC3F1DCBB2B20000159B /* SettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8958EC3E1DCBB2B20000159B /* SettingsSection.swift */; };
 		895901B31A32B61A002E2C62 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 895901AF1A32B61A002E2C62 /* Localizable.strings */; };
@@ -474,6 +479,11 @@
 		894F8B3723654DA5005AE5F0 /* EasterEggGalleryViewControllerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasterEggGalleryViewControllerSpec.swift; sourceTree = "<group>"; };
 		894F8B3923675BCB005AE5F0 /* RogueLikeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RogueLikeViewController.swift; sourceTree = "<group>"; };
 		894F8B3B2369E834005AE5F0 /* RogueLikeViewControllerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RogueLikeViewControllerSpec.swift; sourceTree = "<group>"; };
+		894F8B3E236B40B4005AE5F0 /* RogueLikeGameSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RogueLikeGameSpec.swift; sourceTree = "<group>"; };
+		894F8B40236B434E005AE5F0 /* FakeLevelGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeLevelGenerator.swift; sourceTree = "<group>"; };
+		894F8B45236B450C005AE5F0 /* RogueLikeGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RogueLikeGame.swift; sourceTree = "<group>"; };
+		894F8B47236B61C5005AE5F0 /* DirectionalGestureRecognizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionalGestureRecognizer.swift; sourceTree = "<group>"; };
+		894F8B49236B61D3005AE5F0 /* DirectionalGestureRecognizerSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectionalGestureRecognizerSpec.swift; sourceTree = "<group>"; };
 		8957799D19E62C7100548418 /* TethysAppSpecs-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "TethysAppSpecs-Bridging-Header.h"; sourceTree = "<group>"; };
 		8958EC391DCABDA60000159B /* DocumentationViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationViewControllerSpec.swift; sourceTree = "<group>"; };
 		8958EC3E1DCBB2B20000159B /* SettingsSection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsSection.swift; sourceTree = "<group>"; };
@@ -717,6 +727,7 @@
 			children = (
 				4515FDB4234C4A0D0032A165 /* Breakout3DSpec.swift */,
 				894F8B3B2369E834005AE5F0 /* RogueLikeViewControllerSpec.swift */,
+				894F8B3D236B40A2005AE5F0 /* RogueLike */,
 				894F8B3723654DA5005AE5F0 /* EasterEggGalleryViewControllerSpec.swift */,
 			);
 			path = "Easter Eggs";
@@ -882,6 +893,25 @@
 				894E755721B3176000B4A0A1 /* RealmRSSUpdateServiceSpec.swift */,
 			);
 			path = UpdateService;
+			sourceTree = "<group>";
+		};
+		894F8B3D236B40A2005AE5F0 /* RogueLike */ = {
+			isa = PBXGroup;
+			children = (
+				894F8B40236B434E005AE5F0 /* FakeLevelGenerator.swift */,
+				894F8B3E236B40B4005AE5F0 /* RogueLikeGameSpec.swift */,
+				894F8B49236B61D3005AE5F0 /* DirectionalGestureRecognizerSpec.swift */,
+			);
+			path = RogueLike;
+			sourceTree = "<group>";
+		};
+		894F8B44236B44FE005AE5F0 /* RogueLike */ = {
+			isa = PBXGroup;
+			children = (
+				894F8B45236B450C005AE5F0 /* RogueLikeGame.swift */,
+				894F8B47236B61C5005AE5F0 /* DirectionalGestureRecognizer.swift */,
+			);
+			path = RogueLike;
 			sourceTree = "<group>";
 		};
 		895901AE1A32B61A002E2C62 /* en.lproj */ = {
@@ -1101,6 +1131,7 @@
 				892AF329232F22E60018B19C /* AugmentedRealityEasterEgg.swift */,
 				89BF4261234006AB00C790A8 /* Breakout3DEasterEgg.swift */,
 				894F8B3923675BCB005AE5F0 /* RogueLikeViewController.swift */,
+				894F8B44236B44FE005AE5F0 /* RogueLike */,
 				894F8B3523654D72005AE5F0 /* EasterEggGalleryViewController.swift */,
 			);
 			path = "Easter Eggs";
@@ -2005,6 +2036,7 @@
 				89C5E5701DECA2AB0078633C /* FeedDetailView.swift in Sources */,
 				89C830C819DA2FEF009924DA /* FeedListController.swift in Sources */,
 				89BF42562339AE9B00C790A8 /* AppIconSelectionViewController.swift in Sources */,
+				894F8B46236B450C005AE5F0 /* RogueLikeGame.swift in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89BF424523372F0000C790A8 /* AppIconChanger.swift in Sources */,
 				89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */,
@@ -2014,6 +2046,7 @@
 				8941AB7B1DC9207200A2CE5F /* HTMLViewController.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
 				8903A6251C4AB17C00E896BF /* NotificationView.swift in Sources */,
+				894F8B48236B61C5005AE5F0 /* DirectionalGestureRecognizer.swift in Sources */,
 				894D1AF31DB1EF2500E70B1A /* RefreshControl.swift in Sources */,
 				89F98BA61BA07DC6005C3CA8 /* SettingsRepository.swift in Sources */,
 				8958EC3F1DCBB2B20000159B /* SettingsSection.swift in Sources */,
@@ -2039,6 +2072,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				89A3A8C91DEF942F002AF9B5 /* ActionableTableViewSpec.swift in Sources */,
+				894F8B4A236B61D3005AE5F0 /* DirectionalGestureRecognizerSpec.swift in Sources */,
 				4515FDB7234CECB80032A165 /* ExplanationViewSpec.swift in Sources */,
 				893694FF21E30F30002C3A09 /* FakeAccountService.swift in Sources */,
 				89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */,
@@ -2048,6 +2082,7 @@
 				89BF42582339B1D900C790A8 /* AppIconSelectionViewControllerSpec.swift in Sources */,
 				899823AC1B2C883B00818755 /* ArticleListControllerSpec.swift in Sources */,
 				89831FEC1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift in Sources */,
+				894F8B41236B434E005AE5F0 /* FakeLevelGenerator.swift in Sources */,
 				890B78CA1C78E8650066E201 /* ArticleUseCaseSpec.swift in Sources */,
 				899823AE1B30B64000818755 /* ArticleViewControllerSpec.swift in Sources */,
 				892AF319232D896C0018B19C /* FakeWKContentMenuElementInfo.m in Sources */,
@@ -2100,6 +2135,7 @@
 				89735ABC1C0694C70032E09C /* UITraitCollection+TethysTests.m in Sources */,
 				8994F0F41C8F899600920E6D /* UIViewController+TethysTests.m in Sources */,
 				893F93E41B237EBC00B52194 /* UnreadCounterSpec.swift in Sources */,
+				894F8B3F236B40B4005AE5F0 /* RogueLikeGameSpec.swift in Sources */,
 				89D970BB1B35BF6500ED84B8 /* WKWebView+TethysTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

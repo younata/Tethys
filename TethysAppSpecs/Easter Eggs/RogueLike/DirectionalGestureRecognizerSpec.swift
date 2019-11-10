@@ -7,13 +7,13 @@ final class DirectionalGestureRecognizerSpec: QuickSpec {
     override func spec() {
         var subject: DirectionalGestureRecognizer!
 
-        var observer: GestureObserver!
+        var observer: DirectionalGestureObserver!
         var view: UIView!
 
         beforeEach {
-            observer = GestureObserver()
+            observer = DirectionalGestureObserver()
             view = UIView(frame: CGRect(x: 0, y: 0, width: 400, height: 400))
-            subject = DirectionalGestureRecognizer(target: observer, action: #selector(GestureObserver.didRecognize(_:)))
+            subject = DirectionalGestureRecognizer(target: observer, action: #selector(DirectionalGestureObserver.didRecognize(_:)))
 
             view.addGestureRecognizer(subject)
         }
@@ -42,11 +42,12 @@ final class DirectionalGestureRecognizerSpec: QuickSpec {
 
             it("updates the observer") {
                 expect(observer.observations).toEventually(haveCount(1))
-                expect(observer.observations.last).to(equal(subject))
+                expect(observer.observations.last).to(equal(DirectionalGestureState(state: .began, direction: .zero)))
             }
 
             context("if the user lifts their finger now") {
                 beforeEach {
+                    expect(observer.observations).toEventually(haveCount(1))
                     subject.touchesEnded([touch], with: UIEvent())
                 }
 
@@ -56,12 +57,13 @@ final class DirectionalGestureRecognizerSpec: QuickSpec {
 
                 it("updates the observer") {
                     expect(observer.observations).toEventually(haveCount(2))
-                    expect(observer.observations.last).to(equal(subject))
+                    expect(observer.observations.last).to(equal(DirectionalGestureState(state: .ended, direction: .zero)))
                 }
             }
 
             context("if the user moves their finger just a little bit") {
                 beforeEach {
+                    expect(observer.observations).toEventually(haveCount(1))
                     touch.currentLocation = CGPoint(x: 130, y: 130)
 
                     subject.touchesMoved([touch], with: UIEvent())
@@ -91,7 +93,7 @@ final class DirectionalGestureRecognizerSpec: QuickSpec {
 
                 it("updates the observer") {
                     expect(observer.observations).toEventually(haveCount(2))
-                    expect(observer.observations.last).to(equal(subject))
+                    expect(observer.observations.last).to(equal(DirectionalGestureState(state: .changed, direction: CGVector(dx: 1, dy: 0))))
                 }
 
                 context("if the user moves their finger back into the deadzone") {
@@ -111,7 +113,7 @@ final class DirectionalGestureRecognizerSpec: QuickSpec {
 
                     it("updates the observer") {
                         expect(observer.observations).toEventually(haveCount(3))
-                        expect(observer.observations.last).to(equal(subject))
+                        expect(observer.observations.last).to(equal(DirectionalGestureState(state: .changed, direction: .zero)))
                     }
                 }
 
@@ -132,7 +134,7 @@ final class DirectionalGestureRecognizerSpec: QuickSpec {
 
                     it("updates the observer") {
                         expect(observer.observations).toEventually(haveCount(3))
-                        expect(observer.observations.last).to(equal(subject))
+                        expect(observer.observations.last).to(equal(DirectionalGestureState(state: .changed, direction: CGVector(dx: sin(45.rads), dy: sin(45.rads)))))
                     }
                 }
 
@@ -152,7 +154,7 @@ final class DirectionalGestureRecognizerSpec: QuickSpec {
 
                     it("updates the observer") {
                         expect(observer.observations).toEventually(haveCount(3))
-                        expect(observer.observations.last).to(equal(subject))
+                        expect(observer.observations.last).toEventually(equal(DirectionalGestureState(state: .ended, direction: .zero)))
                     }
                 }
             }
@@ -199,11 +201,16 @@ extension Double {
     }
 }
 
-@objc final class GestureObserver: NSObject {
-    var observations: [UIGestureRecognizer] = []
+struct DirectionalGestureState: Equatable {
+    let state: UIGestureRecognizer.State
+    let direction: CGVector
+}
 
-    @objc func didRecognize(_ gestureRecognizer: UIGestureRecognizer) {
-        self.observations.append(gestureRecognizer)
+@objc final class DirectionalGestureObserver: NSObject {
+    var observations: [DirectionalGestureState] = []
+
+    @objc func didRecognize(_ gestureRecognizer: DirectionalGestureRecognizer) {
+        self.observations.append(DirectionalGestureState(state: gestureRecognizer.state, direction: gestureRecognizer.direction))
     }
 }
 

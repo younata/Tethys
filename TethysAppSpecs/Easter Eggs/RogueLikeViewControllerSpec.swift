@@ -22,7 +22,7 @@ final class RogueLikeViewControllerSpec: QuickSpec {
 
         describe("when the directional gesture recognizer updates") {
             var directionalGestureRecognizer: DirectionalGestureRecognizer?
-            var observer: GestureObserver!
+            var observer: DirectionalGestureObserver!
 
             beforeEach {
                 directionalGestureRecognizer = subject.view.gestureRecognizers?.compactMap { $0 as? DirectionalGestureRecognizer }.first
@@ -37,7 +37,7 @@ final class RogueLikeViewControllerSpec: QuickSpec {
                 )
             }
 
-            it("does something?") {
+            it("set's the player's velocity in the game") {
                 expect(subject.game.player.physicsBody?.velocity).to(equal(CGVector(dx: 1, dy: 0)))
             }
         }
@@ -45,22 +45,23 @@ final class RogueLikeViewControllerSpec: QuickSpec {
 }
 
 private extension DirectionalGestureRecognizer {
-    func setupForTest() -> GestureObserver {
-        let observer = GestureObserver()
-        self.addTarget(observer, action: #selector(GestureObserver.didRecognize(_:)))
+    func setupForTest() -> DirectionalGestureObserver {
+        let observer = DirectionalGestureObserver()
+        self.addTarget(observer, action: #selector(DirectionalGestureObserver.didRecognize(_:)))
         return observer
     }
 
-    func beginForTest(observer: GestureObserver, line: UInt = #line) {
+    func beginForTest(observer: DirectionalGestureObserver, line: UInt = #line) {
         let observerCount = observer.observations.count
         let touch = FakeTouch()
         touch.currentLocation = CGPoint(x: 100, y: 100)
 
         self.touchesBegan([touch], with: UIEvent())
+        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.1))
         expect(observer.observations, line: line).toEventually(haveCount(observerCount + 1))
     }
 
-    func updateForTest(direction: CGVector, observer: GestureObserver, line: UInt = #line) {
+    func updateForTest(direction: CGVector, observer: DirectionalGestureObserver, line: UInt = #line) {
         let observerCount = observer.observations.count
         let touch = FakeTouch()
         touch.currentLocation = CGPoint(x: 100 + (direction.dx * 50), y: 100 + (direction.dy * 50))
@@ -69,9 +70,9 @@ private extension DirectionalGestureRecognizer {
         expect(observer.observations, line: line).toEventually(haveCount(observerCount + 1))
     }
 
-    func endForTest(observer: GestureObserver, line: UInt = #line) {
+    func endForTest(observer: DirectionalGestureObserver, line: UInt = #line) {
         let observerCount = observer.observations.count
-        self.touchesMoved([], with: UIEvent())
+        self.touchesEnded([], with: UIEvent())
 
         expect(observer.observations, line: line).toEventually(haveCount(observerCount + 1))
     }

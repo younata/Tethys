@@ -21,10 +21,6 @@ final class RealmProviderSpec: QuickSpec {
                 expect(subject.realm()).toNot(beNil())
             }
 
-            it("returns the same realm when you ask for it from the same thread") {
-                expect(subject.realm()).to(beIdenticalTo(subject.realm()))
-            }
-
             it("returns a realm when asked for in a separate thread") {
                 var realm: Realm?
 

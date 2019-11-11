@@ -139,12 +139,9 @@ final class FeedCoordinatorSpec: QuickSpec {
                             expect(subscription.isFinished).to(beTrue())
                         }
 
-                        it("does not update the subscription") {
+                        it("updates the subscription") {
                             expect(subscription.value).toNot(beNil(), description: "Expected subscription to be updated")
-                            guard let receivedFeeds = subscription.value?.value else {
-                                return expect(subscription.value?.value).toNot(beNil(), description: "Expected subscription to be updated with success")
-                            }
-                            expect(Array(receivedFeeds)).to(equal(updatedFeeds))
+                            return expect(subscription.value?.error).to(equal(.database(.entryNotFound)))
                         }
 
                         it("returns a new subscription if you ask for feeds again") {
@@ -163,12 +160,9 @@ final class FeedCoordinatorSpec: QuickSpec {
                         expect(networkFeedService.feedsPromises).to(haveCount(1), description: "Retry logic should be in the feeds service")
                     }
 
-                    it("does not update the subscription list with the failure") {
+                    it("updates the subscription list with the failure") {
                         expect(subscription.value).toNot(beNil(), description: "Expected subscription to be updated")
-                        guard let receivedFeeds = subscription.value?.value else {
-                            return expect(subscription.value?.value).toNot(beNil(), description: "Expected subscription to be updated with success")
-                        }
-                        expect(Array(receivedFeeds)).to(equal(expectedFeeds))
+                        expect(subscription.value?.error).to(equal(.network(URL(string: "https://example.com")!, .badResponse)))
                     }
 
                     it("does not tell the local feed service to update") {
@@ -186,7 +180,6 @@ final class FeedCoordinatorSpec: QuickSpec {
             }
 
             describe("when the local feed service fails") {
-                // well, fuck.
                 beforeEach {
                     localFeedService.feedsPromises.last?.resolve(.failure(.database(.notFound)))
                 }
@@ -273,6 +266,11 @@ final class FeedCoordinatorSpec: QuickSpec {
                             localFeedService.updateFeedsPromises.last?.resolve(.failure(.database(.entryNotFound)))
                         }
 
+                        it("updates the subscription with the error") {
+                            expect(subscription.value).toNot(beNil(), description: "Expected subscription to be updated")
+                            expect(subscription.value?.error).to(equal(.database(.entryNotFound)))
+                        }
+
                         it("returns a new subscription if you ask for feeds again") {
                             expect(subject.feeds()).toNot(beIdenticalTo(subscription))
                         }
@@ -304,6 +302,11 @@ final class FeedCoordinatorSpec: QuickSpec {
 
                     it("returns a new subscription if you ask for feeds again") {
                         expect(subject.feeds()).toNot(beIdenticalTo(subscription))
+                    }
+
+                    it("updates the subscription with the error") {
+                        expect(subscription.value).toNot(beNil(), description: "Expected subscription to be updated")
+                        expect(subscription.value?.error).to(equal(.network(URL(string: "https://example.com")!, .badResponse)))
                     }
 
                     it("finishes updates for the subscription") {
@@ -429,13 +432,10 @@ final class FeedCoordinatorSpec: QuickSpec {
                             localFeedService.updateArticlesPromises.last?.resolve(.failure(.database(.entryNotFound)))
                         }
 
-                        it("finishes the subscription without updating it") {
+                        it("finishes the subscription and notes the error") {
                             expect(subscription.isFinished).to(beTrue())
                             expect(subscription.value).toNot(beNil())
-                            guard let receivedArticles = subscription.value?.value else {
-                                return expect(subscription.value?.error).to(beNil())
-                            }
-                            expect(Array(receivedArticles)).to(equal(networkArticles))
+                            expect(subscription.value?.error).to(equal(.database(.entryNotFound)))
                         }
 
                         it("returns a new subscription if you ask again") {
@@ -453,13 +453,10 @@ final class FeedCoordinatorSpec: QuickSpec {
                         networkFeedService.articlesOfFeedPromises.last?.resolve(.failure(.unknown))
                     }
 
-                    it("finishes the subscription without updating it") {
+                    it("finishes the subscription and notes the error") {
                         expect(subscription.isFinished).to(beTrue())
                         expect(subscription.value).toNot(beNil())
-                        guard let receivedArticles = subscription.value?.value else {
-                            return expect(subscription.value?.error).to(beNil())
-                        }
-                        expect(Array(receivedArticles)).to(equal(expectedArticles))
+                        expect(subscription.value?.error).to(equal(.unknown))
                     }
 
                     it("does not tell the local feed service to update") {
@@ -559,13 +556,10 @@ final class FeedCoordinatorSpec: QuickSpec {
                             localFeedService.updateArticlesPromises.last?.resolve(.failure(.database(.entryNotFound)))
                         }
 
-                        it("finishes the subscription without updating it") {
+                        it("finishes the subscription with the error") {
                             expect(subscription.isFinished).to(beTrue())
                             expect(subscription.value).toNot(beNil())
-                            guard let receivedArticles = subscription.value?.value else {
-                                return expect(subscription.value?.error).to(beNil())
-                            }
-                            expect(Array(receivedArticles)).to(equal(networkArticles))
+                            expect(subscription.value?.error).to(equal(.database(.entryNotFound)))
                         }
 
                         it("returns a new subscription if you ask again") {

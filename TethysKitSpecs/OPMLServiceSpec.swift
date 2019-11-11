@@ -112,7 +112,7 @@ class LeptonOPMLServiceSpec: QuickSpec {
 
             afterEach {
                 let fileManager = FileManager.default
-                let file = documentsDirectory() + "/Tethys.opml"
+                let file = NSHomeDirectory() + "/Documents/Tethys.opml"
                 let _ = try? fileManager.removeItem(atPath: file)
             }
 

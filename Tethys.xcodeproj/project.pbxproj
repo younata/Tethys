@@ -60,7 +60,6 @@
 		892AF323232EFA270018B19C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892AF322232EFA270018B19C /* SceneDelegate.swift */; };
 		892AF32A232F22E60018B19C /* AugmentedRealityEasterEgg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892AF329232F22E60018B19C /* AugmentedRealityEasterEgg.swift */; };
 		892CBDEA1C7A27FE0062E578 /* FakeArticleUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892CBDE91C7A27FE0062E578 /* FakeArticleUseCase.swift */; };
-		892E30F71CF4011F00E327A0 /* Future+when.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E30F61CF4011F00E327A0 /* Future+when.swift */; };
 		892E76BC1E0197DF00866336 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 892E76BB1E0197DF00866336 /* libxml2.tbd */; };
 		892E76F11E07956E00866336 /* BackgroundStateMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E76F01E07956E00866336 /* BackgroundStateMonitor.swift */; };
 		892E76F41E079A3500866336 /* BackgroundStateMonitorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E76F31E079A3500866336 /* BackgroundStateMonitorSpec.swift */; };
@@ -211,7 +210,6 @@
 		89BF425F233F127D00C790A8 /* AppIcon-Black-iPadPro@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 89BF425C233F127D00C790A8 /* AppIcon-Black-iPadPro@2x.png */; };
 		89BF4260233F127D00C790A8 /* AppIcon-Black-iPad.png in Resources */ = {isa = PBXBuildFile; fileRef = 89BF425D233F127D00C790A8 /* AppIcon-Black-iPad.png */; };
 		89BF4262234006AB00C790A8 /* Breakout3DEasterEgg.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BF4261234006AB00C790A8 /* Breakout3DEasterEgg.swift */; };
-		89BFAC101C4C66AE007B3415 /* CustomMatchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89BFAC0F1C4C66AE007B3415 /* CustomMatchers.swift */; };
 		89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204B41A73811000C792D2 /* AppDelegateSpec.swift */; };
 		89C204BD1A73F72800C792D2 /* SplitViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204BC1A73F72800C792D2 /* SplitViewController.swift */; };
 		89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */; };
@@ -438,7 +436,6 @@
 		892AF322232EFA270018B19C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		892AF329232F22E60018B19C /* AugmentedRealityEasterEgg.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AugmentedRealityEasterEgg.swift; sourceTree = "<group>"; };
 		892CBDE91C7A27FE0062E578 /* FakeArticleUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeArticleUseCase.swift; sourceTree = "<group>"; };
-		892E30F61CF4011F00E327A0 /* Future+when.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Future+when.swift"; sourceTree = "<group>"; };
 		892E76BB1E0197DF00866336 /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		892E76F01E07956E00866336 /* BackgroundStateMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundStateMonitor.swift; sourceTree = "<group>"; };
 		892E76F31E079A3500866336 /* BackgroundStateMonitorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackgroundStateMonitorSpec.swift; sourceTree = "<group>"; };
@@ -563,7 +560,6 @@
 		89BF425C233F127D00C790A8 /* AppIcon-Black-iPadPro@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-Black-iPadPro@2x.png"; sourceTree = "<group>"; };
 		89BF425D233F127D00C790A8 /* AppIcon-Black-iPad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "AppIcon-Black-iPad.png"; sourceTree = "<group>"; };
 		89BF4261234006AB00C790A8 /* Breakout3DEasterEgg.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Breakout3DEasterEgg.swift; sourceTree = "<group>"; };
-		89BFAC0F1C4C66AE007B3415 /* CustomMatchers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomMatchers.swift; sourceTree = "<group>"; };
 		89C204B41A73811000C792D2 /* AppDelegateSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegateSpec.swift; sourceTree = "<group>"; };
 		89C204BC1A73F72800C792D2 /* SplitViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitViewController.swift; sourceTree = "<group>"; };
 		89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SplitViewControllerSpec.swift; sourceTree = "<group>"; };
@@ -781,7 +777,6 @@
 			isa = PBXGroup;
 			children = (
 				8924FE2D1D6D51DC0060D26D /* Array+TethysKit.swift */,
-				892E30F61CF4011F00E327A0 /* Future+when.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1222,7 +1217,6 @@
 				899C48181A9AC0F000F57B96 /* UI */,
 				89CB98491B12C50000C87160 /* ActivityIndicatorSpec.swift */,
 				89C204B41A73811000C792D2 /* AppDelegateSpec.swift */,
-				89BFAC0F1C4C66AE007B3415 /* CustomMatchers.swift */,
 				4515FDB6234CECB80032A165 /* ExplanationViewSpec.swift */,
 				8941AB7C1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift */,
 				8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */,
@@ -1920,7 +1914,6 @@
 				894644D921AB8FEB00153308 /* RealmFeedService.swift in Sources */,
 				89F55BA9235B973200FE5887 /* FeedCoordinator.swift in Sources */,
 				8943044A1B450A5E000078DC /* Feed.swift in Sources */,
-				892E30F71CF4011F00E327A0 /* Future+when.swift in Sources */,
 				89CC82041B461A2B00648367 /* Helpers.swift in Sources */,
 				89D427E21CF556A90093D186 /* HTTPError.swift in Sources */,
 				8903F5CF1D4177DE00546099 /* Importable.swift in Sources */,
@@ -2087,7 +2080,6 @@
 				899823AE1B30B64000818755 /* ArticleViewControllerSpec.swift in Sources */,
 				892AF319232D896C0018B19C /* FakeWKContentMenuElementInfo.m in Sources */,
 				89F55BB42361107D00FE5887 /* Matchers.swift in Sources */,
-				89BFAC101C4C66AE007B3415 /* CustomMatchers.swift in Sources */,
 				895B9A1F21AA66AB003FFE46 /* FakeFeedService.swift in Sources */,
 				8958EC3A1DCABDA60000159B /* DocumentationViewControllerSpec.swift in Sources */,
 				892AF31E232DC5960018B19C /* UIContextMenuConfiguration+Tests.m in Sources */,
@@ -2393,6 +2385,7 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-lxml2";
+				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -2449,6 +2442,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "-lxml2";
+				OTHER_SWIFT_FLAGS = "-Xfrontend -debug-time-function-bodies";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				SWIFT_VERSION = 5.0;

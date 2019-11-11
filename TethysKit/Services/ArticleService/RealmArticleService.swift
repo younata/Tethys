@@ -82,9 +82,16 @@ struct RealmArticleService: ArticleService {
             return realmArticle.estimatedReadingTime
         }
         let text = realmArticle.content?.optional ?? realmArticle.summary?.optional ?? ""
-        let readingTime = estimateReadingTime(text)
+        let readingTime = self.estimateReadingTime(text)
         self.saveReadingTime(readingTime, for: article)
         return readingTime
+    }
+
+    private func estimateReadingTime(_ htmlString: String) -> TimeInterval {
+        let words = htmlString.stringByStrippingHTML().components(separatedBy: " ")
+
+        let wordsPerSecond: TimeInterval = 10.0 / 3.0 // 200 words per minute / 60 seconds per minute
+        return TimeInterval(words.count) / wordsPerSecond
     }
 
     private func realmArticle(for article: Article) -> RealmArticle? {

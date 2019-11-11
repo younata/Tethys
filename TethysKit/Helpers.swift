@@ -1,10 +1,6 @@
 import CBGPromise
 import Result
 
-func documentsDirectory() -> String {
-    return NSHomeDirectory() + "/Documents"
-}
-
 extension String {
     func stringByStrippingHTML() -> String {
         guard let removeEntityCodes = try? NSRegularExpression(pattern: "(&nbsp;|&#160;)", options: .caseInsensitive),
@@ -36,13 +32,6 @@ extension String {
     var optional: String? {
         return self.isEmpty ? nil : self
     }
-}
-
-func estimateReadingTime(_ htmlString: String) -> TimeInterval {
-    let words = htmlString.stringByStrippingHTML().components(separatedBy: " ")
-
-    let readingTime = TimeInterval(words.count) / 200.0 * 60.0
-    return readingTime
 }
 
 extension Promise {

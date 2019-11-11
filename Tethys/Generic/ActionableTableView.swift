@@ -6,7 +6,7 @@ public final class ActionableTableView: UIView {
     private let actionsStackView = UIStackView(forAutoLayout: ())
 
     private var tableHeight: NSLayoutConstraint?
-    public var maxHeight: Int = 300 {
+    public var maxHeight: CGFloat = 300 {
         didSet { self.recalculateHeightConstraint() }
     }
 
@@ -37,11 +37,11 @@ public final class ActionableTableView: UIView {
 
     // be sure to call this whenever the backing model changes size
     public func recalculateHeightConstraint() {
-        let tableSize: Int = (0..<self.tableView.numberOfSections).reduce(0) { total, section in
-            return total + self.tableView.numberOfRows(inSection: section)
-        }
-        let absoluteMaxHeight = tableSize * Int(self.tableView.estimatedRowHeight)
-        self.tableHeight!.constant = CGFloat(max(0, min(self.maxHeight, absoluteMaxHeight)))
+        guard let constraint = self.tableHeight else { return }
+
+        let estimatedHeight = self.tableView.estimatedTableHeight()
+        let proposedHeight: CGFloat = min(self.maxHeight, estimatedHeight)
+        constraint.constant = max(0, proposedHeight)
     }
 
     public func setActions(_ actions: [UIView]) {
@@ -53,5 +53,20 @@ public final class ActionableTableView: UIView {
     public func reloadData() {
         self.tableView.reloadData()
         self.recalculateHeightConstraint()
+    }
+}
+
+private extension UITableView {
+    func totalNumberOfRows() -> Int {
+        var rowCount: Int = 0
+        let sectionCount: Int = self.numberOfSections
+        for section in 0..<sectionCount {
+            rowCount += self.numberOfRows(inSection: section)
+        }
+        return rowCount
+    }
+
+    func estimatedTableHeight() -> CGFloat {
+        return CGFloat(self.totalNumberOfRows()) * self.estimatedRowHeight
     }
 }

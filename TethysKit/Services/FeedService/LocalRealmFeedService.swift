@@ -175,7 +175,7 @@ struct LocalRealmFeedService: LocalFeedService {
                     return self.resolve(promise: promise, error: .database(.entryNotFound))
             }
             realm.beginWrite()
-            for (index, article) in updatedArticles.enumerated() {
+            for article in updatedArticles {
                 let predicate = NSPredicate(format: "link == %@", article.link.absoluteString)
                 let realmArticle: RealmArticle
                 if let existing = realmFeed.articles.filter(predicate).first {

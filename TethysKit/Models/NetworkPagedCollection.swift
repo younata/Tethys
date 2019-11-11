@@ -28,17 +28,17 @@ public class NetworkPagedCollection<T>: Collection {
         self.requestItems()
     }
 
-    public var startIndex: Int { return items.startIndex }
-    public var endIndex: Int { return items.endIndex }
+    public var startIndex: Int { return self.items.startIndex }
+    public var endIndex: Int { return self.items.endIndex }
 
-    public var underestimatedCount: Int { return items.count }
+    public var underestimatedCount: Int { return self.items.count }
 
     public subscript(index: Index) -> Element {
         // Determine whether to refetch because we're close the end of this page of data
-        if (Double(self.items.count - (index + 1)) / Double(self.batchCount)) <= 0.25 {
+        if self.shouldFetchNextResult(from: index) {
             self.requestItems(upTo: index)
         }
-        while index > self.underestimatedCount && !self.inProgressRequests.isEmpty {
+        while self.shouldWaitForNextRequest(index: index) {
             self.earliestRequest()?.wait()
         }
         if index < self.underestimatedCount {
@@ -97,5 +97,18 @@ public class NetworkPagedCollection<T>: Collection {
 
     private func earliestRequest() -> Future<Result<HTTPResponse, HTTPClientError>>? {
         return self.inProgressRequests.first?.value
+    }
+
+    private func shouldFetchNextResult(from index: Int) -> Bool {
+        let zeroIndexedCount: Int = self.items.count - 1
+        let distanceFromEnd: Double = Double(zeroIndexedCount - index)
+        let percentageIndexIsAt: Double = distanceFromEnd / Double(self.batchCount)
+        return percentageIndexIsAt <= 0.25
+    }
+
+    private func shouldWaitForNextRequest(index: Int) -> Bool {
+        let mustMakeNextRequest = index > self.underestimatedCount
+        let hasRequestInProgress = self.inProgressRequests.isEmpty == false
+        return mustMakeNextRequest && hasRequestInProgress
     }
 }

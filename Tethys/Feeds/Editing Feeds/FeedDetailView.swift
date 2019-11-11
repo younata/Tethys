@@ -24,7 +24,7 @@ public final class FeedDetailView: UIView {
         didSet { self.tagsList.recalculateHeightConstraint() }
     }
 
-    public var maxHeight: Int {
+    public var maxHeight: CGFloat {
         get { return self.tagsList.maxHeight }
         set { self.tagsList.maxHeight = newValue }
     }

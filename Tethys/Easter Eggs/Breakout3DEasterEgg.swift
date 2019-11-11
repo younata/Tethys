@@ -394,41 +394,31 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
     }
 
     private func wallNodes() -> [SCNNode] {
-        let backNode = SCNNode()
-        backNode.geometry = SCNPlane(width: self.width, height: self.height)
+        let backNode = self.wallNode(width: self.width, height: self.height)
         backNode.position = SCNVector3(0, 0, -BreakoutLength)
 
-        let topNode = SCNNode()
-        topNode.geometry = SCNPlane(width: self.width, height: BreakoutLength)
+        let topNode = self.wallNode(width: self.width, height: BreakoutLength)
         topNode.eulerAngles = SCNVector3(CGFloat.pi / 2, 0, 0)
         topNode.position = SCNVector3(0, self.height / 2, -BreakoutLength / 2)
 
-        let bottomNode = SCNNode()
-        bottomNode.geometry = SCNPlane(width: self.width, height: BreakoutLength)
+        let bottomNode = self.wallNode(width: self.width, height: BreakoutLength)
         bottomNode.eulerAngles = SCNVector3(-CGFloat.pi / 2, 0, 0)
         bottomNode.position = SCNVector3(0, -self.height / 2, -BreakoutLength / 2)
 
-        let leftNode = SCNNode()
-        leftNode.geometry = SCNPlane(width: BreakoutLength, height: self.height)
+        let leftNode = self.wallNode(width: BreakoutLength, height: self.height)
         leftNode.eulerAngles = SCNVector3(0, CGFloat.pi / 2, 0)
         leftNode.position = SCNVector3(self.width / 2, 0, -BreakoutLength / 2)
 
-        let rightNode = SCNNode()
-        rightNode.geometry = SCNPlane(width: BreakoutLength, height: self.height)
+        let rightNode = self.wallNode(width: BreakoutLength, height: self.height)
         rightNode.eulerAngles = SCNVector3(0, -CGFloat.pi / 2, 0)
         rightNode.position = SCNVector3(-self.width / 2, 0, -BreakoutLength / 2)
 
-        let resetNode = SCNNode()
-        resetNode.geometry = SCNPlane(width: self.width, height: self.height)
+        let resetNode = self.wallNode(width: self.width, height: self.height)
         resetNode.categoryBitMask = self.rearWallCategory
 
         let nodes = [backNode, topNode, bottomNode, leftNode, rightNode, resetNode]
 
-        nodes.forEach { node in
-            node.geometry?.firstMaterial?.diffuse.contents = UIColor(white: 0.1, alpha: 1.0)
-            node.geometry?.firstMaterial?.isDoubleSided = true
-
-            self.addKinematicPhysics(to: node)
+        for node in nodes {
             node.physicsBody?.categoryBitMask = node.categoryBitMask | self.wallCategory
         }
 
@@ -436,6 +426,17 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
         backNode.geometry?.firstMaterial?.diffuse.contents = UIColor(white: 0.3, alpha: 1.0)
 
         return nodes
+    }
+
+    private func wallNode(width: CGFloat, height: CGFloat) -> SCNNode {
+        let node = SCNNode()
+        node.geometry = SCNPlane(width: self.width, height: self.height)
+
+        node.geometry?.firstMaterial?.diffuse.contents = UIColor(white: 0.1, alpha: 1.0)
+        node.geometry?.firstMaterial?.isDoubleSided = true
+
+        self.addKinematicPhysics(to: node)
+        return node
     }
 
     private func addKinematicPhysics(to node: SCNNode) {

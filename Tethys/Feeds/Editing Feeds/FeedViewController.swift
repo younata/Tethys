@@ -52,7 +52,7 @@ public final class FeedViewController: UIViewController {
     }
 
     private func setTagMaxHeight(height: CGFloat) {
-        self.feedDetailView.maxHeight = Int(height - 400)
+        self.feedDetailView.maxHeight = height - 400
     }
 
     @objc fileprivate func dismissFromNavigation() {

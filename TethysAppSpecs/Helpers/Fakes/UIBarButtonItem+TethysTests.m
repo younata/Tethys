@@ -7,6 +7,11 @@
     SEL action = self.action;
     id argument = nil;
 
+    if (![target respondsToSelector:action]) {
+        NSLog(@"===============> Unrecognized selector: %@, %@", target, NSStringFromSelector(action));
+        return;
+    }
+
     NSMethodSignature *methodSignature = [target methodSignatureForSelector:action];
     if (methodSignature == nil) {
         NSLog(@"================> unrecognized selector: %@, %@", target, NSStringFromSelector(action));

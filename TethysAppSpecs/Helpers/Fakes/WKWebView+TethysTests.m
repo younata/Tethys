@@ -10,10 +10,12 @@ static char * kHtmlKey;
 
 + (void)load {
     [self redirectSelector:@selector(loadRequest:)
-                        to:@selector(_loadRequest:)];
+                        to:@selector(_loadRequest:)
+             andRenameItTo:NSSelectorFromString(@"_original_loadRequest:")];
 
     [self redirectSelector:@selector(loadHTMLString:baseURL:)
-                        to:@selector(_loadHTMLString:baseURL:)];
+                        to:@selector(_loadHTMLString:baseURL:)
+             andRenameItTo:NSSelectorFromString(@"_original_loadHTMLString:baseURL:")];
 }
 
 - (void)setCurrentURL:(NSURL * __nullable)currentURL {

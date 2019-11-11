@@ -127,11 +127,9 @@ class ArticleViewControllerSpec: QuickSpec {
                             expect(shareSheet.activityItems.count).to(equal(1))
                             expect(shareSheet.activityItems.first as? URL).to(equal(article.link))
 
-                            expect(shareSheet.applicationActivities as? [NSObject]).toNot(beNil())
-                            if let activities = shareSheet.applicationActivities as? [NSObject] {
-                                expect(activities.first).to(beAnInstanceOf(TOActivitySafari.self))
-                                expect(activities.last).to(beAnInstanceOf(TOActivityChrome.self))
-                            }
+                            expect(shareSheet.applicationActivities).to(haveCount(2))
+                            expect(shareSheet.applicationActivities?.first).to(beAnInstanceOf(TOActivitySafari.self))
+                            expect(shareSheet.applicationActivities?.last).to(beAnInstanceOf(TOActivityChrome.self))
                         }
                     }
                 }

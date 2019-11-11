@@ -267,7 +267,7 @@ class FindFeedViewControllerSpec: QuickSpec {
 
                 describe("when the use case is finished") {
                     beforeEach {
-                        importUseCase.importItemPromises[0].resolve(.success(()))
+                        importUseCase.importItemPromises.last?.resolve(.success(()))
                     }
 
                     it("should remove the indicator") {
@@ -498,7 +498,7 @@ class FindFeedViewControllerSpec: QuickSpec {
 
                     describe("when the use case is finished") {
                         beforeEach {
-                            importUseCase.importItemPromises[0].resolve(.success(()))
+                            importUseCase.importItemPromises.last?.resolve(.success(()))
                         }
 
                         it("removes the indicator") {
@@ -525,7 +525,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 let feedURL = URL(string: "https://example.com/feed1")!
 
                 beforeEach {
-                    importUseCase.scanForImportablePromises[0].resolve(.webPage(url, [feedURL]))
+                    importUseCase.scanForImportablePromises.last?.resolve(.webPage(url, [feedURL]))
                 }
 
                 it("enables the addFeedButton") {
@@ -550,7 +550,7 @@ class FindFeedViewControllerSpec: QuickSpec {
                 let feedURL2 = URL(string: "https://example.com/feed2")!
 
                 beforeEach {
-                    importUseCase.scanForImportablePromises[0].resolve(.webPage(url, [feedURL1, feedURL2]))
+                    importUseCase.scanForImportablePromises.last?.resolve(.webPage(url, [feedURL1, feedURL2]))
                 }
 
                 it("enables the addFeedButton") {
@@ -602,7 +602,7 @@ class FindFeedViewControllerSpec: QuickSpec {
             context("when the use case finds a web page with no feeds") {
                 let url = URL(string: "https://example.com/feed")!
                 beforeEach {
-                    importUseCase.scanForImportablePromises[0].resolve(.webPage(url, []))
+                    importUseCase.scanForImportablePromises.last?.resolve(.webPage(url, []))
                 }
 
                 it("does nothing") {
@@ -613,7 +613,7 @@ class FindFeedViewControllerSpec: QuickSpec {
             context("when the use case finds nothing") {
                 let url = URL(string: "https://example.com/feed")!
                 beforeEach {
-                    importUseCase.scanForImportablePromises[0].resolve(.none(url))
+                    importUseCase.scanForImportablePromises.last?.resolve(.none(url))
                 }
 
                 it("does nothing") {

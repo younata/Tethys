@@ -41,6 +41,7 @@ func tagEditorViewControllerFactory(
 func feedListControllerFactory(
     feedCoordinator: FeedCoordinator = FakeFeedCoordinator(),
     settingsRepository: SettingsRepository = settingsRepositoryFactory(),
+    messenger: Messenger = FakeMessenger(),
     mainQueue: FakeOperationQueue = FakeOperationQueue(),
     notificationCenter: NotificationCenter = NotificationCenter(),
     findFeedViewController: @escaping () -> FindFeedViewController = { findFeedViewControllerFactory() },
@@ -51,6 +52,7 @@ func feedListControllerFactory(
     return FeedListController(
         feedCoordinator: feedCoordinator,
         settingsRepository: SettingsRepository(userDefaults: nil),
+        messenger: messenger,
         mainQueue: mainQueue,
         notificationCenter: notificationCenter,
         findFeedViewController: findFeedViewController,

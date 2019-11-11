@@ -21,8 +21,6 @@
 		8902D5471BB0753E003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; };
 		8902D54A1BB075D6003D7C22 /* Lepton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; };
 		8902D54B1BB075E1003D7C22 /* Lepton.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8902D5451BB07389003D7C22 /* Lepton.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		8903A6251C4AB17C00E896BF /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903A6241C4AB17C00E896BF /* NotificationView.swift */; };
-		8903A6271C4ABA7800E896BF /* NotificationViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */; };
 		8903EB061C702689001C0189 /* webpage.html in Resources */ = {isa = PBXBuildFile; fileRef = 8903EB041C702580001C0189 /* webpage.html */; };
 		8903EB091C702843001C0189 /* WebPageParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB081C702843001C0189 /* WebPageParser.swift */; };
 		8903EB0C1C702FA3001C0189 /* WebPageParserSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8903EB0B1C702FA3001C0189 /* WebPageParserSpec.swift */; };
@@ -130,8 +128,6 @@
 		895B9A1F21AA66AB003FFE46 /* FakeFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895B9A1B21AA66A3003FFE46 /* FakeFeedService.swift */; };
 		895DA88A222F7D6500B19C37 /* OrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895DA889222F7D6500B19C37 /* OrderedDictionary.swift */; };
 		895DA88C222F7D7600B19C37 /* OrderedDictionarySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895DA88B222F7D7600B19C37 /* OrderedDictionarySpec.swift */; };
-		896276F41C4C34980005E8E7 /* UIKit_PivotalSpecHelperStubs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 896276F31C4C34980005E8E7 /* UIKit_PivotalSpecHelperStubs.framework */; };
-		896276F51C4C34A50005E8E7 /* UIKit_PivotalSpecHelperStubs.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 896276F31C4C34980005E8E7 /* UIKit_PivotalSpecHelperStubs.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F4331A280F8E00B447D6 /* TagPickerView.swift */; };
 		896EF7DF21E407AE00C0AB75 /* KeychainCredentialServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896EF7DE21E407AE00C0AB75 /* KeychainCredentialServiceSpec.swift */; };
 		896EF7E521E45D4900C0AB75 /* SwiftKeychainWrapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 896EF7E421E45D4900C0AB75 /* SwiftKeychainWrapper.framework */; };
@@ -181,7 +177,7 @@
 		89943210219A921100FC6EB6 /* ModelFactories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8994320F219A921100FC6EB6 /* ModelFactories.swift */; };
 		89943212219AAA4900FC6EB6 /* FakeArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89943211219AAA4900FC6EB6 /* FakeArticleService.swift */; };
 		89943213219AAA5000FC6EB6 /* FakeArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89943211219AAA4900FC6EB6 /* FakeArticleService.swift */; };
-		8994F0F41C8F899600920E6D /* UIViewController+TethysTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 8994F0F31C8F899600920E6D /* UIViewController+TethysTests.m */; };
+		8994F0F41C8F899600920E6D /* UIViewControllerStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 8994F0F31C8F899600920E6D /* UIViewControllerStub.m */; };
 		899788811C508BB400B408C4 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899788801C508BB400B408C4 /* SnapshotHelper.swift */; };
 		8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7F41B248D5A00972930 /* FakeWebView.swift */; };
 		8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C8501B255A1900972930 /* TagPickerViewSpec.swift */; };
@@ -244,6 +240,12 @@
 		89CC82061B461A5500648367 /* KitModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82051B461A5500648367 /* KitModule.swift */; };
 		89D0D9CA2379104D00060E2C /* MethodRedirector.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D0D9C823790EC900060E2C /* MethodRedirector.m */; };
 		89D0D9CE23791BEE00060E2C /* MethodRedirectorSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D0D9CC2379190700060E2C /* MethodRedirectorSpec.m */; };
+		89D0D9D1237922C300060E2C /* UINavigationControllerStubSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D0D9D0237922C300060E2C /* UINavigationControllerStubSpec.m */; };
+		89D0D9D3237922CF00060E2C /* UINavigationControllerStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D0D9D2237922CF00060E2C /* UINavigationControllerStub.m */; };
+		89D0D9D52379389900060E2C /* UIViewControllerStubSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D0D9D42379389900060E2C /* UIViewControllerStubSpec.m */; };
+		89D0D9DB23793DDD00060E2C /* UIAlertActionStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D0D9DA23793DDD00060E2C /* UIAlertActionStub.m */; };
+		89D0D9DE2379C81600060E2C /* UIActivityViewControllerStubSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D0D9DD2379C81600060E2C /* UIActivityViewControllerStubSpec.m */; };
+		89D0D9E02379E19700060E2C /* UIAlertActionStubSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D0D9DF2379E19700060E2C /* UIAlertActionStubSpec.m */; };
 		89D427DE1CF53D520093D186 /* TethysError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427DD1CF53D520093D186 /* TethysError.swift */; };
 		89D427E01CF540560093D186 /* TethysErrorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427DF1CF540560093D186 /* TethysErrorSpec.swift */; };
 		89D427E21CF556A90093D186 /* HTTPError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427E11CF556A90093D186 /* HTTPError.swift */; };
@@ -386,7 +388,6 @@
 			files = (
 				89718F331AE0C9D6004C3CB4 /* Nimble.framework in Embed Frameworks */,
 				89718F341AE0C9D6004C3CB4 /* Quick.framework in Embed Frameworks */,
-				896276F51C4C34A50005E8E7 /* UIKit_PivotalSpecHelperStubs.framework in Embed Frameworks */,
 				896EF7F021E5559200C0AB75 /* SwiftMessages.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -402,8 +403,6 @@
 		457EB03D236100B1006A7A82 /* FakeFeedCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeFeedCoordinator.swift; sourceTree = "<group>"; };
 		45FE744923431BC100193955 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		8902D5451BB07389003D7C22 /* Lepton.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Lepton.framework; path = ../Carthage/Build/iOS/Lepton.framework; sourceTree = "<group>"; };
-		8903A6241C4AB17C00E896BF /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
-		8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationViewSpec.swift; sourceTree = "<group>"; };
 		8903EB001C6F9DFB001C0189 /* ImportUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportUseCase.swift; sourceTree = "<group>"; };
 		8903EB021C6FA022001C0189 /* ImportUseCaseSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImportUseCaseSpec.swift; sourceTree = "<group>"; };
 		8903EB041C702580001C0189 /* webpage.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = webpage.html; sourceTree = "<group>"; };
@@ -493,7 +492,6 @@
 		895B9A1B21AA66A3003FFE46 /* FakeFeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeFeedService.swift; sourceTree = "<group>"; };
 		895DA889222F7D6500B19C37 /* OrderedDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedDictionary.swift; sourceTree = "<group>"; };
 		895DA88B222F7D7600B19C37 /* OrderedDictionarySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedDictionarySpec.swift; sourceTree = "<group>"; };
-		896276F31C4C34980005E8E7 /* UIKit_PivotalSpecHelperStubs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit_PivotalSpecHelperStubs.framework; path = ../Carthage/Build/iOS/UIKit_PivotalSpecHelperStubs.framework; sourceTree = "<group>"; };
 		8963F4331A280F8E00B447D6 /* TagPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagPickerView.swift; sourceTree = "<group>"; };
 		896EF7DE21E407AE00C0AB75 /* KeychainCredentialServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainCredentialServiceSpec.swift; sourceTree = "<group>"; };
 		896EF7E421E45D4900C0AB75 /* SwiftKeychainWrapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftKeychainWrapper.framework; path = Carthage/Build/iOS/SwiftKeychainWrapper.framework; sourceTree = "<group>"; };
@@ -536,8 +534,8 @@
 		89943209219A813800FC6EB6 /* RealmArticleServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmArticleServiceSpec.swift; sourceTree = "<group>"; };
 		8994320F219A921100FC6EB6 /* ModelFactories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelFactories.swift; sourceTree = "<group>"; };
 		89943211219AAA4900FC6EB6 /* FakeArticleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeArticleService.swift; sourceTree = "<group>"; };
-		8994F0F21C8F899600920E6D /* UIViewController+TethysTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+TethysTests.h"; sourceTree = "<group>"; };
-		8994F0F31C8F899600920E6D /* UIViewController+TethysTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+TethysTests.m"; sourceTree = "<group>"; };
+		8994F0F21C8F899600920E6D /* UIViewControllerStub.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIViewControllerStub.h; sourceTree = "<group>"; };
+		8994F0F31C8F899600920E6D /* UIViewControllerStub.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIViewControllerStub.m; sourceTree = "<group>"; };
 		899788801C508BB400B408C4 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 		8997C7F41B248D5A00972930 /* FakeWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeWebView.swift; sourceTree = "<group>"; };
 		8997C8501B255A1900972930 /* TagPickerViewSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagPickerViewSpec.swift; sourceTree = "<group>"; };
@@ -598,6 +596,14 @@
 		89D0D9C723790EC900060E2C /* MethodRedirector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MethodRedirector.h; sourceTree = "<group>"; };
 		89D0D9C823790EC900060E2C /* MethodRedirector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MethodRedirector.m; sourceTree = "<group>"; };
 		89D0D9CC2379190700060E2C /* MethodRedirectorSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MethodRedirectorSpec.m; sourceTree = "<group>"; };
+		89D0D9D0237922C300060E2C /* UINavigationControllerStubSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UINavigationControllerStubSpec.m; sourceTree = "<group>"; };
+		89D0D9D2237922CF00060E2C /* UINavigationControllerStub.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UINavigationControllerStub.m; sourceTree = "<group>"; };
+		89D0D9D42379389900060E2C /* UIViewControllerStubSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIViewControllerStubSpec.m; sourceTree = "<group>"; };
+		89D0D9D623793B9800060E2C /* UIActivityViewControllerStub.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIActivityViewControllerStub.h; sourceTree = "<group>"; };
+		89D0D9D923793DDD00060E2C /* UIAlertActionStub.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UIAlertActionStub.h; sourceTree = "<group>"; };
+		89D0D9DA23793DDD00060E2C /* UIAlertActionStub.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIAlertActionStub.m; sourceTree = "<group>"; };
+		89D0D9DD2379C81600060E2C /* UIActivityViewControllerStubSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIActivityViewControllerStubSpec.m; sourceTree = "<group>"; };
+		89D0D9DF2379E19700060E2C /* UIAlertActionStubSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UIAlertActionStubSpec.m; sourceTree = "<group>"; };
 		89D427DD1CF53D520093D186 /* TethysError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TethysError.swift; sourceTree = "<group>"; };
 		89D427DF1CF540560093D186 /* TethysErrorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TethysErrorSpec.swift; sourceTree = "<group>"; };
 		89D427E11CF556A90093D186 /* HTTPError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPError.swift; sourceTree = "<group>"; };
@@ -713,7 +719,6 @@
 				89CAD4C41BA48401006D79FC /* PureLayout.framework in Frameworks */,
 				89718F311AE0C9B4004C3CB4 /* Quick.framework in Frameworks */,
 				89CB98931B12DFB100C87160 /* TOBrowserActivityKit.framework in Frameworks */,
-				896276F41C4C34980005E8E7 /* UIKit_PivotalSpecHelperStubs.framework in Frameworks */,
 				8978C525219166F000D702BB /* Swinject.framework in Frameworks */,
 				896EF7EF21E5558C00C0AB75 /* SwiftMessages.framework in Frameworks */,
 			);
@@ -1026,6 +1031,8 @@
 			isa = PBXGroup;
 			children = (
 				AE4356071A7ABAD500A961B9 /* Fakes */,
+				89D0D9CF237922B400060E2C /* Stubs */,
+				89D0D9DC23793DE700060E2C /* StubSpecs */,
 				8978C52E2199180100D702BB /* Factories.swift */,
 				89D0D9C723790EC900060E2C /* MethodRedirector.h */,
 				89D0D9C823790EC900060E2C /* MethodRedirector.m */,
@@ -1196,7 +1203,6 @@
 				8918D4A31B8115F800DCDE0E /* ExplanationView.swift */,
 				89C8308219D730E9009924DA /* Assets.xcassets */,
 				892AF31F232ED4680018B19C /* Launch.storyboard */,
-				8903A6241C4AB17C00E896BF /* NotificationView.swift */,
 				898046D11A1BC8FD00EB29F0 /* Tethys.entitlements */,
 				89C830CC19DC67B9009924DA /* UnreadCounter.swift */,
 			);
@@ -1226,7 +1232,6 @@
 				89C204B41A73811000C792D2 /* AppDelegateSpec.swift */,
 				4515FDB6234CECB80032A165 /* ExplanationViewSpec.swift */,
 				8941AB7C1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift */,
-				8903A6261C4ABA7800E896BF /* NotificationViewSpec.swift */,
 				89F98BA71BA07E50005C3CA8 /* SettingsRepositorySpec.swift */,
 				89C204C11A73FEDA00C792D2 /* SplitViewControllerSpec.swift */,
 				89F98BA91BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift */,
@@ -1292,7 +1297,6 @@
 			children = (
 				89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */,
 				89718F2F1AE0C9B4004C3CB4 /* Quick.framework */,
-				896276F31C4C34980005E8E7 /* UIKit_PivotalSpecHelperStubs.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1325,6 +1329,30 @@
 				89F55BA8235B973200FE5887 /* FeedCoordinator.swift */,
 			);
 			path = FeedService;
+			sourceTree = "<group>";
+		};
+		89D0D9CF237922B400060E2C /* Stubs */ = {
+			isa = PBXGroup;
+			children = (
+				89D0D9D923793DDD00060E2C /* UIAlertActionStub.h */,
+				89D0D9DA23793DDD00060E2C /* UIAlertActionStub.m */,
+				8994F0F21C8F899600920E6D /* UIViewControllerStub.h */,
+				8994F0F31C8F899600920E6D /* UIViewControllerStub.m */,
+				89D0D9D2237922CF00060E2C /* UINavigationControllerStub.m */,
+				89D0D9D623793B9800060E2C /* UIActivityViewControllerStub.h */,
+			);
+			path = Stubs;
+			sourceTree = "<group>";
+		};
+		89D0D9DC23793DE700060E2C /* StubSpecs */ = {
+			isa = PBXGroup;
+			children = (
+				89D0D9DD2379C81600060E2C /* UIActivityViewControllerStubSpec.m */,
+				89D0D9DF2379E19700060E2C /* UIAlertActionStubSpec.m */,
+				89D0D9D42379389900060E2C /* UIViewControllerStubSpec.m */,
+				89D0D9D0237922C300060E2C /* UINavigationControllerStubSpec.m */,
+			);
+			path = StubSpecs;
 			sourceTree = "<group>";
 		};
 		89D2566F1C3CC011004066B9 /* Fakes */ = {
@@ -1513,8 +1541,6 @@
 				89DFAA5E1B75CE9B004CD9CA /* UITableViewRowAction+Spec.h */,
 				89735ABA1C0694C70032E09C /* UITraitCollection+TethysTests.h */,
 				89735ABB1C0694C70032E09C /* UITraitCollection+TethysTests.m */,
-				8994F0F21C8F899600920E6D /* UIViewController+TethysTests.h */,
-				8994F0F31C8F899600920E6D /* UIViewController+TethysTests.m */,
 				89D970B91B35BF6400ED84B8 /* WKWebView+TethysTests.h */,
 				89D970BA1B35BF6500ED84B8 /* WKWebView+TethysTests.m */,
 			);
@@ -2044,7 +2070,6 @@
 				456300A323236C6F008D0401 /* Notifications.swift in Sources */,
 				8941AB7B1DC9207200A2CE5F /* HTMLViewController.swift in Sources */,
 				AE4356311A7AE4FE00A961B9 /* InjectorModule.swift in Sources */,
-				8903A6251C4AB17C00E896BF /* NotificationView.swift in Sources */,
 				894F8B48236B61C5005AE5F0 /* DirectionalGestureRecognizer.swift in Sources */,
 				894D1AF31DB1EF2500E70B1A /* RefreshControl.swift in Sources */,
 				89F98BA61BA07DC6005C3CA8 /* SettingsRepository.swift in Sources */,
@@ -2074,6 +2099,7 @@
 				89A3A8C91DEF942F002AF9B5 /* ActionableTableViewSpec.swift in Sources */,
 				894F8B4A236B61D3005AE5F0 /* DirectionalGestureRecognizerSpec.swift in Sources */,
 				4515FDB7234CECB80032A165 /* ExplanationViewSpec.swift in Sources */,
+				89D0D9DB23793DDD00060E2C /* UIAlertActionStub.m in Sources */,
 				893694FF21E30F30002C3A09 /* FakeAccountService.swift in Sources */,
 				89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */,
 				89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */,
@@ -2099,6 +2125,7 @@
 				8934FE5B21DDD43400083387 /* FakeLoginController.swift in Sources */,
 				8978C52F2199180100D702BB /* Factories.swift in Sources */,
 				89EA6C371B4B308F00456892 /* FakeOPMLService.swift in Sources */,
+				89D0D9E02379E19700060E2C /* UIAlertActionStubSpec.m in Sources */,
 				89E9DF1021D49DF000326E2D /* ASWebAuthenticationSession+TethysTests.m in Sources */,
 				89C676541BA264F40037A224 /* FakeUserDefaults.swift in Sources */,
 				89FA3BDD21A7AF990026BC88 /* FakeArticleCellController.swift in Sources */,
@@ -2115,28 +2142,31 @@
 				457EB040236101CE006A7A82 /* FakeLocalFeedService.swift in Sources */,
 				8941AB7D1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift in Sources */,
 				89FA3BDB21A785480026BC88 /* ArticleCellControllerSpec.swift in Sources */,
-				8903A6271C4ABA7800E896BF /* NotificationViewSpec.swift in Sources */,
 				894D1AF51DB28B8E00E70B1A /* RefreshControlSpec.swift in Sources */,
 				89F98BA81BA07E50005C3CA8 /* SettingsRepositorySpec.swift in Sources */,
 				457EB03F236100B8006A7A82 /* FakeFeedCoordinator.swift in Sources */,
 				89E2A33F1B6AA5F300A40D4E /* SettingsViewControllerSpec.swift in Sources */,
 				896EF7EC21E54A3200C0AB75 /* FakeMessenger.swift in Sources */,
+				89D0D9D3237922CF00060E2C /* UINavigationControllerStub.m in Sources */,
 				89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */,
 				894F8B3C2369E834005AE5F0 /* RogueLikeViewControllerSpec.swift in Sources */,
 				89F98BAA1BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift in Sources */,
 				89943213219AAA5000FC6EB6 /* FakeArticleService.swift in Sources */,
 				899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */,
+				89D0D9D1237922C300060E2C /* UINavigationControllerStubSpec.m in Sources */,
 				8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */,
 				89E9DF0D21D49CDB00326E2D /* OAuthLoginControllerSpec.swift in Sources */,
 				4515FDB5234C4A0D0032A165 /* Breakout3DSpec.swift in Sources */,
+				89D0D9D52379389900060E2C /* UIViewControllerStubSpec.m in Sources */,
 				892AF31B232DB5930018B19C /* FakeContextMenuAnimator.swift in Sources */,
 				89BF42472337312500C790A8 /* FakeAppIconChanger.swift in Sources */,
 				89F516571B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m in Sources */,
 				89735ABC1C0694C70032E09C /* UITraitCollection+TethysTests.m in Sources */,
-				8994F0F41C8F899600920E6D /* UIViewController+TethysTests.m in Sources */,
+				8994F0F41C8F899600920E6D /* UIViewControllerStub.m in Sources */,
 				893F93E41B237EBC00B52194 /* UnreadCounterSpec.swift in Sources */,
 				894F8B3F236B40B4005AE5F0 /* RogueLikeGameSpec.swift in Sources */,
 				89D970BB1B35BF6500ED84B8 /* WKWebView+TethysTests.m in Sources */,
+				89D0D9DE2379C81600060E2C /* UIActivityViewControllerStubSpec.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

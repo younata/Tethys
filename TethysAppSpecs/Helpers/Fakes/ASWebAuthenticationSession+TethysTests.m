@@ -12,21 +12,24 @@ static char *kCancelledKey = "kCancelledKey";
 @interface ASWebAuthenticationSession (TethysTestsPrivate)
 - (instancetype)_original_initWithURL:(NSURL *)URL callbackURLScheme:(NSString *)callbackURLScheme completionHandler:(ASWebAuthenticationSessionCompletionHandler)completionHandler;
 
-- (BOOL)original_start;
-- (void)original_cancel;
+- (BOOL)_original_start;
+- (void)_original_cancel;
 @end
 
 @implementation ASWebAuthenticationSession (TethysTests)
 
 + (void)load {
     [self redirectSelector:@selector(initWithURL:callbackURLScheme:completionHandler:)
-                        to:@selector(initWithFakeURL:callbackURLScheme:completionHandler:)];
+                        to:@selector(initWithFakeURL:callbackURLScheme:completionHandler:)
+                        andRenameItTo:@selector(_original_initWithURL:callbackURLScheme:completionHandler:)];
 
     [self redirectSelector:@selector(start)
-                        to:@selector(_start)];
+                        to:@selector(_start)
+             andRenameItTo:@selector(_original_start)];
 
     [self redirectSelector:@selector(cancel)
-                        to:@selector(_cancel)];
+                        to:@selector(_cancel)
+             andRenameItTo:@selector(_original_cancel)];
 }
 
 - (instancetype)initWithFakeURL:(NSURL *)url callbackURLScheme:(NSString *)callbackURLScheme completionHandler:(ASWebAuthenticationSessionCompletionHandler)completionHandler {

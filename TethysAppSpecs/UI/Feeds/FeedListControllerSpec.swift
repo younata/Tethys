@@ -3,7 +3,6 @@ import Nimble
 import Tethys
 import TethysKit
 import Result
-import UIKit_PivotalSpecHelperStubs
 import CBGPromise
 
 final class FeedListControllerSpec: QuickSpec {
@@ -14,6 +13,7 @@ final class FeedListControllerSpec: QuickSpec {
         var settingsRepository: SettingsRepository!
         var mainQueue: FakeOperationQueue!
         var notificationCenter: NotificationCenter!
+        var messenger: FakeMessenger!
 
         let feeds: [Feed] = [
             feedFactory(title: "a"),
@@ -29,10 +29,12 @@ final class FeedListControllerSpec: QuickSpec {
             settingsRepository = SettingsRepository(userDefaults: nil)
             settingsRepository.refreshControl = .spinner
             notificationCenter = NotificationCenter()
+            messenger = FakeMessenger()
 
             subject = FeedListController(
                 feedCoordinator: feedCoordinator,
                 settingsRepository: settingsRepository,
+                messenger: messenger,
                 mainQueue: mainQueue,
                 notificationCenter: notificationCenter,
                 findFeedViewController: {
@@ -340,19 +342,18 @@ final class FeedListControllerSpec: QuickSpec {
 
                                             describe("when the feed coordinator fails") {
                                                 beforeEach {
-                                                    UIView.pauseAnimations()
                                                     feedCoordinator.readAllOfFeedPromises.last?.resolve(.failure(.database(.unknown)))
                                                     mainQueue.runNextOperation()
                                                 }
 
-                                                afterEach {
-                                                    UIView.resumeAnimations()
-                                                }
-
                                                 it("brings up an alert notifying the user") {
-                                                    expect(subject.notificationView.titleLabel.isHidden) == false
-                                                    expect(subject.notificationView.titleLabel.text).to(equal("Unable to update feed"))
-                                                    expect(subject.notificationView.messageLabel.text).to(equal("Unknown Database Error"))
+                                                    expect(messenger.errorCalls).to(haveCount(1))
+                                                    expect(messenger.errorCalls.last).to(equal(
+                                                        MessageCall(
+                                                            title: "Unable to update feed",
+                                                            message: "Unknown Database Error"
+                                                        )
+                                                    ))
                                                 }
 
                                                 it("doesn't post a notification telling other things to reload") {
@@ -448,19 +449,18 @@ final class FeedListControllerSpec: QuickSpec {
 
                                             describe("if the unsubscribe fails") {
                                                 beforeEach {
-                                                    UIView.pauseAnimations()
                                                     feedCoordinator.unsubscribePromises.last?.resolve(.failure(.database(.unknown)))
                                                     mainQueue.runNextOperation()
                                                 }
 
-                                                afterEach {
-                                                    UIView.resumeAnimations()
-                                                }
-
                                                 it("brings up an alert notifying the user") {
-                                                    expect(subject.notificationView.titleLabel.isHidden) == false
-                                                    expect(subject.notificationView.titleLabel.text).to(equal("Unable to delete feed"))
-                                                    expect(subject.notificationView.messageLabel.text).to(equal("Unknown Database Error"))
+                                                    expect(messenger.errorCalls).to(haveCount(1))
+                                                    expect(messenger.errorCalls.last).to(equal(
+                                                        MessageCall(
+                                                            title: "Unable to delete feed",
+                                                            message: "Unknown Database Error"
+                                                        )
+                                                    ))
                                                 }
 
                                                 it("does not remove the feed from the list of cells") {
@@ -555,19 +555,18 @@ final class FeedListControllerSpec: QuickSpec {
 
                                         describe("when the feed coordinator fails") {
                                             beforeEach {
-                                                UIView.pauseAnimations()
                                                 feedCoordinator.readAllOfFeedPromises.last?.resolve(.failure(.database(.unknown)))
                                                 mainQueue.runNextOperation()
                                             }
 
-                                            afterEach {
-                                                UIView.resumeAnimations()
-                                            }
-
                                             it("brings up an alert notifying the user") {
-                                                expect(subject.notificationView.titleLabel.isHidden) == false
-                                                expect(subject.notificationView.titleLabel.text).to(equal("Unable to update feed"))
-                                                expect(subject.notificationView.messageLabel.text).to(equal("Unknown Database Error"))
+                                                expect(messenger.errorCalls).to(haveCount(1))
+                                                expect(messenger.errorCalls.last).to(equal(
+                                                    MessageCall(
+                                                        title: "Unable to update feed",
+                                                        message: "Unknown Database Error"
+                                                    )
+                                                ))
                                             }
 
                                             it("doesn't post a notification") {
@@ -620,19 +619,18 @@ final class FeedListControllerSpec: QuickSpec {
 
                                         describe("if the unsubscribe fails") {
                                             beforeEach {
-                                                UIView.pauseAnimations()
                                                 feedCoordinator.unsubscribePromises.last?.resolve(.failure(.database(.unknown)))
                                                 mainQueue.runNextOperation()
                                             }
 
-                                            afterEach {
-                                                UIView.resumeAnimations()
-                                            }
-
                                             it("brings up an alert notifying the user") {
-                                                expect(subject.notificationView.titleLabel.isHidden) == false
-                                                expect(subject.notificationView.titleLabel.text).to(equal("Unable to delete feed"))
-                                                expect(subject.notificationView.messageLabel.text).to(equal("Unknown Database Error"))
+                                                expect(messenger.errorCalls).to(haveCount(1))
+                                                expect(messenger.errorCalls.last).to(equal(
+                                                    MessageCall(
+                                                        title: "Unable to delete feed",
+                                                        message: "Unknown Database Error"
+                                                    )
+                                                ))
                                             }
 
                                             it("does not remove the feed from the list of cells") {
@@ -745,13 +743,8 @@ final class FeedListControllerSpec: QuickSpec {
 
             describe("when the feed coordinator updates with an error") {
                 beforeEach {
-                    UIView.pauseAnimations()
                     feedCoordinator.feedsPublishers.last?.update(with: .failure(.database(.unknown)))
                     mainQueue.runNextOperation()
-                }
-
-                afterEach {
-                    UIView.resumeAnimations()
                 }
 
                 it("does not stop refreshing") {
@@ -759,9 +752,13 @@ final class FeedListControllerSpec: QuickSpec {
                 }
 
                 it("brings up an alert notifying the user") {
-                    expect(subject.notificationView.titleLabel.isHidden) == false
-                    expect(subject.notificationView.titleLabel.text).to(equal("Unable to fetch feeds"))
-                    expect(subject.notificationView.messageLabel.text).to(equal("Unknown Database Error"))
+                    expect(messenger.errorCalls).to(haveCount(1))
+                    expect(messenger.errorCalls.last).to(equal(
+                        MessageCall(
+                            title: "Unable to fetch feeds",
+                            message: "Unknown Database Error"
+                        )
+                    ))
                 }
             }
 

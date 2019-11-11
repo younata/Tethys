@@ -106,6 +106,7 @@ private func registerViewControllers(container: Container) {
         return FeedListController(
             feedCoordinator: r.resolve(FeedCoordinator.self)!,
             settingsRepository: r.resolve(SettingsRepository.self)!,
+            messenger: r.resolve(Messenger.self)!,
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
             notificationCenter: .default,
             findFeedViewController: { r.resolve(FindFeedViewController.self)! },

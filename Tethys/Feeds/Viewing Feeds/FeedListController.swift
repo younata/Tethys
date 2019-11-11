@@ -43,10 +43,10 @@ public final class FeedListController: UIViewController {
     }()
     public fileprivate(set) var feeds: [Feed] = []
     private var menuTopOffset: NSLayoutConstraint!
-    public let notificationView = NotificationView(forAutoLayout: ())
 
     fileprivate let feedCoordinator: FeedCoordinator
     fileprivate let settingsRepository: SettingsRepository
+    fileprivate let messenger: Messenger
     fileprivate let mainQueue: OperationQueue
     fileprivate let notificationCenter: NotificationCenter
 
@@ -57,6 +57,7 @@ public final class FeedListController: UIViewController {
 
     public init(feedCoordinator: FeedCoordinator,
                 settingsRepository: SettingsRepository,
+                messenger: Messenger,
                 mainQueue: OperationQueue,
                 notificationCenter: NotificationCenter,
                 findFeedViewController: @escaping () -> FindFeedViewController,
@@ -66,6 +67,7 @@ public final class FeedListController: UIViewController {
         ) {
         self.feedCoordinator = feedCoordinator
         self.settingsRepository = settingsRepository
+        self.messenger = messenger
         self.mainQueue = mainQueue
         self.notificationCenter = notificationCenter
         self.findFeedViewController = findFeedViewController
@@ -88,11 +90,6 @@ public final class FeedListController: UIViewController {
         self.tableView.register(FeedTableCell.self, forCellReuseIdentifier: "read")
         self.tableView.register(FeedTableCell.self, forCellReuseIdentifier: "unread")
         self.refreshControl.updateSize(self.view.bounds.size)
-
-        self.navigationController?.navigationBar.addSubview(self.notificationView)
-        self.notificationView.autoPinEdge(toSuperviewMargin: .trailing)
-        self.notificationView.autoPinEdge(toSuperviewMargin: .leading)
-        self.notificationView.autoPinEdge(.top, to: .bottom, of: self.navigationController!.navigationBar)
 
         let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self,
                                         action: #selector(FeedListController.didTapAddFeed))
@@ -248,7 +245,7 @@ public final class FeedListController: UIViewController {
         case .success(let value):
             onSuccess(value)
         case .failure(let error):
-            self.notificationView.display(errorTitle, message: error.localizedDescription)
+            self.messenger.error(title: errorTitle, message: error.localizedDescription)
             onError()
         }
     }

@@ -12,7 +12,8 @@ static char * kForceTouchKey;
 
 + (void)load {
     [self redirectSelector:@selector(forceTouchCapability)
-                        to:@selector(_forceTouchCapability)];
+                        to:@selector(_forceTouchCapability)
+     andRenameItTo:@selector(_original_forceTouchCapability)];
 }
 
 - (UIForceTouchCapability)_forceTouchCapability {

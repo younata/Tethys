@@ -242,6 +242,8 @@
 		89CBD5EE21C8C86200D3FB31 /* ArticleRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBD5ED21C8C86200D3FB31 /* ArticleRepositorySpec.swift */; };
 		89CC82041B461A2B00648367 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82031B461A2B00648367 /* Helpers.swift */; };
 		89CC82061B461A5500648367 /* KitModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82051B461A5500648367 /* KitModule.swift */; };
+		89D0D9CA2379104D00060E2C /* MethodRedirector.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D0D9C823790EC900060E2C /* MethodRedirector.m */; };
+		89D0D9CE23791BEE00060E2C /* MethodRedirectorSpec.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D0D9CC2379190700060E2C /* MethodRedirectorSpec.m */; };
 		89D427DE1CF53D520093D186 /* TethysError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427DD1CF53D520093D186 /* TethysError.swift */; };
 		89D427E01CF540560093D186 /* TethysErrorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427DF1CF540560093D186 /* TethysErrorSpec.swift */; };
 		89D427E21CF556A90093D186 /* HTTPError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D427E11CF556A90093D186 /* HTTPError.swift */; };
@@ -593,6 +595,9 @@
 		89CBD5ED21C8C86200D3FB31 /* ArticleRepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleRepositorySpec.swift; sourceTree = "<group>"; };
 		89CC82031B461A2B00648367 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		89CC82051B461A5500648367 /* KitModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KitModule.swift; sourceTree = "<group>"; };
+		89D0D9C723790EC900060E2C /* MethodRedirector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MethodRedirector.h; sourceTree = "<group>"; };
+		89D0D9C823790EC900060E2C /* MethodRedirector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MethodRedirector.m; sourceTree = "<group>"; };
+		89D0D9CC2379190700060E2C /* MethodRedirectorSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MethodRedirectorSpec.m; sourceTree = "<group>"; };
 		89D427DD1CF53D520093D186 /* TethysError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TethysError.swift; sourceTree = "<group>"; };
 		89D427DF1CF540560093D186 /* TethysErrorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TethysErrorSpec.swift; sourceTree = "<group>"; };
 		89D427E11CF556A90093D186 /* HTTPError.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPError.swift; sourceTree = "<group>"; };
@@ -602,7 +607,6 @@
 		89DB074D1CBF2AC7006D672D /* CBGPromise.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CBGPromise.framework; path = Carthage/Build/iOS/CBGPromise.framework; sourceTree = SOURCE_ROOT; };
 		89DBDA991A9EBB0C00959AC7 /* feed.rss */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = feed.rss; sourceTree = "<group>"; };
 		89DBDA9B1A9FBC4100959AC7 /* feed2.rss */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = feed2.rss; sourceTree = "<group>"; };
-		89DFAA5D1B75CE65004CD9CA /* PCKMethodRedirector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PCKMethodRedirector.h; sourceTree = "<group>"; };
 		89DFAA5E1B75CE9B004CD9CA /* UITableViewRowAction+Spec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UITableViewRowAction+Spec.h"; sourceTree = "<group>"; };
 		89E1868A1D13629D005C5880 /* Analytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Analytics.swift; path = ../Analytics.swift; sourceTree = "<group>"; };
 		89E186911D136C38005C5880 /* FakeAnalytics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeAnalytics.swift; sourceTree = "<group>"; };
@@ -1023,6 +1027,9 @@
 			children = (
 				AE4356071A7ABAD500A961B9 /* Fakes */,
 				8978C52E2199180100D702BB /* Factories.swift */,
+				89D0D9C723790EC900060E2C /* MethodRedirector.h */,
+				89D0D9C823790EC900060E2C /* MethodRedirector.m */,
+				89D0D9CC2379190700060E2C /* MethodRedirectorSpec.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -1501,7 +1508,6 @@
 				892AF31D232DC5960018B19C /* UIContextMenuConfiguration+Tests.m */,
 				89E9DF0E21D49DF000326E2D /* ASWebAuthenticationSession+TethysTests.h */,
 				89E9DF0F21D49DF000326E2D /* ASWebAuthenticationSession+TethysTests.m */,
-				89DFAA5D1B75CE65004CD9CA /* PCKMethodRedirector.h */,
 				89F516551B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.h */,
 				89F516561B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m */,
 				89DFAA5E1B75CE9B004CD9CA /* UITableViewRowAction+Spec.h */,
@@ -1648,7 +1654,7 @@
 					894304291B45089A000078DC = {
 						CreatedOnToolsVersion = 7.0;
 						DevelopmentTeam = 9D456YCUH2;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1100;
 						TestTargetID = 89C8307219D730E9009924DA;
 					};
 					8992D4381C37C9B0004A5A35 = {
@@ -2064,6 +2070,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89D0D9CE23791BEE00060E2C /* MethodRedirectorSpec.m in Sources */,
 				89A3A8C91DEF942F002AF9B5 /* ActionableTableViewSpec.swift in Sources */,
 				894F8B4A236B61D3005AE5F0 /* DirectionalGestureRecognizerSpec.swift in Sources */,
 				4515FDB7234CECB80032A165 /* ExplanationViewSpec.swift in Sources */,
@@ -2071,6 +2078,7 @@
 				89CB984A1B12C50000C87160 /* ActivityIndicatorSpec.swift in Sources */,
 				89C204B51A73811000C792D2 /* AppDelegateSpec.swift in Sources */,
 				8925B1032364017B00A3895B /* DiffableDataSourceSpec.swift in Sources */,
+				89D0D9CA2379104D00060E2C /* MethodRedirector.m in Sources */,
 				8997C8531B2566A600972930 /* ArticleCellSpec.swift in Sources */,
 				89BF42582339B1D900C790A8 /* AppIconSelectionViewControllerSpec.swift in Sources */,
 				899823AC1B2C883B00818755 /* ArticleListControllerSpec.swift in Sources */,
@@ -2249,6 +2257,7 @@
 		8943043A1B45089B000078DC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2261,6 +2270,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.TethysKitSpecs;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tethys.app/Tethys";
 			};
 			name = Debug;
@@ -2268,6 +2279,7 @@
 		8943043B1B45089B000078DC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2281,6 +2293,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.rachelbrindle.TethysKitSpecs;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "102ff7ac-9378-49de-8e9e-fa6cf25e9870";
+				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tethys.app/Tethys";
 			};
 			name = Release;

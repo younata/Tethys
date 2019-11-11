@@ -37,7 +37,7 @@ final class RogueLikeViewControllerSpec: QuickSpec {
                 )
             }
 
-            it("set's the player's velocity in the game") {
+            xit("set's the player's velocity in the game") {
                 expect(subject.game.player.physicsBody?.velocity).to(equal(CGVector(dx: 1, dy: 0)))
             }
         }

@@ -1,30 +1,19 @@
 #import "WKWebView+TethysTests.h"
-#import "PCKMethodRedirector.h"
+#import "MethodRedirector.h"
 #import <objc/runtime.h>
 
 static char * kUrlKey;
 static char * kRequestKey;
 static char * kHtmlKey;
 
-@interface WKWebView (TethysTestsPrivate)
-
-- (nullable WKNavigation *)original_loadRequest:(nonnull NSURLRequest *)request;
-- (nullable WKNavigation *)original_loadHTMLString:(nonnull NSString *)string baseURL:(nullable NSURL *)baseURL;
-
-@end
-
 @implementation WKWebView (TethysTests)
 
 + (void)load {
-    [PCKMethodRedirector redirectSelector:@selector(loadRequest:)
-                                 forClass:[self class]
-                                       to:@selector(_loadRequest:)
-                            andRenameItTo:@selector(original_loadRequest:)];
+    [self redirectSelector:@selector(loadRequest:)
+                        to:@selector(_loadRequest:)];
 
-    [PCKMethodRedirector redirectSelector:@selector(loadHTMLString:baseURL:)
-                                 forClass:[self class]
-                                       to:@selector(_loadHTMLString:baseURL:)
-                            andRenameItTo:@selector(original_loadHTMLString:baseURL:)];
+    [self redirectSelector:@selector(loadHTMLString:baseURL:)
+                        to:@selector(_loadHTMLString:baseURL:)];
 }
 
 - (void)setCurrentURL:(NSURL * __nullable)currentURL {

@@ -1,29 +1,18 @@
 #import "UIViewController+TethysTests.h"
-#import "PCKMethodRedirector.h"
+#import "MethodRedirector.h"
 #import <objc/runtime.h>
 
 static char * kShowMainKey;
 static char * kShowDetailKey;
 
-@interface UIViewController (TethysTestsPrivate)
-
-- (void)original_showViewController:(UIViewController *)vc sender:(id)sender;
-- (void)original_showDetailViewController:(UIViewController *)vc sender:(id)sender;
-
-@end
-
 @implementation UIViewController (TethysTests)
 
 + (void)load {
-    [PCKMethodRedirector redirectSelector:@selector(showViewController:sender:)
-                                 forClass:self
-                                       to:@selector(_showViewController:sender:)
-                            andRenameItTo:@selector(original_showViewController:sender:)];
+    [self redirectSelector:@selector(showViewController:sender:)
+                        to:@selector(_showViewController:sender:)];
 
-    [PCKMethodRedirector redirectSelector:@selector(showDetailViewController:sender:)
-                                 forClass:self
-                                       to:@selector(_showDetailViewController:sender:)
-                            andRenameItTo:@selector(original_showDetailViewController:sender:)];
+    [self redirectSelector:@selector(showDetailViewController:sender:)
+                        to:@selector(_showDetailViewController:sender:)];
 }
 
 - (void)_showViewController:(UIViewController *)vc sender:(id)sender {

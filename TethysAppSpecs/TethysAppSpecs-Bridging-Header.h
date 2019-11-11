@@ -5,3 +5,4 @@
 #import "UIViewController+TethysTests.h"
 #import "FakeWKContentMenuElementInfo.h"
 #import "UIContextMenuConfiguration+Tests.h"
+#import "MethodRedirector.h"

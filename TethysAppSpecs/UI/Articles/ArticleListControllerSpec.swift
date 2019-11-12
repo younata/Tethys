@@ -98,13 +98,13 @@ class ArticleListControllerSpec: QuickSpec {
             }
         }
 
-        func itTellsTheUserAboutTheError(title: String, message: String) {
+        func itTellsTheUserAboutTheError(title: String, message: String, line: UInt = #line) {
             it("shows an alert") {
                 guard let error = messenger.errorCalls.last else {
                     return expect(messenger.errorCalls).to(haveCount(1))
                 }
-                expect(error.title).to(equal(title))
-                expect(error.message).to(equal(message))
+                expect(error.title, line: line).to(equal(title))
+                expect(error.message, line: line).to(equal(message))
             }
         }
 
@@ -171,8 +171,8 @@ class ArticleListControllerSpec: QuickSpec {
                         it("shows an indicator that we're doing things") {
                             let indicator = subject.view.subviews.filter {
                                 return $0.isKind(of: ActivityIndicator.classForCoder())
-                                }.first as? ActivityIndicator
-                            expect(indicator?.message) == "Marking Articles as Read"
+                            }.first as? ActivityIndicator
+                            expect(indicator?.message).to(equal("Marking Articles as Read"))
                         }
 
                         it("marks all articles of that feed as read") {
@@ -206,7 +206,7 @@ class ArticleListControllerSpec: QuickSpec {
                                     articleFactory(title: "1"),
                                     articleFactory(title: "2"),
                                     articleFactory(title: "3"),
-                                    ]
+                                ]
                                 var oldConfigureCalls: Int = 0
                                 beforeEach {
                                     oldConfigureCalls = articleCellController.configureCalls.count
@@ -219,7 +219,23 @@ class ArticleListControllerSpec: QuickSpec {
                                     let calls = articleCellController.configureCalls.suffix(3)
 
                                     expect(calls.map { $0.article }).to(equal(updatedArticles))
+
+                                    expect(subject.tableView.numberOfSections).to(equal(2))
+                                    expect(subject.tableView.numberOfRows(inSection: 1)).to(equal(3))
                                 }
+                            }
+
+                            describe("when the articles request fails") {
+                                beforeEach {
+                                    feedCoordinator.articlesOfFeedPublishers.last?.update(with: .failure(.unknown))
+                                }
+
+                                it("removes all articles from the feed") {
+                                    expect(subject.tableView.numberOfSections).to(equal(2))
+                                    expect(subject.tableView.numberOfRows(inSection: 1)).to(equal(0))
+                                }
+
+                                itTellsTheUserAboutTheError(title: "Unable to retrieve articles", message: "Unknown Error - please try again")
                             }
                         }
 

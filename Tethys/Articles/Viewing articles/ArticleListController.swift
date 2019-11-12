@@ -321,6 +321,10 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
                     self?.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
                     self?.tableView.endUpdates()
                 case .update(.failure(let error)):
+                    self?.articles = AnyCollection([])
+                    self?.tableView.beginUpdates()
+                    self?.tableView.reloadSections(IndexSet(integersIn: 0..<2), with: .automatic)
+                    self?.tableView.endUpdates()
                     self?.showAlert(
                         error: error,
                         title: NSLocalizedString("ArticleListController_Retrieving_Error_Title", comment: "")
@@ -356,18 +360,20 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
 
         indicator.configure(message: NSLocalizedString("ArticleListController_Action_MarkRead_Indicator", comment: ""))
 
-        self.feedCoordinator.readAll(of: self.feed).then { markReadResult in
-            switch markReadResult {
-            case .success:
-                indicator.removeFromSuperview()
-                self.resetArticles()
-                self.notificationCenter.post(name: Notifications.reloadUI, object: self)
-            case let .failure(error):
-                indicator.removeFromSuperview()
-                self.showAlert(
-                    error: error,
-                    title: NSLocalizedString("ArticleListController_Action_MarkRead_Error_Title", comment: "")
-                )
+        self.feedCoordinator.readAll(of: self.feed).then { [weak self] markReadResult in
+            self?.mainQueue.addOperation {
+                switch markReadResult {
+                case .success:
+                    indicator.removeFromSuperview()
+                    self?.resetArticles()
+                    self?.notificationCenter.post(name: Notifications.reloadUI, object: self)
+                case let .failure(error):
+                    indicator.removeFromSuperview()
+                    self?.showAlert(
+                        error: error,
+                        title: NSLocalizedString("ArticleListController_Action_MarkRead_Error_Title", comment: "")
+                    )
+                }
             }
         }
     }

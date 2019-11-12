@@ -20,12 +20,34 @@ final class RogueLikeViewControllerSpec: QuickSpec {
             expect(scene?.physicsWorld.gravity).to(equal(CGVector.zero))
         }
 
+        describe("the exit button") {
+            it("is configured for accessibility") {
+                expect(subject.exitButton.isAccessibilityElement).to(beTrue())
+                expect(subject.exitButton.accessibilityTraits).to(equal([.button]))
+                expect(subject.exitButton.accessibilityLabel).to(equal("Close"))
+            }
+
+            it("is styled like a nav button elsewhere in the app") {
+                expect(subject.exitButton.titleColor(for: .normal)).to(equal(Theme.highlightColor))
+            }
+
+            it("dismisses itself when tapped") {
+                let presentingController = UIViewController()
+                presentingController.present(subject, animated: false, completion: nil)
+                expect(subject.presentingViewController).to(be(presentingController))
+                expect(presentingController.presentedViewController).to(be(subject))
+
+                subject.exitButton.sendActions(for: .touchUpInside)
+                expect(presentingController.presentedViewController).to(beNil())
+            }
+        }
+
         describe("when the directional gesture recognizer updates") {
             var directionalGestureRecognizer: DirectionalGestureRecognizer?
             var observer: DirectionalGestureObserver!
 
             beforeEach {
-                directionalGestureRecognizer = subject.view.gestureRecognizers?.compactMap { $0 as? DirectionalGestureRecognizer }.first
+                directionalGestureRecognizer = subject.sceneView.gestureRecognizers?.compactMap { $0 as? DirectionalGestureRecognizer }.first
                 expect(directionalGestureRecognizer).toNot(beNil())
                 observer = directionalGestureRecognizer?.setupForTest()
                 guard observer != nil else { return }
@@ -38,7 +60,7 @@ final class RogueLikeViewControllerSpec: QuickSpec {
             }
 
             xit("set's the player's velocity in the game") {
-                expect(subject.game.player.physicsBody?.velocity).to(equal(CGVector(dx: 1, dy: 0)))
+                expect(subject.game.player.physicsBody?.velocity).to(equal(CGVector(dx: 50, dy: 0)))
             }
         }
     }

@@ -47,7 +47,47 @@ final class RogueLikeGameSpec: QuickSpec {
                     return
                 }
                 expect(player.physicsBody).toNot(beNil())
+                expect(player.physicsBody?.allowsRotation).to(beFalse())
+                expect(player.physicsBody?.restitution).to(equal(0))
+                expect(player.physicsBody?.friction).to(equal(1.0))
+            }
+
+            describe("moving the player") {
+                beforeEach {
+                    subject.guidePlayer(direction: CGVector(dx: sin(45.rads), dy: sin(45.rads)))
+                }
+
+                it("reverses the dy and multiplies both dx and dy by 50") {
+                    let dx = sin(45.rads) * 50
+                    let dy = sin(45.rads) * -50
+                    expect(subject.player.physicsBody?.velocity.dx).to(beCloseTo(dx))
+                    expect(subject.player.physicsBody?.velocity.dy).to(beCloseTo(dy))
+                }
+
+                it("rotates the user to face where the user is guiding them") {
+                    expect(subject.player.zRotation.degrees).to(beCloseTo(-135))
+                }
+
+                describe("telling the player to stop moving") {
+                    beforeEach {
+                        subject.guidePlayer(direction: .zero)
+                    }
+
+                    it("stops the player's movements") {
+                        expect(subject.player.physicsBody?.velocity).to(equal(.zero))
+                    }
+
+                    it("keeps the rotation of the player") {
+                        expect(subject.player.zRotation.degrees).to(beCloseTo(-135))
+                    }
+                }
             }
         }
+    }
+}
+
+private extension CGFloat {
+    var degrees: CGFloat {
+        return self * 180 / .pi
     }
 }

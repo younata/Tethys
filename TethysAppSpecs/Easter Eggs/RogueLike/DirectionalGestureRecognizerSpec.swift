@@ -188,7 +188,7 @@ final class CGVectorLinearAlgebraSpec: XCTestCase {
 
     func testPerformance() {
         self.measure {
-            for _ in 0..<10_000 {
+            for _ in 0..<1_000 {
                 _ = CGVector(dx: 30000000, dy: 40000000).normalized()
             }
         }

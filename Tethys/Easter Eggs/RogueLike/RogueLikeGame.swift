@@ -12,7 +12,11 @@ final class RogueLikeGame: NSObject {
         let node = SKShapeNode(path: path, centered: true)
         node.fillColor = Theme.highlightColor
         node.strokeColor = .white
-        node.physicsBody = SKPhysicsBody(circleOfRadius: 20)
+        node.physicsBody = SKPhysicsBody(polygonFrom: CGPath(ellipseIn: CGRect(x: -10, y: -10, width: 20, height: 20),
+                                                             transform: nil))
+        node.physicsBody?.allowsRotation = false
+        node.physicsBody?.restitution = 0
+        node.physicsBody?.friction = 1.0
         return node
     }()
     let view: SKView
@@ -38,12 +42,19 @@ final class RogueLikeGame: NSObject {
 
         let level = self.levelGenerator.generate(level: 1, bounds: bounds)
         scene.addChild(level.node)
+        scene.isPaused = false
 
         return scene
     }
 
     func guidePlayer(direction: CGVector) {
-        self.player.physicsBody?.velocity = direction
+        let unitsPerSecond: CGFloat = 50
+        self.player.physicsBody?.velocity = CGVector(
+            dx: direction.dx * unitsPerSecond,
+            dy: direction.dy * -unitsPerSecond
+        )
+        guard direction != .zero else { return }
+        self.player.zRotation = atan2(-direction.dy, direction.dx) - (.pi / 2)
     }
 }
 
@@ -58,10 +69,15 @@ protocol LevelGenerator {
 
 struct BoxLevelGenerator: LevelGenerator {
     func generate(level number: Int, bounds: CGRect) -> Level {
-        let room = SKShapeNode(rect: bounds.insetBy(dx: 20, dy: 20))
+        let roomRect = bounds.insetBy(dx: 20, dy: 20)
+        let room = SKShapeNode(rect: roomRect)
         room.fillColor = .clear
         room.strokeColor = .white
         room.lineWidth = 2
+        room.physicsBody = SKPhysicsBody(edgeLoopFrom: roomRect)
+        room.physicsBody?.isDynamic = false
+        room.physicsBody?.restitution = 0
+        room.physicsBody?.friction = 1.0
 
         return Level(number: number, node: room)
     }

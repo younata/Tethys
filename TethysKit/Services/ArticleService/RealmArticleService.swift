@@ -13,17 +13,6 @@ struct RealmArticleService: ArticleService {
         self.workQueue = workQueue
     }
 
-    func feed(of article: Article) -> Future<Result<Feed, TethysError>> {
-        let promise = Promise<Result<Feed, TethysError>>()
-        self.workQueue.addOperation {
-            guard let feed = self.realmArticle(for: article)?.feed else {
-                return self.resolve(promise: promise, error: .database(.entryNotFound))
-            }
-            return self.resolve(promise: promise, with: Feed(realmFeed: feed))
-        }
-        return promise.future
-    }
-
     func mark(article: Article, asRead read: Bool) -> Future<Result<Article, TethysError>> {
         let promise = Promise<Result<Article, TethysError>>()
         guard article.read != read else {

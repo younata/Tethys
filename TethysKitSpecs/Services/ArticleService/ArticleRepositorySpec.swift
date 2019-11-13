@@ -19,19 +19,6 @@ final class ArticleRepositorySpec: QuickSpec {
             subject = ArticleRepository(articleService: articleService)
         }
 
-        describe("feed(of:)") {
-            itCachesFuturesPermanently(
-                factory: { return subject.feed(of: article) },
-                callChecker: { expect(articleService.feedCalls).to(haveCount($0)) },
-                resolver: { error -> Result<Feed, TethysError> in
-                    let result = resultFactory(error: error, value: feedFactory())
-                    articleService.feedPromises.last?.resolve(result)
-                    return result
-                },
-                equator: equatableComparator
-            )
-        }
-
         describe("mark(article:asRead:)") {
             itCachesInProgressFutures(
                 factory: { return subject.mark(article: article, asRead: true) },

@@ -8,8 +8,30 @@ private enum PageInfo: Equatable {
     case last
 }
 
+public struct NetworkPagedIndex: Comparable, ExpressibleByIntegerLiteral {
+    public typealias IntegerLiteralType = Int
+    let actualIndex: Int
+    let isIndefiniteEnd: Bool
+
+    public static func < (lhs: NetworkPagedIndex, rhs: NetworkPagedIndex) -> Bool {
+        if lhs.isIndefiniteEnd { return false }
+
+        return lhs.actualIndex < rhs.actualIndex
+    }
+
+    public init(actualIndex: Int, isIndefiniteEnd: Bool) {
+        self.actualIndex = actualIndex
+        self.isIndefiniteEnd = isIndefiniteEnd
+    }
+
+    public init(integerLiteral value: Self.IntegerLiteralType) {
+        self.actualIndex = value
+        self.isIndefiniteEnd = false
+    }
+}
+
 public class NetworkPagedCollection<T>: Collection {
-    public typealias Index = Int
+    public typealias Index = NetworkPagedIndex
     public typealias Element = T
 
     private let httpClient: HTTPClient
@@ -18,6 +40,8 @@ public class NetworkPagedCollection<T>: Collection {
 
     private var items: [T] = []
     private var batchCount: Int = 0
+
+    private var finished: Bool { self.nextPageInfo != .last }
 
     init(httpClient: HTTPClient, requestFactory: @escaping (String?) -> URLRequest,
          dataParser: @escaping (Data) throws -> ([T], String?)) {
@@ -28,29 +52,38 @@ public class NetworkPagedCollection<T>: Collection {
         self.requestItems()
     }
 
-    public var startIndex: Int { return self.items.startIndex }
-    public var endIndex: Int { return self.items.endIndex }
+    public var startIndex: Index { NetworkPagedIndex(actualIndex: self.items.startIndex, isIndefiniteEnd: false) }
+    public var endIndex: Index { NetworkPagedIndex(actualIndex: self.items.endIndex, isIndefiniteEnd: self.finished) }
 
-    public var underestimatedCount: Int { return self.items.count }
+    public var underestimatedCount: Int { self.items.count }
 
     public subscript(index: Index) -> Element {
+        let actualIndex = index.actualIndex
         // Determine whether to refetch because we're close the end of this page of data
-        if self.shouldFetchNextResult(from: index) {
-            self.requestItems(upTo: index)
+        if self.shouldFetchNextResult(from: actualIndex) {
+            self.requestItems(upTo: actualIndex)
         }
-        while self.shouldWaitForNextRequest(index: index) {
+        guard actualIndex >= self.underestimatedCount else {
+            return self.items[actualIndex]
+        }
+        while self.shouldWaitForNextRequest(index: actualIndex) {
             self.earliestRequest()?.wait()
         }
-        if index < self.underestimatedCount {
-            return self.items[index]
-        }
 
-        fatalError("Error: Index out of range. " +
-            "(Tried to get item at \(index), but only have items up to \(self.underestimatedCount)")
+        if actualIndex >= self.underestimatedCount {
+            fatalError("Error: Index out of range. " +
+                "(Tried to get item at \(actualIndex), but only have items up to \(self.underestimatedCount)")
+        }
+        return self.items[actualIndex]
     }
 
     public func index(after: Index) -> Index {
-        return items.index(after: after)
+        let nextIndex = self.items.index(after: after.actualIndex)
+        if nextIndex == self.items.endIndex {
+            return self.endIndex
+        } else {
+            return NetworkPagedIndex(actualIndex: nextIndex, isIndefiniteEnd: false)
+        }
     }
 
     private var existingRequests: Set<URLRequest> = []

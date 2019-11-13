@@ -177,7 +177,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
             }
             return 0
         case .articles:
-            return self.articles.count
+            return self.articles.underestimatedCount
         }
     }
 

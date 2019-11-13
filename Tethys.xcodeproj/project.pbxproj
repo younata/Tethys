@@ -51,6 +51,9 @@
 		8925B0FF2362BEC900A3895B /* feed_no_link.rss in Resources */ = {isa = PBXBuildFile; fileRef = 8925B0FD2362BDA900A3895B /* feed_no_link.rss */; };
 		8925B101236400DA00A3895B /* DiffableDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8925B100236400DA00A3895B /* DiffableDataSource.swift */; };
 		8925B1032364017B00A3895B /* DiffableDataSourceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8925B1022364017B00A3895B /* DiffableDataSourceSpec.swift */; };
+		8926E16E237A7FF00091870C /* InoreaderArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8926E16D237A7FF00091870C /* InoreaderArticleService.swift */; };
+		8926E170237A81170091870C /* InoreaderArticleServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8926E16F237A81170091870C /* InoreaderArticleServiceSpec.swift */; };
+		8926E172237A81D60091870C /* ArticleServiceShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8926E171237A81D60091870C /* ArticleServiceShared.swift */; };
 		892AF319232D896C0018B19C /* FakeWKContentMenuElementInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 892AF318232D896C0018B19C /* FakeWKContentMenuElementInfo.m */; };
 		892AF31B232DB5930018B19C /* FakeContextMenuAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892AF31A232DB5930018B19C /* FakeContextMenuAnimator.swift */; };
 		892AF31E232DC5960018B19C /* UIContextMenuConfiguration+Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 892AF31D232DC5960018B19C /* UIContextMenuConfiguration+Tests.m */; };
@@ -428,6 +431,9 @@
 		8925B0FD2362BDA900A3895B /* feed_no_link.rss */ = {isa = PBXFileReference; lastKnownFileType = text; path = feed_no_link.rss; sourceTree = "<group>"; };
 		8925B100236400DA00A3895B /* DiffableDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiffableDataSource.swift; sourceTree = "<group>"; };
 		8925B1022364017B00A3895B /* DiffableDataSourceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiffableDataSourceSpec.swift; sourceTree = "<group>"; };
+		8926E16D237A7FF00091870C /* InoreaderArticleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InoreaderArticleService.swift; sourceTree = "<group>"; };
+		8926E16F237A81170091870C /* InoreaderArticleServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InoreaderArticleServiceSpec.swift; sourceTree = "<group>"; };
+		8926E171237A81D60091870C /* ArticleServiceShared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleServiceShared.swift; sourceTree = "<group>"; };
 		892AF317232D896C0018B19C /* FakeWKContentMenuElementInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FakeWKContentMenuElementInfo.h; sourceTree = "<group>"; };
 		892AF318232D896C0018B19C /* FakeWKContentMenuElementInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FakeWKContentMenuElementInfo.m; sourceTree = "<group>"; };
 		892AF31A232DB5930018B19C /* FakeContextMenuAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeContextMenuAnimator.swift; sourceTree = "<group>"; };
@@ -1069,6 +1075,8 @@
 			children = (
 				89943209219A813800FC6EB6 /* RealmArticleServiceSpec.swift */,
 				89CBD5ED21C8C86200D3FB31 /* ArticleRepositorySpec.swift */,
+				8926E16F237A81170091870C /* InoreaderArticleServiceSpec.swift */,
+				8926E171237A81D60091870C /* ArticleServiceShared.swift */,
 			);
 			path = ArticleService;
 			sourceTree = "<group>";
@@ -1314,6 +1322,7 @@
 			children = (
 				8978C530219A7FDC00D702BB /* ArticleService.swift */,
 				89CBD5DE21BF780C00D3FB31 /* RealmArticleService.swift */,
+				8926E16D237A7FF00091870C /* InoreaderArticleService.swift */,
 				89CBD5EB21C8C85600D3FB31 /* ArticleRepository.swift */,
 			);
 			path = ArticleService;
@@ -1960,6 +1969,7 @@
 				894E755421B316F200B4A0A1 /* RealmRSSUpdateService.swift in Sources */,
 				89FA3BD121A66F990026BC88 /* RealmProvider.swift in Sources */,
 				893694FB21E2F948002C3A09 /* HTTPMethod.swift in Sources */,
+				8926E16E237A7FF00091870C /* InoreaderArticleService.swift in Sources */,
 				894304411B450A00000078DC /* OPMLService.swift in Sources */,
 				895AC51B1C7FF27300A5F6A1 /* RealmMigrator.swift in Sources */,
 				891754701C5B449E0036D96D /* RealmObjects.swift in Sources */,
@@ -1999,6 +2009,7 @@
 				8935F5DE1B462AD2000FFD5D /* FakeOperationQueue.swift in Sources */,
 				8935F5E11B462B8C000FFD5D /* FakeOPMLService.swift in Sources */,
 				89F55BA7235A74A400FE5887 /* SubscriptionSpec.swift in Sources */,
+				8926E172237A81D60091870C /* ArticleServiceShared.swift in Sources */,
 				8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */,
 				892E77151E09A49900866336 /* FakeTimerFactory.swift in Sources */,
 				8992D4331C3665B7004A5A35 /* FakeUpdateService.swift in Sources */,
@@ -2018,6 +2029,7 @@
 				892E77071E08459300866336 /* KVOMonitor.swift in Sources */,
 				8935F5D51B4628B3000FFD5D /* OPMLServiceSpec.swift in Sources */,
 				89F55BAF235CEC1A00FE5887 /* LocalRealmFeedServiceSpec.swift in Sources */,
+				8926E170237A81170091870C /* InoreaderArticleServiceSpec.swift in Sources */,
 				8984FE8F1CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */,
 				8948B8BE222CD8A900E1BFBC /* NetworkPagedCollectionSpec.swift in Sources */,
 				89F55BAB235B994F00FE5887 /* FeedCoordinatorSpec.swift in Sources */,

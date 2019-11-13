@@ -44,23 +44,27 @@ final class NetworkPagedCollectionSpec: QuickSpec {
             expect(pagesRequested).to(equal([nil]))
         }
 
-        func theCommonCollectionProperties(startIndex: Int, endIndex: Int, underestimatedCount: Int) {
+        func theCommonCollectionProperties(startIndex: NetworkPagedIndex, endIndex: NetworkPagedIndex, underestimatedCount: Int, line: UInt = #line) {
             describe("asking for common collection properties at this point") {
                 it("startIndex") {
-                    expect(subject.startIndex).to(equal(startIndex))
+                    expect(subject.startIndex, line: line).to(equal(startIndex))
                 }
 
                 it("endIndex") {
-                    expect(subject.endIndex).to(equal(endIndex))
+                    expect(subject.endIndex, line: line).to(equal(endIndex))
                 }
 
                 it("underestimatedCount") {
-                    expect(subject.underestimatedCount).to(equal(underestimatedCount))
+                    expect(subject.underestimatedCount, line: line).to(equal(underestimatedCount))
                 }
             }
         }
 
-        theCommonCollectionProperties(startIndex: 0, endIndex: 0, underestimatedCount: 0)
+        theCommonCollectionProperties(startIndex: 0, endIndex: NetworkPagedIndex(actualIndex: 0, isIndefiniteEnd: true), underestimatedCount: 0)
+
+        it("converts to anycollection without hanging") {
+            expect(AnyCollection(subject)).toNot(beNil())
+        }
 
         describe("when the request succeeds with valid data") {
             beforeEach {
@@ -79,7 +83,11 @@ final class NetworkPagedCollectionSpec: QuickSpec {
                 expect(pagesRequested).to(equal([nil]))
             }
 
-            theCommonCollectionProperties(startIndex: 0, endIndex: 4, underestimatedCount: 4)
+            theCommonCollectionProperties(startIndex: 0, endIndex: NetworkPagedIndex(actualIndex: 4, isIndefiniteEnd: true), underestimatedCount: 4)
+
+            it("converts to anycollection without hanging") {
+                expect(AnyCollection(subject)).toNot(beNil())
+            }
 
             it("makes another request when you reach the 75% point on the iteration/access") {
                 guard subject.underestimatedCount >= 3 else {
@@ -110,7 +118,7 @@ final class NetworkPagedCollectionSpec: QuickSpec {
                 expect(httpClient.requests).to(haveCount(2))
             }
 
-            describe("if this request succeeds with a next page") {
+            describe("if this next request succeeds with a next page") {
                 beforeEach {
                     nextPageIndex = "3"
 
@@ -131,7 +139,11 @@ final class NetworkPagedCollectionSpec: QuickSpec {
                     expect(pagesRequested).to(equal([nil, "2"]))
                 }
 
-                theCommonCollectionProperties(startIndex: 0, endIndex: 8, underestimatedCount: 8)
+                theCommonCollectionProperties(startIndex: 0, endIndex: NetworkPagedIndex(actualIndex: 8, isIndefiniteEnd: true), underestimatedCount: 8)
+
+                it("converts to anycollection without hanging") {
+                    expect(AnyCollection(subject)).toNot(beNil())
+                }
 
                 it("doesn't re-request data it already has") {
                     _ = subject[2]
@@ -196,7 +208,12 @@ final class NetworkPagedCollectionSpec: QuickSpec {
                     expect(pagesRequested).to(equal([nil, "2"]))
                 }
 
-                theCommonCollectionProperties(startIndex: 0, endIndex: 8, underestimatedCount: 8)
+                theCommonCollectionProperties(startIndex: 0, endIndex: NetworkPagedIndex(actualIndex: 8, isIndefiniteEnd: false), underestimatedCount: 8)
+
+                it("converts to anycollection without hanging") {
+                    expect(AnyCollection(subject)).to(haveCount(8))
+                    expect(Array(AnyCollection(subject))).to(equal(["foo", "bar", "baz", "qux", "a", "b", "c", "d"]))
+                }
             }
         }
     }

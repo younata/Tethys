@@ -96,7 +96,8 @@ final class RealmRSSUpdateService: UpdateService {
         }
     }
 
-    private func update(from muonFeed: Muon.Feed, identifier: String, fallbackURL: URL) -> Future<Result<Feed, TethysError>> {
+    private func update(from muonFeed: Muon.Feed, identifier: String,
+                        fallbackURL: URL) -> Future<Result<Feed, TethysError>> {
         let promise = Promise<Result<Feed, TethysError>>()
         self.workQueue.addOperation {
             guard let feed = self.realmProvider.realm().object(ofType: RealmFeed.self, forPrimaryKey: identifier) else {

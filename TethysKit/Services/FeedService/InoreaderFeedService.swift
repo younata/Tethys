@@ -36,39 +36,69 @@ struct InoreaderFeedService: FeedService {
         ) ?? ""
         let apiUrl = self.baseURL.appendingPathComponent("reader/api/0/stream/contents/feed")
         let url = URL(string: apiUrl.absoluteString + "%2F" + encodedURL)!
-        let collection = NetworkPagedCollection<Article>(
-            httpClient: self.httpClient,
-            requestFactory: { (continuationString) -> URLRequest in
-                guard let token = continuationString else {
-                    return URLRequest(url: url)
+        return self.httpClient.request(URLRequest(url: url))
+            .map { requestResult -> Result<[InoreaderArticle], NetworkError> in
+                switch requestResult {
+                case .success(let response):
+                    return self.parse(response: response).map { (parsed: InoreaderArticles) -> [InoreaderArticle] in
+                        return parsed.items
+                    }
+                case .failure(let clientError):
+                    return .failure(NetworkError(httpClientError: clientError))
                 }
-                var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-                components.queryItems = [
-                    URLQueryItem(name: "c", value: token)
-                ]
-                return URLRequest(url: components.url!)
-        },
-            dataParser: { (body: Data) throws -> ([Article], String?) in
-                let decoder = JSONDecoder()
-                decoder.dateDecodingStrategy = .secondsSince1970
-                let parsedArticlesResponse = try decoder.decode(InoreaderArticles.self, from: body)
-                let articles: [Article] = parsedArticlesResponse.items.compactMap {
-                    guard let url = $0.canonical.first?.href else { return nil }
-                    return Article(
-                        title: $0.title,
-                        link: url,
-                        summary: $0.summary.content,
-                        authors: [Author(name: $0.author, email: nil)],
-                        identifier: $0.id,
-                        content: $0.summary.content,
-                        read: InoreaderTags(tags: $0.categories.map { InoreaderTag(id: $0) }).containsRead,
-                        published: $0.published,
-                        updated: $0.updated
-                    )
-                }
-                return (articles, parsedArticlesResponse.continuation)
-        })
-        return Promise<Result<AnyCollection<Article>, TethysError>>.resolved(.success(AnyCollection(collection)))
+        }.map { articlesResult -> Result<AnyCollection<Article>, TethysError> in
+            return articlesResult.mapError { return TethysError.network(url, $0) }
+                .map { articles -> [Article] in
+                    return articles.compactMap {
+                        guard let url = $0.canonical.first?.href else { return nil }
+                        return Article(
+                            title: $0.title,
+                            link: url,
+                            summary: $0.summary.content,
+                            authors: [Author(name: $0.author, email: nil)],
+                            identifier: $0.id,
+                            content: $0.summary.content,
+                            read: InoreaderTags(tags: $0.categories.map { InoreaderTag(id: $0) }).containsRead,
+                            published: $0.published,
+                            updated: $0.updated
+                        )
+                    }
+            }.map { AnyCollection($0) }
+        }
+
+//        let collection = NetworkPagedCollection<Article>(
+//            httpClient: self.httpClient,
+//            requestFactory: { (continuationString) -> URLRequest in
+//                guard let token = continuationString else {
+//                    return URLRequest(url: url)
+//                }
+//                var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+//                components.queryItems = [
+//                    URLQueryItem(name: "c", value: token)
+//                ]
+//                return URLRequest(url: components.url!)
+//        },
+//            dataParser: { (body: Data) throws -> ([Article], String?) in
+//                let decoder = JSONDecoder()
+//                decoder.dateDecodingStrategy = .secondsSince1970
+//                let parsedArticlesResponse = try decoder.decode(InoreaderArticles.self, from: body)
+//                let articles: [Article] = parsedArticlesResponse.items.compactMap {
+//                    guard let url = $0.canonical.first?.href else { return nil }
+//                    return Article(
+//                        title: $0.title,
+//                        link: url,
+//                        summary: $0.summary.content,
+//                        authors: [Author(name: $0.author, email: nil)],
+//                        identifier: $0.id,
+//                        content: $0.summary.content,
+//                        read: InoreaderTags(tags: $0.categories.map { InoreaderTag(id: $0) }).containsRead,
+//                        published: $0.published,
+//                        updated: $0.updated
+//                    )
+//                }
+//                return (articles, parsedArticlesResponse.continuation)
+//        })
+//        return Promise<Result<AnyCollection<Article>, TethysError>>.resolved(.success(AnyCollection(collection)))
     }
 
     func subscribe(to url: URL) -> Future<Result<Feed, TethysError>> {

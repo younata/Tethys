@@ -20,95 +20,6 @@ final class InoreaderFeedServiceSpec: QuickSpec {
             subject = InoreaderFeedService(httpClient: httpClient, baseURL: baseURL)
         }
 
-        func itBehavesLikeTheRequestFailed<T>(url: URL, future: @escaping () -> Future<Result<T, TethysError>>) {
-            if T.self != Void.self {
-                describe("when the request succeeds") {
-                    context("and the data is not valid") {
-                        beforeEach {
-                            guard httpClient.requestPromises.last?.future.value == nil else {
-                                fail("most recent promise was already resolved")
-                                return
-                            }
-                            httpClient.requestPromises.last?.resolve(.success(HTTPResponse(
-                                body: "[\"bad\": \"data\"]".data(using: .utf8)!,
-                                status: .ok,
-                                mimeType: "Application/JSON",
-                                headers: [:]
-                            )))
-                        }
-
-                        it("resolves the future with a bad response error") {
-                            expect(future().value).toNot(beNil(), description: "Expected future to be resolved")
-                            expect(future().value?.error).to(equal(TethysError.network(url, .badResponse)))
-                        }
-                    }
-                }
-            }
-
-            describe("when the request fails") {
-                context("when the request fails with a 400 level error") {
-                    beforeEach {
-                        guard httpClient.requestPromises.last?.future.value == nil else {
-                            fail("most recent promise was already resolved")
-                            return
-                        }
-                        httpClient.requestPromises.last?.resolve(.success(HTTPResponse(
-                            body: "403".data(using: .utf8)!,
-                            status: HTTPStatus.init(rawValue: 403)!,
-                            mimeType: "Application/JSON",
-                            headers: [:]
-                        )))
-                    }
-
-                    it("resolves the future with the error") {
-                        expect(future().value).toNot(beNil(), description: "Expected future to be resolved")
-                        expect(future().value?.error).to(equal(
-                            TethysError.network(url, .http(.forbidden))
-                        ))
-                    }
-                }
-
-                context("when the request fails with a 500 level error") {
-                    beforeEach {
-                        guard httpClient.requestPromises.last?.future.value == nil else {
-                            fail("most recent promise was already resolved")
-                            return
-                        }
-                        httpClient.requestPromises.last?.resolve(.success(HTTPResponse(
-                            body: "502".data(using: .utf8)!,
-                            status: HTTPStatus.init(rawValue: 502)!,
-                            mimeType: "Application/JSON",
-                            headers: [:]
-                        )))
-                    }
-
-                    it("resolves the future with the error") {
-                        expect(future().value).toNot(beNil(), description: "Expected future to be resolved")
-                        expect(future().value?.error).to(equal(
-                            TethysError.network(url, .http(.badGateway))
-                        ))
-                    }
-                }
-
-                context("when the request fails with an error") {
-                    beforeEach {
-                        guard httpClient.requestPromises.last?.future.value == nil else {
-                            fail("most recent promise was already resolved")
-                            return
-                        }
-                        httpClient.requestPromises.last?.resolve(.failure(HTTPClientError.network(.timedOut)))
-                    }
-
-                    it("resolves the future with an error") {
-                        expect(future().value).toNot(beNil(), description: "Expected future to be resolved")
-                        expect(future().value?.error).to(equal(
-                            TethysError.network(url, .timedOut)
-                        ))
-                    }
-                }
-            }
-        }
-
         describe("feeds()") {
             var future: Future<Result<AnyCollection<Feed>, TethysError>>!
             let url = URL(string: "https://example.com/reader/api/0/subscription/list")!
@@ -283,7 +194,7 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                 }
             }
 
-            itBehavesLikeTheRequestFailed(url: url, future: { future })
+            itBehavesLikeTheRequestFailed(url: url, httpClient: { httpClient }, future: { future })
         }
 
         describe("articles(of:)") {
@@ -519,7 +430,7 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                 }
             }
 
-            itBehavesLikeTheRequestFailed(url: url, future: { future })
+            itBehavesLikeTheRequestFailed(url: url, httpClient: { httpClient }, future: { future })
         }
 
         describe("tags()") {
@@ -597,7 +508,7 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                 }
             }
 
-            itBehavesLikeTheRequestFailed(url: url, future: { future })
+            itBehavesLikeTheRequestFailed(url: url, httpClient: { httpClient }, future: { future })
         }
 
         describe("set(tags:of:)") {
@@ -671,7 +582,7 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                 }
             }
 
-            itBehavesLikeTheRequestFailed(url: url, future: { future })
+            itBehavesLikeTheRequestFailed(url: url, httpClient: { httpClient }, future: { future })
         }
 
         describe("remove(feed:)") {
@@ -709,7 +620,7 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                 }
             }
 
-            itBehavesLikeTheRequestFailed(url: url, future: { future })
+            itBehavesLikeTheRequestFailed(url: url, httpClient: { httpClient }, future: { future })
         }
     }
 }

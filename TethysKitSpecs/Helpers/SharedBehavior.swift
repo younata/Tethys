@@ -2,6 +2,7 @@ import Quick
 import Nimble
 import CBGPromise
 import TethysKit
+import FutureHTTP
 
 func itCachesInProgressFutures<T>(factory: @escaping () -> Future<Result<T, TethysError>>,
                                   callChecker: @escaping (Int) -> Void,
@@ -75,6 +76,97 @@ func itCachesInProgressFutures<T>(factory: @escaping () -> Future<Result<T, Teth
 
             it("makes another call to the underlying service") {
                 callChecker(2)
+            }
+        }
+    }
+}
+
+func itBehavesLikeTheRequestFailed<T>(url: URL, shouldParseData: Bool = true, file: String = #file, line: UInt = #line,
+                                      httpClient: @escaping () -> FakeHTTPClient,
+                                      future: @escaping () -> Future<Result<T, TethysError>>) {
+    if T.self != Void.self && shouldParseData {
+        describe("when the request succeeds") {
+            context("and the data is not valid") {
+                beforeEach {
+                    guard httpClient().requestPromises.last?.future.value == nil else {
+                        fail("most recent promise was already resolved", file: file, line: line)
+                        return
+                    }
+                    httpClient().requestPromises.last?.resolve(.success(HTTPResponse(
+                        body: "[\"bad\": \"data\"]".data(using: .utf8)!,
+                        status: .ok,
+                        mimeType: "Application/JSON",
+                        headers: [:]
+                    )))
+                }
+
+                it("resolves the future with a bad response error") {
+                    expect(future().value, file: file, line: line).toNot(beNil(), description: "Expected future to be resolved")
+                    expect(future().value?.error, file: file, line: line).to(equal(TethysError.network(url, .badResponse)))
+                }
+            }
+        }
+    }
+
+    describe("when the request fails") {
+        context("when the request fails with a 400 level error") {
+            beforeEach {
+                guard httpClient().requestPromises.last?.future.value == nil else {
+                    fail("most recent promise was already resolved", file: file, line: line)
+                    return
+                }
+                httpClient().requestPromises.last?.resolve(.success(HTTPResponse(
+                    body: "403".data(using: .utf8)!,
+                    status: HTTPStatus.init(rawValue: 403)!,
+                    mimeType: "Application/JSON",
+                    headers: [:]
+                )))
+            }
+
+            it("resolves the future with the error") {
+                expect(future().value, file: file, line: line).toNot(beNil(), description: "Expected future to be resolved")
+                expect(future().value?.error, file: file, line: line).to(equal(
+                    TethysError.network(url, .http(.forbidden))
+                ))
+            }
+        }
+
+        context("when the request fails with a 500 level error") {
+            beforeEach {
+                guard httpClient().requestPromises.last?.future.value == nil else {
+                    fail("most recent promise was already resolved", file: file, line: line)
+                    return
+                }
+                httpClient().requestPromises.last?.resolve(.success(HTTPResponse(
+                    body: "502".data(using: .utf8)!,
+                    status: HTTPStatus.init(rawValue: 502)!,
+                    mimeType: "Application/JSON",
+                    headers: [:]
+                )))
+            }
+
+            it("resolves the future with the error") {
+                expect(future().value, file: file, line: line).toNot(beNil(), description: "Expected future to be resolved")
+                expect(future().value?.error, file: file, line: line).to(equal(
+                    TethysError.network(url, .http(.badGateway))
+                ))
+            }
+        }
+
+        context("when the request fails with an error") {
+            beforeEach {
+                guard httpClient().requestPromises.last?.future.value == nil else {
+                    fail("most recent promise was already resolved", file: file, line: line)
+                    return
+                }
+                httpClient().requestPromises.last?.resolve(.failure(HTTPClientError.network(.timedOut)))
+            }
+
+            it("resolves the future with an error") {
+                expect(future().value, file: file, line: line).toNot(beNil(), description: "Expected future to be resolved")
+                expect(future().value?.error, file: file, line: line).to(equal(
+                    TethysError.network(url, .timedOut)
+                ))
             }
         }
     }

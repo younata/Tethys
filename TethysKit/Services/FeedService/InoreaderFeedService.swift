@@ -231,6 +231,7 @@ struct InoreaderFeedService: FeedService {
         }
 
         let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
         do {
             return .success(try decoder.decode(T.self, from: response.body))
         } catch let error {

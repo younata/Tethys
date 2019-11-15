@@ -54,6 +54,11 @@
 		8926E16E237A7FF00091870C /* InoreaderArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8926E16D237A7FF00091870C /* InoreaderArticleService.swift */; };
 		8926E170237A81170091870C /* InoreaderArticleServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8926E16F237A81170091870C /* InoreaderArticleServiceSpec.swift */; };
 		8926E172237A81D60091870C /* ArticleServiceShared.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8926E171237A81D60091870C /* ArticleServiceShared.swift */; };
+		8926E174237DBF080091870C /* ArticleCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8926E173237DBF080091870C /* ArticleCoordinator.swift */; };
+		8926E176237DC1860091870C /* ArticleCoordinatorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8926E175237DC1860091870C /* ArticleCoordinatorSpec.swift */; };
+		8926E178237DD8900091870C /* FakeArticleCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8926E177237DD8900091870C /* FakeArticleCoordinator.swift */; };
+		8926E179237DD8A70091870C /* FakeArticleCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8926E177237DD8900091870C /* FakeArticleCoordinator.swift */; };
+		8926E17A237DD8D60091870C /* FakeArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89943211219AAA4900FC6EB6 /* FakeArticleService.swift */; };
 		892AF319232D896C0018B19C /* FakeWKContentMenuElementInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 892AF318232D896C0018B19C /* FakeWKContentMenuElementInfo.m */; };
 		892AF31B232DB5930018B19C /* FakeContextMenuAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892AF31A232DB5930018B19C /* FakeContextMenuAnimator.swift */; };
 		892AF31E232DC5960018B19C /* UIContextMenuConfiguration+Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 892AF31D232DC5960018B19C /* UIContextMenuConfiguration+Tests.m */; };
@@ -179,7 +184,6 @@
 		8994320A219A813800FC6EB6 /* RealmArticleServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89943209219A813800FC6EB6 /* RealmArticleServiceSpec.swift */; };
 		89943210219A921100FC6EB6 /* ModelFactories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8994320F219A921100FC6EB6 /* ModelFactories.swift */; };
 		89943212219AAA4900FC6EB6 /* FakeArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89943211219AAA4900FC6EB6 /* FakeArticleService.swift */; };
-		89943213219AAA5000FC6EB6 /* FakeArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89943211219AAA4900FC6EB6 /* FakeArticleService.swift */; };
 		8994F0F41C8F899600920E6D /* UIViewControllerStub.m in Sources */ = {isa = PBXBuildFile; fileRef = 8994F0F31C8F899600920E6D /* UIViewControllerStub.m */; };
 		899788811C508BB400B408C4 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 899788801C508BB400B408C4 /* SnapshotHelper.swift */; };
 		8997C7F51B248D5A00972930 /* FakeWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8997C7F41B248D5A00972930 /* FakeWebView.swift */; };
@@ -237,8 +241,6 @@
 		89CB98BF1B13947800C87160 /* FeedTableCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */; };
 		89CBD5DD21BF2EF300D3FB31 /* Reachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBD5DC21BF2EF300D3FB31 /* Reachable.swift */; };
 		89CBD5DF21BF780C00D3FB31 /* RealmArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBD5DE21BF780C00D3FB31 /* RealmArticleService.swift */; };
-		89CBD5EC21C8C85600D3FB31 /* ArticleRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBD5EB21C8C85600D3FB31 /* ArticleRepository.swift */; };
-		89CBD5EE21C8C86200D3FB31 /* ArticleRepositorySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CBD5ED21C8C86200D3FB31 /* ArticleRepositorySpec.swift */; };
 		89CC82041B461A2B00648367 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82031B461A2B00648367 /* Helpers.swift */; };
 		89CC82061B461A5500648367 /* KitModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CC82051B461A5500648367 /* KitModule.swift */; };
 		89D0D9CA2379104D00060E2C /* MethodRedirector.m in Sources */ = {isa = PBXBuildFile; fileRef = 89D0D9C823790EC900060E2C /* MethodRedirector.m */; };
@@ -434,6 +436,9 @@
 		8926E16D237A7FF00091870C /* InoreaderArticleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InoreaderArticleService.swift; sourceTree = "<group>"; };
 		8926E16F237A81170091870C /* InoreaderArticleServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InoreaderArticleServiceSpec.swift; sourceTree = "<group>"; };
 		8926E171237A81D60091870C /* ArticleServiceShared.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleServiceShared.swift; sourceTree = "<group>"; };
+		8926E173237DBF080091870C /* ArticleCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleCoordinator.swift; sourceTree = "<group>"; };
+		8926E175237DC1860091870C /* ArticleCoordinatorSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleCoordinatorSpec.swift; sourceTree = "<group>"; };
+		8926E177237DD8900091870C /* FakeArticleCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeArticleCoordinator.swift; sourceTree = "<group>"; };
 		892AF317232D896C0018B19C /* FakeWKContentMenuElementInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FakeWKContentMenuElementInfo.h; sourceTree = "<group>"; };
 		892AF318232D896C0018B19C /* FakeWKContentMenuElementInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FakeWKContentMenuElementInfo.m; sourceTree = "<group>"; };
 		892AF31A232DB5930018B19C /* FakeContextMenuAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeContextMenuAnimator.swift; sourceTree = "<group>"; };
@@ -595,8 +600,6 @@
 		89CB98BE1B13947800C87160 /* FeedTableCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedTableCellSpec.swift; sourceTree = "<group>"; };
 		89CBD5DC21BF2EF300D3FB31 /* Reachable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reachable.swift; sourceTree = "<group>"; };
 		89CBD5DE21BF780C00D3FB31 /* RealmArticleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmArticleService.swift; sourceTree = "<group>"; };
-		89CBD5EB21C8C85600D3FB31 /* ArticleRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleRepository.swift; sourceTree = "<group>"; };
-		89CBD5ED21C8C86200D3FB31 /* ArticleRepositorySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleRepositorySpec.swift; sourceTree = "<group>"; };
 		89CC82031B461A2B00648367 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		89CC82051B461A5500648367 /* KitModule.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KitModule.swift; sourceTree = "<group>"; };
 		89D0D9C723790EC900060E2C /* MethodRedirector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MethodRedirector.h; sourceTree = "<group>"; };
@@ -1074,9 +1077,9 @@
 			isa = PBXGroup;
 			children = (
 				89943209219A813800FC6EB6 /* RealmArticleServiceSpec.swift */,
-				89CBD5ED21C8C86200D3FB31 /* ArticleRepositorySpec.swift */,
 				8926E16F237A81170091870C /* InoreaderArticleServiceSpec.swift */,
 				8926E171237A81D60091870C /* ArticleServiceShared.swift */,
+				8926E175237DC1860091870C /* ArticleCoordinatorSpec.swift */,
 			);
 			path = ArticleService;
 			sourceTree = "<group>";
@@ -1323,7 +1326,7 @@
 				8978C530219A7FDC00D702BB /* ArticleService.swift */,
 				89CBD5DE21BF780C00D3FB31 /* RealmArticleService.swift */,
 				8926E16D237A7FF00091870C /* InoreaderArticleService.swift */,
-				89CBD5EB21C8C85600D3FB31 /* ArticleRepository.swift */,
+				8926E173237DBF080091870C /* ArticleCoordinator.swift */,
 			);
 			path = ArticleService;
 			sourceTree = "<group>";
@@ -1369,6 +1372,7 @@
 			children = (
 				893694FE21E30F30002C3A09 /* FakeAccountService.swift */,
 				89943211219AAA4900FC6EB6 /* FakeArticleService.swift */,
+				8926E177237DD8900091870C /* FakeArticleCoordinator.swift */,
 				893694F321E1A4E8002C3A09 /* FakeCredentialService.swift */,
 				457EB03D236100B1006A7A82 /* FakeFeedCoordinator.swift */,
 				895B9A1B21AA66A3003FFE46 /* FakeFeedService.swift */,
@@ -1960,7 +1964,6 @@
 				8903F5CF1D4177DE00546099 /* Importable.swift in Sources */,
 				89E9DD4921CF49B100326E2D /* AccountService.swift in Sources */,
 				893694F221E1A3D6002C3A09 /* CredentialService.swift in Sources */,
-				89CBD5EC21C8C85600D3FB31 /* ArticleRepository.swift in Sources */,
 				89146E421C88C70600EC8F10 /* ImportUseCase.swift in Sources */,
 				896EF7F821EA801200C0AB75 /* AuthenticatedHTTPClient.swift in Sources */,
 				89CC82061B461A5500648367 /* KitModule.swift in Sources */,
@@ -1979,6 +1982,7 @@
 				898911A21C30F0BE009A44E9 /* UpdateService.swift in Sources */,
 				8948B8BC222CD89600E1BFBC /* NetworkPagedCollection.swift in Sources */,
 				89F73DBF21FE5F93001B3135 /* InoreaderFeedService.swift in Sources */,
+				8926E174237DBF080091870C /* ArticleCoordinator.swift in Sources */,
 				8903F5B81D403FEF00546099 /* UpdateUseCase.swift in Sources */,
 				8903EB091C702843001C0189 /* WebPageParser.swift in Sources */,
 				895DA88A222F7D6500B19C37 /* OrderedDictionary.swift in Sources */,
@@ -1996,6 +2000,7 @@
 				8935F5DA1B4628B3000FFD5D /* ArticleSpec.swift in Sources */,
 				8984FE8C1CBA1A180096F4B3 /* AuthorSpec.swift in Sources */,
 				89F73DC121FE5FF1001B3135 /* InoreaderFeedServiceSpec.swift in Sources */,
+				8926E176237DC1860091870C /* ArticleCoordinatorSpec.swift in Sources */,
 				892E76F41E079A3500866336 /* BackgroundStateMonitorSpec.swift in Sources */,
 				8994320A219A813800FC6EB6 /* RealmArticleServiceSpec.swift in Sources */,
 				893694F421E1A4E8002C3A09 /* FakeCredentialService.swift in Sources */,
@@ -2009,6 +2014,7 @@
 				8935F5DE1B462AD2000FFD5D /* FakeOperationQueue.swift in Sources */,
 				8935F5E11B462B8C000FFD5D /* FakeOPMLService.swift in Sources */,
 				89F55BA7235A74A400FE5887 /* SubscriptionSpec.swift in Sources */,
+				8926E178237DD8900091870C /* FakeArticleCoordinator.swift in Sources */,
 				8926E172237A81D60091870C /* ArticleServiceShared.swift in Sources */,
 				8908949B1BFED7B8002848A4 /* FakeReachable.swift in Sources */,
 				892E77151E09A49900866336 /* FakeTimerFactory.swift in Sources */,
@@ -2022,7 +2028,6 @@
 				8903F5B01D4022AD00546099 /* FakeUserDefaults.swift in Sources */,
 				8935F5D91B4628B3000FFD5D /* FeedSpec.swift in Sources */,
 				89943212219AAA4900FC6EB6 /* FakeArticleService.swift in Sources */,
-				89CBD5EE21C8C86200D3FB31 /* ArticleRepositorySpec.swift in Sources */,
 				89146E441C88C73200EC8F10 /* ImportUseCaseSpec.swift in Sources */,
 				8937F6C01B79D0800044A442 /* KitModuleSpec.swift in Sources */,
 				896EF7FA21EA807C00C0AB75 /* AuthenticatedHTTPClientSpec.swift in Sources */,
@@ -2163,7 +2168,6 @@
 				89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */,
 				894F8B3C2369E834005AE5F0 /* RogueLikeViewControllerSpec.swift in Sources */,
 				89F98BAA1BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift in Sources */,
-				89943213219AAA5000FC6EB6 /* FakeArticleService.swift in Sources */,
 				899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */,
 				89D0D9D1237922C300060E2C /* UINavigationControllerStubSpec.m in Sources */,
 				8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */,
@@ -2174,10 +2178,12 @@
 				89BF42472337312500C790A8 /* FakeAppIconChanger.swift in Sources */,
 				89F516571B1ACD0B0005AB04 /* UIBarButtonItem+TethysTests.m in Sources */,
 				89735ABC1C0694C70032E09C /* UITraitCollection+TethysTests.m in Sources */,
+				8926E17A237DD8D60091870C /* FakeArticleService.swift in Sources */,
 				8994F0F41C8F899600920E6D /* UIViewControllerStub.m in Sources */,
 				893F93E41B237EBC00B52194 /* UnreadCounterSpec.swift in Sources */,
 				894F8B3F236B40B4005AE5F0 /* RogueLikeGameSpec.swift in Sources */,
 				89D970BB1B35BF6500ED84B8 /* WKWebView+TethysTests.m in Sources */,
+				8926E179237DD8A70091870C /* FakeArticleCoordinator.swift in Sources */,
 				89D0D9DE2379C81600060E2C /* UIActivityViewControllerStubSpec.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

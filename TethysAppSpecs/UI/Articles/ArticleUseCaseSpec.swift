@@ -9,12 +9,12 @@ import CBGPromise
 class ArticleUseCaseSpec: QuickSpec {
     override func spec() {
         var subject: DefaultArticleUseCase!
-        var articleService: FakeArticleService!
+        var articleCoordinator: FakeArticleCoordinator!
 
         beforeEach {
-            articleService = FakeArticleService()
+            articleCoordinator = FakeArticleCoordinator()
             subject = DefaultArticleUseCase(
-                articleService: articleService
+                articleCoordinator: articleCoordinator
             )
         }
 
@@ -24,9 +24,9 @@ class ArticleUseCaseSpec: QuickSpec {
 
                 _ = subject.readArticle(article)
 
-                expect(articleService.markArticleAsReadCalls).to(haveCount(1))
+                expect(articleCoordinator.markArticleAsReadCalls).to(haveCount(1))
 
-                guard let call = articleService.markArticleAsReadCalls.last else {
+                guard let call = articleCoordinator.markArticleAsReadCalls.last else {
                     fail("Didn't call ArticleService to mark article as read")
                     return
                 }
@@ -97,9 +97,9 @@ class ArticleUseCaseSpec: QuickSpec {
 
                 subject.toggleArticleRead(article)
 
-                expect(articleService.markArticleAsReadCalls).to(haveCount(1))
+                expect(articleCoordinator.markArticleAsReadCalls).to(haveCount(1))
 
-                guard let call = articleService.markArticleAsReadCalls.last else {
+                guard let call = articleCoordinator.markArticleAsReadCalls.last else {
                     fail("Didn't call ArticleService to mark article as read")
                     return
                 }
@@ -112,9 +112,9 @@ class ArticleUseCaseSpec: QuickSpec {
 
                 subject.toggleArticleRead(article)
 
-                expect(articleService.markArticleAsReadCalls).to(haveCount(1))
+                expect(articleCoordinator.markArticleAsReadCalls).to(haveCount(1))
 
-                guard let call = articleService.markArticleAsReadCalls.last else {
+                guard let call = articleCoordinator.markArticleAsReadCalls.last else {
                     fail("Didn't call ArticleService to mark article as unread")
                     return
                 }

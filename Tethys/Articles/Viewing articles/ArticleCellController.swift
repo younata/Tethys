@@ -6,7 +6,7 @@ public protocol ArticleCellController {
 
 public struct DefaultArticleCellController: ArticleCellController {
     private let hideUnread: Bool
-    private let articleService: ArticleService
+    private let articleCoordinator: ArticleCoordinator
     private let settingsRepository: SettingsRepository
 
     private let dateFormatter: DateFormatter = {
@@ -19,16 +19,16 @@ public struct DefaultArticleCellController: ArticleCellController {
         return dateFormatter
     }()
 
-    public init(hideUnread: Bool, articleService: ArticleService, settingsRepository: SettingsRepository) {
+    public init(hideUnread: Bool, articleCoordinator: ArticleCoordinator, settingsRepository: SettingsRepository) {
         self.hideUnread = hideUnread
-        self.articleService = articleService
+        self.articleCoordinator = articleCoordinator
         self.settingsRepository = settingsRepository
     }
 
     public func configure(cell: ArticleCell, with article: Article) {
         cell.title.text = article.title
-        cell.published.text = self.dateFormatter.string(from: self.articleService.date(for: article))
-        cell.author.text = self.articleService.authors(of: article)
+        cell.published.text = self.dateFormatter.string(from: self.articleCoordinator.date(for: article))
+        cell.author.text = self.articleCoordinator.authors(of: article)
 
         var accessibilityValueItems: [String] = [article.title]
 
@@ -66,7 +66,7 @@ public struct DefaultArticleCellController: ArticleCellController {
 
     func configureCellToShowReadingTime(_ cell: ArticleCell, article: Article) -> String {
         cell.readingTime.isHidden = false
-        let readingSeconds = self.articleService.estimatedReadingTime(of: article)
+        let readingSeconds = self.articleCoordinator.estimatedReadingTime(of: article)
         let readingTimeText = String.localizedStringWithFormat(
             NSLocalizedString("ArticleCell_EstimatedReadingTime", comment: ""),
             readingSeconds.minutes

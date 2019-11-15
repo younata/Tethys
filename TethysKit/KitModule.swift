@@ -76,12 +76,32 @@ private func configureServices(container: Container) {
     }
 
     container.register(ArticleService.self) { r in
-        return ArticleRepository(
-            articleService: RealmArticleService(
-                realmProvider: r.resolve(RealmProvider.self)!,
-                mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
-                workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
-            )
+        return RealmArticleService(
+            realmProvider: r.resolve(RealmProvider.self)!,
+            mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
+            workQueue: r.resolve(OperationQueue.self, name: kRealmQueue)!
+        )
+    }
+
+    container.register(ArticleService.self, name: "local") { r in
+        return r.resolve(ArticleService.self)!
+    }
+
+    container.register(ArticleService.self, name: "network") { r in
+        guard let credential = r.resolve(CredentialService.self)?.credentials()
+            .wait()?.value?.first(where: { $0.accountType == .inoreader }) else {
+                return r.resolve(ArticleService.self)!
+        }
+        return InoreaderArticleService(
+            httpClient: r.resolve(HTTPClient.self, argument: credential.accountId)!,
+            baseURL: URL(string: "https://www.inoreader.com")!
+        )
+    }
+
+    container.register(ArticleCoordinator.self) { r in
+        return ArticleCoordinator(
+            localArticleService: r.resolve(ArticleService.self, name: "local")!,
+            networkArticleServiceProvider: { r.resolve(ArticleService.self, name: "network")! }
         )
     }.inObjectScope(.container)
 

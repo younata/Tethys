@@ -23,7 +23,7 @@ class ArticleListControllerSpec: QuickSpec {
         var articleUseCase: FakeArticleUseCase!
 
         var feedCoordinator: FakeFeedCoordinator!
-        var articleService: FakeArticleService!
+        var articleCoordinator: FakeArticleCoordinator!
         var notificationCenter: NotificationCenter!
         var articleCellController: FakeArticleCellController!
         var messenger: FakeMessenger!
@@ -50,7 +50,7 @@ class ArticleListControllerSpec: QuickSpec {
             articles = [a, b, c, d]
 
             feedCoordinator = FakeFeedCoordinator()
-            articleService = FakeArticleService()
+            articleCoordinator = FakeArticleCoordinator()
             articleCellController = FakeArticleCellController()
 
             messenger = FakeMessenger()
@@ -60,7 +60,7 @@ class ArticleListControllerSpec: QuickSpec {
                 mainQueue: mainQueue,
                 messenger: messenger,
                 feedCoordinator: feedCoordinator,
-                articleService: articleService,
+                articleCoordinator: articleCoordinator,
                 notificationCenter: notificationCenter,
                 articleCellController: articleCellController,
                 articleViewController: { article in articleViewControllerFactory(article: article, articleUseCase: articleUseCase) }
@@ -435,7 +435,7 @@ class ArticleListControllerSpec: QuickSpec {
                                     }
 
                                     it("deletes the article") {
-                                        expect(articleService.removeArticleCalls.last) == articles.first
+                                        expect(articleCoordinator.removeArticleCalls.last) == articles.first
                                     }
 
                                     xit("shows a spinner while we wait to delete the article") {
@@ -444,7 +444,7 @@ class ArticleListControllerSpec: QuickSpec {
 
                                     context("when the delete operation succeeds") {
                                         beforeEach {
-                                            articleService.removeArticlePromises.last?.resolve(.success(()))
+                                            articleCoordinator.removeArticlePromises.last?.resolve(.success(()))
                                         }
 
                                         it("removes the article from the list") {
@@ -458,7 +458,7 @@ class ArticleListControllerSpec: QuickSpec {
 
                                     context("when the delete operation fails") {
                                         beforeEach {
-                                            articleService.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
+                                            articleCoordinator.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
                                         }
 
                                         itTellsTheUserAboutTheError(title: "Error deleting article", message: "Unknown Database Error")
@@ -485,7 +485,7 @@ class ArticleListControllerSpec: QuickSpec {
                                     }
 
                                     it("marks the article as read with the second action item") {
-                                        guard let call = articleService.markArticleAsReadCalls.last else {
+                                        guard let call = articleCoordinator.markArticleAsReadCalls.last else {
                                             fail("Didn't call ArticleService to mark article as read")
                                             return
                                         }
@@ -493,31 +493,99 @@ class ArticleListControllerSpec: QuickSpec {
                                         expect(call.read) == true
                                     }
 
-                                    context("when the articleService successfully marks the article as read") {
+                                    context("marks the article as read updates with success") {
                                         var updatedArticle: Article!
                                         beforeEach {
                                             updatedArticle = articleFactory()
-                                            articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
+                                            articleCoordinator.markArticleAsReadPublishers.last?.update(with: .success(updatedArticle))
                                         }
 
                                         it("Updates the articles in the controller to reflect that") {
                                             expect(subject.articles.first).to(equal(updatedArticle))
                                         }
 
-                                        it("calls the completion handler") {
-                                            expect(completionHandlerCalls).to(equal([true]))
+                                        it("does not call the completion handler") {
+                                            expect(completionHandlerCalls).to(beEmpty())
+                                        }
+
+                                        context("if the mark article as read operation updates again with failure") {
+                                            beforeEach {
+                                                articleCoordinator.markArticleAsReadPublishers.last?.update(with: .failure(.database(.unknown)))
+                                            }
+
+                                            itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
+
+                                            it("does not call the completion handler") {
+                                                expect(completionHandlerCalls).to(beEmpty())
+                                            }
+
+                                            context("when the mark article as read operation completes") {
+                                                beforeEach {
+                                                    articleCoordinator.markArticleAsReadPublishers.last?.finish()
+                                                }
+
+                                                it("calls the completion handler") {
+                                                    expect(completionHandlerCalls).to(equal([false]))
+                                                }
+                                            }
+                                        }
+
+                                        context("when the mark article as read operation completes") {
+                                            beforeEach {
+                                                articleCoordinator.markArticleAsReadPublishers.last?.finish()
+                                            }
+
+                                            it("calls the completion handler") {
+                                                expect(completionHandlerCalls).to(equal([true]))
+                                            }
                                         }
                                     }
 
                                     context("when the articleService fails to mark the article as read") {
                                         beforeEach {
-                                            articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
+                                            articleCoordinator.markArticleAsReadPublishers.last?.update(with: .failure(.database(.unknown)))
                                         }
 
                                         itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
 
-                                        it("calls the completion handler") {
-                                            expect(completionHandlerCalls).to(equal([false]))
+                                        it("does not call the completion handler") {
+                                            expect(completionHandlerCalls).to(beEmpty())
+                                        }
+
+                                        context("if the mark article as read operation updates again with success") {
+                                            var updatedArticle: Article!
+                                            beforeEach {
+                                                updatedArticle = articleFactory()
+                                                articleCoordinator.markArticleAsReadPublishers.last?.update(with: .success(updatedArticle))
+                                            }
+
+                                            it("Updates the articles in the controller to reflect that") {
+                                                expect(subject.articles.first).to(equal(updatedArticle))
+                                            }
+
+                                            it("does not call the completion handler") {
+                                                expect(completionHandlerCalls).to(beEmpty())
+                                            }
+
+                                            context("when the mark article as read operation completes") {
+                                                beforeEach {
+                                                    articleCoordinator.markArticleAsReadPublishers.last?.finish()
+                                                }
+
+                                                it("calls the completion handler") {
+                                                    expect(completionHandlerCalls).to(equal([false]))
+                                                }
+                                            }
+                                        }
+
+                                        context("when the mark article as read operation completes") {
+                                            beforeEach {
+                                                articleCoordinator.markArticleAsReadPublishers.last?.finish()
+                                            }
+
+                                            it("calls the completion handler") {
+                                                expect(completionHandlerCalls).to(equal([false]))
+                                            }
                                         }
                                     }
                                 }
@@ -536,7 +604,7 @@ class ArticleListControllerSpec: QuickSpec {
                                     }
 
                                     it("marks the article as unread with the second action item") {
-                                        guard let call = articleService.markArticleAsReadCalls.last else {
+                                        guard let call = articleCoordinator.markArticleAsReadCalls.last else {
                                             fail("Didn't call ArticleService to mark article as read")
                                             return
                                         }
@@ -548,27 +616,95 @@ class ArticleListControllerSpec: QuickSpec {
                                         var updatedArticle: Article!
                                         beforeEach {
                                             updatedArticle = articleFactory(read: true)
-                                            articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
+                                            articleCoordinator.markArticleAsReadPublishers.last?.update(with: .success(updatedArticle))
                                         }
 
                                         it("Updates the articles in the controller to reflect that") {
                                             expect(Array(subject.articles)[2]).to(equal(updatedArticle))
                                         }
 
-                                        it("calls the completion handler") {
-                                            expect(completionHandlerCalls).to(equal([true]))
+                                        it("does not call the completion handler") {
+                                            expect(completionHandlerCalls).to(beEmpty())
+                                        }
+
+                                        context("if the mark article as read operation updates again with failure") {
+                                            beforeEach {
+                                                articleCoordinator.markArticleAsReadPublishers.last?.update(with: .failure(.database(.unknown)))
+                                            }
+
+                                            itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
+
+                                            it("does not call the completion handler") {
+                                                expect(completionHandlerCalls).to(beEmpty())
+                                            }
+
+                                            context("when the mark article as read operation completes") {
+                                                beforeEach {
+                                                    articleCoordinator.markArticleAsReadPublishers.last?.finish()
+                                                }
+
+                                                it("calls the completion handler") {
+                                                    expect(completionHandlerCalls).to(equal([false]))
+                                                }
+                                            }
+                                        }
+
+                                        context("when the mark article as read operation completes") {
+                                            beforeEach {
+                                                articleCoordinator.markArticleAsReadPublishers.last?.finish()
+                                            }
+
+                                            it("calls the completion handler") {
+                                                expect(completionHandlerCalls).to(equal([true]))
+                                            }
                                         }
                                     }
 
                                     context("when the articleService fails to mark the article as read") {
                                         beforeEach {
-                                            articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
+                                            articleCoordinator.markArticleAsReadPublishers.last?.update(with: .failure(.database(.unknown)))
                                         }
 
                                         itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
 
-                                        it("calls the completion handler") {
-                                            expect(completionHandlerCalls).to(equal([false]))
+                                        it("does not call the completion handler") {
+                                            expect(completionHandlerCalls).to(beEmpty())
+                                        }
+
+                                        context("if the mark article as read operation updates again with success") {
+                                            var updatedArticle: Article!
+                                            beforeEach {
+                                                updatedArticle = articleFactory()
+                                                articleCoordinator.markArticleAsReadPublishers.last?.update(with: .success(updatedArticle))
+                                            }
+
+                                            it("Updates the articles in the controller to reflect that") {
+                                                expect(subject.articles[AnyIndex(2)]).to(equal(updatedArticle))
+                                            }
+
+                                            it("does not call the completion handler") {
+                                                expect(completionHandlerCalls).to(beEmpty())
+                                            }
+
+                                            context("when the mark article as read operation completes") {
+                                                beforeEach {
+                                                    articleCoordinator.markArticleAsReadPublishers.last?.finish()
+                                                }
+
+                                                it("calls the completion handler") {
+                                                    expect(completionHandlerCalls).to(equal([false]))
+                                                }
+                                            }
+                                        }
+
+                                        context("when the mark article as read operation completes") {
+                                            beforeEach {
+                                                articleCoordinator.markArticleAsReadPublishers.last?.finish()
+                                            }
+
+                                            it("calls the completion handler") {
+                                                expect(completionHandlerCalls).to(equal([false]))
+                                            }
                                         }
                                     }
                                 }
@@ -626,7 +762,7 @@ class ArticleListControllerSpec: QuickSpec {
                                         }
 
                                         it("marks the article as read") {
-                                            guard let call = articleService.markArticleAsReadCalls.last else {
+                                            guard let call = articleCoordinator.markArticleAsReadCalls.last else {
                                                 fail("Didn't call ArticleService to mark article as read")
                                                 return
                                             }
@@ -638,7 +774,7 @@ class ArticleListControllerSpec: QuickSpec {
                                             var updatedArticle: Article!
                                             beforeEach {
                                                 updatedArticle = articleFactory()
-                                                articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
+                                                articleCoordinator.markArticleAsReadPublishers.last?.update(with: .success(updatedArticle))
                                             }
 
                                             it("Updates the articles in the controller to reflect that") {
@@ -649,17 +785,37 @@ class ArticleListControllerSpec: QuickSpec {
                                                 expect(recorder.notifications).to(haveCount(1))
                                                 expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
                                             }
+
+                                            context("if the mark article as read operation updates again with failure") {
+                                                beforeEach {
+                                                    articleCoordinator.markArticleAsReadPublishers.last?.update(with: .failure(.database(.unknown)))
+                                                }
+
+                                                itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
+                                            }
                                         }
 
                                         context("when the articleService fails to mark the article as read") {
                                             beforeEach {
-                                                articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
+                                                articleCoordinator.markArticleAsReadPublishers.last?.update(with: .failure(.database(.unknown)))
                                             }
 
                                             itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
 
                                             it("doesn't post a notification") {
                                                 expect(recorder.notifications).to(beEmpty())
+                                            }
+
+                                            context("if the mark article as read operation updates again with success") {
+                                                var updatedArticle: Article!
+                                                beforeEach {
+                                                    updatedArticle = articleFactory()
+                                                    articleCoordinator.markArticleAsReadPublishers.last?.update(with: .success(updatedArticle))
+                                                }
+
+                                                it("Updates the articles in the controller to reflect that") {
+                                                    expect(subject.articles.first).to(equal(updatedArticle))
+                                                }
                                             }
                                         }
                                     }
@@ -685,7 +841,7 @@ class ArticleListControllerSpec: QuickSpec {
                                         }
 
                                         it("deletes the article") {
-                                            expect(articleService.removeArticleCalls.last).to(equal(articles.first))
+                                            expect(articleCoordinator.removeArticleCalls.last).to(equal(articles.first))
                                         }
 
                                         xit("shows a spinner while we wait to delete the article") {
@@ -694,7 +850,7 @@ class ArticleListControllerSpec: QuickSpec {
 
                                         context("when the delete operation succeeds") {
                                             beforeEach {
-                                                articleService.removeArticlePromises.last?.resolve(.success(()))
+                                                articleCoordinator.removeArticlePromises.last?.resolve(.success(()))
                                             }
 
                                             it("removes the article from the list") {
@@ -704,7 +860,7 @@ class ArticleListControllerSpec: QuickSpec {
 
                                         context("when the delete operation fails") {
                                             beforeEach {
-                                                articleService.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
+                                                articleCoordinator.removeArticlePromises.last?.resolve(.failure(TethysError.database(.unknown)))
                                             }
 
                                             itTellsTheUserAboutTheError(title: "Error deleting article", message: "Unknown Database Error")
@@ -736,14 +892,14 @@ class ArticleListControllerSpec: QuickSpec {
                                 }
 
                                 it("marks the article as read") {
-                                    expect(articleService.markArticleAsReadCalls.last?.article).to(equal(articles[0]))
+                                    expect(articleCoordinator.markArticleAsReadCalls.last?.article).to(equal(articles[0]))
                                 }
 
                                 context("if the mark article as read call succeeds") {
                                     var updatedArticle: Article!
                                     beforeEach {
                                         updatedArticle = articleFactory()
-                                        articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
+                                        articleCoordinator.markArticleAsReadPublishers.last?.update(with: .success(updatedArticle))
                                     }
 
                                     it("Updates the articles in the controller to reflect that") {
@@ -754,17 +910,33 @@ class ArticleListControllerSpec: QuickSpec {
                                         expect(recorder.notifications).to(haveCount(1))
                                         expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
                                     }
+
+                                    context("if the mark article as read operation updates again with failure") {
+                                        beforeEach {
+                                            articleCoordinator.markArticleAsReadPublishers.last?.update(with: .failure(.database(.unknown)))
+                                        }
+
+                                        itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
+                                    }
                                 }
 
                                 context("if the mark article as read call fails") {
                                     beforeEach {
-                                        articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
+                                        articleCoordinator.markArticleAsReadPublishers.last?.update(with: .failure(.database(.unknown)))
                                     }
 
                                     itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
 
-                                    it("doesn't post a notification") {
-                                        expect(recorder.notifications).to(beEmpty())
+                                    context("if the mark article as read operation updates again with success") {
+                                        var updatedArticle: Article!
+                                        beforeEach {
+                                            updatedArticle = articleFactory()
+                                            articleCoordinator.markArticleAsReadPublishers.last?.update(with: .success(updatedArticle))
+                                        }
+
+                                        it("Updates the articles in the controller to reflect that") {
+                                            expect(subject.articles.first).to(equal(updatedArticle))
+                                        }
                                     }
                                 }
                             }
@@ -788,14 +960,14 @@ class ArticleListControllerSpec: QuickSpec {
                             }
 
                             it("marks the article as read") {
-                                expect(articleService.markArticleAsReadCalls.last?.article).to(equal(articles[0]))
+                                expect(articleCoordinator.markArticleAsReadCalls.last?.article).to(equal(articles[0]))
                             }
 
                             context("if the mark article as read call succeeds") {
                                 var updatedArticle: Article!
                                 beforeEach {
                                     updatedArticle = articleFactory()
-                                    articleService.markArticleAsReadPromises.last?.resolve(.success(updatedArticle))
+                                    articleCoordinator.markArticleAsReadPublishers.last?.update(with: .success(updatedArticle))
                                 }
 
                                 it("Updates the articles in the controller to reflect that") {
@@ -806,17 +978,37 @@ class ArticleListControllerSpec: QuickSpec {
                                     expect(recorder.notifications).to(haveCount(1))
                                     expect(recorder.notifications.last?.object as? NSObject).to(be(subject))
                                 }
+
+                                context("if the mark article as read operation updates again with failure") {
+                                    beforeEach {
+                                        articleCoordinator.markArticleAsReadPublishers.last?.update(with: .failure(.database(.unknown)))
+                                    }
+
+                                    itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
+                                }
                             }
 
                             context("if the mark article as read call fails") {
                                 beforeEach {
-                                    articleService.markArticleAsReadPromises.last?.resolve(.failure(.database(.unknown)))
+                                    articleCoordinator.markArticleAsReadPublishers.last?.update(with: .failure(.database(.unknown)))
                                 }
 
                                 itTellsTheUserAboutTheError(title: "Error saving article", message: "Unknown Database Error")
 
                                 it("doesn't post a notification") {
                                     expect(recorder.notifications).to(beEmpty())
+                                }
+
+                                context("if the mark article as read operation updates again with success") {
+                                    var updatedArticle: Article!
+                                    beforeEach {
+                                        updatedArticle = articleFactory()
+                                        articleCoordinator.markArticleAsReadPublishers.last?.update(with: .success(updatedArticle))
+                                    }
+
+                                    it("Updates the articles in the controller to reflect that") {
+                                        expect(subject.articles.first).to(equal(updatedArticle))
+                                    }
                                 }
                             }
                         }

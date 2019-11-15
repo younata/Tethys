@@ -9,13 +9,13 @@ final class ArticleCellControllerSpec: QuickSpec {
         var subject: ArticleCellController!
 
         var settingsRepository: SettingsRepository!
-        var articleService: FakeArticleService!
+        var articleCoordinator: FakeArticleCoordinator!
 
         var cell: ArticleCell!
 
         beforeEach {
             settingsRepository = SettingsRepository(userDefaults: nil)
-            articleService = FakeArticleService()
+            articleCoordinator = FakeArticleCoordinator()
 
             cell = ArticleCell(frame: .zero)
         }
@@ -75,7 +75,7 @@ final class ArticleCellControllerSpec: QuickSpec {
             }
 
             it("asks the article service for the estimated reading time") {
-                expect(articleService.estimatedReadingTimeCalls, line: line).to(haveCount(1))
+                expect(articleCoordinator.estimatedReadingTimeCalls, line: line).to(haveCount(1))
             }
         }
 
@@ -86,7 +86,7 @@ final class ArticleCellControllerSpec: QuickSpec {
             }
 
             it("doesn't even ask for estimated reading time") {
-                expect(articleService.estimatedReadingTimeCalls).to(beEmpty())
+                expect(articleCoordinator.estimatedReadingTimeCalls).to(beEmpty())
             }
         }
 
@@ -99,7 +99,7 @@ final class ArticleCellControllerSpec: QuickSpec {
                 beforeEach {
                     subject = DefaultArticleCellController(
                         hideUnread: false,
-                        articleService: articleService,
+                        articleCoordinator: articleCoordinator,
                         settingsRepository: settingsRepository
                     )
                 }
@@ -111,8 +111,8 @@ final class ArticleCellControllerSpec: QuickSpec {
                             read: false
                         )
 
-                        articleService.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
-                        articleService.authorStub[article] = "A Few Authors"
+                        articleCoordinator.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
+                        articleCoordinator.authorStub[article] = "A Few Authors"
 
                         subject.configure(cell: cell, with: article)
                     }
@@ -138,8 +138,8 @@ final class ArticleCellControllerSpec: QuickSpec {
                             read: true
                         )
 
-                        articleService.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
-                        articleService.authorStub[article] = "A Few Authors"
+                        articleCoordinator.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
+                        articleCoordinator.authorStub[article] = "A Few Authors"
 
                         subject.configure(cell: cell, with: article)
                     }
@@ -163,7 +163,7 @@ final class ArticleCellControllerSpec: QuickSpec {
                 beforeEach {
                     subject = DefaultArticleCellController(
                         hideUnread: true,
-                        articleService: articleService,
+                        articleCoordinator: articleCoordinator,
                         settingsRepository: settingsRepository
                     )
 
@@ -176,8 +176,8 @@ final class ArticleCellControllerSpec: QuickSpec {
                             read: false
                         )
 
-                        articleService.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
-                        articleService.authorStub[article] = "A Few Authors"
+                        articleCoordinator.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
+                        articleCoordinator.authorStub[article] = "A Few Authors"
 
                         subject.configure(cell: cell, with: article)
                     }
@@ -203,8 +203,8 @@ final class ArticleCellControllerSpec: QuickSpec {
                             read: true
                         )
 
-                        articleService.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
-                        articleService.authorStub[article] = "A Few Authors"
+                        articleCoordinator.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
+                        articleCoordinator.authorStub[article] = "A Few Authors"
 
                         subject.configure(cell: cell, with: article)
                     }
@@ -234,7 +234,7 @@ final class ArticleCellControllerSpec: QuickSpec {
                 beforeEach {
                     subject = DefaultArticleCellController(
                         hideUnread: false,
-                        articleService: articleService,
+                        articleCoordinator: articleCoordinator,
                         settingsRepository: settingsRepository
                     )
                 }
@@ -246,9 +246,9 @@ final class ArticleCellControllerSpec: QuickSpec {
                             read: false
                         )
 
-                        articleService.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
-                        articleService.authorStub[article] = "A Few Authors"
-                        articleService.estimatedReadingTimeStub[article] = 29
+                        articleCoordinator.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
+                        articleCoordinator.authorStub[article] = "A Few Authors"
+                        articleCoordinator.estimatedReadingTimeStub[article] = 29
 
                         subject.configure(cell: cell, with: article)
                     }
@@ -274,9 +274,9 @@ final class ArticleCellControllerSpec: QuickSpec {
                             read: true
                         )
 
-                        articleService.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
-                        articleService.authorStub[article] = "A Few Authors"
-                        articleService.estimatedReadingTimeStub[article] = 60
+                        articleCoordinator.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
+                        articleCoordinator.authorStub[article] = "A Few Authors"
+                        articleCoordinator.estimatedReadingTimeStub[article] = 60
 
                         subject.configure(cell: cell, with: article)
                     }
@@ -300,7 +300,7 @@ final class ArticleCellControllerSpec: QuickSpec {
                 beforeEach {
                     subject = DefaultArticleCellController(
                         hideUnread: true,
-                        articleService: articleService,
+                        articleCoordinator: articleCoordinator,
                         settingsRepository: settingsRepository
                     )
 
@@ -313,9 +313,9 @@ final class ArticleCellControllerSpec: QuickSpec {
                             read: false
                         )
 
-                        articleService.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
-                        articleService.authorStub[article] = "A Few Authors"
-                        articleService.estimatedReadingTimeStub[article] = 120
+                        articleCoordinator.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
+                        articleCoordinator.authorStub[article] = "A Few Authors"
+                        articleCoordinator.estimatedReadingTimeStub[article] = 120
 
                         subject.configure(cell: cell, with: article)
                     }
@@ -341,9 +341,9 @@ final class ArticleCellControllerSpec: QuickSpec {
                             read: true
                         )
 
-                        articleService.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
-                        articleService.authorStub[article] = "A Few Authors"
-                        articleService.estimatedReadingTimeStub[article] = 180
+                        articleCoordinator.dateForArticleStub[article] = Date(timeIntervalSinceReferenceDate: 0)
+                        articleCoordinator.authorStub[article] = "A Few Authors"
+                        articleCoordinator.estimatedReadingTimeStub[article] = 180
 
                         subject.configure(cell: cell, with: article)
                     }

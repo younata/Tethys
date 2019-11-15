@@ -86,7 +86,58 @@ class KitModuleSpec: QuickSpec {
             exists(FeedService.self, kindOf: RealmFeedService.self)
             exists(FeedCoordinator.self, singleton: true)
             exists(LocalFeedService.self, kindOf: LocalRealmFeedService.self)
-            exists(ArticleService.self, kindOf: ArticleRepository.self, singleton: true)
+            exists(ArticleService.self, kindOf: RealmArticleService.self)
+
+            describe("different kinds of article service") {
+                it("local returns a realm article service") {
+                    expect(subject.resolve(ArticleService.self, name: "local")).to(beAKindOf(RealmArticleService.self))
+                }
+
+                describe("network article services") {
+                    var credentialService: KeychainCredentialService!
+                    let keychain = KeychainWrapper.standard
+
+                    beforeEach {
+                        credentialService = KeychainCredentialService(
+                            keychain: keychain
+                        )
+
+                        KeychainWrapper.wipeKeychain()
+
+                        subject.register(CredentialService.self) { _ in return credentialService }
+                    }
+
+                    afterEach {
+                        KeychainWrapper.wipeKeychain()
+                    }
+
+                    context("if the user is logged in to an inoreader account") {
+                        beforeEach {
+                            let future = credentialService.store(credential: Credential(
+                                access: "access",
+                                expiration: Date(),
+                                refresh: "refresh",
+                                accountId: "some user id",
+                                accountType: .inoreader
+                            ))
+                            expect(future.value).toEventuallyNot(beNil(), description: "Expected future to be resolved")
+                            expect(future.value?.value).to(beVoid())
+                        }
+
+                        it("returns an inoreader article service") {
+                            expect(subject.resolve(ArticleService.self, name: "network")).to(beAKindOf(InoreaderArticleService.self))
+                        }
+                    }
+
+                    context("if the user is not logged in to an inoreader account") {
+                        it("returns a realm article service") {
+                            expect(subject.resolve(ArticleService.self, name: "network")).to(beAKindOf(RealmArticleService.self))
+                        }
+                    }
+                }
+            }
+
+            exists(ArticleCoordinator.self, singleton: true)
 
             exists(HTTPClient.self, kindOf: URLSession.self, singleton: true)
 

@@ -83,7 +83,7 @@ func articleListControllerFactory(
     mainQueue: OperationQueue = FakeOperationQueue(),
     messenger: Messenger = FakeMessenger(),
     feedCoordinator: FeedCoordinator = FakeFeedCoordinator(),
-    articleService: ArticleService = FakeArticleService(),
+    articleCoordinator: ArticleCoordinator = FakeArticleCoordinator(),
     notificationCenter: NotificationCenter = NotificationCenter(),
     articleCellController: ArticleCellController = FakeArticleCellController(),
     articleViewController: @escaping (Article) -> ArticleViewController = { article in articleViewControllerFactory(article: article) }
@@ -93,7 +93,7 @@ func articleListControllerFactory(
         mainQueue: mainQueue,
         messenger: messenger,
         feedCoordinator: feedCoordinator,
-        articleService: articleService,
+        articleCoordinator: articleCoordinator,
         notificationCenter: notificationCenter,
         articleCellController: articleCellController,
         articleViewController: articleViewController

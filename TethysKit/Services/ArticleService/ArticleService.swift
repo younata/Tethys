@@ -1,7 +1,7 @@
 import Result
 import CBGPromise
 
-public protocol ArticleService {
+protocol ArticleService {
     func mark(article: Article, asRead read: Bool) -> Future<Result<Article, TethysError>>
     func remove(article: Article) -> Future<Result<Void, TethysError>>
 

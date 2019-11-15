@@ -39,7 +39,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     private let mainQueue: OperationQueue
     private let messenger: Messenger
     fileprivate let feedCoordinator: FeedCoordinator
-    fileprivate let articleService: ArticleService
+    fileprivate let articleCoordinator: ArticleCoordinator
     private let notificationCenter: NotificationCenter
     private let articleCellController: ArticleCellController
     fileprivate let articleViewController: (Article) -> ArticleViewController
@@ -47,7 +47,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
                 mainQueue: OperationQueue,
                 messenger: Messenger,
                 feedCoordinator: FeedCoordinator,
-                articleService: ArticleService,
+                articleCoordinator: ArticleCoordinator,
                 notificationCenter: NotificationCenter,
                 articleCellController: ArticleCellController,
                 articleViewController: @escaping (Article) -> ArticleViewController) {
@@ -55,7 +55,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         self.mainQueue = mainQueue
         self.messenger = messenger
         self.feedCoordinator = feedCoordinator
-        self.articleService = articleService
+        self.articleCoordinator = articleCoordinator
         self.notificationCenter = notificationCenter
         self.articleCellController = articleCellController
         self.articleViewController = articleViewController
@@ -120,7 +120,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     }
 
     fileprivate func attemptDelete(article: Article) -> Future<Bool> {
-        return self.articleService.remove(article: article).map { result -> Bool in
+        return self.articleCoordinator.remove(article: article).map { result -> Bool in
             switch result {
             case .success:
                 self.articles = AnyCollection(self.articles.filter { $0 != article })
@@ -136,18 +136,22 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     }
 
     fileprivate func markRead(article: Article, read: Bool, completionHandler: ((Bool) -> Void)? = nil) {
-        self.articleService.mark(article: article, asRead: read).then { result in
-            switch result {
-            case .success(let updatedArticle):
-                self.update(article: article, to: updatedArticle)
-                self.notificationCenter.post(name: Notifications.reloadUI, object: self)
-                completionHandler?(true)
-            case .failure(let error):
-                self.showAlert(
-                    error: error,
-                    title: NSLocalizedString("ArticleListController_Action_Save_Error_Title", comment: "")
-                )
-                completionHandler?(false)
+        var succeeded = true
+        self.articleCoordinator.mark(article: article, asRead: read).then { [weak self] result in
+            self?.mainQueue.addOperation {
+                switch result {
+                case .finished:
+                    completionHandler?(succeeded)
+                case .update(.success(let updatedArticle)):
+                    self?.update(article: article, to: updatedArticle)
+                    self?.notificationCenter.post(name: Notifications.reloadUI, object: self)
+                case .update(.failure(let error)):
+                    self?.showAlert(
+                        error: error,
+                        title: NSLocalizedString("ArticleListController_Action_Save_Error_Title", comment: "")
+                    )
+                    succeeded = false
+                }
             }
         }
     }

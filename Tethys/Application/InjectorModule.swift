@@ -22,14 +22,14 @@ public func configure(container: Container) {    container.register(TagPickerVie
 
     container.register(ArticleUseCase.self) { r in
         return DefaultArticleUseCase(
-            articleService: r.resolve(ArticleService.self)!
+            articleCoordinator: r.resolve(ArticleCoordinator.self)!
         )
     }
 
     container.register(ArticleCellController.self) { r, alwaysHideUnread in
         return DefaultArticleCellController(
             hideUnread: alwaysHideUnread,
-            articleService: r.resolve(ArticleService.self)!,
+            articleCoordinator: r.resolve(ArticleCoordinator.self)!,
             settingsRepository: r.resolve(SettingsRepository.self)!
         )
     }
@@ -80,7 +80,7 @@ private func registerViewControllers(container: Container) {
             mainQueue: r.resolve(OperationQueue.self, name: kMainQueue)!,
             messenger: r.resolve(Messenger.self)!,
             feedCoordinator: r.resolve(FeedCoordinator.self)!,
-            articleService: r.resolve(ArticleService.self)!,
+            articleCoordinator: r.resolve(ArticleCoordinator.self)!,
             notificationCenter: .default,
             articleCellController: r.resolve(ArticleCellController.self, argument: false)!,
             articleViewController: { article in r.resolve(ArticleViewController.self, argument: article)! }

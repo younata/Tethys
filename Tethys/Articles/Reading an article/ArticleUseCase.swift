@@ -9,20 +9,20 @@ public protocol ArticleUseCase {
 }
 
 public final class DefaultArticleUseCase: NSObject, ArticleUseCase {
-    private let articleService: ArticleService
+    private let articleCoordinator: ArticleCoordinator
 
-    public init(articleService: ArticleService) {
-        self.articleService = articleService
+    public init(articleCoordinator: ArticleCoordinator) {
+        self.articleCoordinator = articleCoordinator
         super.init()
     }
 
     public func readArticle(_ article: Article) -> String {
-        _ = self.articleService.mark(article: article, asRead: true)
+        _ = self.articleCoordinator.mark(article: article, asRead: true)
         return self.htmlForArticle(article)
     }
 
     public func toggleArticleRead(_ article: Article) {
-        _ = self.articleService.mark(article: article, asRead: !article.read)
+        _ = self.articleCoordinator.mark(article: article, asRead: !article.read)
     }
 
     private lazy var prismJS: String = {

@@ -330,7 +330,7 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                 }
 
                 it("resolves the promise with the articles") {
-                    expect(future.value).toNot(beNil())
+                    expect(future).to(beResolved())
                     expect(future.value?.error).to(beNil())
                     guard let articles = future.value?.value else {
                         return fail("Promise did not resolve successfully")

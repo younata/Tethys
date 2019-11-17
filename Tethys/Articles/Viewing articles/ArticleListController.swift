@@ -325,7 +325,6 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
                     self?.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
                     self?.tableView.endUpdates()
                 case .update(.failure(let error)):
-                    self?.articles = AnyCollection([])
                     self?.tableView.beginUpdates()
                     self?.tableView.reloadSections(IndexSet(integersIn: 0..<2), with: .automatic)
                     self?.tableView.endUpdates()

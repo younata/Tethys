@@ -230,9 +230,9 @@ class ArticleListControllerSpec: QuickSpec {
                                     feedCoordinator.articlesOfFeedPublishers.last?.update(with: .failure(.unknown))
                                 }
 
-                                it("removes all articles from the feed") {
+                                it("doesn't remove the articles from the feed") {
                                     expect(subject.tableView.numberOfSections).to(equal(2))
-                                    expect(subject.tableView.numberOfRows(inSection: 1)).to(equal(0))
+                                    expect(subject.tableView.numberOfRows(inSection: 1)).to(equal(4))
                                 }
 
                                 itTellsTheUserAboutTheError(title: "Unable to retrieve articles", message: "Unknown Error - please try again")

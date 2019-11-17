@@ -1,0 +1,755 @@
+{
+  "direction": "ltr",
+  "id": "feed/https://www.teslarati.com/feed/",
+  "title": "TESLARATI.com",
+  "description": "",
+  "self": {
+    "href": "https://www.inoreader.com/reader/api/0/stream/contents/feed%2Fhttps%3A%2F%2Fwww.teslarati.com%2Ffeed%2F"
+  },
+  "updated": 1573836425,
+  "updatedUsec": "1573836425847330",
+  "items": [
+    {
+      "crawlTimeMsec": "1573815107641",
+      "timestampUsec": "1573815107641492",
+      "id": "tag:google.com,2005:reader/item/000000052eb8f4d3",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "NASA snubbed SpaceX, common sense to overpay Boeing for astronaut launches, says audit",
+      "published": 1573811739,
+      "updated": 1573822246,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/nasa-snubbed-spacex-overpaid-boeing-astronaut-launches-audit/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/nasa-snubbed-spacex-overpaid-boeing-astronaut-launches-audit/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>A detailed government audit has revealed that NASA went out of its way to overpay Boeing for its Commercial Crew Program (CCP) astronaut launch services, making a mockery of its fixed-price contract with the company and blatantly snubbing SpaceX throughout the process.</p> \n \n \n \n<div> \n<blockquote><p lang=\"en\" dir=\"ltr\">A step further, not only did NASA not try to give SpaceX an option to propose their own solution, they didn't even notify SpaceX before they arbitrarily changed Boeing's requirements. Altogether, Boeing has now received $5.1B to complete the same work SpaceX received $3.1B for. <a href=\"https://t.co/vm1v4I1Pzc\">pic.twitter.com/vm1v4I1Pzc</a></p>— Eric Ralph (@13ericralph31) <a href=\"https://twitter.com/13ericralph31/status/1195061715781611520?ref_src=twsrc%5Etfw\">November 14, 2019</a></blockquote></div><div><ins style=\"text-align:center;\"></ins></div> \n \n \n \n<p>Over the last several years, the NASA inspector general has published a number of increasingly discouraging reports about Boeing’s behavior and track-record as a NASA contractor, and November 14th’s report is possibly the most concerning yet. On November 14th, NASA’s Office of the Inspector General (OIG) published a damning audit titled <a href=\"https://oig.nasa.gov/docs/IG-20-005.pdf\">“NASA’s Management of Crew Transportation to the International Space Station [ISS]” (PDF)</a>. </p> \n \n \n \n<p>Offering more than 50 pages of detailed analysis of behavior that was at best inept and at worst deeply corrupt, OIG’s analysis uncovered some uncomfortable revelations about NASA’s relationship with Boeing in a different realm than usual: NASA’s Commercial Crew Program (CCP). Begun in the 2010s in an effort to develop multiple redundant commercial alternatives to the Space Shuttle, prematurely canceled before a US alternative was even on the horizon, the CCP ultimately awarded SpaceX and Boeing major development contracts in September 2014. </p> \n \n \n \n<a href=\"https://www.teslarati.com/wp-content/uploads/2019/07/Crew-Dragon-DM-1-ISS-arrival-030319-NASA-3-crop-2.jpg\" title=\"\"><img src=\"https://www.teslarati.com/wp-content/uploads/2019/07/Crew-Dragon-DM-1-ISS-arrival-030319-NASA-3-crop-2-1024x519.jpg\" alt=\"\"></a><em>Crew Dragon approaches the ISS on March 3rd during DM-1, the spacecraft’s uncrewed orbital launch debut.</em> (NASA)<a href=\"https://www.teslarati.com/wp-content/uploads/2019/11/Starliner-OFT-110319-Boeing-pre-fueling-1-crop.jpg\" title=\"\"><img src=\"https://www.teslarati.com/wp-content/uploads/2019/11/Starliner-OFT-110319-Boeing-pre-fueling-1-crop-1024x601.jpg\" alt=\"\"></a><em>Boeing’s Orbital Flight Test (OFT) Starliner spacecraft prepares for flight on November 3rd. </em>(Boeing)<p>NASA awarded fixed-cost contracts worth $4.2 billion and $2.6 billion to Boeing and SpaceX, respectively, to essentially accomplish the same goals: design, build, test, and fly new spacecraft capable of transporting NASA astronauts to and from the International Space Station (ISS). The intention behind fixed-price contracts was to hold contractors responsible for any delays they might incur over the development of human-rated spacecraft, a task NASA acknowledged as challenging but far from unprecedented.</p> \n \n \n \n<h3>Off the rails</h3> \n \n \n \n<p>The most likely trigger of the bizarre events that would unfold a few years down the road began in part on June 28th, 2015 and culminated on September 1st, 2016, the dates of the two catastrophic failures SpaceX’s Falcon 9 rocket has suffered since its 2010 debut. In the most generous possible interpretation of the OIG’s findings, NASA headquarters and CCP managers may have been shaken and not thinking on an even keel after SpaceX’s second major failure in a little over a year.</p> \n \n \n \n<div> \n<iframe allowfullscreen=\"allowfullscreen\" title=\"SpaceX - Static Fire Anomaly - AMOS-6 - 09-01-2016\" width=\"1000\" height=\"563\" src=\"https://www.youtube.com/embed/_BgJEXQkjNQ?feature=oembed\" frameborder=\"0\"></iframe> \n</div><p>Under this stress, the agency may have ignored common sense and basic contracting due-diligence, leading “numerous officials” to sign off on a plan that would subvert Boeing’s fixed-price contract, paying the company an additional $287 million (~7%) to prevent a perceived gap in NASA astronaut access to the ISS. This likely arose because NASA briefly believed that SpaceX’s failures could cause multiple years of delays, making Boeing the only available crew transporter provider for a significant period of time. Starliner was already delayed by more than a year, making it increasingly unlikely that Boeing <em>alone</em> would be able to ensure continuous NASA access to the ISS.</p> \n \n \n \n<p>As NASA argued in its attempted response and defense to the audit, “the final price [increase] was agreed to by NASA and Boeing and was reviewed and approved by numerous NASA officials at the Kennedy Space Center and Headquarters”. In the heat of the moment, perhaps those officials forgot that Boeing had already purchased several Russian Soyuz seats to sell to NASA or tourists, and perhaps those officials missed the simple fact that those seats and some elementary schedule tweaks could have almost entirely alleviated the perceived “access gap” with minimal cost and effort.</p> \n \n \n \n<div> \n<blockquote><p lang=\"en\" dir=\"ltr\">tl:dr: \"We can neither confirm or deny\", basically confirming that Boeing seriously threatened to quit/leave the Commercial Crew Program if NASA didn't pay it more. <br><br>Verges on extortion, if you ask me. Just pathetic. <a href=\"https://t.co/klB9MiJT5M\">https://t.co/klB9MiJT5M</a></p>— Eric Ralph (@13ericralph31) <a href=\"https://twitter.com/13ericralph31/status/1195116772325617664?ref_src=twsrc%5Etfw\">November 14, 2019</a></blockquote></div><p>The OIG audit further implied that the timing of a Boeing proposal – submitted just days after NASA agreed to pay the company extra to prevent that access gap – was suspect.</p> \n \n \n \n<p><strong><em>“Five days after NASA committed to pay $287.2 million in price increases for four commercial crew missions, Boeing submitted an official proposal to sell NASA up to five Soyuz seats for $373.5 million for missions during the same time period. In total, Boeing received $660.7 million above the fixed prices set in the CCtCap pricing tables to pay for an accelerated production timetable for four crew missions and five Soyuz seats.”</em></strong><br><br><a href=\"https://oig.nasa.gov/docs/IG-20-005.pdf\">NASA OIG — November 14th, 2019 [PDF]</a></p> \n \n \n \n<p>In other words, NASA officials somehow failed to realize or remember that Boeing owned multiple Soyuz seats during “prolonged negotiations” (p. 24) <em>with Boeing</em> and subsequently awarded Boeing an additional $287M to expedite Starliner production and preparations, thus averting an access gap. The very next week, Boeing asked NASA if it wanted to buy five Soyuz seats it had already acquired to send NASA astronauts to the ISS. </p> \n \n \n \n<p>Bluntly speaking, this series of events has exactly three explanations, none of them heartwarming.</p> \n \n \n \n<ol><li>Boeing intentionally withheld an obvious (partial) solution to a perceived gap in astronaut access to the ISS, exploiting NASA’s panic to extract a ~7% premium from its otherwise fixed-price Starliner development contract. </li><li>Through gross negligence and a lack of basic contracting due-diligence, NASA ignored obvious (and cheaper) possible solutions at hand, taking Boeing’s word for granted and opening up the piggy bank.</li><li>A farcical ‘crew access analysis’ study ignored multiple obvious and preferable solutions to give “numerous NASA officials” an excuse to violate fixed-price contracting principles and pay Boeing a substantial premium. </li></ol><div> \n<blockquote><p lang=\"en\" dir=\"ltr\">Hmmm. A recent report found that from July 2014 through Sept. 2018, NASA assessed Boeing's performance on development of the SLS core stage as \"good,\" \"very good,\" and \"excellent\" at various times. The agency gave Boeing $271 million in award fees.<a href=\"https://t.co/GBvxLq3gIv\">https://t.co/GBvxLq3gIv</a></p>— Eric Berger (@SciGuySpace) <a href=\"https://twitter.com/SciGuySpace/status/1150826372593532930?ref_src=twsrc%5Etfw\">July 15, 2019</a></blockquote></div><h3>Extortion with a friendly smile</h3> \n \n \n \n<p>The latter explanation, while possibly the worst and most corruption-laden, is arguably the likeliest choice based on the history of NASA’s relationship with Boeing. In fact, a July 2019 report from the US Government Accountability Office (GAO) revealed that NASA was consistently paying Boeing hundreds of millions of dollars worth of “award fees” as part of the company’s SLS booster (core stage) production contract, which is no less than four years behind schedule and $1.8 billion over budget. From 2014 to 2018, NASA awarded Boeing a total of $271M in award fees, a practice meant to award a given contractor’s excellent performance. </p> \n \n \n \n<p>In several of those years, NASA reviews reportedly described Boeing’s performance as “good”, “very good”, and “excellent”, all while Boeing repeatedly fumbled SLS core stage production, adding <em>years</em> of delays to the SLS rocket’s launch debut. This is to say that “numerous NASA officials” were also presumably more than happy to give Boeing hundreds of millions of dollars in awards even as the company was and is clearly a big reason why the SLS program continues to fail to deliver.</p> \n \n \n \n<div> \n<iframe allowfullscreen=\"allowfullscreen\" title=\"Boeing performs crew capsule abort test\" width=\"1000\" height=\"563\" src=\"https://www.youtube.com/embed/tit8ktqc5Cw?feature=oembed\" frameborder=\"0\"></iframe> \n</div><a href=\"https://www.teslarati.com/boeing-starliner-abort-test-spacex-crew-dragon-static-fire/\"><em>Boeing completed a most-successful Starliner pad abort test earlier this month, the spacecraft’s first integrated flight of any kind.</em></a><p>Ultimately, although NASA’s concern about SpaceX’s back-to-back Falcon 9 failures and some combination of ineptitude, ignorance, and corruption all clearly played a role, the fact remains that NASA – according to the inspector general – <em>never</em> approached SpaceX as part of their 2016/2017 efforts prevent a ‘crew access gap’. Given that the CCP has two partners, that decision was highly improper regardless of the circumstances and is made even more inexplicable by the fact that NASA was apparently well aware that SpaceX’s Crew Dragon had significantly shorter lead times and cost far less than Starliner. </p> \n \n \n \n<p>This would have meant that had NASA approached SpaceX to attempt to mitigate the access gap, SpaceX could have almost certainly done it significantly cheaper and faster, or at minimum injected a bit of good-faith competition into the endeavor.</p> \n \n \n \n<div> \n<blockquote><p lang=\"en\" dir=\"ltr\">WOW. \"According to several NASA officials, a significant consideration for paying Boeing such a premium was to ensure the contractor continued as a second crew transportation provider.\"<br><br>Did Boeing threaten to quit?</p>— Eric Berger (@SciGuySpace) <a href=\"https://twitter.com/SciGuySpace/status/1195061305654304769?ref_src=twsrc%5Etfw\">November 14, 2019</a></blockquote></div><p>Finally and perhaps most disturbingly of all, NASA OIG investigators were told by “several NASA officials” that – in spite of several preferable alternatives – they ultimately chose to sign off Boeing’s demanded price increases because they were worried that Boeing would <em>quit the Commercial Crew Program entirely</em> without it. Boeing and NASA unsurprisingly denied this in their official responses to the OIG audit, but a US government inspector generally <em>would never </em>publish such a claim without substantial confidence and plenty of evidence to support it.</p> \n \n \n \n<p>According to OIG sources, “senior CCP officials believed that due to financial considerations, Boeing could not continue as a commercial crew provider unless the contractor received the higher prices.” A lot remains unsaid, like why those officials believed that Boeing’s full withdrawal from CCP was a serious risk and how they came to that conclusion, enough to make it impossible to conclude that Boeing actually <em>threatened</em> to quit in lieu of NASA payments. </p> \n \n \n \n<a href=\"https://www.teslarati.com/wp-content/uploads/2019/11/Starship-2019-Saturn-render-SpaceX-1.jpg\" title=\"\"><img src=\"https://www.teslarati.com/wp-content/uploads/2019/11/Starship-2019-Saturn-render-SpaceX-1-1024x576.jpg\" alt=\"\"></a><p>All things considered, these fairly damning revelations should by no means take away from the excellent work Boeing engineers and technicians are trying to do to design, build, and launch Starliner. However, they do serve to draw a fine line between the mindsets and motivations of Boeing and SpaceX. One puts profit, shareholders, and itself above all else, while the other is trying hard to lower the cost of spaceflight and enable a sustainable human presence on the Moon, Mars, and beyond.</p> \n \n \n \n<p><a href=\"https://api.pico.tools/pn/teslarati/37r7aa7x\"><em>Check out Teslarati’s newsletters</em></a><em> for prompt updates, on-the-ground perspectives, and unique glimpses of SpaceX’s rocket launch and recovery processes</em>.</p> \n<p>The post <a href=\"https://www.teslarati.com/nasa-snubbed-spacex-overpaid-boeing-astronaut-launches-audit/\">NASA snubbed SpaceX, common sense to overpay Boeing for astronaut launches, says audit</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Eric Ralph",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573779132107",
+      "timestampUsec": "1573779132106621",
+      "id": "tag:google.com,2005:reader/item/000000052e6f00bb",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Tesla sends out invites for its Cybertruck unveiling with new pickup teaser",
+      "published": 1573776419,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/tesla-cybertruck-unveiling-event-invitations/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/tesla-cybertruck-unveiling-event-invitations/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p><span style=\"font-weight:400;\">Tesla has sent out official invites for its highly-anticipated pickup truck unveiling event. The invitation, which requires attendees to RSVP, featured a brand new teaser image of the upcoming vehicle that CEO Elon Musk has fondly described as a </span><i><span style=\"font-weight:400;\">Blade Runner</span></i><span style=\"font-weight:400;\">-style “Cybertruck.”</span></p> \n<p><span style=\"font-weight:400;\">In what appears to be a hint at the hype surrounding the vehicle, the event quickly reached full capacity not long after the invites were sent out. The fortunate ones who managed to secure a spot at the <a href=\"https://www.teslarati.com/tesla-pickup-truck-release-date-elon-musk-cybertruck/\">Cybertruck unveiling</a> received a confirmation message from Tesla, which provided a few more interesting details about the upcoming event. </span></p> \n<p><span style=\"font-weight:400;\">Tesla listed the following reminders for its Cybertruck unveiling attendees. </span></p> \n<blockquote> \n<p lang=\"en\" dir=\"ltr\">HELL YES!!!!!! I had already booked airfare &amp; hotel. Had a custom outfit made. Omg I can't wait! Watch out world. This is gunna be EPIC! <a href=\"https://t.co/r43YvujLBm\">pic.twitter.com/r43YvujLBm</a></p> \n<p>— Erik (@teslainventory) <a href=\"https://twitter.com/teslainventory/status/1195095734938267648?ref_src=twsrc%5Etfw\">November 14, 2019</a></p></blockquote> \n<p></p> \n<div><ins style=\"text-align:center;\"></ins></div> \n<p style=\"padding-left:40px;\"><em><span style=\"font-weight:400;\">“Your attendance is confirmed for the Cybertruck Unveil on Thursday, November 21 at the Tesla Design Center, 3203 Jack Northrop Ave, Hawthorne, CA. </span></em></p> \n<p style=\"padding-left:40px;\"><em><span style=\"font-weight:400;\">– Invitations are non-transferable and IDs will be checked upon arrival</span></em></p> \n<p style=\"padding-left:40px;\"><em><span style=\"font-weight:400;\">– Doors open at 7 p.m.</span></em></p> \n<p style=\"padding-left:40px;\"><em><span style=\"font-weight:400;\">– Remarks will begin at 8 p.m.</span></em></p> \n<p style=\"padding-left:40px;\"><em><span style=\"font-weight:400;\">– Event will be held both indoors and outdoors</span></em></p> \n<p style=\"padding-left:40px;\"><em><span style=\"font-weight:400;\">– We recommend light outerwear in case of cooler weather</span></em></p> \n<p style=\"padding-left:40px;\"><em><span style=\"font-weight:400;\">– Additional details will be shared at least 24 hours prior to the event”</span></em></p> \n<p><span style=\"font-weight:400;\">A look at the reminders reveals that the Cybertruck unveiling will be held at an open area, which could play to the strengths of the upcoming vehicle. This detail invokes some similarities to the Tesla Semi and next-gen Roadster unveiling from November 2017, which also involved attendees interacting with the vehicles in an open area. </span></p> \n<p><span style=\"font-weight:400;\">This detail bodes well for the upcoming vehicle. The Tesla Cybertruck could very well be the electric car maker’s first EV that is designed to be rough and tough, and there are few better ways to showcase this by <a href=\"https://www.teslarati.com/tesla-cyberpunk-pickup-truck-predictions-video/\">demonstrating its capabilities</a> during its unveiling. Feats of strength, for one, definitely work better in an outdoor setting. </span></p> \n<p><span style=\"font-weight:400;\">Tesla’s official invitation for the vehicle also includes a new teaser for the Cybertruck featuring a long lightbar that runs across the invite. Playing around with the invitation’s brightness and contrast settings reveals a couple of wheels at the left hand side, together with what seems to be a fairly long bed. </span></p> \n<blockquote> \n<p lang=\"en\" dir=\"ltr\">Previous Tesla invites had hidden Easter eggs embedded within. I enhanced the image &amp; it unveils 2 wheels in motion. Would the lights then be the side lights surrounding the truck or can the wheels rotate &amp; do something out of this world? <a href=\"https://twitter.com/hashtag/LikeTesla?src=hash&amp;ref_src=twsrc%5Etfw\">#LikeTesla</a> <a href=\"https://twitter.com/hashtag/Tesla?src=hash&amp;ref_src=twsrc%5Etfw\">#Tesla</a> <a href=\"https://twitter.com/hashtag/CyberTruck?src=hash&amp;ref_src=twsrc%5Etfw\">#CyberTruck</a> <a href=\"https://t.co/lUsZ6LWKSO\">pic.twitter.com/lUsZ6LWKSO</a></p> \n<p>— LikeTesla (@LikeTeslaKim) <a href=\"https://twitter.com/LikeTeslaKim/status/1195117082154872832?ref_src=twsrc%5Etfw\">November 14, 2019</a></p></blockquote> \n<p></p> \n<p><span style=\"font-weight:400;\">Tesla’s official invitations were sent out not long after Tesla filed trademarks for “Cybertruck” and “CYBRTRK,” as seen in <a href=\"https://www.teslarati.com/tesla-registers-cybertruck-trademark-ahead-of-november-21-unveiling/\">filings with the US Patent Office</a>. It did not take long before the unveiling event was fully booked, with a number of Tesla community members noting that they received messages stating that they have been placed in a waiting list. </span></p> \n<blockquote> \n<p lang=\"en\" dir=\"ltr\">Looks like the Cybertruck event has already hit the waitlist. It’s full. <a href=\"https://t.co/csTMbP0YkM\">pic.twitter.com/csTMbP0YkM</a></p> \n<p>— Tesla Owners Online (@Model3Owners) <a href=\"https://twitter.com/Model3Owners/status/1195101775839281152?ref_src=twsrc%5Etfw\">November 14, 2019</a></p></blockquote> \n<p></p> \n<p><span style=\"font-weight:400;\">“Thank you for your interest in the Cybertruck Unveil event. Your name as been added to the waitlist. If space becomes available, you will receive a confirmation email in the order you submitted your RSVP,” Tesla wrote. </span></p> \n<p><span style=\"font-weight:400;\">Tesla’s all-electric Cybertruck is expected to have a base price of $49,000 before options, while packing around 400 to 500 miles of range per charge, as per information shared by Elon Musk. </span></p> \n<p>The post <a href=\"https://www.teslarati.com/tesla-cybertruck-unveiling-event-invitations/\">Tesla sends out invites for its Cybertruck unveiling with new pickup teaser</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Simon Alvarez",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573768395582",
+      "timestampUsec": "1573768395582460",
+      "id": "tag:google.com,2005:reader/item/000000052e5ad77a",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "SpaceX’s next Falcon 9 satellite launch a step closer as spacecraft heads to Florida",
+      "published": 1573767748,
+      "updated": 1573775567,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/spacex-next-falcon-9-launch-satellite-heads-to-florida/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/spacex-next-falcon-9-launch-satellite-heads-to-florida/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>SpaceX’s next commercial Falcon 9 mission is a step closer to the launch pad after a Boeing-built satellite departed its California factory and began the journey to Cape Canaveral, Florida.</p> \n \n \n \n<div> \n<blockquote><p lang=\"en\" dir=\"ltr\">Boeing has officially completed the ~6800 kg Kacific-1/JCSAT-18 communications satellite, marked by the start of its journey from California to Cape Canaveral, Florida. A SpaceX Falcon 9 rocket is scheduled to launch the satellite no earlier than (NET) 7:10pm ET on Dec 15th. <a href=\"https://t.co/Iez2UJ3YlV\">https://t.co/Iez2UJ3YlV</a></p>— Eric Ralph (@13ericralph31) <a href=\"https://twitter.com/13ericralph31/status/1191529492629442560?ref_src=twsrc%5Etfw\">November 5, 2019</a></blockquote></div><div><ins style=\"text-align:center;\"></ins></div> \n \n \n \n<p>Known as Kacific-1 or JCSat-18 the massive spacecraft is scheduled to launch no earlier than mid-December and is current set to be SpaceX’s second to last or final launch of 2019. According to tweets published by operator Kacific and satellite manufacturer Boeing, the satellite departed Boeing’s El Segundo, California factory on November 4th and has probably already arrived in Cape Canaveral, Florida.</p> \n \n \n \n<p>After arrival, Boeing technicians will inspect the satellite to ensure its road trip caused no damaged and fuel the spacecraft’s bipropellant and xenon propellant tanks. SpaceX technicians will then take over, encapsulating Kacific-1 inside a Falcon 9 payload fairing, transporting the assembly to its Launch Complex 40 pad, and attaching the fairing to an integrated Falcon 9 rocket. </p> \n \n \n \n<a href=\"https://www.teslarati.com/wp-content/uploads/2019/11/Kacific-1-render-Kacific-2-Copy.jpg\" title=\"\"><img src=\"https://www.teslarati.com/wp-content/uploads/2019/11/Kacific-1-render-Kacific-2-Copy-1024x419.jpg\" alt=\"\"></a><em>A render of the Boeing-built Kacific-1 satellite in orbit.</em> (Boeing)<p>Based on Boeing’s 702MP satellite bus, Kacific-1 likely has both a chemical bipropellant rocket engine and electric xenon propulsion systems onboard, giving the spacecraft the flexibility to both quickly raise its orbit after launch and the exceptional stamina offered by electric thrusters. The satellite is expected to have a useful life of no less than 15 years and will provide approximately 70 Gbps worth of phone, data, and internet service to the Asia-Pacific region.</p> \n \n \n \n<p>Kacific-1 is expected to weigh upwards of 6800 kg (15,000 lb) at liftoff, potentially making it the heaviest Boeing 702 satellite yet. The current 702 bus record-holder is Intelsat 35e, a 6761 kg (14,905 lb) satellite launched on an expendable Falcon 9 rocket in July 2017. </p> \n \n \n \n<a href=\"https://www.teslarati.com/wp-content/uploads/2019/11/Intelsat-35e-Falcon-9-July-2017-SpaceX-launch-5-crop.jpg\" title=\"\"><img src=\"https://www.teslarati.com/wp-content/uploads/2019/11/Intelsat-35e-Falcon-9-July-2017-SpaceX-launch-5-crop-1024x514.jpg\" alt=\"\"></a><em>Falcon 9 lifts off from Pad 39A with Intelsat 35e in July 2017. </em>(SpaceX)<p>Although Falcon 9 has been significantly upgraded since 2017, launching a 6.8-ton satellite to a full geostationary transfer orbit (GTO) is still out of the question, meaning that Kacific-1 will either require expendable Falcon 9 performance or be launched to a subsynchronous transfer orbit. The latter is significantly more likely, as the opportunity cost of expending a Falcon 9 Block 5 booster is large enough to encourage SpaceX to avoid it if at all possible.</p> \n \n \n \n<p>Either way, Kacific-1 will almost certainly launch on one of SpaceX’s six available flight-proven boosters, as new Falcon 9 boosters are exceedingly rare and are now almost exclusive to NASA or US military missions. Kacific-1 is currently scheduled to launch no earlier than 7:10 pm EST on December 15th, although such a specific date more than a month out is liable to change as the launch nears.</p> \n \n \n \n<p><a href=\"https://api.pico.tools/pn/teslarati/37r7aa7x\"><em>Check out Teslarati’s newsletters</em></a><em> for prompt updates, on-the-ground perspectives, and unique glimpses of SpaceX’s rocket launch and recovery processes</em>.</p> \n<p>The post <a href=\"https://www.teslarati.com/spacex-next-falcon-9-launch-satellite-heads-to-florida/\">SpaceX’s next Falcon 9 satellite launch a step closer as spacecraft heads to Florida</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Eric Ralph",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573768395582",
+      "timestampUsec": "1573768395582459",
+      "id": "tag:google.com,2005:reader/item/000000052e5ad786",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Tesla registers Cybertruck trademark ahead of November 21 unveiling",
+      "published": 1573766549,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/tesla-registers-cybertruck-trademark-ahead-of-november-21-unveiling/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/tesla-registers-cybertruck-trademark-ahead-of-november-21-unveiling/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>Tesla has filed to register the name and logo for its yet-to-be-released “Cybertruck,” the name of its first all-electric pickup truck ahead of the vehicle’s unveiling event on November 21.</p> \n<p>According to <a href=\"https://teslamotorsclub.com/tmc/threads/tesla-cybrtrk.173658/\">GenSao of the TeslaMotorClub</a>, The United States Patent and Trademark Office website shows Tesla, Inc. submitted two trademark applications for the phrases “CYBERTRUCK” and “CYBRTRK”. Tesla also has turned in an application for the truck’s official logo according to the Patent and Trademark Office’s website, all submitted on November 6, 2019, the same day CEO Elon Musk tweeted the date of the truck’s unveiling. The unveiling event will take place in Los Angeles near the SpaceX rocket factory.</p> \n<blockquote> \n<p lang=\"en\" dir=\"ltr\">Cybertruck unveil on Nov 21 in LA near SpaceX rocket factory</p> \n<p>— Elon Musk (@elonmusk) <a href=\"https://twitter.com/elonmusk/status/1192113294036754432?ref_src=twsrc%5Etfw\">November 6, 2019</a></p></blockquote> \n<p></p> \n<div><ins style=\"text-align:center;\"></ins></div> \n<p>Speculation regarding the truck has been heavy, as nobody outside of Tesla’s inner-most circle has any sort of information other than some specifications Musk has released to the public, like its massive 300,000-lb towing capacity and seats that are <a href=\"https://www.teslarati.com/tesla-pickup-truck-6-seats-300k-towing-capacity/\">reportedly big enough to fit Andre the Giant</a>. Even celebrity Joe Rogan, who hosted Musk as a guest on his podcast in September 2018, texted Musk a picture he found on the internet <a href=\"https://www.teslarati.com/tesla-cyberpunk-pickup-truck-3d-renders/\">of what the truck is rumored to look like</a>. However, Rogan was surprised when Musk responded by saying something along the lines of, “That’s not really our truck. It’s more Blade Runner-esque.” After all, he has described the truck publically as “cyberpunk” and states it will be “pretty sci-fi”.</p> \n<img src=\"https://www.teslarati.com/wp-content/uploads/2019/11/Screen-Shot-2019-11-14-at-4.13.39-PM.png\" alt=\"\">Tesla’s “Cybertruck” Logo, submitted to the U.S. Patent and Trademark Office<p>The truck is expected to have a <a href=\"https://www.teslarati.com/tesla-pickup-truck-price-elon-musk/\">base starting price of $49,000</a> and will pack somewhere between 400 and 500 miles of range.</p> \n<p>The all-electric car manufacturer will be competing with some of the most popular automakers in the world, including Ford, who sold the United States most popular line of trucks in 2018, the F-Series. With Rivian’s R1T truck also beginning production <a href=\"https://www.teslarati.com/rivian-rj-scaringe-nyt-r1t-r1s-production-volume/\">in late-2020 or early-2021</a>, Tesla will not be selling the only electric pickup truck on the market and will have stiff competition from <a href=\"https://www.teslarati.com/rivian-amazon-700m-investment-round/\">the Jeff Bezos backed company.</a></p> \n<p>The post <a href=\"https://www.teslarati.com/tesla-registers-cybertruck-trademark-ahead-of-november-21-unveiling/\">Tesla registers Cybertruck trademark ahead of November 21 unveiling</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Joey Klender",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573764790527",
+      "timestampUsec": "1573764790526888",
+      "id": "tag:google.com,2005:reader/item/000000052e53ab1a",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Tesla Model 3 nails 0-60 mph in 2.9 sec after OTA software update",
+      "published": 1573762832,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/tesla-model-3-0-60-mph-in-2-9-sec-after-ota-software-update/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/tesla-model-3-0-60-mph-in-2-9-sec-after-ota-software-update/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>The Tesla Model 3 Performance variant broke the three-second 0-60 MPH barrier <a href=\"https://www.teslarati.com/tesla-model-s-x-3-power-boost-software-update/\">after receiving a 5% performance update</a>.</p> \n<p>Popular Tesla YouTuber Brooks Weisblat of <a href=\"https://www.youtube.com/channel/UCWeLPNowZvdzXwnCDxVyNEg\"><em>DragTimes</em></a> shared data from numerous acceleration runs he performed in a Model 3, capturing before and after the 5% power update.</p> \n<p>When he first received his car from Tesla, Weisblat benchmarked the vehicle’s performance in four separate 0-60 MPH runs, noting the fastest time as 3.050 seconds and quicker than Tesla’s advertised 0-60 MPH time of 3.2 seconds. After the update, Weisblat performed four more runs to test acceleration and was able to break the 0-60 MPH three-second barrier by recording a time of 2.998 seconds, giving the vehicle a rough theoretical horsepower increase of 23.7%.</p> \n<div><ins style=\"text-align:center;\"></ins></div> \n<p>Weisblat also tested his Model 3 Performance in a quarter-mile assessment. His vehicle’s pre-update time was 11.637 seconds, with a top speed of 115.485 MPH, but <a href=\"https://www.teslarati.com/tesla-model-3-drag-race-ota-power-update-comparison/\">this time was beaten by the 5% power increase</a>, capturing an 11.486 second time and a top speed of 117.495. “That is a pretty significant top-end increase from 115 to 117,” Weisblat added. “Overall…I think there definitely is a noticeable increase in power. I can’t say driving the car, you actually notice a huge difference, but the numbers right here actually show a little bit of a difference.” He believes if owners utilized lighter wheels or other performance parts that hold less weight, times could be reduced even further, perhaps into the 11.3 second mark for the quarter-mile.</p> \n<p>CEO Elon Musk and VP of Technology Drew Baglino first hinted at the over-the-air power update for Model S, Model X, and Model 3 vehicles during the company’s Q3 earnings call in October. “We’re also expecting there is going to be an over-the-air improvement, that will improve the power of the Model S, X, and 3. By the way, it’s coming in a few weeks. It should be on the order of 5% power <a href=\"https://www.teslarati.com/tesla-v10-firmware-smart-summon-release-date-august-2019/\">improvement due to improved firmware</a>,” VP of Technology Drew Baglino said. “We are continuing to learn how to optimize motor control in our products. But yes, a 5% improvement for all Model 3 customers, and 3% for S and X,”  The update was not only geared toward power improvements, however, as Tesla also announced there would be positive changes in Supercharging.</p> \n<p>CEO Elon Musk was sure to add his two cents regarding the power and convenience of the company’s utilization of Over-the-Air updates to improve its products. “I don’t think there has ever been a situation in history where you buy a car and it gets way better over time, through software,” Musk said. Updates have provided power improvements like the one tested by Brooks Weisblat. However, Tesla has been able <a href=\"https://www.teslarati.com/tesla-theater-v10-update-mobile-movies/\">to add numerous entertainment options</a> through the updates as well, making the Tesla ownership experience new and exciting.</p> \n<p>Watch DragTimes results of the Model 3 Performance before and after the 5% power update below.</p> \n<p><iframe allowfullscreen=\"allowfullscreen\" title=\"Tesla Model 3 &amp; Model S Power Increase Testing * Model 3 hits 60 MPH in 2.9 Seconds!\" width=\"1000\" height=\"563\" src=\"https://www.youtube.com/embed/j8hdGCunJso?feature=oembed\" frameborder=\"0\"></iframe></p> \n<p>The post <a href=\"https://www.teslarati.com/tesla-model-3-0-60-mph-in-2-9-sec-after-ota-software-update/\">Tesla Model 3 nails 0-60 mph in 2.9 sec after OTA software update</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Joey Klender",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573753611804",
+      "timestampUsec": "1573753611804038",
+      "id": "tag:google.com,2005:reader/item/000000052e3bb61e",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Tesla Model 3 makes it as one of Motortrend’s Car of the Year Top 3 finalists",
+      "published": 1573746051,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/tesla-model-3-makes-it-as-one-of-motortrends-car-of-the-year-finalists/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/tesla-model-3-makes-it-as-one-of-motortrends-car-of-the-year-finalists/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>The Tesla Model 3 has been named as one of three finalists in <em>Motortrend</em>‘s 2020 Car of the Year award rankings, alongside the Chevrolet Corvette and the Kia Soul.</p> \n<p><em>Motortrend</em> released the lists of finalists on November 12 and will evaluate each vehicle by six different criteria to determine the winner: Safety, Efficiency, Value, Advancement in Design, Engineering Excellence, and Performance of Intended Function.</p> \n<p><a href=\"https://www.motortrendgroup.com/motortrend-announces-its-2020-awards-podium-finalists/\"><em>Motortrend</em> notes the 2020 Tesla Model 3</a> as the best sport sedan on the market. “The 2020 Model 3’s interior design continues to be modern and minimalistic, but it’s elegant in its simplicity. The 2020 Model 3’s seats offer more bolstering, and rear passengers now enjoy a more ergonomic position, as the bench has been raised for improved comfort. In terms of driving, the Model 3 offers impressive dynamic performance as well as battery-pack range that continues to be the benchmark for electric vehicles,” the publication wrote.</p> \n<p>In terms of the six criteria, the Model 3 will be extremely competitive with both the Chevy Corvette and Kia Soul. The Model 3 was <a href=\"https://www.teslarati.com/tesla-model-3-earns-flawless-5-star-safety-rating-from-nhtsa/\">given a five-star safety rating</a> from the National Highway Transportation Safety Administration (NHTSA) and was given the <a href=\"https://www.teslarati.com/tesla-model-3-iihs-top-safety-pick-plus-award/\">“Top Safety Pick+” award</a> by the Insurance Institute for Highway Safety (IIHS). The conjunction of these two awards could allow <em>Motortrend</em> to recognize the Model 3 as the safest vehicle on the road today.</p> \n<div><ins style=\"text-align:center;\"></ins></div> \n<p>The Model 3 is one of the most efficient vehicles on the road today as well. The Long Range All-Wheel Drive variant offers drivers 322 miles of range on a single charge, while the Performance trim offers 310 miles. Not to mention, the Model 3’s environmental efficiency is top-ranked due to the car’s zero-emissions nature.</p> \n<p>Advancement in Design is another one of the Model 3’s most impressive features. The car, along with the rest of Tesla’s released models is able to improve through the company’s frequent updates, like the most recent V10 software. Not only does Tesla improve upon the entertainment and accessibility features, but the updates can also affect performance features. The Model 3 is constantly improving with these updates, thanks to Elon Musk and his team at Tesla.</p> \n<p>Recognized as having an “excellent design” by former General Motors car designer <a href=\"http://www.automobilemag.com/news/2018-design-of-the-year-tesla-model-3/\">Robert Cumberford</a>, the Model 3 is competitive to the Corvette and Soul in engineering excellence. Cumberford stated that the “function is embodied in a minimalist manner, providing elegant simplicity” compared to other vehicles, and compared its “deceptive” simpleness to Apple products.</p> \n<p>The Performance trim of the Model 3 is one of the highest quality vehicles on the market with a 0-60 MPH time of 3.2 seconds. <a href=\"https://www.teslarati.com/tesla-model-3-vs-toyota-supra-2020-race/\">The Model 3 has outperformed vehicles</a> like the Ferrari F12, the 2020 Toyota Supra, and a 2020 Ford Mustang GT on drag races, proving you do not need a loud, gas-powered motor to win 1/8 and 1/4-mile races. In fact, electric vehicles are more likely to outperform their petrol-based counterparts, as they utilize instant torque for quick acceleration.</p> \n<p>The Model 3 has been given multiple awards since its initial deliveries in July 2017. Most recently, Tesla CEO Elon Musk was given the Golden Steering Wheel Award for the Model 3 in Berlin, Germany, the future home of Gigafactory 4. The list of the Model 3’s <a href=\"https://www.teslarati.com/tesla-model-3-car-of-the-year-parkers-guide/\">recognition as one of the best vehicles in the world</a> is lengthy, and the vehicle makes a strong case that it could be the recipient of <em>Motortrend</em>‘s 2020 Car of the Year award.</p> \n<p>The post <a href=\"https://www.teslarati.com/tesla-model-3-makes-it-as-one-of-motortrends-car-of-the-year-finalists/\">Tesla Model 3 makes it as one of Motortrend’s Car of the Year Top 3 finalists</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Joey Klender",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573742870772",
+      "timestampUsec": "1573742870772194",
+      "id": "tag:google.com,2005:reader/item/000000052e20082e",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Fossil fuel dependence will increase until 2030s due to SUV demand: Energy Agency",
+      "published": 1573742108,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/tesla-vs-big-oil-will-take-longer-than-expected-international-energy-agency/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/tesla-vs-big-oil-will-take-longer-than-expected-international-energy-agency/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>A recent report from the International Energy Agency (IEA) suggests the dependence on energy sources derived from crude oil will continue to increase until the 2030s and emissions contributing to global climate change could also rise until 2040. The IEA cites the increasing demand for sport utility vehicles (SUVs) as the main contributor to vehicle-based emissions.</p> \n<p>The United States, China, and Europe have displayed a growing hunger for SUVs, and it is directly contributing to the environmental issues according to the IEA’s annual long-term forecast report, <a href=\"https://apnews.com/dd48372af09548e78b854ba4f2fabd59\">the <em>AP</em> says</a>. The IEA suggested governments in these areas need to display “strong leadership” to reduce carbon emissions from SUVs in an attempt to save the environment.</p> \n<p>Perhaps the most frightening part <a href=\"https://www.iea.org/newsroom/news/2019/november/world-energy-outlook-2019-highlights-deep-disparities-in-the-global-energy-system.html\">of the IEA report</a> was the idea that the growing demand for SUVs could completely <a href=\"https://www.teslarati.com/tesla-effect-puts-big-oil-on-the-defensive/\">eliminate any environmental benefits</a> from the increasing popularity of electric cars. As the industry for battery-operated vehicles continues to grow across the world, the IEA feels the current investment in renewable energy is “insufficient,” as the estimated global demand of barrels of oil per day until 2040 is expected to increase from 96.9 million in 2018, to 106.4 million in 2040.</p> \n<div><ins style=\"text-align:center;\"></ins></div> \n<p>IEA director Fatih Birol stated SUVs “were the second biggest cause of the increase in emissions in the last 10 years, behind the energy sector and more than all industrial sectors combined,” during an interview in Paris, France. According to industry reports, SUVs and pickup trucks made up about two-thirds of vehicle sales in the U.S., and one-third in Europe, but 42% of all vehicle sales worldwide in 2018 were SUVs.</p> \n<p>Electric vehicle companies like Tesla have made significant strides in the fight against emissions from petrol-based vehicles. With Tesla’s Model X, along with the imminent release of the Model Y crossover, the company will now be able to offer those interested in purchasing an SUV two different vehicles that offer maximum cargo space in an energy-efficient manner.</p> \n<p>Fellow all-electric car maker Rivian will also begin <a href=\"https://www.teslarati.com/rivian-r1t-r1s-fully-charged-north-america-event/\">producing its energy-efficient R1T truck</a> and R1S SUV in late-2020 and early-2021. Electric vehicles produced by these two companies will rival their gas-powered counterparts, allowing for record amounts of towing capacity, range, and off-roading capabilities. Big oil has stated its discontent with electric vehicles in the past, stating <a href=\"https://www.teslarati.com/big-oil-fighting-back-against-ev-electric-vehicle-revolution/\">they are not the solution to the world’s environmental issues.</a></p> \n<p>The IEA also recognizes the growing demand for plastic and air travel as two other factors directly contributing to the report’s main point of the growing oil demand. “The world urgently needs to put a laser-like focus on bringing down global emissions. This calls for a grand coalition encompassing governments, investors, companies and everyone else who is committed to tackling climate change,” Birol said.</p> \n<p>The importance of identifying and eliminating the issue of carbon emissions is extremely important to the future of the climate. Elon Musk’s mission behind creating a vehicle that emits no carbon emissions has been the main goal since Tesla was created in 2004. “We’re running the most dangerous experiment in history right now, which is to see how much carbon dioxide the atmosphere can handle before there is an environmental catastrophe,” Musk said in 2013. The ever-growing environmental movement has been highlighted by increasingly prevalent activism from people like Greta Thunberg. However, it will take more than environmental activists to implement change.</p> \n<p>The post <a href=\"https://www.teslarati.com/tesla-vs-big-oil-will-take-longer-than-expected-international-energy-agency/\">Fossil fuel dependence will increase until 2030s due to SUV demand: Energy Agency</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Joey Klender",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573735737138",
+      "timestampUsec": "1573735737137974",
+      "id": "tag:google.com,2005:reader/item/000000052e0d4de9",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Tesla Gigafactory 3 will aim to produce 17k Model 3 this year, claims report",
+      "published": 1573733588,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/tesla-gigafactory-3-17k-model-3-production-2019-report/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/tesla-gigafactory-3-17k-model-3-production-2019-report/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>A recent report from China has suggested that Tesla’s Gigafactory 3 in Shanghai will be aiming for a very ambitious goal with regards to its initial production output. Citing information acquired through its sources, local news agency <em><a href=\"http://www.globaltimes.cn/content/1169927.shtml\">The Global Times</a></em> has noted that Tesla will aim to produce 17,400 Made-in-China Model 3 at Gigafactory 3 by the end of 2019. </p> \n \n \n \n<p>If the <em>Times</em>‘ information is accurate, this could mean that Tesla could start Model 3 production at a pace of 2,900 units per week. This is incredibly ambitious, though with six weeks left in the year, the target is pretty close to a previous estimate shared by Tesla Global VP Grace Tao, who noted in an interview with Chinese news outlets that Gigafactory 3 will be aiming for a <a href=\"https://www.teslarati.com/tesla-model-3-production-gigafactory-3-3k-per-week/\">production rate of 3,000 Model 3 per week</a> to start. </p> \n \n \n \n<p>Inasmuch as Tesla’s reported target of 17,400 Model 3 before the end of the year is notably shocking, the company does have the necessary permissions to <a href=\"https://www.teslarati.com/tesla-gigafactory-3-gets-model-3-mass-production-license/\">begin mass-production activities</a> for the Made-in-China electric sedan. Tesla’s mass-production permit was posted by China’s Ministry of Industry and Information Technology on its website on Wednesday. With this permit, Tesla could begin producing the China-made Model 3 at scale. </p> \n \n \n \n<div><ins style=\"text-align:center;\"></ins></div> \n \n \n \n<p>Producing the Model 3 at scale at this point would be a smart move for the electric car maker. So far, Tesla is only waiting for its final permits to start delivering the Made-in-China Model 3 to local reservation holders. But while the company is waiting for these approvals, it could do what it is already permitted to do — manufacture the Model 3 at <a href=\"https://www.teslarati.com/tesla-gigafactory-3-battery-facility-buildout-model-3-china-video/\">Gigafactory 3’s Phase 1 area</a>. This way, customer deliveries could begin as soon as Tesla’s final approvals are acquired. </p> \n \n \n \n<p>If Tesla can start the production of the Model 3 in Gigafactory 3 this month, the company could be well within reach of its self-imposed target of producing 360,000-400,000 electric vehicles in 2019. This ambitious goal has received a notable amount of mockery from Tesla critics, especially considering that the company’s Fremont factory is already operating at full capacity. With Gigafactory 3 in the picture, things become a bit different. </p> \n \n \n \n<p>Larger numbers of Made-in-China Model 3 units have been spotted by drone operators and Tesla enthusiasts <a href=\"https://twitter.com/realChaoZhou/status/1194595852225900545?s=20\">Chao Zhou</a> and <a href=\"https://www.youtube.com/channel/UCTrsRvDqoKw6DTJMLKCuM-Q\">Jason Yang</a> in recent flyovers. Chao, for one, noted that he was able to spot around 50 Model 3 in Gigafactory 3’s parking lot. Neither Tesla nor its Chinese partners have provided details about these vehicles, though speculations are abounding that the Model 3 at Gigafactory 3’s parking lots are trial production units. If the <em>Times</em>‘ recent report turns out to be accurate, then Gigafactory 3’s premises may soon be filled with Made-in-China Model 3 vehicles sooner than expected. </p> \n \n \n \n<div> \n<blockquote><p lang=\"en\" dir=\"ltr\"><a href=\"https://twitter.com/search?q=%24tslaq&amp;src=ctag&amp;ref_src=twsrc%5Etfw\">$tslaq</a> doomed days, more exciting news about .<a href=\"https://twitter.com/Tesla?ref_src=twsrc%5Etfw\">@Tesla</a> <a href=\"https://twitter.com/hashtag/Gigafactory?src=hash&amp;ref_src=twsrc%5Etfw\">#Gigafactory</a> are coming out <img src=\"https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f680.png\" alt=\"🚀\"><br><br>Nearly 50 MIC <a href=\"https://twitter.com/hashtag/Model3?src=hash&amp;ref_src=twsrc%5Etfw\">#Model3</a> cars are parking outside of <a href=\"https://twitter.com/hashtag/GF3?src=hash&amp;ref_src=twsrc%5Etfw\">#GF3</a><br><br>Phase II giga roof is basically completed now<br><br>Giga Berlin has been announced! <img src=\"https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f525.png\" alt=\"🔥\"><br><br>.<a href=\"https://twitter.com/elonmusk?ref_src=twsrc%5Etfw\">@elonmusk</a> <a href=\"https://twitter.com/hashtag/China?src=hash&amp;ref_src=twsrc%5Etfw\">#China</a> <a href=\"https://t.co/TeX8DCgPSn\">pic.twitter.com/TeX8DCgPSn</a></p>— Chao Zhou <img src=\"https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f47d.png\" alt=\"👽\"> (@realChaoZhou) <a href=\"https://twitter.com/realChaoZhou/status/1194595852225900545?ref_src=twsrc%5Etfw\">November 13, 2019</a></blockquote></div><p>The post <a href=\"https://www.teslarati.com/tesla-gigafactory-3-17k-model-3-production-2019-report/\">Tesla Gigafactory 3 will aim to produce 17k Model 3 this year, claims report</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Simon Alvarez",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573728627489",
+      "timestampUsec": "1573728627488677",
+      "id": "tag:google.com,2005:reader/item/000000052df99e57",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "SpaceX fires up redesigned Crew Dragon as NASA reveals SuperDraco thruster “flaps”",
+      "published": 1573725315,
+      "updated": 1573735737,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/spacex-fires-redesigned-crew-dragon-superdraco-flaps/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/spacex-fires-redesigned-crew-dragon-superdraco-flaps/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>On November 13th, SpaceX revealed that a planned static fire test of a Crew Dragon’s powerful abort thrusters was completed without issue, a strong sign that the company has successfully redesigned the spacecraft to prevent a catastrophic April 2019 explosion from reoccurring.</p> \n \n \n \n<p>Pending a far more extensive analysis, Wednesday’s static fire should leave SpaceX on track to perform Crew Dragon’s next major flight test before the end of 2019.</p> \n \n \n \n<div> \n<blockquote><p lang=\"en\" dir=\"ltr\">Full duration static fire test of Crew Dragon’s launch escape system complete – SpaceX and NASA teams are now reviewing test data and working toward an in-flight demonstration of Crew Dragon’s launch escape capabilities <a href=\"https://t.co/CMHvMRBQcW\">pic.twitter.com/CMHvMRBQcW</a></p>— SpaceX (@SpaceX) <a href=\"https://twitter.com/SpaceX/status/1194745251480498177?ref_src=twsrc%5Etfw\">November 13, 2019</a></blockquote></div><div><ins style=\"text-align:center;\"></ins></div> \n \n \n \n<p>In an unexpected flourish of transparency, SpaceX and NASA published photos of the Crew Dragon capsule’s static fire test just a few hours after it was completed, an excellent sign that the ‘quick-look’ data analysis immediately following the test was extremely positive. Spaceflight Now was first to visually confirm that the test had occurred, publishing a photo that revealed a whitish cloud of smoke produced by the static fire around 3:15 pm EST (20:15 UTC). </p> \n \n \n \n<p>Had a failure similar to the April 2019 explosion occurred, that cloud would have likely been tinged red by unburnt dinitrogen tetroxide (NTO) oxidizer, and the different appearance of November 13th’s exhaust cloud was seen as the first tentative sign that this static fire had gone more successfully.</p> \n \n \n \n<div> \n<blockquote><p lang=\"en\" dir=\"ltr\">BREAKING: <a href=\"https://twitter.com/hashtag/SpaceX?src=hash&amp;ref_src=twsrc%5Etfw\">#SpaceX</a> Crew Dragon suffered an anomaly during test fire today, according to 45th Space Wing. Smoke could be seen on the beaches.<br><br>\"On April 20, an anomaly occurred at Cape Canaveral AFS during Dragon 2 static test fire. Anomaly was contained and no injuries.\" <a href=\"https://t.co/If5rdeGRXO\">pic.twitter.com/If5rdeGRXO</a></p>— Emre Kelly (@EmreKelly) <a href=\"https://twitter.com/EmreKelly/status/1119721013166657536?ref_src=twsrc%5Etfw\">April 20, 2019</a></blockquote></div><div> \n<blockquote><p lang=\"en\" dir=\"ltr\">SpaceX appears to have test-fired thrusters on its Crew Dragon capsule at Cape Canaveral, a major test that paves the way for a high-altitude launch abort test as soon as mid-December. EARLIER STORY: <a href=\"https://t.co/mJKujDVeNU\">https://t.co/mJKujDVeNU</a> <a href=\"https://t.co/AspZxFCMRq\">pic.twitter.com/AspZxFCMRq</a></p>— Spaceflight Now (@SpaceflightNow) <a href=\"https://twitter.com/SpaceflightNow/status/1194710233593065472?ref_src=twsrc%5Etfw\">November 13, 2019</a></blockquote></div><p>Alongside photos of the SuperDraco thruster test published by NASA and SpaceX shortly after its conclusion, SpaceX confirmed that the test was completed without issue. Regardless of whether everything performed exactly as intended, this means that factory-fresh Crew Dragon capsule C205 made it through the test unscathed, likely securing SpaceX and NASA a large volume of uninterrupted telemetry data, as well as the hardware itself.</p> \n \n \n \n<p>Just hours after C205’s static fire was completed, NASA published a detailed update, confirming that the tests were finished without any immediately apparent issues.</p> \n \n \n \n<div> \n<blockquote><p lang=\"en\" dir=\"ltr\">This afternoon, <a href=\"https://twitter.com/SpaceX?ref_src=twsrc%5Etfw\">@SpaceX</a> completed a series of static fire engine tests for <a href=\"https://twitter.com/hashtag/CrewDragon?src=hash&amp;ref_src=twsrc%5Etfw\">#CrewDragon</a>'s launch escape system.<br><br>Now, SpaceX and <a href=\"https://twitter.com/NASA?ref_src=twsrc%5Etfw\">@NASA</a> will<br>1⃣ Review data from the test<br>2⃣ Perform hardware inspections<br>3⃣ Establish launch date for In-Flight Abort Test<br><br><img src=\"https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f4bb.png\" alt=\"💻\">: <a href=\"https://t.co/4SbwBhGgX4\">https://t.co/4SbwBhGgX4</a> <a href=\"https://t.co/kPpM729jtm\">pic.twitter.com/kPpM729jtm</a></p>— NASA Commercial Crew (@Commercial_Crew) <a href=\"https://twitter.com/Commercial_Crew/status/1194755256795705344?ref_src=twsrc%5Etfw\">November 13, 2019</a></blockquote></div><p>NASA described the test in much more detail than SpaceX, noting that it began with the ignition of two of Crew Dragon’s 16 Draco maneuvering thrusters, each performing two one-second burns. C205’s eight SuperDraco abort thrusters subsequently ignited and burned for a total of ~9 seconds to simulate required abort performance, followed by the reignition of two Draco thrusters immediately after SuperDraco cutoff.</p> \n \n \n \n<p>Each capable of producing several dozen pounds of thrust, both Crew and Cargo Dragon use Draco thrusters to orient themselves in orbit, rendezvous with the International Space Station, and lower their orbits to reenter Earth’s atmosphere. Crew Dragon’s Draco thrusters are also designed to control its attitude during abort scenarios, stabilizing and flipping the spacecraft to prevent a loss of control and ensure proper orientation during emergency parachute deployment. The Draco firings during Crew Dragon’s November 13th static fire were meant to simulate that additional use-case.</p> \n \n \n \n<p>Aside from verifying that SpaceX has successfully redesigned Crew Dragon to mitigate the failure mode that caused capsule C201’s catastrophic explosion in April 2019, the Draco static fires specifically mirrored the burns Crew Dragon C205 will need to perform to successfully complete its In-Flight Abort (IFA) test. As noted by NASA and SpaceX, with the static fire complete, both teams will now comb through the data produced, inspect Crew Dragon to verify its health and the performance of its redesigned high-flow pressurization system, and perform any necessary refurbishment. </p> \n \n \n \n<a href=\"https://www.teslarati.com/wp-content/uploads/2019/10/Crew-Dragon-C206-Demo-2-SuperDraco-install-Oct-2019-SpaceX-1-crop-c.jpg\" title=\"\"><img src=\"https://www.teslarati.com/wp-content/uploads/2019/10/Crew-Dragon-C206-Demo-2-SuperDraco-install-Oct-2019-SpaceX-1-crop-c-1024x557.jpg\" alt=\"\"></a><em>A pod of SuperDraco thrusters is pictured here shortly after installation on Crew Dragon C206, the spacecraft set to launch astronauts for the first time ever. </em>(SpaceX)<h3>SuperDraco’s mystery “flaps”</h3> \n \n \n \n<p>NASA’s post on Crew Dragon’s static fire revealed another thoroughly intriguing detail: the SpaceX spacecraft’s SuperDraco thrusters apparently have <em>flaps</em>! A bit of retroactive speculation suggests that SuperDracos are closed out with plugs of some sort to create a seal against the environment before Crew Dragon is rolled out to the launch pad. Perhaps, in the event of a SuperDraco ignition, SpaceX included actuating flaps as a method of resealing those thrusters prior to splashdown in the Atlantic Ocean.</p> \n \n \n \n<p><em><strong>“Immediately after the SuperDracos shut down, two Dracos thrusters fired and all eight SuperDraco flaps closed, mimicking the sequence required to reorient the spacecraft in-flight to a parachute deploy attitude and close the flaps prior to reentry. The full sequence, from SuperDraco startup to flap closure, spanned approximately 70 seconds.”<br></strong></em><br><a href=\"https://blogs.nasa.gov/commercialcrew/2019/11/13/spacex-completes-crew-dragon-static-fire-tests/\"><strong>NASA, November 13th, 2019</strong></a></p> \n \n \n \n<a href=\"https://www.teslarati.com/wp-content/uploads/2019/11/Crew-Dragon-DM-1-Falcon-9-B1051-Jan-2019-sunset-SpaceX-1-crop-2-2.jpg\" title=\"\"><img src=\"https://www.teslarati.com/wp-content/uploads/2019/11/Crew-Dragon-DM-1-Falcon-9-B1051-Jan-2019-sunset-SpaceX-1-crop-2-2-1024x505.jpg\" alt=\"\"></a><em>In retrospect, flaps (actuating covers) are an obvious explanation for the cutouts visible directly underneath each SuperDraco pod. </em>(SpaceX)<p>Given that the obvious utility of those flaps appears to be extremely limited and their associated actuators have to survive the 9+ consecutive seconds of hellish conditions in the event of an actual abort, it seems like an excessively complicated system to include on Crew Dragon. Nevertheless, the ability to guarantee that SuperDracos are water-sealed before splashdown would almost without a doubt make Crew Dragon <em>far </em>easier to refurbish and reuse. </p> \n \n \n \n<p>The SuperDraco flaps may also be a holdover from before propulsive Crew Dragon landings were canceled, although the use-cases for such a system still remain unclear. The flaps’ <em>raison d’etre </em>could even be as simple as preventing water intrusion that might otherwise cause Dragon to sink after splashdown.</p> \n \n \n \n<a href=\"https://www.teslarati.com/wp-content/uploads/2019/11/Crew-Dragon-DM-1-GO-Searcher-recovery-ops-030819-NASA-Cory-Huston-1-edit-crop-2-c.jpg\" title=\"\"><img src=\"https://www.teslarati.com/wp-content/uploads/2019/11/Crew-Dragon-DM-1-GO-Searcher-recovery-ops-030819-NASA-Cory-Huston-1-edit-crop-2-c-1024x521.jpg\" alt=\"\"></a><em>The fact that Crew Dragon C201’s flaps appeared to be unchanged after launch and recovery suggests that they are more of a backup in the event that the abort thrusters have to be used. </em>(NASA)<p>Regardless of why they exist, NASA indicates that SpaceX’s November 13th static fire proved that they worked exactly as expected, closing soon after the simulated abort burn to seal Crew Dragon against water intrusion. If NASA and SpaceX’s deep-dive inspections and data analysis uncover no red flags, it’s extremely likely that SpaceX will able to launch C205 for its In-Flight Abort test some 4-8 weeks from now. </p> \n \n \n \n<p>If the IFA also goes as planned, Crew Dragon could be ready for its inaugural NASA astronaut launch as early as February or March 2020.</p> \n \n \n \n<p><a href=\"https://api.pico.tools/pn/teslarati/37r7aa7x\"><em>Check out Teslarati’s newsletters</em></a><em> for prompt updates, on-the-ground perspectives, and unique glimpses of SpaceX’s rocket launch and recovery processes</em>.</p> \n<p>The post <a href=\"https://www.teslarati.com/spacex-fires-redesigned-crew-dragon-superdraco-flaps/\">SpaceX fires up redesigned Crew Dragon as NASA reveals SuperDraco thruster “flaps”</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Eric Ralph",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573721430278",
+      "timestampUsec": "1573721430277557",
+      "id": "tag:google.com,2005:reader/item/000000052de80acb",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "German officials weigh in on Tesla’s Europe Gigafactory following Musk’s Berlin reveal",
+      "published": 1573718400,
+      "updated": 1573753612,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/tesla-gigafactory-4-german-officials-statement/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/tesla-gigafactory-4-german-officials-statement/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>Following Tesla CEO Elon Musk’s announcement of <a href=\"https://www.teslarati.com/tesla-gigafactory-4-europe-berlin-germany-model-y-production/\">Berlin being chosen as Gigafactory 4’s official home</a> at the Golden Steering Wheel Awards on November 12, a number of German officials have voiced their support regarding the decision to produce the company’s next electric vehicles at a plant in the European country.</p>\n \n\n \n\n \n\n \n<p>Tesla was considering multiple European locations for its newest Gigafactory but ended up choosing Germany over the United Kingdom due to the uncertainty in regards to Brexit, <a href=\"https://www.teslarati.com/brexit-means-tesla-tsla-stock/\">the UK’s plan to remove itself from the European Union</a>. The deadline for Brexit has been extended three different times, with the current date being January 31, 2020.</p>\n \n\n \n\n \n\n \n<p>Tesla and Musk observed the uncertainty around the UK’s withdrawal as a potential hurdle and decided to build the factory that will produce the Model 3 and Model Y in the Berlin area. “Brexit [uncertainty] made it too risky to put a Gigafactory in the UK,” Musk said <a href=\"https://www.autoexpress.co.uk/tesla/108395/tesla-gigafactory-europe-to-be-built-in-germany-not-uk-as-elon-musk-blames-brexit\">in an interview with <em>Auto Express</em></a>.</p>\n \n\n \n\n \n\n \n<p>Tesla also plans to build a Research and Development hub near Gigafactory 4. “Some of the best cars in the world are made in Germany. Everyone knows that German engineering is outstanding, for sure, and that’s part of the reason why we are locating our Gigafactory Europe in Germany. We are also going to create an engineering and design center in Berlin,” Musk added.</p>\n \n\n \n\n \n\n \n<img src=\"https://www.teslarati.com/wp-content/uploads/2019/06/Gigafactory-Europe-1024x482.jpg\" alt=\"\">An “updated” photo of Gigafactory Europe, presented during Tesla’s 2019 Annual Shareholder Meeting. | Image: Tesla<div><ins style=\"text-align:center;\"></ins></div>\n \n\n \n\n \n\n \n<p>Musk’s announcement attracted plenty of attention from members of Germany’s government, including Economy Prime Minister Peter Altmaier, who spoke about possible subsidies for Tesla as a result of Gigafactory 4. “Subsidies have not yet been discussed. It’s clear that Tesla – if it invests in Germany and creates jobs here, will be treated like all other companies in the automobile and automotive industry,” he said to the media. “That means we will treat all players who invest in Germany equally and without discrimination.”</p>\n \n\n \n\n \n\n \n<p>Numerous governments across the world have worked with Tesla to award subsidies to those who choose to buy products from the company. <a href=\"https://www.teslarati.com/tesla-energy-powerwall-2-south-australia-home-battery-subsidy-plan/\">Australia has become increasingly supportive</a> of the sustainable energy movement, offering incentives not only with the purchase of electric vehicles but also with Tesla’s energy storage products.</p>\n \n\n \n\n \n\n \n<p>Tesla will receive support from Germany under the rules of the European Union. Dietmar Woidke, Premier of Brandenberg, the state that surrounds Berlin, said Tesla would get all the help German government officials could offer, given that it falls under the rules of the EU.</p>\n \n\n \n\n \n\n \n<p>“We’re operating within the framework of the European Union’s state aid rules. That applies to all European countries – that’s our framework. We will, of course, do our part to create good conditions for Tesla within these possibilities,” Woidke said.</p>\n \n\n \n\n \n\n \n<img src=\"https://www.teslarati.com/wp-content/uploads/2019/11/tesla-model-y-calibration-equipment-1024x574.jpg\" alt=\"\">Tesla Model Y spotted in the wild. (Credit: The_Xenocide/Reddit)<p>Governments offering Tesla support is an embrace into the future of sustainable energy. While Tesla has officially announced they will bring vehicle production to Germany, the officials in the country appear to be welcoming it with open arms. This bodes well for the American electric car maker.</p>\n \n\n \n\n \n\n \n<p>The company can help Germany achieve the CO2 targets set in by the European parliament <a href=\"https://www.teslarati.com/tesla-elon-musk-compliments-volkswagen-ceo-awards-show-video/\">and even the CEO of Volkswagen, Herbert Diess</a>, recognized this by stating Musk and Tesla are pioneers of environmental sustainability. I would say that we share a vision, which is that we only can achieve the CO2 targets and reduce carbon emissions through electric cars,” Diess said during the Golden Steering Wheel Awards.</p>\n \n\n \n\n \n\n \n<p>After Musk accepted and thanked the hosts for the Golden Steering Wheel Award, he said, “I actually an announcement, which hopefully will be well received: We’ve decided to put Tesla Gigafactory Europe in the Berlin area.” Musk’s unveiling of this idea was followed by applause from those in attendance. Musk followed up with, “I come to Berlin a lot. Berlin rocks!”</p>\n \n<p>The post <a href=\"https://www.teslarati.com/tesla-gigafactory-4-german-officials-statement/\">German officials weigh in on Tesla’s Europe Gigafactory following Musk’s Berlin reveal</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Joey Klender",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573678648179",
+      "timestampUsec": "1573678648179423",
+      "id": "tag:google.com,2005:reader/item/000000052d91cf8c",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Tesla Autopilot video suggests that dogs are now recognized as pedestrian objects",
+      "published": 1573675256,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/tesla-autopilot-dog-detection-video/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/tesla-autopilot-dog-detection-video/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>It appears that Teslas are getting better and better at recognizing objects that are encountered in everyday inner-city driving. According to recent reports, for example, Autopilot appears to have gained the capability to recognize animals such as dogs. </p> \n \n \n \n<p>The recent observations were shared by Tesla owner-enthusiast <a href=\"https://twitter.com/greentheonly\">@greentheonly</a>, who has been studying the inner workings of the electric car maker’s driver-assist system for years. In a recent post on Twitter, the Tesla owner noted that his vehicle, which was running 19.36.2.1, was recognizing dogs as pedestrian objects. </p> \n \n \n \n<div> \n<blockquote><p lang=\"en\" dir=\"ltr\">Looks pretty elaborate and not a single frame fluke? Or am I imagining things?<br><br>Somebody, walk your dog in front of your car and see if it shows up on IC to test (put car in D)?<br><br>All cams but pillars it seems. <a href=\"https://t.co/8u846Vsq1A\">pic.twitter.com/8u846Vsq1A</a></p>— green (@greentheonly) <a href=\"https://twitter.com/greentheonly/status/1194012381497700354?ref_src=twsrc%5Etfw\">November 11, 2019</a></blockquote></div><div><ins style=\"text-align:center;\"></ins></div> \n \n \n \n<p>Tesla has not mentioned any improvements in its vehicles’ capability to detect and respond to animals on the road yet, though <a href=\"https://twitter.com/marks22\">Mark Schey</a>, a Model 3 owner, opted to conduct a brief test by having a dog sit in front of his all-electric sedan. Sure enough, the vehicle did detect the animal, recognizing it as a human in the Model 3’s center display. With this in mind, it does appear that Tesla’s vehicles are improving in terms of their capability to detect animals, or at least dogs, while they are operating. </p> \n \n \n \n<div> \n<blockquote><p lang=\"en\" dir=\"ltr\">nice!</p>— green (@greentheonly) <a href=\"https://twitter.com/greentheonly/status/1194021375486365701?ref_src=twsrc%5Etfw\">November 11, 2019</a></blockquote></div><p>These recent observations follow reports from Tesla owners about Autopilot responding safely to animals. Just recently, a video went viral among the EV community depicting Autopilot seemingly detecting and safely avoiding a family of ducks that are crossing the road. The incident remains unconfirmed considering that no telemetry data has been provided, but it does bode well for Tesla and Autopilot’s eventual capability to react to unexpected obstacles on the road. </p> \n \n \n \n<div> \n<blockquote><p lang=\"en\" dir=\"ltr\">In this video, Tesla Model 3 <a href=\"https://twitter.com/hashtag/Autopilot?src=hash&amp;ref_src=twsrc%5Etfw\">#Autopilot</a> detects a group of ducks crossing the highway and avoids them. The ducks survive !<img src=\"https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f986.png\" alt=\"🦆\"><img src=\"https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f986.png\" alt=\"🦆\"><img src=\"https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f986.png\" alt=\"🦆\"><a href=\"https://twitter.com/elonmusk?ref_src=twsrc%5Etfw\">@elonmusk</a> <img src=\"https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f986.png\" alt=\"🦆\"><img src=\"https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f986.png\" alt=\"🦆\"><img src=\"https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f986.png\" alt=\"🦆\"><a href=\"https://t.co/GC2ChTCofS\">pic.twitter.com/GC2ChTCofS</a></p>— Tesla_saves_lives (@SavedTesla) <a href=\"https://twitter.com/SavedTesla/status/1193951656527970305?ref_src=twsrc%5Etfw\">November 11, 2019</a></blockquote></div><p>The capability to detect and safely respond to animals is an important aspect of <a href=\"https://www.teslarati.com/tesla-model-3-full-self-driving-stop-sign-traffic-light-demo-video/\">inner-city driving</a> that Tesla must master before it could successfully fully roll out its Full Self-Driving suite to the fleet. Inner-city driving is far more unpredictable than highway driving, after all, with vehicles constantly having to deal with people, animals, and objects at any given time. If @greentheonly’s observations are accurate and Tesla is indeed working on animal detection, it would be yet another step forward for Elon Musk’s goal of deploying a fleet of vehicles that are fully autonomous. </p> \n \n \n \n<p>The proficiency of Tesla’s fleet in recognizing and reacting to objects on the road depends in no small part to the growth of the company’s <a href=\"https://www.teslarati.com/tesla-autonomy-day-livestream-updates/\">Neural Network</a>, which gets fed with real-world driving data by the electric car maker’s vehicles. As more cars provide Tesla with valuable real-world driving data with and without Autopilot, the company’s Neural Net continues to improve. Indications that Teslas can now recognize animals on the road as pedestrian obstacles are an encouraging sign that the company’s vehicles are learning, and they are becoming more proficient with every update. </p> \n<p>The post <a href=\"https://www.teslarati.com/tesla-autopilot-dog-detection-video/\">Tesla Autopilot video suggests that dogs are now recognized as pedestrian objects</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Simon Alvarez",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573668029555",
+      "timestampUsec": "1573668029554641",
+      "id": "tag:google.com,2005:reader/item/000000052d7ad766",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Honda CEO denies electric cars, pledges hybrid support: ‘EVs will not be mainstream’",
+      "published": 1573665623,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/tesla-rival-honda-ceo-evs-will-never-be-mainstream/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/tesla-rival-honda-ceo-evs-will-never-be-mainstream/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>In a rather surprising interview, Honda CEO Takahiro Hachigo revealed that he does not believe in the widespread adoption of all-electric vehicles. This is why he noted that Honda will be focusing its efforts on gasoline-electric hybrid cars instead. This, according to Honda, is a more realistic way of approaching EVs.  </p> \n \n \n \n<p>While speaking with <em><a href=\"https://www.autonews.com/mobility-report/hachigo-honda-stays-realistic-evs-avs\">Automotive News</a></em> at Honda Motor Co.’s global headquarters in Tokyo, Hachigo stated that battery-electric cars still have a lot of hurdles to go through. Addressing other automakers that are going all-in on electric propulsion, the Honda CEO noted that there’s a chance other companies are getting too optimistic about EVs, or full self-driving initiatives for that matter. </p> \n \n \n \n<p>“The hurdles to battery electric vehicles and complete autonomous driving are still quite high. I don’t know whether other manufacturers are becoming too optimistic or not, but apparently the approach in going about these regulations differs from one company to another,” he said. </p> \n \n \n \n<p>Hachigo’s statements are quite interesting, considering that Honda is preparing to launch its very own all-electric car, the Honda e. The e has been received warmly by the electric car community, though based on the CEO’s statements, and the fact that the vehicle will not be sold globally, it appears that the vehicle may very well be <a href=\"https://www.teslarati.com/tesla-tsla-killers-not-easy-to-make-evs/\">little more than a compliance car</a>. Hachigo later noted that he does not think that EVs will see a dramatic increase in demand. </p> \n \n \n \n<div><ins style=\"text-align:center;\"></ins></div> \n \n \n \n<p>“I do not believe there will be a dramatic increase in demand for battery vehicles, and I believe this situation is true globally. There are issues with infrastructure and hardware. There are different regulations in different countries, and we have to abide by them. But I don’t believe it will become mainstream anytime soon,” he added. </p> \n \n \n \n<p>As for advanced driver-assist technologies like Tesla’s Autopilot, the CEO was quick to remark that Honda has already developed its own solutions. It should be noted that back in 2017, Honda announced plans to roll out a lane-changing autonomous highway driving system by 2020 and a Level 4 self-driving solution by 2025. </p> \n \n \n \n<p>Yet, since these announcements, Honda has been quite silent about the progress of its projects, with Hachigo admitting last month that the company does not really have any horizon as for the introduction of <a href=\"https://www.teslarati.com/tesla-autopilot-hits-2-billion-miles-full-self-driving/\">Level 3 automated systems</a>. Instead, the company has decided simply build more features into its Honda Sensing system, which utilizes features like lane-keep assist, blind-spot warning and automatic emergency braking on the road. </p> \n \n \n \n<p>For now, Honda is heading towards a <a href=\"https://www.teslarati.com/tesla-autopilot-loaner-cars-elon-musk/\">potential industry shift</a> in the auto market on its own. Unlike fellow Japanese carmakers like Toyota and Mitsubishi, Honda continues to operate independently. This has allowed the company to make its own decisions without considering a partner’s viewpoints, though it also meant that the company’s share of the market is far smaller than its Japanese rivals. In the last fiscal year, for example, Honda sold 5.3 million vehicles worldwide. The number is impressive, but it is only half of the sales of conglomerates like the Renault-Nissan-Mitsubishi alliance or Toyota, Subaru, Mazda and Suzuki. </p> \n<p>The post <a href=\"https://www.teslarati.com/tesla-rival-honda-ceo-evs-will-never-be-mainstream/\">Honda CEO denies electric cars, pledges hybrid support: ‘EVs will not be mainstream’</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Simon Alvarez",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573660898573",
+      "timestampUsec": "1573660898573364",
+      "id": "tag:google.com,2005:reader/item/000000052d681298",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Tesla (TSLA) has risen 40% in one month, and it may just be getting started",
+      "published": 1573658153,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/tesla-tsla-40-percent-rise-upside-oppenheimer-analyst/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/tesla-tsla-40-percent-rise-upside-oppenheimer-analyst/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>Tesla stock (<a href=\"https://finance.yahoo.com/quote/TSLA?p=TSLA\">NASDAQ:TSLA</a>) currently has a lot of momentum. Following the release of its blockbuster third-quarter results, TSLA shares have been in an upward trend, with the company’s stock rising 40% higher since October, turning TSLA positive for 2019 in the process.  </p> \n \n \n \n<p>Tesla stock’s performance this 2019 is something that can only be described as remarkable. Over the year, the electric car maker’s shares have dipped to over two-year lows, only to <a href=\"https://www.teslarati.com/tesla-tsla-positive-outlook-sp-global-ratings/\">surge past the $300 mark</a> once more following the release of its <a href=\"https://www.teslarati.com/tesla-tsla-q3-2019-earnings-results-profitable/\">third-quarter earnings</a>, which beat Wall Street’s expectations. </p> \n \n \n \n<p>TSLA’s 40% rally is already impressive, but according to Ari Wald, head of technical analysis at Oppenheimer, there may be more upside for the electric car maker. In a <a href=\"https://www.cnbc.com/2019/11/12/tesla-has-raced-higher-and-chart-points-to-another-double-digit-rally.html\">statement</a> to <em>CNBC</em>, the analyst stated that equity markets today are breaking higher in a manner that is very similar to late 2016, and this could play into Tesla’s favor. </p> \n \n \n \n<div><ins style=\"text-align:center;\"></ins></div> \n \n \n \n<p>“The key positive for Tesla here is that macro conditions are supportive here — that equity markets are breaking higher in a very similar way that they did in late 2016 — and I bring this up because this is the last time we’ve seen this type of strength in Tesla where it’s really just surging higher to the upside. Now if you look at that period in 2016 and 2017, Tesla ultimately topped out at about $385, and I think that’s the long-term level to watch. The stock isn’t there yet so I wouldn’t bet against it,” said Wald.  </p> \n \n \n \n<p>Wald further noted that at its current levels, Tesla could rally an additional 11% more and it would reach its all-time-high of $385 per share. That would also mark the electric car maker’s stock’s highest level <a href=\"https://www.teslarati.com/tesla-tsla-short-david-einhorn-elon-musk-letter-response/\">since August 2018</a>. Nevertheless, Wald did state that Tesla’s stock is volatile by nature, which means that investors are best advised to remain cautious. </p> \n \n \n \n<p>“However, you can also see from that chart, very erratic behavior up and down so after a [more than] 30% rip over the last month, not one we’d be highlighting as a tactical idea either,” Wald added.</p> \n \n \n \n<p>Considering recent updates from the electric car maker, it appears that Tesla may have a pretty good chance at ending the fourth quarter of 2019 on a high note. For one, the electric car production facility at <a href=\"https://www.teslarati.com/tesla-gigafactory-3-gets-model-3-mass-production-license/\">Gigafactory 3 in Shanghai has been completed</a>, which means that Tesla could start delivering the Made-in-China Model 3 to local customers before the year is done. Tesla is also preparing to unveil the Cybertruck, a vehicle that Elon Musk noted may very well be the company’s best EV yet. These, together with Elon Musk’s <a href=\"https://www.teslarati.com/tesla-model-3-vs-bmw-3-series-audi-a3-midsize-car-of-the-year-award/\">announcement of Gigafactory 4 in Berlin</a>, could further help foster more positive sentiments for the electric car maker. </p> \n \n \n \n<p><em>Disclosure: I have no ownership in shares of TSLA and have no plans to initiate any positions within 72 hours.</em></p> \n<p>The post <a href=\"https://www.teslarati.com/tesla-tsla-40-percent-rise-upside-oppenheimer-analyst/\">Tesla (TSLA) has risen 40% in one month, and it may just be getting started</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Simon Alvarez",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573650260440",
+      "timestampUsec": "1573650260440233",
+      "id": "tag:google.com,2005:reader/item/000000052d4b638d",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Tesla receives license for Model 3 mass production in Gigafactory 3",
+      "published": 1573647185,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/tesla-gigafactory-3-gets-model-3-mass-production-license/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/tesla-gigafactory-3-gets-model-3-mass-production-license/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>Tesla has received a formal permit to begin the mass production of the Model 3 at its Gigafactory 3 site in Shanghai, China. The final clearance for Tesla’s mass production activities was announced by China’s Ministry of Industry and Information Technology on its official website Wednesday. </p> \n \n \n \n<p>With its mass production permit acquired, Tesla is now able to produce the Made-in-China Model 3 at scale on Gigafactory 3. As noted by <em><a href=\"https://www.bloomberg.com/news/articles/2019-11-13/tesla-s-new-china-plant-gets-permit-to-start-mass-production?utm_medium=social&amp;utm_content=business&amp;utm_source=twitter&amp;utm_campaign=socialflow-organic&amp;cmpid=socialflow-twitter-business\">Bloomberg</a></em>, carmakers in China also need to have their products approved for local sale. So far, Chinese authorities have yet to confirm if Tesla has received such a clearance. </p> \n \n \n \n<p>Nevertheless, a mass manufacturing license bodes well for Tesla and its operations at Gigafactory 3. While the company waits for the release of its final permits, the electric car maker could start its production operations in the Shanghai-based site. This has been hinted at in recent <a href=\"https://www.teslarati.com/tesla-model-3-production-gigafactory-3-3k-per-week/\">flyovers of Gigafactory 3</a>, with drone operators mentioning that more Model 3 units are now being spotted around Tesla’s general assembly building. </p> \n \n \n \n<div> \n<blockquote><p lang=\"en\" dir=\"ltr\">Pics of .<a href=\"https://twitter.com/Tesla?ref_src=twsrc%5Etfw\">@Tesla</a> <a href=\"https://twitter.com/hashtag/Shanghai?src=hash&amp;ref_src=twsrc%5Etfw\">#Shanghai</a> <a href=\"https://twitter.com/hashtag/Gigafactory?src=hash&amp;ref_src=twsrc%5Etfw\">#Gigafactory</a> 3 took by today. <img src=\"https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f9dc-200d-2642-fe0f.png\" alt=\"🧜‍♂️\"><a href=\"https://twitter.com/hashtag/GF3?src=hash&amp;ref_src=twsrc%5Etfw\">#GF3</a> .<a href=\"https://twitter.com/elonmusk?ref_src=twsrc%5Etfw\">@elonmusk</a> <a href=\"https://twitter.com/hashtag/China?src=hash&amp;ref_src=twsrc%5Etfw\">#China</a> <a href=\"https://t.co/nyeHmNydeA\">pic.twitter.com/nyeHmNydeA</a></p>— Chao Zhou <img src=\"https://s.w.org/images/core/emoji/12.0.0-1/72x72/1f47d.png\" alt=\"👽\"> (@realChaoZhou) <a href=\"https://twitter.com/realChaoZhou/status/1194206710304399360?ref_src=twsrc%5Etfw\">November 12, 2019</a></blockquote></div><div><ins style=\"text-align:center;\"></ins></div> \n \n \n \n<p>Tesla has been conducting <a href=\"https://www.teslarati.com/tesla-gigafactory-3-model-3-production-approval/\">trial production runs of the Model 3</a> since the company received a formal approval to begin initial manufacturing operations in Gigafactory 3 back in mid-October. During this time, sightings of the first Made-in-China vehicles were reported around Gigafactory 3. These sightings have only increased with time, culminating in a series of press rides and meet-and-greet sessions with the China-made vehicle. </p> \n \n \n \n<p>The reception of the Made-in-China Model 3 has been very positive so far. In a video review, current Model 3 owner and Tencent Auto editor <a href=\"https://www.youtube.com/channel/UCMyn8hSGFiURrhsYj_BoEdw\">常岩</a> noted that the locally-made electric sedan actually has a number of advantages over its imported sibling from Tesla’s Fremont factory. The Model 3 that’s produced in Gigafactory 3, for example, is fitted with supplementary components that allow the vehicle to handle and survive the dangers of China’s typhoons. </p> \n \n \n \n<p>Yet, one thing that truly stands out about the Made-in-China Model 3 is its quality. It is no secret that it took some time before Tesla was able to iron out the body panel issues of the Model 3 during its initial ramp in the United States, resulting in a number of vehicles that had uneven panel gaps (among others). These issues were eventually ironed out, though Tesla critics continue to point out the alleged build quality problems of the company’s electric cars until today. </p> \n \n \n \n<p>The Tencent Auto journalist noted that compared to his imported Long Range RWD Tesla Model 3, the Made-in-China vehicle was actually better built, with its equal panels gaps and extremely quiet ride. Overall, the Chinese-made Model 3 seems to be an evolution of sorts from the first iterations of the vehicle that made it to the country’s shores. With its lower price and China-customized features, there is a very good chance that the locally-made vehicle will be quite a best-seller. </p> \n \n \n \n<div> \n<iframe allowfullscreen=\"allowfullscreen\" title=\"Made-in-China Model 3 First Drive: the Miracle 丨 ENGLISH\" width=\"1000\" height=\"563\" src=\"https://www.youtube.com/embed/nrrY8zaqs8o?feature=oembed\" frameborder=\"0\"></iframe> \n</div><p>H/T <a href=\"https://twitter.com/ray4tesla\">Ray4Tesla</a>. </p> \n<p>The post <a href=\"https://www.teslarati.com/tesla-gigafactory-3-gets-model-3-mass-production-license/\">Tesla receives license for Model 3 mass production in Gigafactory 3</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Simon Alvarez",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573639575204",
+      "timestampUsec": "1573639575204103",
+      "id": "tag:google.com,2005:reader/item/000000052d2f1796",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "SpaceX Crew Dragon spacecraft set to static fire SuperDraco abort thrusters after delays",
+      "published": 1573638946,
+      "updated": 1573646657,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/spacex-crew-dragon-superdraco-static-fire-delays/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/spacex-crew-dragon-superdraco-static-fire-delays/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>Originally scheduled for early November, SpaceX now plans to static fire a Crew Dragon capsule’s SuperDraco abort thrusters no earlier than Wednesday, November 13th. Success would pave the way for SpaceX to launch the spacecraft’s in-flight abort (IFA) before the end of 2019.</p> \n \n \n \n<div> \n<blockquote><p lang=\"en\" dir=\"ltr\">A static fire of Crew Dragon's eight SuperDraco engines is now scheduled for tomorrow during daylight hours from SpaceX's test stand near Landing Zone 1 at Cape Canaveral. <a href=\"https://twitter.com/hashtag/SpaceX?src=hash&amp;ref_src=twsrc%5Etfw\">#SpaceX</a></p>— Michael Baylor (@nextspaceflight) <a href=\"https://twitter.com/nextspaceflight/status/1194318382264455169?ref_src=twsrc%5Etfw\">November 12, 2019</a></blockquote></div><div><ins style=\"text-align:center;\"></ins></div> \n \n \n \n<p>In April 2019, a bad design choice finally reared its head, triggering an oxidizer leak and exotic titanium chemical fire that lead to the <a href=\"https://www.teslarati.com/spacex-crew-dragon-explosion-titanium-fire/\">catastrophic explosion of Crew Dragon</a> capsule C201, the first upgraded spacecraft to successfully launch, dock with the ISS, and return to Earth. That explosion occurred shortly after a successful Draco maneuvering thruster test and just milliseconds before the planned ignition of C201’s eight SuperDraco abort thrusters.</p> \n \n \n \n<p>SpaceX planned on reusing flight-proven Crew Dragon capsule C201 to complete its In-Flight Abort (IFA) test, in which the spacecraft will attempt to escape from Falcon 9 during Max Q, the most aerodynamically stressful period of launch. After C201’s premature demise, SpaceX was forced to reassign new Crew Dragon spacecraft already in production, and capsule C205 – previously assigned to Dragon’s Demo-2 astronaut launch debut – was delivered to SpaceX’s Florida launch facilities in early October.</p> \n \n \n \n<div> \n<blockquote><p lang=\"en\" dir=\"ltr\">Scoop: SpaceX plans to static fire Crew Dragon's new SuperDraco system on Nov. 2 in Florida at LZ-1, people familiar tell me.<br><br>The test will be closely watched, as SpaceX looks to show it fixed the issue from the Demo-1 capsule explosion in April. <a href=\"https://t.co/B6rkb2znQh\">https://t.co/B6rkb2znQh</a></p>— Michael Sheetz (@thesheetztweetz) <a href=\"https://twitter.com/thesheetztweetz/status/1187447486702673925?ref_src=twsrc%5Etfw\">October 24, 2019</a></blockquote></div><p>C205 will now support SpaceX’s IFA test. However, prior to launch, SpaceX (or NASA, or both entities) want to ensure that the fixes and upgrades retroactively applied to Crew Dragon will prevent C201’s failure mode from reoccurring. This proof will come in the form of a static fire test identical to the one that caused C201’s explosion. Dragon capsule C205 will be loaded with liquid dinitrogen tetroxide (also known as NTO or N2O4) and monomethylhydrazine (MMH) fuel and fire its much smaller Draco maneuvering thrusters.</p> \n \n \n \n<div> \n<iframe allowfullscreen=\"allowfullscreen\" title=\"Draco Thruster Vacuum Firing\" width=\"1000\" height=\"563\" src=\"https://www.youtube.com/embed/8kWOsughufU?feature=oembed\" frameborder=\"0\"></iframe> \n</div><a href=\"https://www.teslarati.com/wp-content/uploads/2019/06/Cargo-Dragon-C113-CRS-17-return-to-port-060419-Pauline-Acalin-3-crop-c.jpg\" title=\"\"><img src=\"https://www.teslarati.com/wp-content/uploads/2019/06/Cargo-Dragon-C113-CRS-17-return-to-port-060419-Pauline-Acalin-3-crop-c-1024x485.jpg\" alt=\"\"></a><em>Seven of Cargo Dragon capsule C113’s Draco maneuvering thrusters are visible here. Crew Dragon uses similar thrusters.</em> (Pauline Acalin)<p>Lastly,  C205 will ignite its eight SuperDraco abort thrusters – capable of producing more than 570 kN (128,000 lbf) of combined thrust – to conclude the static fire acceptance test. NASA and SpaceX will likely analyze the results together, while SpaceX will refurbish and refuel the spacecraft as expediently as possible. If everything goes as planned, Crew Dragon C205 will be integrated with its disposable trunk section and transported to Launch Complex 39A sometime in late-November or December.</p> \n \n \n \n<div> \n<blockquote><p lang=\"en\" dir=\"ltr\">Test of Crew Dragon’s upgraded launch escape system ahead of static fire and in-flight abort tests – altogether we are conducting hundreds of tests to verify the system's advanced capabilities to carry astronauts to safety in the unlikely event of an emergency <a href=\"https://t.co/a4FucMh85l\">pic.twitter.com/a4FucMh85l</a></p>— SpaceX (@SpaceX) <a href=\"https://twitter.com/SpaceX/status/1187489139291119616?ref_src=twsrc%5Etfw\">October 24, 2019</a></blockquote></div><p>In an impressive demonstration of <a href=\"https://www.teslarati.com/spacex-nasa-praises-crew-dragon-explosion-response/\">SpaceX’s ability to work fast</a>, the company managed to determine the cause of C201’s explosion, correct design flaws, prove those corrections with extensive testing, modify Crew Dragon C205 in light of those changes, and ship the completed spacecraft to Florida in less than six months. NASA Commercial Crew Program Manager Kathy Lueders, rare to heap praise, <a href=\"https://www.teslarati.com/spacex-nasa-praises-crew-dragon-explosion-response/\">deemed SpaceX’s response “a pretty phenomenal turnaround.”</a></p> \n \n \n \n<p>NASASpaceflight reporter Michael Baylor says that Crew Dragon’s static fire is now scheduled no earlier than the morning of November 13th, a delay of 11 days from the static fire’s first known target, November 2nd. It’s unclear what triggered the delay, but it would be unsurprising for SpaceX to be treading with <em>extreme </em>caution in a bid to avoid another serious Crew Dragon anomaly. </p> \n \n \n \n<a href=\"https://www.teslarati.com/wp-content/uploads/2019/10/Crew-Dragon-C206-Demo-2-SuperDraco-install-Oct-2019-SpaceX-1-crop-c.jpg\" title=\"\"><img src=\"https://www.teslarati.com/wp-content/uploads/2019/10/Crew-Dragon-C206-Demo-2-SuperDraco-install-Oct-2019-SpaceX-1-crop-c-1024x557.jpg\" alt=\"\"></a><em>SpaceX recently began the installation of SuperDraco abort thrusters on the Crew Dragon capsule set to support Demo-2, SpaceX’s first astronaut launch.</em> (SpaceX)<a href=\"https://www.teslarati.com/wp-content/uploads/2019/10/Crew-Dragon-capsule-C203-IFA-prep-100319-SpaceX-1-crop.jpg\" title=\"\"><img src=\"https://www.teslarati.com/wp-content/uploads/2019/10/Crew-Dragon-capsule-C203-IFA-prep-100319-SpaceX-1-crop-1024x495.jpg\" alt=\"\"></a><em>Crew Dragon capsule C205 and Falcon 9 booster B1046 arrived in Florida around October 3rd ahead of SpaceX’s critical In-Flight Abort (IFA) test.</em> (SpaceX)<p>If all goes as planned during the test and the post-test inspections raise no red flags, SpaceX and NASA will likely be ready to launch Crew Dragon’s IFA test some 4-6 weeks after. Stay tuned for updates.</p> \n \n \n \n<p><a href=\"https://api.pico.tools/pn/teslarati/37r7aa7x\"><em>Check out Teslarati’s newsletters</em></a><em> for prompt updates, on-the-ground perspectives, and unique glimpses of SpaceX’s rocket launch and recovery processes</em>.</p> \n<p>The post <a href=\"https://www.teslarati.com/spacex-crew-dragon-superdraco-static-fire-delays/\">SpaceX Crew Dragon spacecraft set to static fire SuperDraco abort thrusters after delays</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Eric Ralph",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573632373753",
+      "timestampUsec": "1573632373752510",
+      "id": "tag:google.com,2005:reader/item/000000052d1cdc7c",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Tesla’s Elon Musk trades compliments with Volkswagen CEO at Auto Award show",
+      "published": 1573632012,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/tesla-elon-musk-compliments-volkswagen-ceo-awards-show-video/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/tesla-elon-musk-compliments-volkswagen-ceo-awards-show-video/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>Tesla CEO Elon Musk and Volkswagen Auto Group CEO Herbert Diess answered questions jointly regarding the future of electric vehicles in Germany during the 2019 Golden Steering Wheel Awards in Berlin. The two CEOs gave each other numerous words of wisdom as they both work toward a future involving sustainable transportation.</p> \n<p>Musk flew to Berlin on November 12 to accept a prestigious Golden Steering Wheel Award won by the Tesla Model 3. This award comes on the heels of Tesla’s Navigate on Autopilot <a href=\"https://www.teslarati.com/tesla-navigate-on-autopilot-wins-germany-cci-award-2019/\">receiving top honors from Germany’s Connected Cars Innovation</a>. After accepting the award for the company’s most affordable sedan, Musk was joined by Volkswagen’s Herbert Diess on stage, where both CEOs were asked about if they were inspired by one another. “First of all, I really wanted to congratulate you, great achievement, I know all of this competition here in Germany, this award, its a great achievement. We know each other, we don’t meet so often though. I would say that we share a vision, which is that we only can achieve the CO2 targets and reduce carbon emissions through electric cars,” Diess said.</p> \n<p>An interesting quote from Diess, as the Volkswagen CEO was under fire for <a href=\"https://www.teslarati.com/volkswagen-dieselgate-lawsuit-germany-new-ev-plant/\">the company’s “Dieselgate” emissions scandal</a> where the German automaker was caught <a href=\"https://www.teslarati.com/volkswagen-dieselgate-software-fix-cheat-device/\">placing emissions cheat devices in its vehicles</a>. Although Diess joined VW after the scandal began, he was under intense scrutiny from some German government agencies for stock manipulation. Since the beginning of the Dieselgate scandal, Volkswagen has paid around $33 billion in penalties. The company is attempting to put the scandal behind them and move onto battery-powered cars. Diess announced the Volkswagen ID.3 electric-car on September 9, the company’s first attempt at a non-gasoline powered vehicle.</p> \n<div><ins style=\"text-align:center;\"></ins></div> \n<p>Despite the allegations against Diess, <a href=\"https://www.teslarati.com/tesla-elon-musk-kind-words-vw-ceo-sustainability/\">he has received kind words from Musk</a>, who stated on Twitter “Herbert Diess is doing more than any big carmaker to go electric. The good of the world should come first. For what it’s worth, he has my support.” Musk offered his two cents following the announcement that VW would begin <a href=\"https://www.teslarati.com/volkswagen-starts-battery-development-production/\">producing its own lithium-ion batteries</a> in an attempt to transition to the mass-production of electric vehicles in the future.</p> \n<p>Musk was then asked why Germany was so far behind on the electric vehicle revolution. “Well, first of all, I don’t think Germany is that far behind. But I always think it’s difficult when, you know, there’s a lot of momentum around in all technology. There is a lot of infrastructure, a lot of capital and that kind of thing that is tied up in all the technology,” Musk said. “When you have new technology, the market is unproven. So then, you say ‘Does it really make sense to place a bet on this technology that is unproven?’ And when we started out at Tesla, everyone thought we were huge fools. I thought we were fools too, frankly. But I thought it was important to get to ultimately a sustainable energy future,” he added.</p> \n<p>Diess and Musk were sure to trade compliments during the question and answer session, noting the motivation they give each other toward the mission of creating environmentally-friendly and sustainable transportation. “I thank you for pioneering, for pulling us, for pushing us. I think really Elon is the innovator, which is driving us along. So it’s worthwhile to talk about batteries and the right concepts, and I always enjoy talking to you because, he’s really a visionary,” Diess said about the Tesla CEO.</p> \n<p>Elon Musk has always said that Tesla’s competitors are not those companies who are also making electric cars, but the companies working toward keeping petrol-based vehicles as the primary source of transportation in the world. Musk and Diess working together toward the ultimate goal of sustainability shows the future of electric cars depends on working together and recognizing the only way to achieve the goal of environmental-sustainability and longevity is to develop the technology together. With Volkswagen ultimately deciding to invest $33 billion into the future of electric vehicles, the German-based company evidently wants to put their emissions scandal behind them, and it seems they have support from the frontman of the electric vehicle movement.</p> \n<p>You can watch the entire Golden Steering Wheel Awards ceremony below:</p> \n<p><iframe allowfullscreen=\"allowfullscreen\" title=\"Die Verleihung des Goldenen Lenkrads 2019: Das sind die besten Autos des Jahres!\" width=\"1000\" height=\"563\" src=\"https://www.youtube.com/embed/O8iEEVbhkR0?feature=oembed\" frameborder=\"0\"></iframe></p> \n<p>The post <a href=\"https://www.teslarati.com/tesla-elon-musk-compliments-volkswagen-ceo-awards-show-video/\">Tesla’s Elon Musk trades compliments with Volkswagen CEO at Auto Award show</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Joey Klender",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573607489982",
+      "timestampUsec": "1573607489981679",
+      "id": "tag:google.com,2005:reader/item/000000052cea90e5",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Tesla’s European Gigafactory will be in Berlin and it’s starting with Model Y production",
+      "published": 1573605747,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/tesla-gigafactory-4-europe-berlin-germany-model-y-production/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/tesla-gigafactory-4-europe-berlin-germany-model-y-production/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>Tesla CEO Elon Musk has confirmed the location for its European Gigafactory and it will be in Berlin, Germany. The factory will be responsible for the production of batteries, powertrains, and vehicles, starting with the company’s upcoming Model Y crossover.</p> \n<p>Musk made the revelation Tuesday afternoon, following an announcement he made earlier in the day while speaking at the “Golden Steering Wheel Award” show in Germany.</p> \n<p>“Everyone knows that German engineering is outstanding, for sure. That’s part of the reason why we are locating our Gigafactory Europe in Germany,” said Musk. “We are also going to create an engineering and design center in Berlin, because Berlin has some of the best art in the world.”</p> \n<blockquote> \n<p lang=\"en\" dir=\"ltr\">Will build batteries, powertrains &amp; vehicles, starting with Model Y</p> \n<p>— Elon Musk (@elonmusk) <a href=\"https://twitter.com/elonmusk/status/1194373823912538112?ref_src=twsrc%5Etfw\">November 12, 2019</a></p></blockquote> \n<p></p> \n<div><ins style=\"text-align:center;\"></ins></div> \n<p>Gigafactory Berlin would be Tesla’s fourth, coming after Tesla’s massive battery facility and first Gigafactory in Nevada; a solar production plant in Buffalo, New York; and it’s most recent and <a href=\"https://www.teslarati.com/tesla-gigafactory-3-anniversary-insights-video/\">record-setting Gigafactory 3</a> in Shanghai, China.</p> \n<p>The confirmation of Gigafactory 4 in Berlin follows years of speculation from the community on where Tesla’s European production facility would be located. The California-based electric vehicle maker has fielded preliminary discussions with numerous European countries vying to host its Gigafactory for the production of batteries and electric vehicles in their state.</p> \n<p>The location for Tesla Gigafactory Europe became more clear in mid-2018 when Musk began hinting at the possibility of building a factory near Western Germany,</p> \n<p>“Perhaps on the German-French border makes sense, near the Benelux countries,” Musk noted on Twitter.</p> \n<blockquote> \n<p lang=\"en\" dir=\"ltr\">Germany is a leading choice for Europe. Perhaps on the German-French border makes sense, near the Benelux countries</p> \n<p>— Elon Musk (@elonmusk) <a href=\"https://twitter.com/elonmusk/status/1009014824280342529?ref_src=twsrc%5Etfw\">June 19, 2018</a></p></blockquote> \n<p></p> \n<p>With the company already having a German presence with its Tesla Grohmann Automation, an engineering division located in Prum, the idea of having its main European-based factory in the country makes sense. As Tesla embarks on the scale-out of its mass-market Model 3 across Europe and the upcoming production of what’s expected to be the company’s largest production vehicle to date: Model Y, having a hub that’s closer in proximity to its customer base and one that builds vehicles to meet local regulations will help the company capture cost and production efficiencies in the long run.</p> \n<p>Currently, Tesla Model S, Model X, and Model 3 vehicles for the European market are produced in its Fremont, California plant and endure a costly and lengthy logistical process for delivery to its customers.</p> \n<p>As Tesla continues to improve cash-flow while taking on capital expenditures to meet its <a href=\"https://www.teslarati.com/tesla-model-y-production-date-summer-2020/\">earlier-than-expected Model Y production</a>, Gigafactory 4 in Berlin can be seen as a critical piece of the foundation to satisfy worldwide demand. Tesla Model Y is expected to be launched as early as early Summer 2020.</p> \n<p>The post <a href=\"https://www.teslarati.com/tesla-gigafactory-4-europe-berlin-germany-model-y-production/\">Tesla’s European Gigafactory will be in Berlin and it’s starting with Model Y production</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Gene",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573600328971",
+      "timestampUsec": "1573600328970515",
+      "id": "tag:google.com,2005:reader/item/000000052cdc2915",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Tesla beats BMW and Audi in their home turf to capture Midsize Car of the Year award",
+      "published": 1573597503,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/tesla-model-3-vs-bmw-3-series-audi-a3-midsize-car-of-the-year-award/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/tesla-model-3-vs-bmw-3-series-audi-a3-midsize-car-of-the-year-award/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>In what could only be considered an unexpected win, the Tesla Model 3 was able to beat the BMW 3 Series and the Audi A3 as Germany’s Midsize Car of the Year at the Golden Steering Wheel Awards. The award was granted by auto publication <em>AUTO BILD</em>, whose event was graced by Tesla CEO Elon Musk. </p> \n \n \n \n<p>Speaking about the results, a representative of the motoring publication noted that the Model 3 was well-liked by the awards’ judges partly because of its cool factor. Apart from this, the Model 3 was also lauded for being quick on its feet, well-equipped with features, and low cost of ownership. </p> \n \n \n \n<p>With this in mind, the Tesla Model 3 became one of the biggest surprises for this year’s <a href=\"https://www.youtube.com/channel/UCJrXOOtvmGn4CF7aYaJwuHA\">Golden Steering Wheel Awards</a>, beating two of Germany’s most well-loved midsize sedans on their home turf. So strong was the positive reaction to the Tesla Model 3 that the vehicle actually earned some of the highest overall scores in this year’s competition. </p> \n \n \n \n<div><ins style=\"text-align:center;\"></ins></div> \n \n \n \n<p>Elon Musk, for his part, accepted the award with gratitude on behalf of the workers of Tesla who have been pushing hard to <a href=\"https://www.teslarati.com/tesla-model-3-drag-race-ota-power-update-comparison/\">produce and improve the Model 3</a>. Joking about the vehicle’s Golden Steering Wheel Award, Musk stated that it may only be a matter of time before a winner of the award ends up having no steering wheel at all. The suggestion was met with much lighthearted laughter from the awards’ audience. </p> \n \n \n \n<p>The Tesla Model 3 has several awards under its belt, but its <a href=\"https://www.teslarati.com/tesla-model-3-beats-bmw-bloomberg-study/\">win against the BMW 3 Series and the Audi A3</a> in German soil could be the all-electric sedan’s most important one yet. German vehicles are known for their impeccable quality, after all, and it is very, very rare to see an American automobile dominate two local champions in the awards ceremony. The fact that the Model 3 is all-electric is just icing on the cake. </p> \n \n \n \n<p>Elon Musk also provided a massive surprise while accepting the Model 3’s Golden Steering Wheel Award, confirming that Gigafactory 4 will be built somewhere in the Berlin area. <a href=\"https://www.teslarati.com/tesla-gigafactory-4-europe-model-3-model-y-production-2021/\">Gigafactory 4’s final location</a> has been hinted at by the electric car maker in its third-quarter earnings call, with Elon Musk stating that Tesla will be revealing the site of the upcoming facility before the end of the year. Considering the recent announcement, it appears that this goal is another one that Musk and Tesla have accomplished well within the CEO’s timeframe. </p> \n \n \n \n<p>“Everyone knows that German engineering is outstanding, for sure. That’s part of the reason why we are locating our Gigafactory Europe in Germany. We are also going to create an engineering and design center in Berlin, because Berlin has some of the best art in the world,” Musk said. </p> \n \n \n \n<p>Watch <em>AUTO BILD</em>‘s Golden Steering Wheel Awards ceremony in the video below. </p> \n \n \n \n<div> \n<iframe allowfullscreen=\"allowfullscreen\" title=\"Die Verleihung des Goldenen Lenkrads 2019: Das sind die besten Autos des Jahres!\" width=\"1000\" height=\"563\" src=\"https://www.youtube.com/embed/O8iEEVbhkR0?feature=oembed\" frameborder=\"0\"></iframe> \n</div><p>The post <a href=\"https://www.teslarati.com/tesla-model-3-vs-bmw-3-series-audi-a3-midsize-car-of-the-year-award/\">Tesla beats BMW and Audi in their home turf to capture Midsize Car of the Year award</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Simon Alvarez",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573589674197",
+      "timestampUsec": "1573589674197157",
+      "id": "tag:google.com,2005:reader/item/000000052cc74eeb",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Elon Musk’s Boring Company to begin drilling Las Vegas tunnel later this month",
+      "published": 1573588531,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/elon-musk-boring-company-las-vegas-tunnel-update/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/elon-musk-boring-company-las-vegas-tunnel-update/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>Elon Musk’s Boring Company will officially begin drilling for its underground tunnel in Las Vegas later this month, according to the Las Vegas Convention and Visitors Authority (LVCVA). The tunnel will allow the Las Vegas Convention Center’s visitors the opportunity to travel quickly from place to place.</p> \n<p>The TBM is currently 40 feet underground, with the machine expected to be started later this month, initiating the first drilling phases of the two, mile-long tunnels. The transportation system is expected to move people between three stations in less than one minute, making traveling in the LVCC area easier and more convenient.</p> \n<p>Progress of the project has ramped up heavily within the past couple of months. In September, Boring Co. <a href=\"https://www.teslarati.com/elon-musk-boring-company-las-vegas-loop-tunnel-update-pictures/\">began shipping portions of the tunnel boring machine</a> (TBM) to the site, along with a cutter head and mixing chamber. Just a month later in late October, heavy machinery was present as <a href=\"https://www.teslarati.com/elon-musk-the-boring-company-las-vegas-tunnel-update/\">the site entered its full construction phase</a> with workers beginning the building of a passenger station at the end of the transport tunnel. On top of that, a tunnel boring machine was assembled around this time, making it evident construction was scheduled to be underway soon.</p> \n<img src=\"https://www.teslarati.com/wp-content/uploads/2019/11/the-boring-company-1.jpg\" alt=\"\"><div><ins style=\"text-align:center;\"></ins></div> \n<p>Since these reports, the site has really started to take shape. A <a href=\"http://webcampub.multivista.com/index.cfm?fuseaction=aPublicWebcam.page&amp;WebcamPublicPageUID=FD9828FA-A43B-4DA8-A461-DD25834D7278\">24/7 livestream of the site</a> shows the outlines of the passenger station, along with cranes and other pieces of heavy machinery visible, suggesting the most crucial portions of the project are underway.</p> \n<p>Now, with the reports of the machine underground and ready to begin making progress toward boring out the tunnel, the project’s intended completion time before the Consumer Electronics Show in January 2021 seems realistic. Sources close to <em>Teslarati</em> reported in October that there were no known hold-ups in the construction process or building department.</p> \n<p>The Las Vegas tunnel will cost $52.5 million and is <a href=\"https://www.boringcompany.com/projects\">one of five current projects listed</a> on the Boring Co. website. While CEO of the LVCVA Steve Hill has highlighted the project as an innovative way for Las Vegas residents and visitors to navigate quickly, <a href=\"https://www.teslarati.com/elon-musk-boring-company-gets-opposition-in-las-vegas-tunnel/\">it was a hard-fought battle to get the contract approved by all board members</a>.</p> \n<p>Some members wanted the Austria-based Doppelmayr Garaventa Group to conduct an above-ground project, citing the 125-year history of the company would be a safer option. “They already have projects here that are operating successfully. The Boring Co. is three years old and has yet to deliver a final package on anything,” Michele Fiore, an LVCVA board member wrote.</p> \n<p>The Boring Co. was an idea by Musk that would eliminate the increasingly frustrating traffic in his base city of Los Angeles. Since the overwhelming support of the company from his supporters, Boring Co. has branched out to other areas, like the Las Vegas’ project, a pre-approved Baltimore-Washington hyperloop, and a Chicago tunnel whose contract remains under negotiation.</p> \n<p>The post <a href=\"https://www.teslarati.com/elon-musk-boring-company-las-vegas-tunnel-update/\">Elon Musk’s Boring Company to begin drilling Las Vegas tunnel later this month</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Joey Klender",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573578908266",
+      "timestampUsec": "1573578908265971",
+      "id": "tag:google.com,2005:reader/item/000000052caf73f2",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Tesla Model 3 supplier receives massive order for Model Y parts: report",
+      "published": 1573577403,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://www.teslarati.com/tesla-model-y-parts-order-model-3-supplier-report/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://www.teslarati.com/tesla-model-y-parts-order-model-3-supplier-report/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<p>Recent reports have suggested that German car spare parts manufacturer ElringKlinger AG has received a massive order of parts for the highly-anticipated Tesla Model Y. The latest order bodes well for the parts manufacturer, as it proves that its components remain viable and competitive even as the auto industry transitions to electric. </p> \n \n \n \n<p>The electric car parts order was shared by German motoring publication <em><a href=\"https://translate.google.de/translate?sl=de&amp;tl=en&amp;u=https%3A%2F%2Fwww.automobilwoche.de%2Farticle%2F20191112%2FNACHRICHTEN%2F191119974%2Fcockpitquertraeger-fuer-model-y-elringklinger-erhaelt-grossauftrag-von-tesla\">Automobilwoche</a></em>, which observed that despite ElringKlinger not mentioning the Tesla Model Y, the company did note that the parts will be for a “leading American electric vehicle manufacturer.” Tesla is pretty much the only company that fits that bill in the United States today. </p> \n \n \n \n<p>Details for the parts order are relatively few, though ElringKlinger has stated that the volume is in the “mid-to-high double-digit millions.” In a statement to the publication, CEO Stefan Wolf stated that the order represents a step forward in ElringKlinger’s efforts at remaining a formidable parts supplier in the age of electromobility. </p> \n \n \n \n<div><ins style=\"text-align:center;\"></ins></div> \n \n \n \n<p>“This follow-up order underlines just how advantageous our lightweight components are for electric vehicles. It represents a further step in the successful implementation of our strategy of achieving more than a quarter of our revenue in the next decade with the future fields of structural lightweight construction and electromobility,” the CEO said. </p> \n \n \n \n<p>The mass production of the electric vehicle parts, described by <em>Automobilwoche</em> as a “cockpit crossbeam,” is expected to begin at the German supplier’s Fremont, CA factory next year. Considering that ElringKlinger is already producing the part for the Tesla Model 3, the new order seems to suggest that the components are intended to be used in the Tesla Model Y crossover. </p> \n \n \n \n<p>The recent reports from ElringKlinger bode well for Tesla’s <a href=\"https://www.teslarati.com/tesla-model-y-power-sports-aero-wheels-road-test-sighting/\">upcoming Model Y ramp</a>. If Tesla is indeed placing massive orders for the upcoming vehicle’s parts, it would suggest that the company is looking to start its Model Y ramp at levels that far exceed that of the Model 3. This would be a pretty big bet for Tesla, though it is one that CEO Elon Musk appears to be willing to take. Musk, after all, has high expectations for the Model Y, stating during the Q3 2019 earnings call that the vehicle will likely outsell the Model 3, Model S, and Model X combined. </p> \n \n \n \n<p>The Tesla Model Y was initially announced with a Fall 2020 delivery date, which was notably more tempered and conservative than the company or CEO Elon Musk’s usual aggressive timetables. This date has since been adjusted, with the company stating that Model Y may be launched <a href=\"https://www.teslarati.com/tesla-model-y-model-3-debut-turbine-wheels/\">as early as Summer 2020</a>. </p> \n<p>The post <a href=\"https://www.teslarati.com/tesla-model-y-parts-order-model-3-supplier-report/\">Tesla Model 3 supplier receives massive order for Model Y parts: report</a> appeared first on <a href=\"https://www.teslarati.com\">TESLARATI</a>.</p>"
+      },
+      "author": "Simon Alvarez",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/https://www.teslarati.com/feed/",
+        "title": "TESLARATI.com",
+        "htmlUrl": "https://www.teslarati.com/"
+      }
+    }
+  ],
+  "continuation": "mUfnpphu39DX"
+}
+

@@ -106,6 +106,7 @@
 		8943044A1B450A5E000078DC /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4DB1B0533B600EDD6D0 /* Feed.swift */; };
 		8943044B1B450A5E000078DC /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4DE1B0535EB00EDD6D0 /* Article.swift */; };
 		894644D921AB8FEB00153308 /* RealmFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894644D821AB8FEB00153308 /* RealmFeedService.swift */; };
+		8947F3F3237F0EBE00B3DF13 /* InoreaderArticles.json in Resources */ = {isa = PBXBuildFile; fileRef = 8947F3F2237F0EBE00B3DF13 /* InoreaderArticles.json */; };
 		8948B8BC222CD89600E1BFBC /* NetworkPagedCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8948B8BA222CD5DD00E1BFBC /* NetworkPagedCollection.swift */; };
 		8948B8BE222CD8A900E1BFBC /* NetworkPagedCollectionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8948B8BD222CD8A900E1BFBC /* NetworkPagedCollectionSpec.swift */; };
 		8949698D1C72FAEB00A91986 /* Kanna.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8903EB141C72F8A7001C0189 /* Kanna.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -137,6 +138,7 @@
 		895DA88A222F7D6500B19C37 /* OrderedDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895DA889222F7D6500B19C37 /* OrderedDictionary.swift */; };
 		895DA88C222F7D7600B19C37 /* OrderedDictionarySpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 895DA88B222F7D7600B19C37 /* OrderedDictionarySpec.swift */; };
 		8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8963F4331A280F8E00B447D6 /* TagPickerView.swift */; };
+		896946D72380E3930070CB09 /* InoreaderFeedServiceIntegrationSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896946D62380E3930070CB09 /* InoreaderFeedServiceIntegrationSpec.swift */; };
 		896EF7DF21E407AE00C0AB75 /* KeychainCredentialServiceSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896EF7DE21E407AE00C0AB75 /* KeychainCredentialServiceSpec.swift */; };
 		896EF7E521E45D4900C0AB75 /* SwiftKeychainWrapper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 896EF7E421E45D4900C0AB75 /* SwiftKeychainWrapper.framework */; };
 		896EF7E621E45D5200C0AB75 /* SwiftKeychainWrapper.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 896EF7E421E45D4900C0AB75 /* SwiftKeychainWrapper.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -476,6 +478,7 @@
 		8943042A1B45089A000078DC /* TethysKitSpecs.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TethysKitSpecs.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		894304331B45089B000078DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		894644D821AB8FEB00153308 /* RealmFeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmFeedService.swift; sourceTree = "<group>"; };
+		8947F3F2237F0EBE00B3DF13 /* InoreaderArticles.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = InoreaderArticles.json; sourceTree = "<group>"; };
 		8948B8BA222CD5DD00E1BFBC /* NetworkPagedCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkPagedCollection.swift; sourceTree = "<group>"; };
 		8948B8BD222CD8A900E1BFBC /* NetworkPagedCollectionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkPagedCollectionSpec.swift; sourceTree = "<group>"; };
 		894D1AEA1DB0971E00E70B1A /* FakeWKNavigationAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeWKNavigationAction.swift; sourceTree = "<group>"; };
@@ -504,6 +507,7 @@
 		895DA889222F7D6500B19C37 /* OrderedDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedDictionary.swift; sourceTree = "<group>"; };
 		895DA88B222F7D7600B19C37 /* OrderedDictionarySpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedDictionarySpec.swift; sourceTree = "<group>"; };
 		8963F4331A280F8E00B447D6 /* TagPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagPickerView.swift; sourceTree = "<group>"; };
+		896946D62380E3930070CB09 /* InoreaderFeedServiceIntegrationSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InoreaderFeedServiceIntegrationSpec.swift; sourceTree = "<group>"; };
 		896EF7DE21E407AE00C0AB75 /* KeychainCredentialServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainCredentialServiceSpec.swift; sourceTree = "<group>"; };
 		896EF7E421E45D4900C0AB75 /* SwiftKeychainWrapper.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftKeychainWrapper.framework; path = Carthage/Build/iOS/SwiftKeychainWrapper.framework; sourceTree = "<group>"; };
 		896EF7E921E5495D00C0AB75 /* Messenger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messenger.swift; sourceTree = "<group>"; };
@@ -995,6 +999,8 @@
 				895B9A1921AA2C06003FFE46 /* RealmFeedServiceSpec.swift */,
 				89F55BAE235CEC1A00FE5887 /* LocalRealmFeedServiceSpec.swift */,
 				89F73DC021FE5FF1001B3135 /* InoreaderFeedServiceSpec.swift */,
+				896946D62380E3930070CB09 /* InoreaderFeedServiceIntegrationSpec.swift */,
+				8947F3F2237F0EBE00B3DF13 /* InoreaderArticles.json */,
 				89F55BAA235B994F00FE5887 /* FeedCoordinatorSpec.swift */,
 			);
 			path = FeedService;
@@ -1759,6 +1765,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8937F6BB1B793CA40044A442 /* AppIcon.png in Resources */,
+				8947F3F3237F0EBE00B3DF13 /* InoreaderArticles.json in Resources */,
 				899987391B483332003C1AF5 /* feed.rss in Resources */,
 				8999873A1B483332003C1AF5 /* feed2.rss in Resources */,
 				8999873B1B483332003C1AF5 /* test.jpg in Resources */,
@@ -2023,6 +2030,7 @@
 				896EF7DF21E407AE00C0AB75 /* KeychainCredentialServiceSpec.swift in Sources */,
 				8936950021E30F30002C3A09 /* FakeAccountService.swift in Sources */,
 				89F55BB32361105F00FE5887 /* Matchers.swift in Sources */,
+				896946D72380E3930070CB09 /* InoreaderFeedServiceIntegrationSpec.swift in Sources */,
 				8903F5BC1D404EA800546099 /* FakeUpdateUseCase.swift in Sources */,
 				89F55BB6236110BF00FE5887 /* SharedBehavior.swift in Sources */,
 				8903F5B01D4022AD00546099 /* FakeUserDefaults.swift in Sources */,

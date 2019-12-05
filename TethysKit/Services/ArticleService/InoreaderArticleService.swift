@@ -43,7 +43,11 @@ struct InoreaderArticleService: ArticleService {
     }
 
     func date(for article: Article) -> Date {
-        return article.updated ?? article.published
+        let updatedDate = article.updated ?? article.published
+        if updatedDate < article.published {
+            return article.published
+        }
+        return updatedDate
     }
 
     func estimatedReadingTime(of article: Article) -> TimeInterval {

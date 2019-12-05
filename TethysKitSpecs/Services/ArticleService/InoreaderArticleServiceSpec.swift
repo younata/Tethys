@@ -122,6 +122,12 @@ final class InoreaderArticleServiceSpec: QuickSpec {
                                              updated: nil)
                 expect(subject.date(for: article)).to(equal(Date(timeIntervalSince1970: 100)))
             }
+
+            it("returns the published date if it's after the updated date") {
+                let article = articleFactory(published: Date(timeIntervalSince1970: 1000),
+                                             updated: Date(timeIntervalSince1970: 0))
+                expect(subject.date(for: article)).to(equal(Date(timeIntervalSince1970: 1000)))
+            }
         }
 
         describe("-estimatedReadingTime(of:)") {

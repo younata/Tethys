@@ -30,17 +30,17 @@ final class RogueLikeGame: NSObject {
     }
 
     func start(bounds: CGRect) {
-        self.view.presentScene(self.levelScene(bounds: bounds))
+        self.view.presentScene(self.levelScene(bounds: bounds, safeArea: self.view.safeAreaInsets))
 
         self.player.position = bounds.center
         self.view.scene?.addChild(self.player)
     }
 
-    func levelScene(bounds: CGRect) -> SKScene {
+    func levelScene(bounds: CGRect, safeArea: UIEdgeInsets) -> SKScene {
         let scene = SKScene(size: bounds.size)
         scene.physicsWorld.gravity = .zero
 
-        let level = self.levelGenerator.generate(level: 1, bounds: bounds)
+        let level = self.levelGenerator.generate(level: 1, bounds: bounds.inset(by: safeArea))
         scene.addChild(level.node)
         scene.isPaused = false
 
@@ -69,7 +69,7 @@ protocol LevelGenerator {
 
 struct BoxLevelGenerator: LevelGenerator {
     func generate(level number: Int, bounds: CGRect) -> Level {
-        let roomRect = bounds.insetBy(dx: 20, dy: 20)
+        let roomRect = bounds.inset(by: UIEdgeInsets(top: 24, left: 0, bottom: 8, right: 0))
         let room = SKShapeNode(rect: roomRect)
         room.fillColor = .clear
         room.strokeColor = .white

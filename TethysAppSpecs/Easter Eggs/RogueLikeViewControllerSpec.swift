@@ -20,6 +20,10 @@ final class RogueLikeViewControllerSpec: QuickSpec {
             expect(scene?.physicsWorld.gravity).to(equal(CGVector.zero))
         }
 
+        it("configures the view for landscape") {
+            expect(subject.supportedInterfaceOrientations).to(equal([.landscape]))
+        }
+
         describe("the exit button") {
             it("is configured for accessibility") {
                 expect(subject.exitButton.isAccessibilityElement).to(beTrue())

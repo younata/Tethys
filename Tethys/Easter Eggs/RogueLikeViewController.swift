@@ -22,27 +22,33 @@ final class RogueLikeViewController: UIViewController {
 
         self.sceneView.translatesAutoresizingMaskIntoConstraints = false
         self.view.addSubview(self.sceneView)
-        self.sceneView.autoPinEdgesToSuperviewSafeArea(with: .zero, excludingEdge: .top)
+        self.sceneView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .top)
+        self.view.backgroundColor = Theme.backgroundColor
 
         let menuView = UIView(forAutoLayout: ())
         menuView.backgroundColor = Theme.overlappingBackgroundColor
         self.view.addSubview(menuView)
-        menuView.autoPinEdgesToSuperviewSafeArea(with: .zero, excludingEdge: .bottom)
+        menuView.autoPinEdgesToSuperviewEdges(with: .zero, excludingEdge: .bottom)
         self.sceneView.autoPinEdge(.top, to: .bottom, of: menuView)
         self.configureExitButton()
 
         menuView.addSubview(self.exitButton)
-        self.exitButton.autoPinEdge(toSuperviewEdge: .leading, withInset: 16)
-        self.exitButton.autoPinEdge(toSuperviewEdge: .top, withInset: 8)
-        self.exitButton.autoPinEdge(toSuperviewEdge: .bottom, withInset: 8)
-
-        self.game.start(bounds: self.view.bounds.inset(by: self.view.safeAreaInsets))
+        self.exitButton.autoPinEdgesToSuperviewEdges(
+            with: UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16),
+            excludingEdge: .trailing
+        )
 
         let dpadGestureRecognizer = DirectionalGestureRecognizer(
             target: self,
             action: #selector(RogueLikeViewController.didRecognize(directionGestureRecognizer:))
         )
         self.sceneView.addGestureRecognizer(dpadGestureRecognizer)
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        self.game.start(bounds: self.sceneView.bounds)
     }
 
     private func configureExitButton() {
@@ -62,6 +68,10 @@ final class RogueLikeViewController: UIViewController {
 
     @objc private func didRecognize(directionGestureRecognizer: DirectionalGestureRecognizer) {
         self.game.guidePlayer(direction: directionGestureRecognizer.direction)
+    }
+
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return [.landscape]
     }
 }
 

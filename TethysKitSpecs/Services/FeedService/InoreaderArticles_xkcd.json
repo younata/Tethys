@@ -1,0 +1,755 @@
+{
+  "direction": "ltr",
+  "id": "feed/http://xkcd.com/atom.xml",
+  "title": "xkcd.com",
+  "description": "",
+  "self": {
+    "href": "https://www.inoreader.com/reader/api/0/stream/contents/feed%2Fhttp%3A%2F%2Fxkcd.com%2Fatom.xml"
+  },
+  "updated": 1575595872,
+  "updatedUsec": "1575595872320685",
+  "items": [
+    {
+      "crawlTimeMsec": "1575485292005",
+      "timestampUsec": "1575485292005315",
+      "id": "tag:google.com,2005:reader/item/000000053c2efa05",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "AI Hiring Algorithm",
+      "published": 1575417600,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2237/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2237/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/ai_hiring_algorithm.png\" title=\"So glad Kate over in R&amp;D pushed for using the AlgoMaxAnalyzer to look into this. Hiring her was a great decisio- waaaait.\" alt=\"So glad Kate over in R&amp;D pushed for using the AlgoMaxAnalyzer to look into this. Hiring her was a great decisio- waaaait.\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1575320245679",
+      "timestampUsec": "1575320245678605",
+      "id": "tag:google.com,2005:reader/item/000000053aab944f",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Is it Christmas?",
+      "published": 1575244800,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2236/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2236/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/is_it_christmas.png\" title=\"We've tested it on 30 different days and it hasn't gotten one wrong yet.\" alt=\"We've tested it on 30 different days and it hasn't gotten one wrong yet.\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1575053454895",
+      "timestampUsec": "1575053454895024",
+      "id": "tag:google.com,2005:reader/item/0000000538ba21ae",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Group Chat Rules",
+      "published": 1574985600,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2235/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2235/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/group_chat_rules.png\" title=\"There's no group chat member more enigmatic than the cool person who you all assume has the chat on mute, but who then instantly chimes in with no delay the moment something relevant to them is mentioned.\" alt=\"There's no group chat member more enigmatic than the cool person who you all assume has the chat on mute, but who then instantly chimes in with no delay the moment something relevant to them is mentioned.\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1574882258940",
+      "timestampUsec": "1574882258940418",
+      "id": "tag:google.com,2005:reader/item/000000053746aa5b",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "How To Deliver Christmas Presents",
+      "published": 1574812800,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2234/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2234/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/how_to_deliver_christmas_presents.png\" title=\"Building codes in hurricane zones rely on studies of how easily flying debris can break residential windows. If you're looking for a science fair project idea and you hate your neighbors, I'm sure they could always use more data!\" alt=\"Building codes in hurricane zones rely on studies of how easily flying debris can break residential windows. If you're looking for a science fair project idea and you hate your neighbors, I'm sure they could always use more data!\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1574722869401",
+      "timestampUsec": "1574722869400895",
+      "id": "tag:google.com,2005:reader/item/0000000535d0e6fb",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Aurora Meaning",
+      "published": 1574640000,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2233/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2233/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/aurora_meaning.png\" title=\"The astro-ph.SR arXiv servers are simultaneously being overwhelmed by electronic requests and actual electricity.\" alt=\"The astro-ph.SR arXiv servers are simultaneously being overwhelmed by electronic requests and actual electricity.\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1574441761268",
+      "timestampUsec": "1574441761267964",
+      "id": "tag:google.com,2005:reader/item/0000000533d28b45",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Hotel Room Party",
+      "published": 1574380800,
+      "updated": 1574530685,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2232/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2232/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/hotel_room_party.png\" title=\"[proudly greeting the hotel manager at the door] &quot;Did I do a good job?&quot;\" alt=\"[proudly greeting the hotel manager at the door] &quot;Did I do a good job?&quot;\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1574285260011",
+      "timestampUsec": "1574285260011390",
+      "id": "tag:google.com,2005:reader/item/00000005326f2d87",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "the Time Before And After Land",
+      "published": 1574208000,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2231/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2231/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/the_time_before_and_after_land.png\" title=\"According to Google, &quot;the time for Beeland&quot; is apparently whenever you're looking for delicious honey in Spillimacheen, British Columbia or a hexagonal chalet in the Savinja valley in Slovenia.\" alt=\"According to Google, &quot;the time for Beeland&quot; is apparently whenever you're looking for delicious honey in Spillimacheen, British Columbia or a hexagonal chalet in the Savinja valley in Slovenia.\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1574099723179",
+      "timestampUsec": "1574099723178685",
+      "id": "tag:google.com,2005:reader/item/0000000530ce2bb9",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Versus Bracket",
+      "published": 1574035200,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2230/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2230/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/versus_bracket.png\" title=\"Some works didn't make the cut; in &quot;Ecks vs. Sever&quot; vs. the passage of time, the latter seems to have won pretty decisively.\" alt=\"Some works didn't make the cut; in &quot;Ecks vs. Sever&quot; vs. the passage of time, the latter seems to have won pretty decisively.\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573848492161",
+      "timestampUsec": "1573848492160764",
+      "id": "tag:google.com,2005:reader/item/000000052f086a06",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Rey and Kylo",
+      "published": 1573776000,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2229/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2229/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/rey_and_kylo.png\" title=\"We're like 10+ movies in and the focus has been almost entirely on the WARS half.\" alt=\"We're like 10+ movies in and the focus has been almost entirely on the WARS half.\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573688389954",
+      "timestampUsec": "1573688389953567",
+      "id": "tag:google.com,2005:reader/item/000000052da4a324",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Machine Learning Captcha",
+      "published": 1573603200,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2228/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2228/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/machine_learning_captcha.png\" title=\"More likely: Click on all the pictures of people who appear disloyal to [name of company or government]\" alt=\"More likely: Click on all the pictures of people who appear disloyal to [name of company or government]\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573509007711",
+      "timestampUsec": "1573509007710871",
+      "id": "tag:google.com,2005:reader/item/000000052c11069b",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Transit of Mercury",
+      "published": 1573430400,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2227/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2227/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/transit_of_mercury.png\" title=\"For some reason the water in my pool is green and there's a weird film on the surface #nofilter\" alt=\"For some reason the water in my pool is green and there's a weird film on the surface #nofilter\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573256895459",
+      "timestampUsec": "1573256895458659",
+      "id": "tag:google.com,2005:reader/item/000000052a4cfe46",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Recombination And Reionization",
+      "published": 1573171200,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2226/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2226/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/recombination_and_reionization.png\" title=\"These signals seem to be pre-star-formation but post-Malone.\" alt=\"These signals seem to be pre-star-formation but post-Malone.\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1573063760368",
+      "timestampUsec": "1573063760367507",
+      "id": "tag:google.com,2005:reader/item/00000005289c498b",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Voting Referendum",
+      "published": 1572998400,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2225/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2225/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/voting_referendum.png\" title=\"The weirdest quirk of the Borda count is that Jean-Charles de Borda automatically gets one point; luckily this has no consequences except in cases of extremely low turnout.\" alt=\"The weirdest quirk of the Borda count is that Jean-Charles de Borda automatically gets one point; luckily this has no consequences except in cases of extremely low turnout.\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1572911641285",
+      "timestampUsec": "1572911641284785",
+      "id": "tag:google.com,2005:reader/item/000000052741df8a",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Software Updates",
+      "published": 1572825600,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2224/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2224/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/software_updates.png\" title=\"Everything is a cloud application; the ping times just vary a lot.\" alt=\"Everything is a cloud application; the ping times just vary a lot.\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1572616253148",
+      "timestampUsec": "1572616253147819",
+      "id": "tag:google.com,2005:reader/item/000000052529a0fd",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Screen Time",
+      "published": 1572566400,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2223/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2223/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/screen_time.png\" title=\"These new Bluetooth socks are great, but it's troubling to learn that I average almost 14 hours of Shoe Time a day.\" alt=\"These new Bluetooth socks are great, but it's troubling to learn that I average almost 14 hours of Shoe Time a day.\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1572473131996",
+      "timestampUsec": "1572473131995994",
+      "id": "tag:google.com,2005:reader/item/0000000523ec739c",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Terminator: Dark Fate",
+      "published": 1572393600,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2222/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2222/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/terminator_dark_fate.png\" title=\"I was sent here to stop the robot that was sent here to protect the human who was sent here to protect the human who was sent here to destroy the robot that was sent here to vacuum the floor.\" alt=\"I was sent here to stop the robot that was sent here to protect the human who was sent here to protect the human who was sent here to destroy the robot that was sent here to vacuum the floor.\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1572304413880",
+      "timestampUsec": "1572304413879759",
+      "id": "tag:google.com,2005:reader/item/000000052273b85d",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Emulation",
+      "published": 1572220800,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2221/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2221/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/emulation.png\" title=\"I laugh at the software as if I'm 100% confident that it's 2019.\" alt=\"I laugh at the software as if I'm 100% confident that it's 2019.\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1572031115059",
+      "timestampUsec": "1572031115058985",
+      "id": "tag:google.com,2005:reader/item/00000005208f3c4b",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Imagine Going Back in Time",
+      "published": 1571961600,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2220/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2220/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/imagine_going_back_in_time.png\" title=\"I wonder what the trendy adults in 2019 who are too cool for Pokemon will be into. Probably Digimon!\" alt=\"I wonder what the trendy adults in 2019 who are too cool for Pokemon will be into. Probably Digimon!\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1571859202902",
+      "timestampUsec": "1571859202902107",
+      "id": "tag:google.com,2005:reader/item/000000051f103432",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Earthquake Early Warnings",
+      "published": 1571788800,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2219/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2219/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/earthquake_early_warnings.png\" title=\"I was fired by the National Weather Service five minutes after they hired me for going into their code base and renaming all the tornado warnings to &quot;tornado spoiler alerts.&quot;\" alt=\"I was fired by the National Weather Service five minutes after they hired me for going into their code base and renaming all the tornado warnings to &quot;tornado spoiler alerts.&quot;\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    },
+    {
+      "crawlTimeMsec": "1571694862074",
+      "timestampUsec": "1571694862073895",
+      "id": "tag:google.com,2005:reader/item/000000051d9e0077",
+      "categories": [
+        "user/1006429672/state/com.google/reading-list",
+        "user/1006429672/state/com.google/read"
+      ],
+      "title": "Wardrobe",
+      "published": 1571616000,
+      "updated": 0,
+      "canonical": [
+        {
+          "href": "https://xkcd.com/2218/"
+        }
+      ],
+      "alternate": [
+        {
+          "href": "https://xkcd.com/2218/",
+          "type": "text/html"
+        }
+      ],
+      "summary": {
+        "direction": "ltr",
+        "content": "<img src=\"https://imgs.xkcd.com/comics/wardrobe.png\" title=\"If you'd just agree to hold your meetings in here, you'd have PLENTY of time to figure things out before the deadline.\" alt=\"If you'd just agree to hold your meetings in here, you'd have PLENTY of time to figure things out before the deadline.\">"
+      },
+      "author": "",
+      "likingUsers": [],
+      "comments": [],
+      "commentsNum": -1,
+      "annotations": [],
+      "origin": {
+        "streamId": "feed/http://xkcd.com/atom.xml",
+        "title": "xkcd.com",
+        "htmlUrl": "http://xkcd.com/"
+      }
+    }
+  ],
+  "continuation": "BpxZZJxhjHjU"
+}
+

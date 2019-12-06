@@ -106,7 +106,8 @@
 		8943044A1B450A5E000078DC /* Feed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4DB1B0533B600EDD6D0 /* Feed.swift */; };
 		8943044B1B450A5E000078DC /* Article.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978D4DE1B0535EB00EDD6D0 /* Article.swift */; };
 		894644D921AB8FEB00153308 /* RealmFeedService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 894644D821AB8FEB00153308 /* RealmFeedService.swift */; };
-		8947F3F3237F0EBE00B3DF13 /* InoreaderArticles.json in Resources */ = {isa = PBXBuildFile; fileRef = 8947F3F2237F0EBE00B3DF13 /* InoreaderArticles.json */; };
+		89467E832399E73C00BB8758 /* InoreaderArticles_xkcd.json in Resources */ = {isa = PBXBuildFile; fileRef = 89467E822399E73C00BB8758 /* InoreaderArticles_xkcd.json */; };
+		8947F3F3237F0EBE00B3DF13 /* InoreaderArticles_teslarati.json in Resources */ = {isa = PBXBuildFile; fileRef = 8947F3F2237F0EBE00B3DF13 /* InoreaderArticles_teslarati.json */; };
 		8948B8BC222CD89600E1BFBC /* NetworkPagedCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8948B8BA222CD5DD00E1BFBC /* NetworkPagedCollection.swift */; };
 		8948B8BE222CD8A900E1BFBC /* NetworkPagedCollectionSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8948B8BD222CD8A900E1BFBC /* NetworkPagedCollectionSpec.swift */; };
 		8949698D1C72FAEB00A91986 /* Kanna.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 8903EB141C72F8A7001C0189 /* Kanna.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -478,7 +479,8 @@
 		8943042A1B45089A000078DC /* TethysKitSpecs.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TethysKitSpecs.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		894304331B45089B000078DC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		894644D821AB8FEB00153308 /* RealmFeedService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmFeedService.swift; sourceTree = "<group>"; };
-		8947F3F2237F0EBE00B3DF13 /* InoreaderArticles.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = InoreaderArticles.json; sourceTree = "<group>"; };
+		89467E822399E73C00BB8758 /* InoreaderArticles_xkcd.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = InoreaderArticles_xkcd.json; sourceTree = "<group>"; };
+		8947F3F2237F0EBE00B3DF13 /* InoreaderArticles_teslarati.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = InoreaderArticles_teslarati.json; sourceTree = "<group>"; };
 		8948B8BA222CD5DD00E1BFBC /* NetworkPagedCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkPagedCollection.swift; sourceTree = "<group>"; };
 		8948B8BD222CD8A900E1BFBC /* NetworkPagedCollectionSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkPagedCollectionSpec.swift; sourceTree = "<group>"; };
 		894D1AEA1DB0971E00E70B1A /* FakeWKNavigationAction.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeWKNavigationAction.swift; sourceTree = "<group>"; };
@@ -1000,7 +1002,8 @@
 				89F55BAE235CEC1A00FE5887 /* LocalRealmFeedServiceSpec.swift */,
 				89F73DC021FE5FF1001B3135 /* InoreaderFeedServiceSpec.swift */,
 				896946D62380E3930070CB09 /* InoreaderFeedServiceIntegrationSpec.swift */,
-				8947F3F2237F0EBE00B3DF13 /* InoreaderArticles.json */,
+				8947F3F2237F0EBE00B3DF13 /* InoreaderArticles_teslarati.json */,
+				89467E822399E73C00BB8758 /* InoreaderArticles_xkcd.json */,
 				89F55BAA235B994F00FE5887 /* FeedCoordinatorSpec.swift */,
 			);
 			path = FeedService;
@@ -1765,8 +1768,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				8937F6BB1B793CA40044A442 /* AppIcon.png in Resources */,
-				8947F3F3237F0EBE00B3DF13 /* InoreaderArticles.json in Resources */,
+				8947F3F3237F0EBE00B3DF13 /* InoreaderArticles_teslarati.json in Resources */,
 				899987391B483332003C1AF5 /* feed.rss in Resources */,
+				89467E832399E73C00BB8758 /* InoreaderArticles_xkcd.json in Resources */,
 				8999873A1B483332003C1AF5 /* feed2.rss in Resources */,
 				8999873B1B483332003C1AF5 /* test.jpg in Resources */,
 				8925B0FF2362BEC900A3895B /* feed_no_link.rss in Resources */,

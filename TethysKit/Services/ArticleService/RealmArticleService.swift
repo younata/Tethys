@@ -61,8 +61,9 @@ struct RealmArticleService: ArticleService {
     }
 
     func date(for article: Article) -> Date {
-        let realmArticle = self.realmArticle(for: article)
-        return realmArticle?.date ?? Date()
+        let realmDate = self.realmArticle(for: article)?.date ?? Date(timeIntervalSince1970: 0)
+        let updatedDate = article.updated ?? Date(timeIntervalSince1970: 0)
+        return [realmDate, updatedDate, article.published].sorted().last!
     }
 
     func estimatedReadingTime(of article: Article) -> TimeInterval {

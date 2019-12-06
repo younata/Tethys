@@ -205,6 +205,24 @@ final class RealmArticleServiceSpec: QuickSpec {
 
                 expect(subject.date(for: article)).to(equal(publishedDate))
             }
+
+            it("returns the updated time if it was specified") {
+                let article = articleFactory(published: Date(timeIntervalSince1970: 0),
+                                             updated: Date(timeIntervalSince1970: 1000))
+                expect(subject.date(for: article)).to(equal(Date(timeIntervalSince1970: 1000)))
+            }
+
+            it("returns the published date if updated wasn't specified") {
+                let article = articleFactory(published: Date(timeIntervalSince1970: 100),
+                                             updated: nil)
+                expect(subject.date(for: article)).to(equal(Date(timeIntervalSince1970: 100)))
+            }
+
+            it("returns the published date if it's after the updated date") {
+                let article = articleFactory(published: Date(timeIntervalSince1970: 1000),
+                                             updated: Date(timeIntervalSince1970: 0))
+                expect(subject.date(for: article)).to(equal(Date(timeIntervalSince1970: 1000)))
+            }
         }
 
         describe("estimatedReadingTime(of:)") {

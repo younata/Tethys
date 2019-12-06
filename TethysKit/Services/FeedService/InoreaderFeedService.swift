@@ -55,7 +55,7 @@ struct InoreaderFeedService: FeedService {
                             title: $0.title,
                             link: url,
                             summary: $0.summary.content,
-                            authors: [Author(name: $0.author, email: nil)],
+                            authors: [Author(name: $0.author, email: nil)].filter { $0.name.isEmpty == false },
                             identifier: $0.id,
                             content: $0.summary.content,
                             read: InoreaderTags(tags: $0.categories.map { InoreaderTag(id: $0) }).containsRead,

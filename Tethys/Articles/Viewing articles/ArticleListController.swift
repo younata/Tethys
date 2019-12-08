@@ -3,11 +3,8 @@ import TethysKit
 import CBGPromise
 
 public final class ArticleListController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-    fileprivate enum ArticleListSection: Int {
-        case overview = 0
-        case articles = 1
-
-        static var numberOfSections = 2
+    private enum ArticleSection: Int {
+        case articles = 0
     }
 
     public private(set) var articles = AnyCollection<Article>([])
@@ -33,16 +30,19 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         return button
     }()
 
+    private let tableHeaderView = ArticleListHeaderView(frame: CGRect(x: 0, y: 0, width: 320, height: 10))
+
     public let tableView = UITableView(forAutoLayout: ())
 
     public let feed: Feed
     private let mainQueue: OperationQueue
     private let messenger: Messenger
-    fileprivate let feedCoordinator: FeedCoordinator
-    fileprivate let articleCoordinator: ArticleCoordinator
+    private let feedCoordinator: FeedCoordinator
+    private let articleCoordinator: ArticleCoordinator
     private let notificationCenter: NotificationCenter
     private let articleCellController: ArticleCellController
-    fileprivate let articleViewController: (Article) -> ArticleViewController
+    private let articleViewController: (Article) -> ArticleViewController
+
     public init(feed: Feed,
                 mainQueue: OperationQueue,
                 messenger: Messenger,
@@ -76,10 +76,16 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         self.tableView.register(ArticleCell.self, forCellReuseIdentifier: "unread")
         // Prevents a green triangle which'll (dis)appear depending on whether
         // article loaded into it is read or not.
-        self.tableView.register(ArticleListHeaderCell.self, forCellReuseIdentifier: "headerCell")
 
         self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.tableFooterView = UIView()
+
+        if self.feed.image != nil || !self.feed.displaySummary.isEmpty {
+            self.tableHeaderView.configure(summary: self.feed.displaySummary, image: self.feed.image)
+            self.tableView.tableHeaderView = self.tableHeaderView
+        } else {
+            self.tableView.tableHeaderView = nil
+        }
 
         self.view.addSubview(self.tableView)
         self.tableView.autoPinEdgesToSuperviewEdges()
@@ -95,7 +101,15 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         self.tableView.separatorColor = Theme.separatorColor
     }
 
-    fileprivate func articleForIndexPath(_ indexPath: IndexPath) -> Article {
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        self.tableHeaderView.frame.size.height = self.tableHeaderView.systemLayoutSizeFitting(
+            UIView.layoutFittingCompressedSize
+        ).height
+    }
+
+    private func articleForIndexPath(_ indexPath: IndexPath) -> Article {
         let index = self.articles.index(self.articles.startIndex, offsetBy: indexPath.row)
         return self.articles[index]
     }
@@ -107,7 +121,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         return avc
     }
 
-    fileprivate func showArticleController(_ avc: ArticleViewController, animated: Bool) {
+    private func showArticleController(_ avc: ArticleViewController, animated: Bool) {
         if let splitView = self.splitViewController as? SplitViewController {
             splitView.collapseDetailViewController = false
             splitView.showDetailViewController(UINavigationController(rootViewController: avc),
@@ -119,7 +133,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         }
     }
 
-    fileprivate func attemptDelete(article: Article) -> Future<Bool> {
+    private func attemptDelete(article: Article) -> Future<Bool> {
         return self.articleCoordinator.remove(article: article).map { result -> Bool in
             switch result {
             case .success:
@@ -135,7 +149,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         }
     }
 
-    fileprivate func markRead(article: Article, read: Bool, completionHandler: ((Bool) -> Void)? = nil) {
+    private func markRead(article: Article, read: Bool, completionHandler: ((Bool) -> Void)? = nil) {
         var succeeded = true
         self.articleCoordinator.mark(article: article, asRead: read).then { [weak self] result in
             self?.mainQueue.addOperation {
@@ -156,7 +170,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         }
     }
 
-    fileprivate func update(article: Article, to updatedArticle: Article) {
+    private func update(article: Article, to updatedArticle: Article) {
         guard let collectionIndex = self.articles.firstIndex(of: article) else { return }
         let index = self.articles.distance(from: self.articles.startIndex, to: collectionIndex)
         self.articles = AnyCollection(self.articles.map({
@@ -165,74 +179,38 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
             }
             return $0
         }))
-        self.tableView.reloadRows(at: [IndexPath(row: index, section: 1)], with: .automatic)
+        let indexPath = IndexPath(row: index, section: ArticleSection.articles.rawValue)
+        self.tableView.reloadRows(at: [indexPath], with: .automatic)
     }
 
     // MARK: - Table view data source
 
-    public func numberOfSections(in tableView: UITableView) -> Int { return ArticleListSection.numberOfSections }
+    public func numberOfSections(in tableView: UITableView) -> Int { return 1 }
 
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let section = ArticleListSection(rawValue: section) else { return 0 }
-        switch section {
-        case .overview:
-            if self.feed.image != nil || !self.feed.displaySummary.isEmpty {
-                return 1
-            }
-            return 0
-        case .articles:
-            return self.articles.underestimatedCount
-        }
+        return self.articles.underestimatedCount
     }
 
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let section = ArticleListSection(rawValue: indexPath.section) else {
-            return UITableViewCell()
-        }
-        switch section {
-        case .overview:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "headerCell",
-                                                     for: indexPath) as! ArticleListHeaderCell
-            cell.configure(summary: self.feed.displaySummary, image: self.feed.image)
-            return cell
-        case .articles:
-            let article = self.articleForIndexPath(indexPath)
-            let cellTypeToUse = (article.read ? "read" : "unread")
-            // Prevents a green triangle which'll (dis)appear depending
-            // on whether article loaded into it is read or not.
-            let cell = tableView.dequeueReusableCell(withIdentifier: cellTypeToUse,
-                                                     for: indexPath) as! ArticleCell
+        let article = self.articleForIndexPath(indexPath)
+        let cellTypeToUse = (article.read ? "read" : "unread")
+        // Prevents a green triangle which'll (dis)appear depending
+        // on whether article loaded into it is read or not.
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellTypeToUse,
+                                                 for: indexPath) as! ArticleCell
 
-            self.articleCellController.configure(cell: cell, with: article)
+        self.articleCellController.configure(cell: cell, with: article)
 
-            return cell
-        }
-    }
-
-    public func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
-        return ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles
-    }
-
-    public func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        guard ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles else {
-            return nil
-        }
-        return indexPath
+        return cell
     }
 
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles {
-            let article = self.articleForIndexPath(indexPath)
-            tableView.deselectRow(at: indexPath, animated: false)
-            _ = self.showArticle(article)
-        } else {
-            tableView.deselectRow(at: indexPath, animated: false)
-        }
+        let article = self.articleForIndexPath(indexPath)
+        tableView.deselectRow(at: indexPath, animated: false)
+        _ = self.showArticle(article)
     }
 
-    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return ArticleListSection(rawValue: indexPath.section) == ArticleListSection.articles
-    }
+    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { return true }
 
     public func tableView(_ tableView: UITableView,
                           commit editingStyle: UITableViewCell.EditingStyle,
@@ -240,7 +218,6 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
 
     public func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt
                                                     indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        guard ArticleListSection(rawValue: indexPath.section) == .articles else { return nil }
         let article = self.articleForIndexPath(indexPath)
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
         let delete = UIContextualAction(style: .destructive, title: deleteTitle) { _, _, handler in
@@ -270,8 +247,6 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
 
     public func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath,
                           point: CGPoint) -> UIContextMenuConfiguration? {
-        guard ArticleListSection(rawValue: indexPath.section) == .articles else { return nil }
-
         let article = self.articleForIndexPath(indexPath)
         return UIContextMenuConfiguration(
             identifier: article.link as NSURL,
@@ -314,19 +289,18 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         return [toggleRead, delete]
     }
 
-    fileprivate func resetArticles() {
+    private func resetArticles() {
         self.feedCoordinator.articles(of: self.feed).then { [weak self] result in
             self?.mainQueue.addOperation {
                 switch result {
                 case .update(.success(let articles)):
                     self?.articles = articles
                     self?.tableView.beginUpdates()
-                    self?.tableView.reloadSections(IndexSet(integer: 0), with: .none)
-                    self?.tableView.reloadSections(IndexSet(integer: 1), with: .automatic)
+                    self?.tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
                     self?.tableView.endUpdates()
                 case .update(.failure(let error)):
                     self?.tableView.beginUpdates()
-                    self?.tableView.reloadSections(IndexSet(integersIn: 0..<2), with: .automatic)
+                    self?.tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
                     self?.tableView.endUpdates()
                     self?.showAlert(
                         error: error,
@@ -339,7 +313,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         }
     }
 
-    fileprivate func resetBarItems() {
+    private func resetBarItems() {
         self.navigationItem.rightBarButtonItems = [self.shareButton, self.markReadButton]
     }
 
@@ -347,7 +321,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         return UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
     }
 
-    @objc fileprivate func shareFeed() {
+    @objc private func shareFeed() {
         let shareSheet = UIActivityViewController(
             activityItems: [self.feed.url],
             applicationActivities: nil

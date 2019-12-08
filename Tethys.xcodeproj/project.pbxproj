@@ -72,6 +72,8 @@
 		892E77071E08459300866336 /* KVOMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E77061E08459300866336 /* KVOMonitor.swift */; };
 		892E77131E09A2E300866336 /* TimerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E77121E09A2E300866336 /* TimerFactory.swift */; };
 		892E77151E09A49900866336 /* FakeTimerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892E77141E09A49900866336 /* FakeTimerFactory.swift */; };
+		8930214E239D832D00FF192D /* ArticleListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8930214D239D832D00FF192D /* ArticleListHeaderView.swift */; };
+		89302150239D833F00FF192D /* ArticleListHeaderViewSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8930214F239D833F00FF192D /* ArticleListHeaderViewSpec.swift */; };
 		8934FE5B21DDD43400083387 /* FakeLoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8934FE5A21DDD43400083387 /* FakeLoginController.swift */; };
 		8935F5CD1B462702000FFD5D /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
 		8935F5CE1B462702000FFD5D /* Nimble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 89718F2E1AE0C9B4004C3CB4 /* Nimble.framework */; };
@@ -166,8 +168,6 @@
 		8978C52F2199180100D702BB /* Factories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978C52E2199180100D702BB /* Factories.swift */; };
 		8978C531219A7FDC00D702BB /* ArticleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8978C530219A7FDC00D702BB /* ArticleService.swift */; };
 		898131681AF880400090FA7F /* Muon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 898131671AF880400090FA7F /* Muon.framework */; };
-		89831FEA1DB5C2FC00E32412 /* ArticleListHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89831FE91DB5C2FC00E32412 /* ArticleListHeaderCell.swift */; };
-		89831FEC1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89831FEB1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift */; };
 		8984FE891CB984A40096F4B3 /* Author.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984FE881CB984A40096F4B3 /* Author.swift */; };
 		8984FE8C1CBA1A180096F4B3 /* AuthorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984FE8B1CBA1A180096F4B3 /* AuthorSpec.swift */; };
 		8984FE8F1CBAAFED0096F4B3 /* RealmMigratorSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8984FE8E1CBAAFED0096F4B3 /* RealmMigratorSpec.swift */; };
@@ -457,6 +457,8 @@
 		892E77061E08459300866336 /* KVOMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KVOMonitor.swift; sourceTree = "<group>"; };
 		892E77121E09A2E300866336 /* TimerFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimerFactory.swift; sourceTree = "<group>"; };
 		892E77141E09A49900866336 /* FakeTimerFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FakeTimerFactory.swift; sourceTree = "<group>"; };
+		8930214D239D832D00FF192D /* ArticleListHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleListHeaderView.swift; sourceTree = "<group>"; };
+		8930214F239D833F00FF192D /* ArticleListHeaderViewSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArticleListHeaderViewSpec.swift; sourceTree = "<group>"; };
 		8934FE5A21DDD43400083387 /* FakeLoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FakeLoginController.swift; sourceTree = "<group>"; };
 		893694EE21E1A27A002C3A09 /* InoreaderAccountServiceSpec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InoreaderAccountServiceSpec.swift; sourceTree = "<group>"; };
 		893694F121E1A3D6002C3A09 /* CredentialService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CredentialService.swift; sourceTree = "<group>"; };
@@ -531,8 +533,6 @@
 		8978D4E61B05AB3800EDD6D0 /* ArticleSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleSpec.swift; sourceTree = "<group>"; };
 		898046D11A1BC8FD00EB29F0 /* Tethys.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Tethys.entitlements; sourceTree = "<group>"; };
 		898131671AF880400090FA7F /* Muon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Muon.framework; path = ../Carthage/Build/iOS/Muon.framework; sourceTree = "<group>"; };
-		89831FE91DB5C2FC00E32412 /* ArticleListHeaderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListHeaderCell.swift; sourceTree = "<group>"; };
-		89831FEB1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleListHeaderCellSpec.swift; sourceTree = "<group>"; };
 		8984FE881CB984A40096F4B3 /* Author.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Author.swift; sourceTree = "<group>"; };
 		8984FE8B1CBA1A180096F4B3 /* AuthorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthorSpec.swift; sourceTree = "<group>"; };
 		8984FE8E1CBAAFED0096F4B3 /* RealmMigratorSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmMigratorSpec.swift; sourceTree = "<group>"; };
@@ -948,7 +948,7 @@
 				8997C8521B2566A600972930 /* ArticleCellSpec.swift */,
 				89FA3BDA21A785480026BC88 /* ArticleCellControllerSpec.swift */,
 				899823AB1B2C883B00818755 /* ArticleListControllerSpec.swift */,
-				89831FEB1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift */,
+				8930214F239D833F00FF192D /* ArticleListHeaderViewSpec.swift */,
 				890B78C91C78E8650066E201 /* ArticleUseCaseSpec.swift */,
 				899823AD1B30B64000818755 /* ArticleViewControllerSpec.swift */,
 			);
@@ -1497,7 +1497,7 @@
 				89C830B219D7D2CB009924DA /* ArticleCell.swift */,
 				89FA3BD821A76D730026BC88 /* ArticleCellController.swift */,
 				89C830AD19D7CB8E009924DA /* ArticleListController.swift */,
-				89831FE91DB5C2FC00E32412 /* ArticleListHeaderCell.swift */,
+				8930214D239D832D00FF192D /* ArticleListHeaderView.swift */,
 			);
 			path = "Viewing articles";
 			sourceTree = "<group>";
@@ -2079,7 +2079,6 @@
 				89C8307919D730E9009924DA /* AppDelegate.swift in Sources */,
 				89C830B319D7D2CB009924DA /* ArticleCell.swift in Sources */,
 				89C830AE19D7CB8E009924DA /* ArticleListController.swift in Sources */,
-				89831FEA1DB5C2FC00E32412 /* ArticleListHeaderCell.swift in Sources */,
 				890B78C81C77FD200066E201 /* ArticleUseCase.swift in Sources */,
 				89C830B619D7DE97009924DA /* ArticleViewController.swift in Sources */,
 				89FA3BD921A76D730026BC88 /* ArticleCellController.swift in Sources */,
@@ -2093,6 +2092,7 @@
 				894F8B46236B450C005AE5F0 /* RogueLikeGame.swift in Sources */,
 				89C830CA19DA37FB009924DA /* FeedTableCell.swift in Sources */,
 				89BF424523372F0000C790A8 /* AppIconChanger.swift in Sources */,
+				8930214E239D832D00FF192D /* ArticleListHeaderView.swift in Sources */,
 				89C509F01A2EB18300CBD000 /* FeedViewController.swift in Sources */,
 				454A2E732316DFC300022660 /* BreakoutToRefreshView.swift in Sources */,
 				89C830B819D7EC55009924DA /* FindFeedViewController.swift in Sources */,
@@ -2137,7 +2137,6 @@
 				8997C8531B2566A600972930 /* ArticleCellSpec.swift in Sources */,
 				89BF42582339B1D900C790A8 /* AppIconSelectionViewControllerSpec.swift in Sources */,
 				899823AC1B2C883B00818755 /* ArticleListControllerSpec.swift in Sources */,
-				89831FEC1DB5C5FC00E32412 /* ArticleListHeaderCellSpec.swift in Sources */,
 				894F8B41236B434E005AE5F0 /* FakeLevelGenerator.swift in Sources */,
 				890B78CA1C78E8650066E201 /* ArticleUseCaseSpec.swift in Sources */,
 				899823AE1B30B64000818755 /* ArticleViewControllerSpec.swift in Sources */,
@@ -2182,6 +2181,7 @@
 				89F98BAA1BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift in Sources */,
 				899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */,
 				89D0D9D1237922C300060E2C /* UINavigationControllerStubSpec.m in Sources */,
+				89302150239D833F00FF192D /* ArticleListHeaderViewSpec.swift in Sources */,
 				8997C8511B255A1900972930 /* TagPickerViewSpec.swift in Sources */,
 				89E9DF0D21D49CDB00326E2D /* OAuthLoginControllerSpec.swift in Sources */,
 				4515FDB5234C4A0D0032A165 /* Breakout3DSpec.swift in Sources */,

@@ -98,6 +98,103 @@ class ArticleListControllerSpec: QuickSpec {
             }
         }
 
+        describe("the table header") {
+            func resetSubject() {
+                subject = ArticleListController(
+                    feed: feed,
+                    mainQueue: mainQueue,
+                    messenger: messenger,
+                    feedCoordinator: feedCoordinator,
+                    articleCoordinator: articleCoordinator,
+                    notificationCenter: notificationCenter,
+                    articleCellController: articleCellController,
+                    articleViewController: { article in articleViewControllerFactory(article: article, articleUseCase: articleUseCase) }
+                )
+
+                navigationController = UINavigationController(rootViewController: subject)
+
+                subject.view.layoutIfNeeded()
+                notificationCenter.addObserver(recorder!, selector: #selector(NotificationRecorder.received(notification:)),
+                name: Notifications.reloadUI, object: subject)
+            }
+
+            func itShowsTheFeedHeader(_ line: UInt = #line) {
+                it("sets the tableView's headerview") {
+                    expect(subject.tableView.tableHeaderView, line: line).to(beAKindOf(ArticleListHeaderView.self))
+                }
+
+                describe("that view") {
+                    var headerView: ArticleListHeaderView?
+
+                    beforeEach {
+                        headerView = subject.tableView.tableHeaderView as? ArticleListHeaderView
+                        expect(headerView, line: line).toNot(beNil())
+                    }
+
+                    it("configures the image") {
+                        if let image = feed.image {
+                            expect(headerView?.iconView.image, line: line).to(be(image))
+                        } else {
+                            expect(headerView?.iconView.image, line: line).to(beNil())
+                        }
+                    }
+
+                    it("is configured for accessibility") {
+                        expect(headerView?.isAccessibilityElement, line: line).to(beTrue())
+                        expect(headerView?.accessibilityLabel, line: line).to(equal("Feed summary"))
+                        expect(headerView?.accessibilityValue, line: line).to(equal(feed.displaySummary))
+                        expect(headerView?.accessibilityTraits, line: line).to(equal([.staticText]))
+                    }
+
+                    it("is configured with the feed") {
+                        expect(headerView?.summary.text, line: line).to(equal(feed.displaySummary))
+                    }
+                }
+            }
+
+            context("if the feed has a summary and an image") {
+                beforeEach {
+                    feed.image = Image(named: "GrayIcon")
+                    feed.summary = "a summary"
+                    resetSubject()
+                }
+
+                itShowsTheFeedHeader()
+            }
+
+            context("if the feed only has a summary") {
+                beforeEach {
+                    feed.image = nil
+                    feed.summary = "a summary"
+                    resetSubject()
+                }
+
+                itShowsTheFeedHeader()
+            }
+
+            context("if the feed only has an image") {
+                beforeEach {
+                    feed.image = Image(named: "GrayIcon")
+                    feed.summary = ""
+                    resetSubject()
+                }
+
+                itShowsTheFeedHeader()
+            }
+
+            context("if the feed has neither summary nor image") {
+                beforeEach {
+                    feed.image = nil
+                    feed.summary = ""
+                    resetSubject()
+                }
+
+                it("does not show a feed header") {
+                    expect(subject.tableView.tableHeaderView).to(beNil())
+                }
+            }
+        }
+
         func itTellsTheUserAboutTheError(title: String, message: String, line: UInt = #line) {
             it("shows an alert") {
                 guard let error = messenger.errorCalls.last else {
@@ -218,10 +315,10 @@ class ArticleListControllerSpec: QuickSpec {
 
                                     let calls = articleCellController.configureCalls.suffix(3)
 
-                                    expect(calls.map { $0.article }).to(equal(updatedArticles))
+                                    expect(calls.map { $0.article }).to(contain(updatedArticles))
 
-                                    expect(subject.tableView.numberOfSections).to(equal(2))
-                                    expect(subject.tableView.numberOfRows(inSection: 1)).to(equal(3))
+                                    expect(subject.tableView.numberOfSections).to(equal(1))
+                                    expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(3))
                                 }
                             }
 
@@ -231,8 +328,8 @@ class ArticleListControllerSpec: QuickSpec {
                                 }
 
                                 it("doesn't remove the articles from the feed") {
-                                    expect(subject.tableView.numberOfSections).to(equal(2))
-                                    expect(subject.tableView.numberOfRows(inSection: 1)).to(equal(4))
+                                    expect(subject.tableView.numberOfSections).to(equal(1))
+                                    expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(4))
                                 }
 
                                 itTellsTheUserAboutTheError(title: "Unable to retrieve articles", message: "Unknown Error - please try again")
@@ -262,138 +359,25 @@ class ArticleListControllerSpec: QuickSpec {
             }
 
             describe("the table") {
-                it("has 2 sections") {
-                    expect(subject.tableView.numberOfSections).to(equal(2))
+                it("has 1 section") {
+                    expect(subject.tableView.numberOfSections).to(equal(1))
                 }
 
                 it("does not allow multiselection") {
                     expect(subject.tableView.allowsMultipleSelection).to(equal(false))
                 }
 
-                describe("the first section") {
-                    func itShowsTheFeedCell() {
-                        it("has 1 cell in the first section of the tableView") {
-                            expect(subject.tableView.numberOfRows(inSection: 0)) == 1
-                        }
-
-                        describe("that cell") {
-                            var cell: ArticleListHeaderCell?
-
-                            beforeEach {
-                                feed.summary = "summary"
-                                cell = subject.tableView.visibleCells.first as? ArticleListHeaderCell
-                                expect(cell).toNot(beNil())
-                            }
-
-                            it("configures the image") {
-                                if let image = feed.image {
-                                    expect(cell?.iconView.image) == image
-                                } else {
-                                    expect(cell?.iconView.image).to(beNil())
-                                }
-                            }
-
-                            it("is configured for accessibility") {
-                                expect(cell?.isAccessibilityElement).to(beTrue())
-                                expect(cell?.accessibilityLabel).to(equal("Feed summary"))
-                                expect(cell?.accessibilityValue).to(equal(feed.displaySummary))
-                                expect(cell?.accessibilityTraits).to(equal([.staticText]))
-                            }
-
-                            it("is configured with the feed") {
-                                expect(cell?.summary.text).to(equal(feed.displaySummary))
-                            }
-
-                            it("has no contextual actions") {
-                                expect(subject.tableView.delegate?.tableView?(subject.tableView, trailingSwipeActionsConfigurationForRowAt: IndexPath(row: 0, section: 0))).to(beNil())
-                            }
-
-                            it("has no menu") {
-                                expect(subject.tableView.delegate?.tableView?(subject.tableView, contextMenuConfigurationForRowAt: IndexPath(row: 0, section: 0), point: .zero)).to(beNil())
-                            }
-
-                            it("doesn't allow highlighting") {
-                                expect(subject.tableView.delegate?.tableView?(subject.tableView, shouldHighlightRowAt: IndexPath(row: 0, section: 0))).to(beFalse())
-                            }
-
-                            it("doesn't allow selection") {
-                                expect(subject.tableView.delegate?.tableView?(subject.tableView, willSelectRowAt: IndexPath(row: 0, section: 0))).to(beNil())
-                            }
-
-                            it("does nothing when tapped") {
-                                subject.tableView(subject.tableView, didSelectRowAt: IndexPath(row: 0, section: 0))
-                                expect(navigationController.topViewController).to(beIdenticalTo(subject))
-                            }
-                        }
-                    }
-
-                    context("if the feed has a summary and an image") {
-                        beforeEach {
-                            feed.image = Image(named: "GrayIcon")
-                            feed.summary = "a summary"
-                            subject.tableView.reloadData()
-                        }
-
-                        itShowsTheFeedCell()
-                    }
-
-                    context("if the feed only has a summary") {
-                        beforeEach {
-                            feed.image = nil
-                            feed.summary = "a summary"
-                            subject.tableView.reloadData()
-                        }
-
-                        itShowsTheFeedCell()
-                    }
-
-                    context("if the feed only has an image") {
-                        beforeEach {
-                            feed.image = Image(named: "GrayIcon")
-                            feed.summary = ""
-                            subject.tableView.reloadData()
-                        }
-                        itShowsTheFeedCell()
-                    }
-
-                    context("if the feed has neither summary nor image") {
-                        beforeEach {
-                            feed.image = nil
-                            feed.summary = ""
-                            subject.tableView.reloadData()
-                        }
-
-                        it("has 0 cells in the first section of the tableView") {
-                            expect(subject.tableView.numberOfRows(inSection: 0)) == 0
-                        }
-                    }
-                }
-
                 describe("the articles section") {
                     it("has a row for each article") {
-                        expect(subject.tableView.numberOfRows(inSection: 1)).to(equal(articles.count))
+                        expect(subject.tableView.numberOfRows(inSection: 0)).to(equal(articles.count))
                     }
 
                     describe("the cells") {
-                        let section = 1
+                        let section = 0
                         it("are editable") {
                             for row in 0..<subject.tableView.numberOfRows(inSection: section) {
                                 let indexPath = IndexPath(row: row, section: section)
                                 expect(subject.tableView(subject.tableView, canEditRowAt: indexPath)).to(beTrue())
-                            }
-                        }
-
-                        it("allow highlighting") {
-                            for row in 0..<subject.tableView.numberOfRows(inSection: section) {
-                                let indexPath = IndexPath(row: row, section: section)
-                                expect(subject.tableView.delegate?.tableView?(subject.tableView, shouldHighlightRowAt: indexPath)).to(beTrue())
-                            }
-                        }
-
-                        it("allow selection") {
-                            for row in 0..<subject.tableView.numberOfRows(inSection: section) {
-                                let indexPath = IndexPath(row: row, section: section)
-                                expect(subject.tableView.delegate?.tableView?(subject.tableView, willSelectRowAt: indexPath)).to(equal(indexPath))
                             }
                         }
 
@@ -415,7 +399,7 @@ class ArticleListControllerSpec: QuickSpec {
                             }
                             describe("the first action") {
                                 var action: UIContextualAction? = nil
-                                let indexPath = IndexPath(row: 0, section: 1)
+                                let indexPath = IndexPath(row: 0, section: section)
 
                                 beforeEach {
                                     guard subject.tableView.numberOfRows(inSection: indexPath.section) > indexPath.row else {
@@ -426,7 +410,7 @@ class ArticleListControllerSpec: QuickSpec {
                                 }
 
                                 it("states that it deletes the article") {
-                                    expect(action?.title) == "Delete"
+                                    expect(action?.title).to(equal("Delete"))
                                 }
 
                                 describe("tapping it") {
@@ -435,7 +419,7 @@ class ArticleListControllerSpec: QuickSpec {
                                     }
 
                                     it("deletes the article") {
-                                        expect(articleCoordinator.removeArticleCalls.last) == articles.first
+                                        expect(articleCoordinator.removeArticleCalls.last).to(equal(articles.first))
                                     }
 
                                     xit("shows a spinner while we wait to delete the article") {
@@ -473,7 +457,7 @@ class ArticleListControllerSpec: QuickSpec {
                             describe("the second action") {
                                 describe("for an unread article") {
                                     beforeEach {
-                                        let indexPath = IndexPath(row: 0, section: 1)
+                                        let indexPath = IndexPath(row: 0, section: section)
                                         guard subject.tableView.numberOfRows(inSection: indexPath.section) > indexPath.row else {
                                             fail("No row for \(indexPath)")
                                             return
@@ -489,8 +473,8 @@ class ArticleListControllerSpec: QuickSpec {
                                             fail("Didn't call ArticleService to mark article as read")
                                             return
                                         }
-                                        expect(call.article) == articles.first
-                                        expect(call.read) == true
+                                        expect(call.article).to(equal(articles.first))
+                                        expect(call.read).to(beTrue())
                                     }
 
                                     context("marks the article as read updates with success") {
@@ -592,7 +576,7 @@ class ArticleListControllerSpec: QuickSpec {
 
                                 describe("for a read article") {
                                     beforeEach {
-                                        let indexPath = IndexPath(row: 2, section: 1)
+                                        let indexPath = IndexPath(row: 2, section: section)
                                         guard subject.tableView.numberOfRows(inSection: indexPath.section) > indexPath.row else {
                                             fail("No row for \(indexPath)")
                                             return
@@ -608,8 +592,8 @@ class ArticleListControllerSpec: QuickSpec {
                                             fail("Didn't call ArticleService to mark article as read")
                                             return
                                         }
-                                        expect(call.article) == articles[2]
-                                        expect(call.read) == false
+                                        expect(call.article).to(equal(articles[2]))
+                                        expect(call.read).to(beFalse())
                                     }
 
                                     context("when the articleService successfully marks the article as read") {
@@ -713,7 +697,7 @@ class ArticleListControllerSpec: QuickSpec {
 
                         describe("long/force pressing on a cell") {
                             var menuConfiguration: UIContextMenuConfiguration?
-                            let indexPath = IndexPath(row: 0, section: 1)
+                            let indexPath = IndexPath(row: 0, section: section)
 
                             beforeEach {
                                 menuConfiguration = subject.tableView.delegate?.tableView?(subject.tableView, contextMenuConfigurationForRowAt: indexPath, point: .zero)
@@ -944,7 +928,7 @@ class ArticleListControllerSpec: QuickSpec {
 
                         describe("when tapped") {
                             beforeEach {
-                                let indexPath = IndexPath(row: 0, section: 1)
+                                let indexPath = IndexPath(row: 0, section: section)
                                 guard subject.tableView.numberOfRows(inSection: indexPath.section) > indexPath.row else {
                                     fail("No row for \(indexPath)")
                                     return

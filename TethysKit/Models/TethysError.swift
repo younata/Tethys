@@ -90,11 +90,11 @@ public enum TethysError: Error, Equatable {
     public var localizedDescription: String {
         switch self {
         case let .network(url, error):
-            return String.localizedStringWithFormat("Error_Standard_Network",
+            return String.localizedStringWithFormat(NSLocalizedString("Error_Standard_Network", comment: ""),
                                                     url.absoluteString,
                                                     error.localizedDescription)
         case let .http(status):
-            return String.localizedStringWithFormat("Error_Standard_HTTP", status)
+            return String.localizedStringWithFormat(NSLocalizedString("Error_Standard_HTTP", comment: ""), status)
         case let .feed(error):
             return error.localizedDescription
         case let .multiple(errors):

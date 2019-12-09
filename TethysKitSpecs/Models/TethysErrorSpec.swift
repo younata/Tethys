@@ -87,6 +87,37 @@ class TethysErrorSpec: QuickSpec {
                     expect(c) != d
                 }
             }
+
+            describe("localizedDescription") {
+                it("network") {
+                    let error = TethysError.network(
+                        URL(string: "https://example.com/foo")!,
+                        NetworkError.dns
+                    )
+
+                    expect(error.localizedDescription).to(equal("Unable to load https://example.com/foo - DNS Error"))
+                }
+
+                it("http") {
+                    let error = TethysError.http(404)
+                    expect(error.localizedDescription).to(equal("Error loading resource, received 404"))
+                }
+
+                it("database") {
+                    let error = TethysError.database(.entryNotFound)
+                    expect(error.localizedDescription).to(equal("Entry not found"))
+                }
+
+                it("notSupported") {
+                    let error = TethysError.notSupported
+                    expect(error.localizedDescription).to(equal("Not supported by backend"))
+                }
+
+                it("unknown") {
+                    let error = TethysError.unknown
+                    expect(error.localizedDescription).to(equal("Unknown Error - please try again"))
+                }
+            }
         }
     }
 }

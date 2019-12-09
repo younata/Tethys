@@ -325,6 +325,8 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
         light.color = UIColor.white
         light.intensity = 2000
         light.castsShadow = true
+        light.maximumShadowDistance = 1000
+        light.zFar = 1000
         node.light = light
 
         return node
@@ -430,7 +432,7 @@ final class Breakout3D: NSObject, SCNPhysicsContactDelegate {
 
     private func wallNode(width: CGFloat, height: CGFloat) -> SCNNode {
         let node = SCNNode()
-        node.geometry = SCNPlane(width: self.width, height: self.height)
+        node.geometry = SCNPlane(width: width, height: height)
 
         node.geometry?.firstMaterial?.diffuse.contents = UIColor(white: 0.1, alpha: 1.0)
         node.geometry?.firstMaterial?.isDoubleSided = true

@@ -9,9 +9,10 @@ struct InoreaderArticleService: ArticleService {
     func mark(article: Article, asRead read: Bool) -> Future<Result<Article, TethysError>> {
         var urlComponents = URLComponents(url: self.baseURL.appendingPathComponent("reader/api/0/edit-tag"),
                                           resolvingAgainstBaseURL: false)!
+        let identifier = article.identifier.components(separatedBy: "/").last ?? article.identifier
         urlComponents.queryItems = [
-            URLQueryItem(name: read ? "a" : "r", value: "user/state/com.google/read"),
-            URLQueryItem(name: "i", value: article.identifier)
+            URLQueryItem(name: read ? "a" : "r", value: "user/-/state/com.google/read"),
+            URLQueryItem(name: "i", value: identifier)
         ]
         let request = URLRequest(url: urlComponents.url!, headers: [:], method: .post(Data()))
         return self.httpClient.request(request).map { requestResult -> Result<Article, NetworkError> in

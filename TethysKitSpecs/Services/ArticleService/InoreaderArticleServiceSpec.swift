@@ -29,7 +29,7 @@ final class InoreaderArticleServiceSpec: QuickSpec {
             }
 
             context("with asRead being true") {
-                let url = URL(string: "https://example.com/reader/api/0/edit-tag?a=user/state/com.google/read&i=some_id")!
+                let url = URL(string: "https://example.com/reader/api/0/edit-tag?a=user/-/state/com.google/read&i=some_id")!
                 beforeEach {
                     future = subject.mark(article: article, asRead: true)
                 }
@@ -63,7 +63,7 @@ final class InoreaderArticleServiceSpec: QuickSpec {
             }
 
             context("with asRead being false") {
-                let url = URL(string: "https://example.com/reader/api/0/edit-tag?r=user/state/com.google/read&i=some_id")!
+                let url = URL(string: "https://example.com/reader/api/0/edit-tag?r=user/-/state/com.google/read&i=some_id")!
 
                 beforeEach {
                     future = subject.mark(article: article, asRead: false)

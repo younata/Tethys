@@ -8,6 +8,7 @@ class ArticleListHeaderViewSpec: QuickSpec {
 
         beforeEach {
             subject = ArticleListHeaderView()
+            subject.translatesAutoresizingMaskIntoConstraints = false
         }
 
         describe("theming") {

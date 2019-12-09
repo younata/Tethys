@@ -377,7 +377,7 @@ class ArticleListControllerSpec: QuickSpec {
                         it("are editable") {
                             for row in 0..<subject.tableView.numberOfRows(inSection: section) {
                                 let indexPath = IndexPath(row: row, section: section)
-                                expect(subject.tableView(subject.tableView, canEditRowAt: indexPath)).to(beTrue())
+                                expect(subject.tableView.dataSource?.tableView?(subject.tableView, canEditRowAt: indexPath)).to(beTrue())
                             }
                         }
 

@@ -13,10 +13,6 @@ public struct Article: CustomStringConvertible, Hashable {
     internal var updated: Date?
 
     public func hash(into hasher: inout Hasher) {
-        if let id = self.articleID as? String {
-            hasher.combine(id)
-            return
-        }
         hasher.combine(self.authors)
         hasher.combine(self.title)
         hasher.combine(self.summary)
@@ -71,9 +67,6 @@ public struct Article: CustomStringConvertible, Hashable {
 }
 
 public func == (lhs: Article, rhs: Article) -> Bool {
-    if let aID = lhs.articleID as? String, let bID = rhs.articleID as? String {
-        return aID == bID
-    }
     return lhs.title == rhs.title && lhs.link == rhs.link && lhs.summary == rhs.summary && lhs.authors == rhs.authors &&
         lhs.identifier == rhs.identifier && lhs.content == rhs.content && lhs.read == rhs.read &&
         lhs.published == rhs.published && lhs.updated == rhs.updated

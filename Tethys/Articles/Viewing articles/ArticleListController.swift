@@ -2,7 +2,7 @@ import UIKit
 import TethysKit
 import CBGPromise
 
-public final class ArticleListController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+public final class ArticleListController: UIViewController, UITableViewDelegate {
     private enum ArticleSection: Int {
         case articles = 0
     }
@@ -28,6 +28,13 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         button.isAccessibilityElement = true
         button.accessibilityTraits = [.button]
         return button
+    }()
+
+    private lazy var dataSource: UITableViewDiffableDataSource<ArticleSection, Article> = {
+        return DiffableDataSource<ArticleSection, Article>(
+            tableView: self.tableView,
+            cellProvider: self.cell(tableView:at:with:)
+        )
     }()
 
     private let tableHeaderView = ArticleListHeaderView(frame: CGRect(x: 0, y: 0, width: 320, height: 10))
@@ -69,7 +76,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         super.viewDidLoad()
 
         self.tableView.delegate = self
-        self.tableView.dataSource = self
+        self.tableView.dataSource = self.dataSource
         self.tableView.estimatedRowHeight = 40
         self.tableView.keyboardDismissMode = .onDrag
         self.tableView.register(ArticleCell.self, forCellReuseIdentifier: "read")
@@ -101,12 +108,11 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         self.tableView.separatorColor = Theme.separatorColor
     }
 
-    public override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
 
-        self.tableHeaderView.frame.size.height = self.tableHeaderView.systemLayoutSizeFitting(
-            UIView.layoutFittingCompressedSize
-        ).height
+        let size = CGSize(width: self.tableView.bounds.width, height: UIView.layoutFittingCompressedSize.height)
+        self.tableHeaderView.frame.size.height = self.tableHeaderView.systemLayoutSizeFitting(size).height
     }
 
     private func articleForIndexPath(_ indexPath: IndexPath) -> Article {
@@ -171,46 +177,39 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
     }
 
     private func update(article: Article, to updatedArticle: Article) {
-        guard let collectionIndex = self.articles.firstIndex(of: article) else { return }
-        let index = self.articles.distance(from: self.articles.startIndex, to: collectionIndex)
         self.articles = AnyCollection(self.articles.map({
             if $0 == article {
                 return updatedArticle
             }
             return $0
         }))
-        let indexPath = IndexPath(row: index, section: ArticleSection.articles.rawValue)
-        self.tableView.reloadRows(at: [indexPath], with: .automatic)
+        self.reloadTableview()
     }
 
-    // MARK: - Table view data source
-
-    public func numberOfSections(in tableView: UITableView) -> Int { return 1 }
-
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.articles.underestimatedCount
+    private func reloadTableview(animate: Bool = true) {
+        var snapshot = NSDiffableDataSourceSnapshot<ArticleSection, Article>()
+        snapshot.appendSections([.articles])
+        snapshot.appendItems(Array(self.articles))
+        self.dataSource.apply(snapshot, animatingDifferences: animate)
     }
 
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let article = self.articleForIndexPath(indexPath)
-        let cellTypeToUse = (article.read ? "read" : "unread")
+    private func cell(tableView: UITableView, at indexPath: IndexPath, with article: Article) -> UITableViewCell? {
+        let cellType = (article.read ? "read" : "unread")
         // Prevents a green triangle which'll (dis)appear depending
         // on whether article loaded into it is read or not.
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellTypeToUse,
-                                                 for: indexPath) as! ArticleCell
-
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellType, for: indexPath) as? ArticleCell else {
+            return nil
+        }
         self.articleCellController.configure(cell: cell, with: article)
-
         return cell
     }
 
+    // MARK: - Table view delegate
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let article = self.articleForIndexPath(indexPath)
         tableView.deselectRow(at: indexPath, animated: false)
         _ = self.showArticle(article)
     }
-
-    public func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool { return true }
 
     public func tableView(_ tableView: UITableView,
                           commit editingStyle: UITableViewCell.EditingStyle,
@@ -222,11 +221,7 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
         let deleteTitle = NSLocalizedString("Generic_Delete", comment: "")
         let delete = UIContextualAction(style: .destructive, title: deleteTitle) { _, _, handler in
             _ = self.attemptDelete(article: article).then { success in
-                if success {
-                    tableView.deleteRows(at: [indexPath], with: .automatic)
-                } else {
-                    tableView.reloadRows(at: [indexPath], with: .right)
-                }
+                self.reloadTableview()
                 handler(success)
             }
 
@@ -295,13 +290,8 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
                 switch result {
                 case .update(.success(let articles)):
                     self?.articles = articles
-                    self?.tableView.beginUpdates()
-                    self?.tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
-                    self?.tableView.endUpdates()
+                    self?.reloadTableview()
                 case .update(.failure(let error)):
-                    self?.tableView.beginUpdates()
-                    self?.tableView.reloadSections(IndexSet(integer: 0), with: .automatic)
-                    self?.tableView.endUpdates()
                     self?.showAlert(
                         error: error,
                         title: NSLocalizedString("ArticleListController_Retrieving_Error_Title", comment: "")
@@ -361,5 +351,5 @@ public final class ArticleListController: UIViewController, UITableViewDelegate,
 }
 
 extension ArticleListController: SettingsRepositorySubscriber {
-    public func didChangeSetting(_: SettingsRepository) { self.tableView.reloadData() }
+    public func didChangeSetting(_: SettingsRepository) { self.reloadTableview() }
 }

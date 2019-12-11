@@ -25,8 +25,40 @@ struct InoreaderFeedService: FeedService {
             }
         }.map { feedResult -> Future<Result<[Feed], TethysError>> in
             return feedResult.mapError { return TethysError.network(url, $0) }.mapFuture(self.retrieveFeedDetails)
+        }.map { feedResult -> Future<Result<[Feed], TethysError>> in
+            return feedResult.mapFuture { feeds in
+                return self.requestUnreadCounts().map { unreadCountsResult -> Result<[Feed], TethysError> in
+                    return unreadCountsResult.map { unreadCounts in
+                        feeds.forEach { feed in
+                            feed.unreadCount = unreadCounts[feed.identifier] ?? 0
+                        }
+                        return feeds
+                    }
+                }
+            }
         }.map { parseResult -> Result<AnyCollection<Feed>, TethysError> in
             return parseResult.map { AnyCollection($0) }
+        }
+    }
+
+    private func requestUnreadCounts() -> Future<Result<[String: Int], TethysError>> {
+        let url = self.baseURL.appendingPathComponent("reader/api/0/unread-count", isDirectory: false)
+        let request = URLRequest(url: url)
+        return self.httpClient.request(request).map { requestResult -> Result<[String: Int], NetworkError> in
+            switch requestResult {
+            case .success(let response):
+                return self.parse(response: response).map { (parsed: InoreaderUnreadCounts) -> [String: Int] in
+                    return parsed.unreadcounts.reduce(
+                        into: [String: Int]()
+                    ) { (result: inout [String: Int], unreadCount: InoreaderUnreadCount) in
+                        result[unreadCount.id] = unreadCount.count
+                    }
+                }
+            case .failure(let clientError):
+                return .failure(NetworkError(httpClientError: clientError))
+            }
+        }.map {
+            return $0.mapError { return TethysError.network(url, $0) }
         }
     }
 
@@ -342,4 +374,15 @@ private struct InoreaderTag: Codable {
     var isRead: Bool {
         return self.state == "com.google/read"
     }
+}
+
+private struct InoreaderUnreadCounts: Codable {
+    let max: String
+    let unreadcounts: [InoreaderUnreadCount]
+}
+
+private struct InoreaderUnreadCount: Codable {
+    let id: String
+    let count: Int
+    let newestItemTimestampUsec: String
 }

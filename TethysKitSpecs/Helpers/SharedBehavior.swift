@@ -126,7 +126,7 @@ func itBehavesLikeTheRequestFailed<T>(url: URL, shouldParseData: Bool = true, fi
             it("resolves the future with the error") {
                 expect(future().value, file: file, line: line).toNot(beNil(), description: "Expected future to be resolved")
                 expect(future().value?.error, file: file, line: line).to(equal(
-                    TethysError.network(url, .http(.forbidden))
+                    TethysError.network(url, .http(.forbidden, "403".data(using: .utf8)!))
                 ))
             }
         }
@@ -148,7 +148,7 @@ func itBehavesLikeTheRequestFailed<T>(url: URL, shouldParseData: Bool = true, fi
             it("resolves the future with the error") {
                 expect(future().value, file: file, line: line).toNot(beNil(), description: "Expected future to be resolved")
                 expect(future().value?.error, file: file, line: line).to(equal(
-                    TethysError.network(url, .http(.badGateway))
+                    TethysError.network(url, .http(.badGateway, "502".data(using: .utf8)!))
                 ))
             }
         }

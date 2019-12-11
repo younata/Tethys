@@ -7,28 +7,28 @@ class TethysErrorSpec: QuickSpec {
         describe("NetworkError") {
             describe("equality") {
                 it("reports two InternetDown errors as equal") {
-                    expect(NetworkError.internetDown) == NetworkError.internetDown
+                    expect(NetworkError.internetDown).to(equal(NetworkError.internetDown))
                 }
 
                 it("reports two DNS errors as equal") {
-                    expect(NetworkError.dns) == NetworkError.dns
+                    expect(NetworkError.dns).to(equal(NetworkError.dns))
                 }
 
                 it("reports two ServerNotFound errors as equal") {
-                    expect(NetworkError.serverNotFound) == NetworkError.serverNotFound
+                    expect(NetworkError.serverNotFound).to(equal(NetworkError.serverNotFound))
                 }
 
                 it("reports two HTTPErrors of the same kind as equal") {
-                    let a = NetworkError.http(.badRequest)
-                    let b = NetworkError.http(.badRequest)
-                    let c = NetworkError.http(.internalServerError)
+                    let a = NetworkError.http(.badRequest, Data())
+                    let b = NetworkError.http(.badRequest, Data())
+                    let c = NetworkError.http(.internalServerError, Data())
 
-                    expect(a) == b
-                    expect(a) != c
+                    expect(a).to(equal(b))
+                    expect(a).toNot(equal(c))
                 }
 
                 it("reports two Unknown errors as equal") {
-                    expect(NetworkError.unknown) == NetworkError.unknown
+                    expect(NetworkError.unknown).to(equal(NetworkError.unknown))
                 }
             }
         }
@@ -41,9 +41,9 @@ class TethysErrorSpec: QuickSpec {
                     let c = TethysError.network(URL(string: "https://example.org")!, .internetDown)
                     let d = TethysError.network(URL(string: "https://example.com")!, .dns)
 
-                    expect(a) == b
-                    expect(a) != c
-                    expect(a) != d
+                    expect(a).to(equal(b))
+                    expect(a).toNot(equal(c))
+                    expect(a).toNot(equal(d))
                 }
 
                 it("reports two HTTP errors of the same kind as equal") {
@@ -51,8 +51,8 @@ class TethysErrorSpec: QuickSpec {
                     let b = TethysError.http(404)
                     let c = TethysError.http(500)
 
-                    expect(a) == b
-                    expect(a) != c
+                    expect(a).to(equal(b))
+                    expect(a).toNot(equal(c))
                 }
 
                 it("reports two Database errors of the same kind as equal") {
@@ -60,15 +60,15 @@ class TethysErrorSpec: QuickSpec {
                     let b = TethysError.database(.notFound)
                     let c = TethysError.database(.unknown)
 
-                    expect(a) == b
-                    expect(a) != c
+                    expect(a).to(equal(b))
+                    expect(a).toNot(equal(c))
                 }
 
                 it("reports two Unknown errors as equal") {
                     let a = TethysError.unknown
                     let b = TethysError.unknown
 
-                    expect(a) == b
+                    expect(a).to(equal(b))
                 }
 
                 it("reports two disperate errors as unequal") {
@@ -77,14 +77,14 @@ class TethysErrorSpec: QuickSpec {
                     let c = TethysError.database(.unknown)
                     let d = TethysError.unknown
 
-                    expect(a) != b
-                    expect(a) != c
-                    expect(a) != d
+                    expect(a).toNot(equal(b))
+                    expect(a).toNot(equal(c))
+                    expect(a).toNot(equal(d))
 
-                    expect(b) != c
-                    expect(b) != d
+                    expect(b).toNot(equal(c))
+                    expect(b).toNot(equal(d))
 
-                    expect(c) != d
+                    expect(c).toNot(equal(d))
                 }
             }
 

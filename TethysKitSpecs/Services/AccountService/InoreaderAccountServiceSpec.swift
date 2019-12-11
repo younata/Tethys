@@ -172,7 +172,7 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                         expect(errors).to(contain(
                             TethysError.network(
                                 URL(string: "https://www.inoreader.com/reader/api/0/user-info")!,
-                                .http(.unauthorized)
+                                .http(.unauthorized, "Bad Credentials".data(using: .utf8)!)
                             ),
                             TethysError.network(
                                 URL(string: "https://www.inoreader.com/reader/api/0/user-info")!,
@@ -331,7 +331,7 @@ final class InoreaderAccountServiceSpec: QuickSpec {
                     it("resolves the future with an error") {
                         expect(future).to(beResolved())
                         expect(future.value?.error).to(equal(TethysError.network(
-                            URL(string: "https://www.inoreader.com/reader/api/0/user-info")!, .http(.unauthorized))
+                            URL(string: "https://www.inoreader.com/reader/api/0/user-info")!, .http(.unauthorized, "Bad Credentials".data(using: .utf8)!))
                         ))
                     }
                 }

@@ -126,72 +126,136 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                     )))
                 }
 
-                it("returns a list of feeds") {
-                    expect(future.value).toNot(beNil())
-                    expect(future.value?.error).to(beNil())
-                    guard let value = future.value?.value else {
-                        fail("Expected future to have resolved successfully, didn't.")
-                        return
-                    }
-                    let received = Array(value)
-                    let expected = [
-                        Feed(title: "Feed 1 - Title",
-                             url: URL(string: "http://www.example.com/feed1/")!,
-                             summary: "",
-                             tags: ["Animation"],
-                             unreadCount: 0,
-                             image: nil,
-                             identifier: "feed/http://www.example.com/feed1/",
-                             settings: nil
-                        ),
-                        Feed(title: "Example 1 - Title",
-                             url: URL(string: "http://example1.net/blog/feed/")!,
-                             summary: "",
-                             tags: ["MUST READ"],
-                             unreadCount: 0,
-                             image: nil,
-                             identifier: "feed/http://example1.net/blog/feed/",
-                             settings: nil
-                        ),
-                        Feed(title: "Example2 - Title",
-                             url: URL(string: "http://example.com/2/feed")!,
-                             summary: "",
-                             tags: ["Example2"],
-                             unreadCount: 0,
-                             image: nil,
-                             identifier: "feed/http://example.com/2/feed",
-                             settings: nil
-                        ),
-                        Feed(title: "Example 3 - Title",
-                             url: URL(string: "http://example.com/3/feed")!,
-                             summary: "",
-                             tags: ["Example3"],
-                             unreadCount: 0,
-                             image: nil,
-                             identifier: "feed/http://example.com/3/feed",
-                             settings: nil
-                        ),
-                        Feed(title: "example 4 - Title",
-                             url: URL(string: "http://example.com/4/feed/")!,
-                             summary: "",
-                             tags: ["Databases", "MUST READ"],
-                             unreadCount: 0,
-                             image: nil,
-                             identifier: "feed/http://example.com/4/feed/",
-                             settings: nil
-                        ),
-                        Feed(title: "Example 5 - Title",
-                             url: URL(string: "http://example.com/5/feed")!,
-                             summary: "",
-                             tags: ["MUST READ", "Animation"],
-                             unreadCount: 0,
-                             image: nil,
-                             identifier: "feed/http://example.com/5/feed",
-                             settings: nil
-                        )
-                    ]
-                    expect(received).to(equal(expected))
+                it("doesn't resolve the future yet") {
+                    expect(future).toNot(beResolved())
                 }
+
+                it("makes a request for the unread counts") {
+                    let unreadCountsURL = URL(string: "https://example.com/reader/api/0/unread-count")!
+                    expect(httpClient.requests).to(haveCount(2))
+                    expect(httpClient.requests.last?.url).to(equal(
+                        unreadCountsURL
+                    ))
+                    expect(httpClient.requests.last?.httpMethod).to(equal("GET"))
+                }
+
+                describe("when the request succeeds with valid data") {
+                    let unreadCountData: [String: Any] = [
+                        "max": "1000",
+                        "unreadcounts": [
+                            [
+                                "id": "user/1005921515/state/com.google/reading-list",
+                                "count": 4,
+                                "newestItemTimestampUsec": "1415620910006331"
+                            ], [
+                                "id": "feed/http://www.example.com/feed1/",
+                                "count": 5,
+                                "newestItemTimestampUsec": "1415620910006331"
+                            ], [
+                                "id": "feed/http://www.example.com/feed2/",
+                                "count": 1,
+                                "newestItemTimestampUsec": "1415620910006331"
+                            ], [
+                                "id": "feed/http://www.example.com/feed3/",
+                                "count": 4,
+                                "newestItemTimestampUsec": "1415620910006331"
+                            ], [
+                                "id": "feed/http://www.example.com/feed4/",
+                                "count": 2,
+                                "newestItemTimestampUsec": "1415620910006331"
+                            ], [
+                                "id": "feed/http://www.example.com/feed5/",
+                                "count": 8,
+                                "newestItemTimestampUsec": "1415620910006331"
+                            ], [
+                                "id": "unknown",
+                                "count": 7,
+                                "newestItemTimestampUsec": "1415620910006331"
+                            ]
+                        ]
+                    ]
+
+                    beforeEach {
+                        guard httpClient.requestPromises.last?.future.value == nil else {
+                            return
+                        }
+                        httpClient.requestPromises.last?.resolve(.success(HTTPResponse(
+                            body: try! JSONSerialization.data(withJSONObject: unreadCountData, options: []),
+                            status: .ok,
+                            mimeType: "Application/JSON",
+                            headers: [:]
+                        )))
+                    }
+
+                    it("returns a list of feeds") {
+                        expect(future.value).toNot(beNil())
+                        expect(future.value?.error).to(beNil())
+                        guard let value = future.value?.value else {
+                            fail("Expected future to have resolved successfully, didn't.")
+                            return
+                        }
+                        let received = Array(value)
+                        let expected = [
+                            Feed(title: "Feed 1 - Title",
+                                 url: URL(string: "http://www.example.com/feed1/")!,
+                                 summary: "",
+                                 tags: ["Animation"],
+                                 unreadCount: 5,
+                                 image: nil,
+                                 identifier: "feed/http://www.example.com/feed1/",
+                                 settings: nil
+                            ),
+                            Feed(title: "Example 1 - Title",
+                                 url: URL(string: "http://example1.net/blog/feed/")!,
+                                 summary: "",
+                                 tags: ["MUST READ"],
+                                 unreadCount: 0,
+                                 image: nil,
+                                 identifier: "feed/http://example1.net/blog/feed/",
+                                 settings: nil
+                            ),
+                            Feed(title: "Example2 - Title",
+                                 url: URL(string: "http://example.com/2/feed")!,
+                                 summary: "",
+                                 tags: ["Example2"],
+                                 unreadCount: 1,
+                                 image: nil,
+                                 identifier: "feed/http://example.com/2/feed",
+                                 settings: nil
+                            ),
+                            Feed(title: "Example 3 - Title",
+                                 url: URL(string: "http://example.com/3/feed")!,
+                                 summary: "",
+                                 tags: ["Example3"],
+                                 unreadCount: 4,
+                                 image: nil,
+                                 identifier: "feed/http://example.com/3/feed",
+                                 settings: nil
+                            ),
+                            Feed(title: "example 4 - Title",
+                                 url: URL(string: "http://example.com/4/feed/")!,
+                                 summary: "",
+                                 tags: ["Databases", "MUST READ"],
+                                 unreadCount: 2,
+                                 image: nil,
+                                 identifier: "feed/http://example.com/4/feed/",
+                                 settings: nil
+                            ),
+                            Feed(title: "Example 5 - Title",
+                                 url: URL(string: "http://example.com/5/feed")!,
+                                 summary: "",
+                                 tags: ["MUST READ", "Animation"],
+                                 unreadCount: 8,
+                                 image: nil,
+                                 identifier: "feed/http://example.com/5/feed",
+                                 settings: nil
+                            )
+                        ]
+                        expect(received).to(equal(expected))
+                    }
+                }
+
+                itBehavesLikeTheRequestFailed(url: URL(string: "https://example.com/reader/api/0/unread-count")!, httpClient: { httpClient }, future: { future })
             }
 
             itBehavesLikeTheRequestFailed(url: url, httpClient: { httpClient }, future: { future })

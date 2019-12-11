@@ -37,6 +37,6 @@ extension HTTPResponse {
         guard let httpError = TethysKit.HTTPError(rawValue: status.rawValue) else {
             return nil
         }
-        return .http(httpError)
+        return .http(httpError, self.body)
     }
 }

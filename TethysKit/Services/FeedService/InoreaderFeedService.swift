@@ -182,7 +182,7 @@ struct InoreaderFeedService: FeedService {
                     guard let receivedStatus = response.status, let status = HTTPError(status: receivedStatus) else {
                         return .failure(.unknown)
                     }
-                    return .failure(.http(status))
+                    return .failure(.http(status, response.body))
                 }
                 return .success(Void())
             case .failure(let error):
@@ -209,7 +209,7 @@ struct InoreaderFeedService: FeedService {
                     guard let receivedStatus = response.status, let status = HTTPError(status: receivedStatus) else {
                         return .failure(.unknown)
                     }
-                    return .failure(.http(status))
+                    return .failure(.http(status, response.body))
                 }
                 return .success(Void())
             case .failure(let error):
@@ -227,7 +227,7 @@ struct InoreaderFeedService: FeedService {
             guard let receivedStatus = response.status, let status = HTTPError(status: receivedStatus) else {
                 return .failure(.unknown)
             }
-            return .failure(.http(status))
+            return .failure(.http(status, response.body))
         }
 
         let decoder = JSONDecoder()

@@ -22,7 +22,7 @@ struct InoreaderArticleService: ArticleService {
                     guard let receivedStatus = response.status, let status = HTTPError(status: receivedStatus) else {
                         return .failure(.unknown)
                     }
-                    return .failure(.http(status))
+                    return .failure(.http(status, response.body))
                 }
                 var writeableArticle = article
                 writeableArticle.read = read

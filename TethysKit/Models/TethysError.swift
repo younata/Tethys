@@ -5,7 +5,7 @@ public enum NetworkError: Error, Equatable {
     case badResponse
     case cancelled
     case dns
-    case http(HTTPError)
+    case http(HTTPError, Data)
     case internetDown
     case serverNotFound
     case timedOut
@@ -19,8 +19,9 @@ public enum NetworkError: Error, Equatable {
             return NSLocalizedString("Error_Network_Cancelled", comment: "")
         case .dns:
             return NSLocalizedString("Error_Network_DNS", comment: "")
-        case let .http(status):
-            return status.description
+        case .http(let status, let body):
+            let bodyString = String(data: body, encoding: .utf8) ?? ""
+            return "Status: \(status), Body: '\(bodyString)'"
         case .internetDown:
             return NSLocalizedString("Error_Network_InternetDown", comment: "")
         case .serverNotFound:

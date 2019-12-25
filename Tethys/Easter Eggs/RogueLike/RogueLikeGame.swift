@@ -37,8 +37,7 @@ final class RogueLikeGame: NSObject {
     }
 
     func levelScene(bounds: CGRect, safeArea: UIEdgeInsets) -> SKScene {
-        let scene = SKScene(size: bounds.size)
-        scene.physicsWorld.gravity = .zero
+        let scene = self.generateScene(bounds: bounds)
 
         let level = self.levelGenerator.generate(level: 1, bounds: bounds.inset(by: safeArea))
         scene.addChild(level.node)
@@ -55,6 +54,23 @@ final class RogueLikeGame: NSObject {
         )
         guard direction != .zero else { return }
         self.player.zRotation = atan2(-direction.dy, direction.dx) - (.pi / 2)
+    }
+
+    func panCamera(in direction: CGVector) {
+        guard let camera = self.view.scene?.camera else { return }
+        camera.position += direction
+    }
+
+    private func generateScene(bounds: CGRect) -> SKScene {
+        let scene = SKScene(size: bounds.size)
+        scene.physicsWorld.gravity = .zero
+
+        let cameraNode = SKCameraNode()
+        cameraNode.position = CGPoint(x: bounds.size.width / 2,
+                                      y: bounds.size.height / 2)
+        scene.addChild(cameraNode)
+        scene.camera = cameraNode
+        return scene
     }
 }
 

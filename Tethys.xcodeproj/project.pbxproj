@@ -98,6 +98,8 @@
 		8937F6BE1B7996F50044A442 /* prism.js.html in Resources */ = {isa = PBXBuildFile; fileRef = 8937F6BD1B7996F50044A442 /* prism.js.html */; };
 		8937F6C01B79D0800044A442 /* KitModuleSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8937F6BF1B79D0800044A442 /* KitModuleSpec.swift */; };
 		893F93E41B237EBC00B52194 /* UnreadCounterSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893F93E31B237EBC00B52194 /* UnreadCounterSpec.swift */; };
+		893FF1C323B3167E008DC9B4 /* GestureRecognizerHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893FF1C223B3167E008DC9B4 /* GestureRecognizerHelpers.swift */; };
+		893FF1C723B3205B008DC9B4 /* CoreGraphicsLinearAlgebra.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893FF1C623B3205B008DC9B4 /* CoreGraphicsLinearAlgebra.swift */; };
 		8941AB7B1DC9207200A2CE5F /* HTMLViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8941AB7A1DC9207200A2CE5F /* HTMLViewController.swift */; };
 		8941AB7D1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8941AB7C1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift */; };
 		8941AB801DC9AEE400A2CE5F /* DocumentationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8941AB7F1DC9AEE400A2CE5F /* DocumentationViewController.swift */; };
@@ -472,6 +474,8 @@
 		8937F6BD1B7996F50044A442 /* prism.js.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = prism.js.html; sourceTree = "<group>"; };
 		8937F6BF1B79D0800044A442 /* KitModuleSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KitModuleSpec.swift; sourceTree = "<group>"; };
 		893F93E31B237EBC00B52194 /* UnreadCounterSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnreadCounterSpec.swift; sourceTree = "<group>"; };
+		893FF1C223B3167E008DC9B4 /* GestureRecognizerHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GestureRecognizerHelpers.swift; sourceTree = "<group>"; };
+		893FF1C623B3205B008DC9B4 /* CoreGraphicsLinearAlgebra.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreGraphicsLinearAlgebra.swift; sourceTree = "<group>"; };
 		8941AB7A1DC9207200A2CE5F /* HTMLViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLViewController.swift; sourceTree = "<group>"; };
 		8941AB7C1DC9385A00A2CE5F /* HTMLViewControllerSpec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLViewControllerSpec.swift; sourceTree = "<group>"; };
 		8941AB7F1DC9AEE400A2CE5F /* DocumentationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentationViewController.swift; sourceTree = "<group>"; };
@@ -1361,6 +1365,7 @@
 				8994F0F31C8F899600920E6D /* UIViewControllerStub.m */,
 				89D0D9D2237922CF00060E2C /* UINavigationControllerStub.m */,
 				89D0D9D623793B9800060E2C /* UIActivityViewControllerStub.h */,
+				893FF1C223B3167E008DC9B4 /* GestureRecognizerHelpers.swift */,
 			);
 			path = Stubs;
 			sourceTree = "<group>";
@@ -1531,6 +1536,7 @@
 				89F98BA31BA079EA005C3CA8 /* TableViewCell.swift */,
 				456300A223236C6F008D0401 /* Notifications.swift */,
 				8925B100236400DA00A3895B /* DiffableDataSource.swift */,
+				893FF1C623B3205B008DC9B4 /* CoreGraphicsLinearAlgebra.swift */,
 			);
 			path = Generic;
 			sourceTree = "<group>";
@@ -2111,6 +2117,7 @@
 				896EF7EA21E5495D00C0AB75 /* Messenger.swift in Sources */,
 				89F98BA41BA079EA005C3CA8 /* TableViewCell.swift in Sources */,
 				89C509F41A2EE56E00CBD000 /* TagEditorViewController.swift in Sources */,
+				893FF1C723B3205B008DC9B4 /* CoreGraphicsLinearAlgebra.swift in Sources */,
 				8963F4341A280F8E00B447D6 /* TagPickerView.swift in Sources */,
 				8918D4DB1B8598D100DCDE0E /* Theme.swift in Sources */,
 				89C830CD19DC67BA009924DA /* UnreadCounter.swift in Sources */,
@@ -2179,6 +2186,7 @@
 				89C204C21A73FEDA00C792D2 /* SplitViewControllerSpec.swift in Sources */,
 				894F8B3C2369E834005AE5F0 /* RogueLikeViewControllerSpec.swift in Sources */,
 				89F98BAA1BA087E1005C3CA8 /* SwitchTableViewCellSpec.swift in Sources */,
+				893FF1C323B3167E008DC9B4 /* GestureRecognizerHelpers.swift in Sources */,
 				899823A91B2C76B800818755 /* TagEditorViewControllerSpec.swift in Sources */,
 				89D0D9D1237922C300060E2C /* UINavigationControllerStubSpec.m in Sources */,
 				89302150239D833F00FF192D /* ArticleListHeaderViewSpec.swift in Sources */,

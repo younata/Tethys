@@ -68,7 +68,7 @@ struct RealmMigrator {
             }
         }
     }
-    // swiftlint:enable=cyclomatic_complexity
+    // swiftlint:enable cyclomatic_complexity
 
     static func nameAndEmailFromAuthorString(_ author: String) -> (name: String, email: String) {
         let author = author.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)

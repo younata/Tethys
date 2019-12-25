@@ -43,6 +43,11 @@ final class RogueLikeViewController: UIViewController {
             action: #selector(RogueLikeViewController.didRecognize(directionGestureRecognizer:))
         )
         self.sceneView.addGestureRecognizer(dpadGestureRecognizer)
+        let panGestureRecognizer = UIPanGestureRecognizer(
+            target: self,
+            action: #selector(RogueLikeViewController.didPan(gestureRecognizer:))
+        )
+        self.sceneView.addGestureRecognizer(panGestureRecognizer)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -68,6 +73,23 @@ final class RogueLikeViewController: UIViewController {
 
     @objc private func didRecognize(directionGestureRecognizer: DirectionalGestureRecognizer) {
         self.game.guidePlayer(direction: directionGestureRecognizer.direction)
+    }
+
+    var lastPanPoint: CGPoint? = nil
+    @objc private func didPan(gestureRecognizer: UIPanGestureRecognizer) {
+        switch gestureRecognizer.state {
+        case .began, .recognized, .possible:
+            self.lastPanPoint = gestureRecognizer.location(in: nil)
+        case .changed:
+            guard let lastPoint = self.lastPanPoint else { return }
+            let currentPoint = gestureRecognizer.location(in: nil)
+            self.game.panCamera(in: currentPoint - lastPoint)
+            self.lastPanPoint = currentPoint
+        case .ended, .cancelled, .failed:
+            self.lastPanPoint = nil
+        @unknown default:
+            self.lastPanPoint = nil
+        }
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {

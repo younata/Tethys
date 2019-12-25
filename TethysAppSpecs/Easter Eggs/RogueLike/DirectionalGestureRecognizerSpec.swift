@@ -186,6 +186,18 @@ final class CGVectorLinearAlgebraSpec: XCTestCase {
         expect(CGVector(dx: 1, dy: 1).normalized()).to(equal(CGVector(dx: sin(45.rads), dy: sin(45.rads))))
     }
 
+    func testPointSubtraction() {
+        expect(CGPoint(x: 10, y: 10) - CGPoint(x: 15, y: 17)).to(equal(CGVector(dx: -5, dy: -7)))
+        expect(CGPoint(x: 15, y: 17) - CGPoint(x: 11, y: 12)).to(equal(CGVector(dx: 4, dy: 5)))
+    }
+
+    func testPointVectorAddition() {
+        expect(CGPoint(x: 10, y: 10) + CGVector(dx: 5, dy: 2)).to(equal(CGPoint(x: 15, y: 12)))
+        var a = CGPoint(x: 10, y: 10)
+        a += CGVector(dx: 5, dy: 2)
+        expect(a).to(equal(CGPoint(x: 15, y: 12)))
+    }
+
     func testPerformance() {
         self.measure {
             for _ in 0..<1_000 {

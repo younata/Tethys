@@ -47,18 +47,18 @@ final class RogueLikeViewControllerSpec: QuickSpec {
         }
 
         describe("when the directional gesture recognizer updates") {
-            var directionalGestureRecognizer: DirectionalGestureRecognizer?
-            var observer: DirectionalGestureObserver!
+            var gestureRecognizer: DirectionalGestureRecognizer?
+            var observer: GestureObserver!
 
             beforeEach {
-                directionalGestureRecognizer = subject.sceneView.gestureRecognizers?.compactMap { $0 as? DirectionalGestureRecognizer }.first
-                expect(directionalGestureRecognizer).toNot(beNil())
-                observer = directionalGestureRecognizer?.setupForTest()
+                gestureRecognizer = subject.sceneView.gestureRecognizers?.compactMap { $0 as? DirectionalGestureRecognizer }.first
+                expect(gestureRecognizer).toNot(beNil())
+                observer = gestureRecognizer?.setupForTest()
                 guard observer != nil else { return }
 
-                directionalGestureRecognizer?.beginForTest(observer: observer)
-                directionalGestureRecognizer?.updateForTest(
-                    direction: CGVector(dx: 1, dy: 0),
+                gestureRecognizer?.beginForTest(point: CGPoint(x: 100, y: 100), observer: observer)
+                gestureRecognizer?.updateForTest(
+                    point: CGPoint(x: 200, y: 100),
                     observer: observer
                 )
             }
@@ -67,39 +67,51 @@ final class RogueLikeViewControllerSpec: QuickSpec {
                 expect(subject.game.player.physicsBody?.velocity).to(equal(CGVector(dx: 50, dy: 0)))
             }
         }
-    }
-}
 
-private extension DirectionalGestureRecognizer {
-    func setupForTest() -> DirectionalGestureObserver {
-        let observer = DirectionalGestureObserver()
-        self.addTarget(observer, action: #selector(DirectionalGestureObserver.didRecognize(_:)))
-        return observer
-    }
+        describe("when the user pans the screen") {
+            var gestureRecognizer: UIPanGestureRecognizer!
+            var observer: GestureObserver!
 
-    func beginForTest(observer: DirectionalGestureObserver, line: UInt = #line) {
-        let observerCount = observer.observations.count
-        let touch = FakeTouch()
-        touch.currentLocation = CGPoint(x: 100, y: 100)
+            beforeEach {
+                gestureRecognizer = subject.sceneView.gestureRecognizers?.compactMap { $0 as? UIPanGestureRecognizer }.first
+                expect(gestureRecognizer).toNot(beNil())
+                observer = gestureRecognizer?.setupForTest()
 
-        self.touchesBegan([touch], with: UIEvent())
-        RunLoop.main.run(until: Date(timeIntervalSinceNow: 0.1))
-        expect(observer.observations, line: line).toEventually(haveCount(observerCount + 1))
-    }
+                gestureRecognizer?.beginForTest(point: CGPoint(x: 100, y: 100), observer: observer)
+                gestureRecognizer?.updateForTest(
+                    point: CGPoint(x: 200, y: 100),
+                    observer: observer
+                )
+            }
 
-    func updateForTest(direction: CGVector, observer: DirectionalGestureObserver, line: UInt = #line) {
-        let observerCount = observer.observations.count
-        let touch = FakeTouch()
-        touch.currentLocation = CGPoint(x: 100 + (direction.dx * 50), y: 100 + (direction.dy * 50))
-        self.touchesMoved([touch], with: UIEvent())
+            it("moves the camera") {
+                guard let scene = subject.sceneView.scene else {
+                    return fail("No scene set up")
+                }
+                expect(scene.camera?.position).to(equal(CGPoint(
+                    x: (scene.size.width / 2) + 100,
+                    y: (scene.size.height / 2)
+                )))
+            }
 
-        expect(observer.observations, line: line).toEventually(haveCount(observerCount + 1))
-    }
+            describe("panning the camera more in the same gesture") {
+                beforeEach {
+                    gestureRecognizer?.updateForTest(
+                        point: CGPoint(x: 200, y: 200),
+                        observer: observer
+                    )
+                }
 
-    func endForTest(observer: DirectionalGestureObserver, line: UInt = #line) {
-        let observerCount = observer.observations.count
-        self.touchesEnded([], with: UIEvent())
-
-        expect(observer.observations, line: line).toEventually(haveCount(observerCount + 1))
+                it("moves the camera again, relative to the last update") {
+                    guard let scene = subject.sceneView.scene else {
+                        return fail("No scene set up")
+                    }
+                    expect(scene.camera?.position).to(equal(CGPoint(
+                        x: (scene.size.width / 2) + 100,
+                        y: (scene.size.height / 2) + 100
+                    )))
+                }
+            }
+        }
     }
 }

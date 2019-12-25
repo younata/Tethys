@@ -60,7 +60,7 @@ final class InoreaderAccountService: AccountService {
                     credentialResponse = try decoder.decode(OAuthTokenResponse.self, from: response.body)
                 } catch let error {
                     dump(error)
-                    return .failure(.network(url, .badResponse))
+                    return .failure(.network(url, .badResponse(response.body)))
                 }
                 return .success(Credential(
                     access: credentialResponse.access_token,
@@ -136,7 +136,7 @@ final class InoreaderAccountService: AccountService {
                     accountResponse = try decoder.decode(AccountServiceResponse.self, from: response.body)
                 } catch let error {
                     dump(error)
-                    return .failure(.network(url, .badResponse))
+                    return .failure(.network(url, .badResponse(response.body)))
                 }
 
                 let account = Account(

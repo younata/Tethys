@@ -212,7 +212,7 @@ final class SettingsViewControllerSpec: QuickSpec {
                                 beforeEach {
                                     loginController.beginPromises.last?.resolve(.failure(.network(
                                         URL(string: "https://www.inoreader.com/oauth2/auth")!,
-                                        .badResponse
+                                        .badResponse(Data())
                                     )))
                                 }
 

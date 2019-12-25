@@ -51,7 +51,7 @@ struct InoreaderFeedService: FeedService {
                     return parsed.unreadcounts.reduce(
                         into: [String: Int]()
                     ) { (result: inout [String: Int], unreadCount: InoreaderUnreadCount) in
-                        result[unreadCount.id] = unreadCount.count
+                        result[unreadCount.id] = Int(unreadCount.count) ?? 0
                     }
                 }
             case .failure(let clientError):
@@ -97,40 +97,6 @@ struct InoreaderFeedService: FeedService {
                     }
             }.map { AnyCollection($0) }
         }
-
-//        let collection = NetworkPagedCollection<Article>(
-//            httpClient: self.httpClient,
-//            requestFactory: { (continuationString) -> URLRequest in
-//                guard let token = continuationString else {
-//                    return URLRequest(url: url)
-//                }
-//                var components = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-//                components.queryItems = [
-//                    URLQueryItem(name: "c", value: token)
-//                ]
-//                return URLRequest(url: components.url!)
-//        },
-//            dataParser: { (body: Data) throws -> ([Article], String?) in
-//                let decoder = JSONDecoder()
-//                decoder.dateDecodingStrategy = .secondsSince1970
-//                let parsedArticlesResponse = try decoder.decode(InoreaderArticles.self, from: body)
-//                let articles: [Article] = parsedArticlesResponse.items.compactMap {
-//                    guard let url = $0.canonical.first?.href else { return nil }
-//                    return Article(
-//                        title: $0.title,
-//                        link: url,
-//                        summary: $0.summary.content,
-//                        authors: [Author(name: $0.author, email: nil)],
-//                        identifier: $0.id,
-//                        content: $0.summary.content,
-//                        read: InoreaderTags(tags: $0.categories.map { InoreaderTag(id: $0) }).containsRead,
-//                        published: $0.published,
-//                        updated: $0.updated
-//                    )
-//                }
-//                return (articles, parsedArticlesResponse.continuation)
-//        })
-//        return Promise<Result<AnyCollection<Article>, TethysError>>.resolved(.success(AnyCollection(collection)))
     }
 
     func subscribe(to url: URL) -> Future<Result<Feed, TethysError>> {
@@ -267,9 +233,9 @@ struct InoreaderFeedService: FeedService {
         do {
             return .success(try decoder.decode(T.self, from: response.body))
         } catch let error {
-            print("error decoding data: \(String(describing: String(data: response.body, encoding: .utf8)))")
+            print("error decoding data: \(String(data: response.body, encoding: .utf8) ?? "")")
             dump(error)
-            return .failure(.badResponse)
+            return .failure(.badResponse(response.body))
         }
     }
 
@@ -376,13 +342,31 @@ private struct InoreaderTag: Codable {
     }
 }
 
-private struct InoreaderUnreadCounts: Codable {
+private struct InoreaderUnreadCounts: Decodable {
     let max: String
     let unreadcounts: [InoreaderUnreadCount]
 }
 
-private struct InoreaderUnreadCount: Codable {
+private struct InoreaderUnreadCount: Decodable {
     let id: String
-    let count: Int
+    let count: String
     let newestItemTimestampUsec: String
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case count
+        case newestItemTimestampUsec
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        self.id = try container.decode(String.self, forKey: .id)
+        do {
+            self.count = try container.decode(String.self, forKey: .count)
+        } catch DecodingError.typeMismatch {
+            self.count = "0"
+        }
+        self.newestItemTimestampUsec = try container.decode(String.self, forKey: .newestItemTimestampUsec)
+    }
 }

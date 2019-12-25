@@ -145,31 +145,31 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                         "unreadcounts": [
                             [
                                 "id": "user/1005921515/state/com.google/reading-list",
-                                "count": 4,
+                                "count": "4",
                                 "newestItemTimestampUsec": "1415620910006331"
                             ], [
                                 "id": "feed/http://www.example.com/feed1/",
-                                "count": 5,
+                                "count": "5",
                                 "newestItemTimestampUsec": "1415620910006331"
                             ], [
                                 "id": "feed/http://www.example.com/feed2/",
-                                "count": 1,
+                                "count": "1",
                                 "newestItemTimestampUsec": "1415620910006331"
                             ], [
                                 "id": "feed/http://www.example.com/feed3/",
-                                "count": 4,
+                                "count": "4",
                                 "newestItemTimestampUsec": "1415620910006331"
                             ], [
                                 "id": "feed/http://www.example.com/feed4/",
-                                "count": 2,
+                                "count": "2",
                                 "newestItemTimestampUsec": "1415620910006331"
                             ], [
                                 "id": "feed/http://www.example.com/feed5/",
-                                "count": 8,
+                                "count": "8",
                                 "newestItemTimestampUsec": "1415620910006331"
                             ], [
                                 "id": "unknown",
-                                "count": 7,
+                                "count": "7",
                                 "newestItemTimestampUsec": "1415620910006331"
                             ]
                         ]

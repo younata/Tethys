@@ -102,7 +102,9 @@ func itBehavesLikeTheRequestFailed<T>(url: URL, shouldParseData: Bool = true, fi
 
                 it("resolves the future with a bad response error") {
                     expect(future().value, file: file, line: line).toNot(beNil(), description: "Expected future to be resolved")
-                    expect(future().value?.error, file: file, line: line).to(equal(TethysError.network(url, .badResponse)))
+                    expect(future().value?.error, file: file, line: line).to(equal(
+                        TethysError.network(url, .badResponse("[\"bad\": \"data\"]".data(using: .utf8)!))
+                    ))
                 }
             }
         }

@@ -148,7 +148,7 @@
 
 // Errors
 
-"Error_Network_BadResponse" = "Bad Server Response";
+"Error_Network_BadResponse" = "Bad Server Response - Body: '%@'";
 "Error_Network_Cancelled" = "Request Cancelled";
 "Error_Network_DNS" = "DNS Error";
 "Error_Network_InternetDown" = "Internet Down";

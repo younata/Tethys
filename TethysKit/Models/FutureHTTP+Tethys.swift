@@ -8,7 +8,7 @@ extension HTTPClientError {
         case .network(let networkError):
             return networkError.tethys
         case .http, .security:
-            return .badResponse
+            return .badResponse(Data())
         }
     }
 }
@@ -32,7 +32,7 @@ extension FutureHTTP.NetworkError {
 
 extension HTTPResponse {
     var tethysError: TethysKit.NetworkError? {
-        guard let status = self.status else { return .badResponse }
+        guard let status = self.status else { return .badResponse(self.body) }
 
         guard let httpError = TethysKit.HTTPError(rawValue: status.rawValue) else {
             return nil

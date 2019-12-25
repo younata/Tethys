@@ -152,7 +152,7 @@ final class FeedCoordinatorSpec: QuickSpec {
 
                 describe("when the network feed service fails") {
                     beforeEach {
-                        networkFeedService.feedsPromises.last?.resolve(.failure(.network(URL(string: "https://example.com")!, .badResponse)))
+                        networkFeedService.feedsPromises.last?.resolve(.failure(.network(URL(string: "https://example.com")!, .badResponse(Data()))))
                     }
 
                     it("does not try to fetch feeds again") {
@@ -162,7 +162,7 @@ final class FeedCoordinatorSpec: QuickSpec {
 
                     it("updates the subscription list with the failure") {
                         expect(subscription.value).toNot(beNil(), description: "Expected subscription to be updated")
-                        expect(subscription.value?.error).to(equal(.network(URL(string: "https://example.com")!, .badResponse)))
+                        expect(subscription.value?.error).to(equal(.network(URL(string: "https://example.com")!, .badResponse(Data()))))
                     }
 
                     it("does not tell the local feed service to update") {
@@ -283,7 +283,7 @@ final class FeedCoordinatorSpec: QuickSpec {
 
                 describe("when the network feed service fails") {
                     beforeEach {
-                        networkFeedService.feedsPromises.last?.resolve(.failure(.network(URL(string: "https://example.com")!, .badResponse)))
+                        networkFeedService.feedsPromises.last?.resolve(.failure(.network(URL(string: "https://example.com")!, .badResponse(Data()))))
                     }
 
                     it("does not try to fetch feeds again") {
@@ -293,7 +293,7 @@ final class FeedCoordinatorSpec: QuickSpec {
 
                     it("updates the subscription list with the new failure") {
                         expect(subscription.value).toNot(beNil(), description: "Expected subscription to be updated")
-                        expect(subscription.value?.error).to(equal(.network(URL(string: "https://example.com")!, .badResponse)))
+                        expect(subscription.value?.error).to(equal(.network(URL(string: "https://example.com")!, .badResponse(Data()))))
                     }
 
                     it("tells the local feed service to update") {
@@ -306,7 +306,7 @@ final class FeedCoordinatorSpec: QuickSpec {
 
                     it("updates the subscription with the error") {
                         expect(subscription.value).toNot(beNil(), description: "Expected subscription to be updated")
-                        expect(subscription.value?.error).to(equal(.network(URL(string: "https://example.com")!, .badResponse)))
+                        expect(subscription.value?.error).to(equal(.network(URL(string: "https://example.com")!, .badResponse(Data()))))
                     }
 
                     it("finishes updates for the subscription") {
@@ -765,12 +765,12 @@ final class FeedCoordinatorSpec: QuickSpec {
             describe("when the local feed service succeeds but the network feed service fails") {
                 beforeEach {
                     localFeedService.removeFeedPromises.last?.resolve(.success(Void()))
-                    networkFeedService.removeFeedPromises.last?.resolve(.failure(.network(unsubscribeURL, .badResponse)))
+                    networkFeedService.removeFeedPromises.last?.resolve(.failure(.network(unsubscribeURL, .badResponse(Data()))))
                 }
 
                 it("resolves the future with the local feed service's error") {
                     expect(future).to(beResolved())
-                    expect(future.value?.error).to(equal(.network(unsubscribeURL, .badResponse)))
+                    expect(future.value?.error).to(equal(.network(unsubscribeURL, .badResponse(Data()))))
                 }
             }
 

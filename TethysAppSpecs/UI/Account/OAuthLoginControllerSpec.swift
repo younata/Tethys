@@ -148,10 +148,11 @@ final class OAuthLoginControllerSpec: QuickSpec {
                 }
 
                 describe("and the csrf doesn't match") {
+                    let csrfURL = url(base: "rnews://oauth",
+                    queryItems: ["code": "authentication_code", "state": "badValue"])
                     beforeEach {
                         authenticationSessions.last?.completionHandler(
-                            url(base: "rnews://oauth",
-                                queryItems: ["code": "authentication_code", "state": "badValue"]),
+                            csrfURL,
                             nil
                         )
                     }
@@ -161,7 +162,8 @@ final class OAuthLoginControllerSpec: QuickSpec {
                         guard let error = future.value?.error else { fail("error not set"); return }
                         switch error {
                         case .network(let url, let networkError):
-                            expect(networkError).to(equal(.badResponse))
+                            let body = (csrfURL.query ?? "").data(using: .utf8)!
+                            expect(networkError).to(equal(.badResponse(body)))
                             expect(url.absoluteString.hasPrefix("https://www.inoreader.com/oauth2/auth")).to(
                                 beTruthy(),
                                 description: "Expected url to start with https://www.inoreader.com/oauth2/auth"

@@ -1,8 +1,8 @@
 import Muon
 import FutureHTTP
 
-public enum NetworkError: Error, Equatable {
-    case badResponse
+public enum NetworkError: Error, Equatable, CustomDebugStringConvertible {
+    case badResponse(Data)
     case cancelled
     case dns
     case http(HTTPError, Data)
@@ -13,8 +13,11 @@ public enum NetworkError: Error, Equatable {
 
     public var localizedDescription: String {
         switch self {
-        case .badResponse:
-            return NSLocalizedString("Error_Network_BadResponse", comment: "")
+        case .badResponse(let body):
+            return String.localizedStringWithFormat(
+                NSLocalizedString("Error_Network_BadResponse", comment: ""),
+                String(data: body, encoding: .utf8) ?? ""
+            )
         case .cancelled:
             return NSLocalizedString("Error_Network_Cancelled", comment: "")
         case .dns:
@@ -32,6 +35,10 @@ public enum NetworkError: Error, Equatable {
             return NSLocalizedString("Error_Network_Unknown", comment: "")
         }
     }
+
+    public var debugDescription: String {
+        return self.localizedDescription
+    }
 }
 
 extension NetworkError {
@@ -40,7 +47,7 @@ extension NetworkError {
         case .unknown, .url:
             self = .unknown
         case .security:
-            self = .badResponse
+            self = .badResponse(Data())
         case .network(let networkError):
             switch networkError {
             case .cancelled:
@@ -57,7 +64,7 @@ extension NetworkError {
                 self = .internetDown
             }
         case .http:
-            self = .badResponse
+            self = .badResponse(Data())
         }
     }
 }

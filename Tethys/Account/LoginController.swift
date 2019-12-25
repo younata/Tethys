@@ -67,20 +67,21 @@ public final class OAuthLoginController: NSObject, LoginController {
                 return
             }
 
+            let body = (successURL.query ?? "").data(using: .utf8) ?? Data()
             guard let urlComponents = URLComponents(url: successURL, resolvingAgainstBaseURL: true) else {
-                promise.resolve(.failure(.network(authURL, .badResponse)))
+                promise.resolve(.failure(.network(authURL, .badResponse(body))))
                 return
             }
 
             let queryItems = urlComponents.queryItems ?? []
 
             guard queryItems.contains(URLQueryItem(name: "state", value: csrf)) else {
-                promise.resolve(.failure(.network(authURL, .badResponse)))
+                promise.resolve(.failure(.network(authURL, .badResponse(body))))
                 return
             }
 
             guard let oauthToken = urlComponents.queryItems?.first(where: {$0.name == "code"})?.value else {
-                promise.resolve(.failure(.network(authURL, .badResponse)))
+                promise.resolve(.failure(.network(authURL, .badResponse(body))))
                 return
             }
             self.accountService.authenticate(code: oauthToken).then { result in

@@ -146,7 +146,8 @@ final class RealmRSSUpdateServiceSpec: QuickSpec {
                                     title: "Rachel Brindle",
                                     url: URL(string: "https://example.com/feed/feed")!,
                                     summary: "Software Engineer and Electric Vehicle enthusiast",
-                                    tags: []
+                                    tags: [],
+                                    unreadCount: 10
                                 )
                             ))
                         }
@@ -207,7 +208,8 @@ final class RealmRSSUpdateServiceSpec: QuickSpec {
                                     title: "Rachel Brindle",
                                     url: URL(string: "https://example.com/feed/feed")!,
                                     summary: "Software Engineer and Electric Vehicle enthusiast",
-                                    tags: []
+                                    tags: [],
+                                    unreadCount: 10
                                 )
                             ))
                         }
@@ -259,7 +261,8 @@ final class RealmRSSUpdateServiceSpec: QuickSpec {
                                     title: "objc.io",
                                     url: URL(string: "https://example.com/feed/feed")!,
                                     summary: "A periodical about best practices and advanced techniques for iOS and OS X development.",
-                                    tags: []
+                                    tags: [],
+                                    unreadCount: 11
                                 )
                             ))
                         }
@@ -318,7 +321,8 @@ final class RealmRSSUpdateServiceSpec: QuickSpec {
                                         title: "objc.io",
                                         url: URL(string: "https://example.com/feed/feed")!,
                                         summary: "A periodical about best practices and advanced techniques for iOS and OS X development.",
-                                        tags: []
+                                        tags: [],
+                                        unreadCount: 11
                                     )
                                 ))
                             }
@@ -337,7 +341,8 @@ final class RealmRSSUpdateServiceSpec: QuickSpec {
                                         title: "objc.io",
                                         url: URL(string: "https://example.com/feed/feed")!,
                                         summary: "A periodical about best practices and advanced techniques for iOS and OS X development.",
-                                        tags: []
+                                        tags: [],
+                                        unreadCount: 11
                                     )
                                 ))
                             }

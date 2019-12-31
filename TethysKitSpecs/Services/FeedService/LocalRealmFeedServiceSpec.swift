@@ -373,9 +373,9 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
             describe("updateFeeds(with:)") {
                 let feeds = [
                     feedFactory(title: "Updated 1", url: URL(string: "https://example.com/feed/feed1")!, summary: "Updated Summary 1",
-                                tags: ["a", "b", "c"], unreadCount: 0, image: nil),
+                                tags: ["a", "b", "c"], unreadCount: 3, image: nil),
                     feedFactory(title: "Brand New Feed", url: URL(string: "https://example.com/brand_new_feed")!,
-                                summary: "some summary", tags: [], unreadCount: 0, image: nil)
+                                summary: "some summary", tags: [], unreadCount: 5, image: nil)
                 ]
 
                 var future: Future<Result<AnyCollection<Feed>, TethysError>>!
@@ -415,7 +415,7 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                     expect(newFeed?.tags).to(beEmpty())
                 }
 
-                it("resolves the promise with the new set of feeds") {
+                it("resolves the promise with the new set of feeds, using the unread counts from the given feeds") {
                     expect(future).to(beResolved())
                     guard let receivedFeeds = future.value?.value else {
                         return fail("Future did not resolve successfully")
@@ -425,11 +425,11 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                         feedFactory(title: realmFeed2.title, url: URL(string: realmFeed2.url)!, summary: "",
                                     tags: [], unreadCount: 1, image: nil),
                         feedFactory(title: "Brand New Feed", url: URL(string: "https://example.com/brand_new_feed")!,
-                                    summary: "some summary", tags: [], unreadCount: 0, image: nil),
+                                    summary: "some summary", tags: [], unreadCount: 5, image: nil),
                         feedFactory(title: realmFeed3.title, url: URL(string: realmFeed3.url)!, summary: "",
                                     tags: [], unreadCount: 0, image: nil),
                         feedFactory(title: "Updated 1", url: URL(string: realmFeed1.url)!, summary: "Updated Summary 1",
-                                    tags: ["a", "b", "c"], unreadCount: 0, image: nil),
+                                    tags: ["a", "b", "c"], unreadCount: 3, image: nil),
                     ]))
                 }
             }
@@ -451,7 +451,7 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                 context("when that feed's url exists in the database") {
                     let updatedFeed = feedFactory(
                         title: "Updated 1", url: URL(string: "https://example.com/feed/feed1")!,
-                        summary: "Updated Summary 1", tags: ["a", "b", "c"], unreadCount: 0, image: nil)
+                        summary: "Updated Summary 1", tags: ["a", "b", "c"], unreadCount: 10, image: nil)
 
                     beforeEach {
                         future = subject.updateFeed(from: updatedFeed)
@@ -465,7 +465,7 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                         expect(newFeed?.tags.map { $0.string }.sorted()).to(equal(["a", "b", "c"]))
                     }
 
-                    it("resolves the promise successfully") {
+                    it("resolves the promise with the updated feed, using the unread count from the given feed") {
                         expect(future).to(beResolved())
                         expect(future.value?.value).to(equal(updatedFeed))
                     }

@@ -43,6 +43,7 @@ public final class Feed: Hashable, CustomStringConvertible {
         hasher.combine(self.url)
         hasher.combine(self.summary)
         hasher.combine(self.tags)
+        hasher.combine(self.unreadCount)
 
         if let image = self.image {
             hasher.combine(image)
@@ -50,7 +51,8 @@ public final class Feed: Hashable, CustomStringConvertible {
     }
 
     public var description: String {
-        return "<Feed title=\"\(title)\" url=\"\(url)\" summary=\"\(summary)\" tags=\"\(tags)\" />\n"
+        return "<Feed title=\"\(title)\" url=\"\(url)\" summary=\"\(summary)\" tags=\"\(tags)\" " +
+            "unreadCount=\"\(unreadCount)\"/>\n"
     }
 
     public init(title: String, url: URL, summary: String, tags: [String], unreadCount: Int = 0, image: Image? = nil,
@@ -109,6 +111,9 @@ public func == (lhs: Feed, rhs: Feed) -> Bool {
     }
     guard lhs.summary == rhs.summary else {
         return log(reason: "Summaries don't match")
+    }
+    guard lhs.unreadCount == rhs.unreadCount else {
+        return log(reason: "unreadCounts don't match")
     }
     guard lhs.tags == rhs.tags else {
         return log(reason: "Tags don't match")

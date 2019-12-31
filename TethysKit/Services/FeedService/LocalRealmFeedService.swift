@@ -134,7 +134,13 @@ struct LocalRealmFeedService: LocalFeedService {
             }
             self.resolve(
                 promise: promise,
-                with: AnyCollection(self.allFeeds(in: self.realmProvider.realm()))
+                with: AnyCollection(self.allFeeds(in: self.realmProvider.realm()).map { feed in
+                    guard let updatedFeed = feeds.first(where: { $0.url == feed.url }) else {
+                        return feed
+                    }
+                    feed.unreadCount = updatedFeed.unreadCount
+                    return feed
+                })
             )
         }
         return promise.future
@@ -158,7 +164,9 @@ struct LocalRealmFeedService: LocalFeedService {
                 dump(exception)
                 return self.resolve(promise: promise, error: .database(.unknown))
             }
-            self.resolve(promise: promise, with: Feed(realmFeed: realmFeed))
+            let returnedFeed = Feed(realmFeed: realmFeed)
+            returnedFeed.unreadCount = feed.unreadCount
+            self.resolve(promise: promise, with: returnedFeed)
         }
         return promise.future
     }

@@ -152,19 +152,19 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                                 "count": "5",
                                 "newestItemTimestampUsec": "1415620910006331"
                             ], [
-                                "id": "feed/http://www.example.com/feed2/",
+                                "id": "feed/http://example.com/2/feed",
                                 "count": "1",
                                 "newestItemTimestampUsec": "1415620910006331"
                             ], [
-                                "id": "feed/http://www.example.com/feed3/",
+                                "id": "feed/http://example.com/3/feed",
                                 "count": "4",
                                 "newestItemTimestampUsec": "1415620910006331"
                             ], [
-                                "id": "feed/http://www.example.com/feed4/",
+                                "id": "feed/http://example.com/4/feed/",
                                 "count": "2",
                                 "newestItemTimestampUsec": "1415620910006331"
                             ], [
-                                "id": "feed/http://www.example.com/feed5/",
+                                "id": "feed/http://example.com/5/feed",
                                 "count": "8",
                                 "newestItemTimestampUsec": "1415620910006331"
                             ], [

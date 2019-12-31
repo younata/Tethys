@@ -68,7 +68,7 @@ final class RogueLikeViewControllerSpec: QuickSpec {
             }
         }
 
-        describe("when the user pans the screen") {
+        xdescribe("when the user pans the screen") {
             var gestureRecognizer: UIPanGestureRecognizer!
             var observer: GestureObserver!
 

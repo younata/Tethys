@@ -32,7 +32,7 @@ final class RogueLikeGameSpec: QuickSpec {
                 guard let scene = view.scene else {
                     return expect(view.scene).toNot(beNil())
                 }
-                expect(scene.children).to(haveCount(2))
+                expect(scene.children).to(haveCount(3))
                 expect(scene.children).to(contain(level.node))
                 expect(scene.children).to(contain(subject.player))
 

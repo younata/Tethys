@@ -25,7 +25,7 @@ class FeedSpec: QuickSpec {
         }
 
         describe("Equatable") {
-            it("should report two feeds created with a realmfeed with the same url as equal") {
+            it("reports two feeds created with a realmfeed with the same url as equal") {
                 let a = RealmFeed()
                 a.url = "https://example.com/feed"
                 let b = RealmFeed()
@@ -40,13 +40,42 @@ class FeedSpec: QuickSpec {
                 expect(Feed(realmFeed: a)).to(equal(Feed(realmFeed: a)))
             }
 
-            it("should report two feeds not created from datastores with the same property equality as equal") {
-                let a = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], unreadCount: 0, image: nil)
-                let b = Feed(title: "blah", url: URL(string: "https://example.com")!, summary: "", tags: [], unreadCount: 0, image: nil)
-                let c = Feed(title: "", url: URL(string: "https://example.com")!, summary: "", tags: [], unreadCount: 0, image: nil)
+            context("when the feeds aren't created from the same datastore") {
+                it("is true when all properties are equal") {
+                    expect(Feed(title: "foo", url: URL(string: "https://example.com")!, summary: "a summary", tags: ["a"], unreadCount: 10, image: nil)).to(equal(
+                        Feed(title: "foo", url: URL(string: "https://example.com")!, summary: "a summary", tags: ["a"], unreadCount: 10, image: nil)
+                    ))
+                }
 
-                expect(a).toNot(equal(b))
-                expect(a).to(equal(c))
+                it("is false when titles differ") {
+                    expect(Feed(title: "foo", url: URL(string: "https://example.com")!, summary: "", tags: [], unreadCount: 0, image: nil)).toNot(equal(
+                        Feed(title: "bar", url: URL(string: "https://example.com")!, summary: "", tags: [], unreadCount: 0, image: nil)
+                    ))
+                }
+
+                it("is false when the urls differ") {
+                    expect(Feed(title: "foo", url: URL(string: "https://example.com")!, summary: "a summary", tags: ["a"], unreadCount: 10, image: nil)).toNot(equal(
+                        Feed(title: "foo", url: URL(string: "https://example.com/bar")!, summary: "a summary", tags: ["a"], unreadCount: 10, image: nil)
+                    ))
+                }
+
+                it("is false when the summaries differ") {
+                    expect(Feed(title: "foo", url: URL(string: "https://example.com")!, summary: "a summary", tags: ["a"], unreadCount: 10, image: nil)).toNot(equal(
+                        Feed(title: "foo", url: URL(string: "https://example.com")!, summary: "different summary", tags: ["a"], unreadCount: 10, image: nil)
+                    ))
+                }
+
+                it("is false when the tags differ") {
+                    expect(Feed(title: "foo", url: URL(string: "https://example.com")!, summary: "a summary", tags: ["a", "c"], unreadCount: 10, image: nil)).toNot(equal(
+                        Feed(title: "foo", url: URL(string: "https://example.com")!, summary: "a summary", tags: ["a", "b"], unreadCount: 10, image: nil)
+                    ))
+                }
+
+                it("is false when the unreadCounts differ") {
+                    expect(Feed(title: "foo", url: URL(string: "https://example.com")!, summary: "a summary", tags: ["a"], unreadCount: 10, image: nil)).toNot(equal(
+                        Feed(title: "foo", url: URL(string: "https://example.com")!, summary: "a summary", tags: ["a"], unreadCount: 5, image: nil)
+                    ))
+                }
             }
         }
 

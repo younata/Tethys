@@ -100,18 +100,14 @@ struct InoreaderFeedService: FeedService {
     }
 
     func subscribe(to url: URL) -> Future<Result<Feed, TethysError>> {
-        let apiUrl = self.baseURL.appendingPathComponent("reader/api/0/subscription/quickadd")
-        let request: URLRequest
-        do {
-            let body = try JSONSerialization.data(
-                withJSONObject: ["quickadd": "feed/" + url.absoluteString],
-                options: []
-            )
-            request = URLRequest(url: apiUrl, headers: [:], method: .post(body))
-        } catch let error {
-            print("error creating json data: \(error)")
+        var urlComponents = URLComponents(url: self.baseURL.appendingPathComponent("reader/api/0/subscription/quickadd"), resolvingAgainstBaseURL: false)
+        urlComponents?.queryItems = [
+            URLQueryItem(name: "quickadd", value: "feed/" + url.absoluteString)
+        ]
+        guard let apiUrl = urlComponents?.url else {
             return Promise<Result<Feed, TethysError>>.resolved(.failure(TethysError.unknown))
         }
+        let request = URLRequest(url: apiUrl, headers: [:], method: .post(Data()))
         return self.httpClient.request(request).map { result -> Result<InoreaderSubscribeResponse, NetworkError> in
             switch result {
             case .success(let response):

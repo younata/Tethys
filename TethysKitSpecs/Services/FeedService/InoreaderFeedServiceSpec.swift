@@ -441,7 +441,7 @@ final class InoreaderFeedServiceSpec: QuickSpec {
 
         describe("subscribe(to:)") {
             var future: Future<Result<Feed, TethysError>>!
-            let url = URL(string: "https://example.com/reader/api/0/subscription/quickadd")!
+            let url = URL(string: "https://example.com/reader/api/0/subscription/quickadd?quickadd=feed/https://example.com/feed1")!
 
             let feedURL = URL(string: "https://example.com/feed1")!
 
@@ -455,15 +455,7 @@ final class InoreaderFeedServiceSpec: QuickSpec {
                     url
                 ))
                 expect(httpClient.requests.last?.httpMethod).to(equal("POST"))
-                expect(httpClient.requests.last?.httpBody).toNot(beNil())
-                guard let body = httpClient.requests.last?.httpBody else { return }
-                do {
-                    let json = try JSONSerialization.jsonObject(with: body, options: []) as? [String: String]
-                    expect(json).to(equal(["quickadd": "feed/https://example.com/feed1"]))
-                } catch let error {
-                    fail("Expected to not throw, got \(error) while parsing request body")
-                    return
-                }
+                expect(httpClient.requests.last?.httpBody).to(equal(Data()))
             }
 
             describe("when the request succeeds with valid data") {

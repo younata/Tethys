@@ -67,22 +67,27 @@ public final class DefaultImportUseCase: ImportUseCase {
     }
 
     public func importItem(_ url: URL) -> Future<Result<Void, TethysError>> {
+        let promise = Promise<Result<Void, TethysError>>()
         guard let importType = self.knownUrls[url] else {
-            let promise = Promise<Result<Void, TethysError>>()
             promise.resolve(.failure(.unknown))
             return promise.future
         }
         switch importType {
         case .feed:
             let url = self.canonicalURLForFeedAtURL(url)
-            return self.feedCoordinator.subscribe(to: url).map { result in
-                return result.map { _ in Void() }
+            self.feedCoordinator.subscribe(to: url).then { result in
+                self.mainQueue.addOperation {
+                    promise.resolve(result.map { _ in Void() })
+                }
             }
         case .opml:
-            return self.opmlService.importOPML(url).map { result in
-                return result.map { _ in Void() }
+            self.opmlService.importOPML(url).then { result in
+                self.mainQueue.addOperation {
+                    promise.resolve(result.map { _ in Void() })
+                }
             }
         }
+        return promise.future
     }
 
     private func scanDataForItem(_ data: Data, url: URL) -> ImportUseCaseItem {

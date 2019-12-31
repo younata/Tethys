@@ -376,11 +376,11 @@ extension FindFeedViewController {
         let messageTemplate = opml ? opmlMessageTemplate : feedMessageTemplate
         let message = NSString.localizedStringWithFormat(messageTemplate as NSString, link as CVarArg) as String
         indicator.configure(message: message)
-        self.subscribeUseCase.importItem(link).then { _ in
+        self.subscribeUseCase.importItem(link).then { [weak self] _ in
             indicator.removeFromSuperview()
-            self.analytics.logEvent("DidUseWebSubscribe", data: nil)
-            self.dismissFromNavigation()
-            self.notificationCenter.post(name: Notifications.reloadUI, object: self)
+            self?.analytics.logEvent("DidUseWebSubscribe", data: nil)
+            self?.dismissFromNavigation()
+            self?.notificationCenter.post(name: Notifications.reloadUI, object: self)
         }
     }
 

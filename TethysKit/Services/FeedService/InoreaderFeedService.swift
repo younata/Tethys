@@ -100,7 +100,9 @@ struct InoreaderFeedService: FeedService {
     }
 
     func subscribe(to url: URL) -> Future<Result<Feed, TethysError>> {
-        var urlComponents = URLComponents(url: self.baseURL.appendingPathComponent("reader/api/0/subscription/quickadd"), resolvingAgainstBaseURL: false)
+        var urlComponents = URLComponents(url: self.baseURL.appendingPathComponent(
+            "reader/api/0/subscription/quickadd"), resolvingAgainstBaseURL: false
+        )
         urlComponents?.queryItems = [
             URLQueryItem(name: "quickadd", value: "feed/" + url.absoluteString)
         ]

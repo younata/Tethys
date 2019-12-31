@@ -124,6 +124,9 @@ struct LocalRealmFeedService: LocalFeedService {
 
                 realmFeed.title = feed.title
                 realmFeed.summary = feed.summary
+                if feed.unreadCount == 0 {
+                    realmFeed.articles.filter("read == false").forEach { $0.read = true }
+                }
                 self.set(tags: feed.tags, of: realmFeed, realm: realm)
             }
             do {

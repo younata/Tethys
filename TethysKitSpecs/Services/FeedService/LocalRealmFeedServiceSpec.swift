@@ -374,6 +374,8 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                 let feeds = [
                     feedFactory(title: "Updated 1", url: URL(string: "https://example.com/feed/feed1")!, summary: "Updated Summary 1",
                                 tags: ["a", "b", "c"], unreadCount: 3, image: nil),
+                    feedFactory(title: "Feed3", url: URL(string: "https://example.com/feed/feed3")!, summary: "Feed with no read articles",
+                                unreadCount: 0, image: nil),
                     feedFactory(title: "Brand New Feed", url: URL(string: "https://example.com/brand_new_feed")!,
                                 summary: "some summary", tags: [], unreadCount: 5, image: nil)
                 ]
@@ -387,8 +389,14 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                         unreadArticle.link = "https://example.com/article/article1"
                         unreadArticle.read = false
                         unreadArticle.feed = realmFeed2
-
                         realm.add(unreadArticle)
+
+                        let unreadArticle2 = RealmArticle()
+                        unreadArticle2.title = "article2"
+                        unreadArticle2.link = "https://example.com/article/article2"
+                        unreadArticle2.read = false
+                        unreadArticle2.feed = realmFeed3
+                        realm.add(unreadArticle2)
                     }
 
                     future = subject.updateFeeds(with: AnyCollection(feeds))
@@ -415,22 +423,31 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                     expect(newFeed?.tags).to(beEmpty())
                 }
 
+                it("marks as read all articles for a feed if that feed had an unread count of 0") {
+                    expect(realmFeed3.articles).to(haveCount(1))
+                    expect(realmFeed3.articles.first?.read).to(beTrue(), description: "realmFeed3 had a single article, and it should be marked as read")
+
+                    expect(realmFeed2.articles).to(haveCount(1))
+                    expect(realmFeed2.articles.first?.read).to(beFalse(), description: "realmFeed2's update didn't have an unread count of 0, so all articles should be left alone")
+                }
+
                 it("resolves the promise with the new set of feeds, using the unread counts from the given feeds") {
                     expect(future).to(beResolved())
                     guard let receivedFeeds = future.value?.value else {
                         return fail("Future did not resolve successfully")
                     }
 
-                    expect(Array(receivedFeeds)).to(equal([
+                    expect(Array(receivedFeeds)).to(haveCount(4))
+                    expect(Array(receivedFeeds)).to(contain(
                         feedFactory(title: realmFeed2.title, url: URL(string: realmFeed2.url)!, summary: "",
                                     tags: [], unreadCount: 1, image: nil),
                         feedFactory(title: "Brand New Feed", url: URL(string: "https://example.com/brand_new_feed")!,
                                     summary: "some summary", tags: [], unreadCount: 5, image: nil),
-                        feedFactory(title: realmFeed3.title, url: URL(string: realmFeed3.url)!, summary: "",
+                        feedFactory(title: realmFeed3.title, url: URL(string: realmFeed3.url)!, summary: "Feed with no read articles",
                                     tags: [], unreadCount: 0, image: nil),
                         feedFactory(title: "Updated 1", url: URL(string: realmFeed1.url)!, summary: "Updated Summary 1",
-                                    tags: ["a", "b", "c"], unreadCount: 3, image: nil),
-                    ]))
+                                    tags: ["a", "b", "c"], unreadCount: 3, image: nil)
+                    ))
                 }
             }
 

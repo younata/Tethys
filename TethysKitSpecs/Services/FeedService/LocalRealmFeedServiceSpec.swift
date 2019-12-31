@@ -490,7 +490,7 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                         articleFactory(title: "article 0", link: URL(string: "https://example.com/article/article0")!,
                                        published: dateFormatter.date(from: "2019-03-18T09:15:00-0800")!),
                         articleFactory(title: "article 1, updated", link: URL(string: "https://example.com/article/article1")!,
-                                       summary: "hello", published: dateFormatter.date(from: "2017-08-14T09:00:00-0700")!, updated: dateFormatter.date(from: "2019-01-11T16:45:00-0800")!),
+                                       summary: "hello", authors: [Author("foo"), Author("bar")], published: dateFormatter.date(from: "2017-08-14T09:00:00-0700")!, updated: dateFormatter.date(from: "2019-01-11T16:45:00-0800")!),
                         articleFactory(title: "article 2", link: URL(string: "https://example.com/article/article2")!,
                                        published: dateFormatter.date(from: "2017-07-21T18:00:00-0700")!),
                         articleFactory(title: "article 3", link: URL(string: "https://example.com/article/article3")!,
@@ -502,6 +502,8 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                             article1.title = "article1"
                             article1.link = "https://example.com/article/article1"
                             article1.feed = realmFeed1
+                            article1.authors.append(RealmAuthor(name: "buk", email: nil))
+                            article1.authors.append(RealmAuthor(name: "baz", email: nil))
                             article1.published = updatedArticles[1].published
 
                             realm.add(article1)
@@ -552,7 +554,7 @@ final class LocalRealmFeedServiceSpec: QuickSpec {
                         }
                         expect(Array(articles)).to(equal([
                             articleFactory(title: "article 0", link: URL(string: "https://example.com/article/article0")!, published: updatedArticles[0].published, updated: updatedArticles[0].updated),
-                            articleFactory(title: "article 1, updated", link: URL(string: "https://example.com/article/article1")!, summary: "hello", published: updatedArticles[1].published, updated: updatedArticles[1].updated),
+                            articleFactory(title: "article 1, updated", link: URL(string: "https://example.com/article/article1")!, summary: "hello", authors: [Author("foo"), Author("bar")], published: updatedArticles[1].published, updated: updatedArticles[1].updated),
                             articleFactory(title: "article 2", link: URL(string: "https://example.com/article/article2")!, published: updatedArticles[2].published, updated: updatedArticles[2].updated),
                         ]))
                     }

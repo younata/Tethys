@@ -309,7 +309,8 @@ struct LocalRealmFeedService: LocalFeedService {
             }
         }
 
-        for (index, author) in realmArticle.authors.enumerated() {
+        for author in realmArticle.authors {
+            guard let index = realmArticle.authors.index(of: author) else { continue }
             if !realmAuthors.contains(author) {
                 realmArticle.authors.remove(at: index)
             }

@@ -423,6 +423,7 @@ extension SettingsViewController: UITableViewDelegate {
         guard let refreshControlStyle = RefreshControlStyle(rawValue: indexPath.row) else { return }
         self.refreshControlStyle = refreshControlStyle
         self.navigationItem.rightBarButtonItem?.isEnabled = true
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
         self.reloadTable()
     }
 
